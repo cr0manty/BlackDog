@@ -1,5 +1,7 @@
-import 'package:black_dog/insatnces/shared_pref.dart';
+import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/models/user.dart';
+
+import 'shared_pref.dart';
 
 enum AccountState {
   GUEST, USER, STAFF
@@ -12,7 +14,7 @@ class Account {
 
   static Account get instance => _instance;
   
-  AccountState state = AccountState.GUEST;
+  AccountState state = AccountState.STAFF;
 
   Future init() async {
     _user = SharedPrefs.getUser();

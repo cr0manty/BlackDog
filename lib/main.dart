@@ -1,15 +1,18 @@
 import 'package:black_dog/screens/home_page.dart';
 import 'package:black_dog/screens/sign_in.dart';
+import 'package:black_dog/utils/connection_check.dart';
 import 'package:flutter/material.dart';
 
-import 'insatnces/account.dart';
-import 'insatnces/shared_pref.dart';
+import 'instances/account.dart';
+import 'instances/shared_pref.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   if (SharedPrefs.getInstance() == null) {
     SharedPrefs.init();
   }
 
+  await ConnectionsCheck.instance.initialise();
   await Account.instance.init();
 
   runApp(BlackDogApp());
