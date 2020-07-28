@@ -8,6 +8,7 @@ import 'instances/shared_pref.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   if (SharedPrefs.getInstance() == null) {
     SharedPrefs.init();
   }
@@ -22,13 +23,13 @@ class BlackDogApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        brightness: Brightness.dark,
-      ),
-      home: Account.instance.state == AccountState.GUEST
-          ? SignInPage
-          : HomePage(),
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          brightness: Brightness.dark,
+        ),
+        home: Account.instance.state == AccountState.GUEST
+            ? SignInPage
+            : HomePage(),
     );
   }
 }

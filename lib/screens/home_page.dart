@@ -1,8 +1,11 @@
 import 'package:barcode_scan/platform_wrapper.dart';
+import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/instances/size.dart';
+import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/widgets/bottom_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import '../instances/account.dart';
 import '../instances/shared_pref.dart';
@@ -16,17 +19,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   double scanButtonOpacity = 0;
   double scanIconOpacity = 1;
+  bool isLoading = false;
 
   void initScreenSize(BuildContext context) {
     if (ScreenSize.height == null || ScreenSize.width == null) {
-      ScreenSize.height = MediaQuery
-          .of(context)
-          .size
-          .height;
-      ScreenSize.width = MediaQuery
-          .of(context)
-          .size
-          .width;
+      ScreenSize.height = MediaQuery.of(context).size.height;
+      ScreenSize.width = MediaQuery.of(context).size.width;
     }
   }
 
@@ -35,18 +33,29 @@ class _HomePageState extends State<HomePage> {
       scanButtonOpacity = 0.4;
       scanIconOpacity = 1;
     });
-    var result = await BarcodeScanner.scan();
+    if (Account.instance.state == AccountState.STAFF) {
+      setState(() => isLoading = !isLoading);
+
+      var result = await BarcodeScanner.scan();
+      print('Scanned QR Code url: ${result.rawContent}');
+
+      await Api.instance.staffScanQRCode(result.rawContent)
+          ? await Utils.showSuccessPopUp()
+          : await Utils.showErrorPopUp();
+      setState(() => isLoading = !isLoading);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     initScreenSize(context);
     return Scaffold(
-      body: SafeArea(
+      body: ModalProgressHUD(inAsyncCall: isLoading,
+      child: SafeArea(
           child: Container(
-            padding: EdgeInsets.all(16),
-            child: _userInterface(),
-          )),
+        padding: EdgeInsets.all(16),
+        child: _userInterface()),
+      )),
     );
   }
 
@@ -92,8 +101,7 @@ class _HomePageState extends State<HomePage> {
   Widget _buildScanQRCode() {
     return GestureDetector(
         onTap: _onScanTap,
-        onTapDown: (details) =>
-            setState(() {
+        onTapDown: (details) => setState(() {
               scanButtonOpacity = 0.2;
               scanIconOpacity = 0.4;
             }),

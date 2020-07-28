@@ -29,7 +29,7 @@ class Account {
   }
 
   Future stuffScanQRCode() async {
-
+    
   }
 
 }
