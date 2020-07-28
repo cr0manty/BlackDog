@@ -1,16 +1,17 @@
-import 'package:black_dog/utils/hex_color.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class TextInput extends StatefulWidget {
   final String hintText;
   final TextEditingController controller;
-  Widget suffixIcon;
-  FormFieldValidator<String> validator;
-  TextInputAction inputAction;
-  TextInputType keyboardType;
-  bool obscureText;
-  ValueChanged<String> onChanged;
+  final Widget suffixIcon;
+  final FormFieldValidator<String> validator;
+  final TextInputAction inputAction;
+  final TextInputType keyboardType;
+  final bool obscureText;
+  final ValueChanged<String> onChanged;
+  final Color backgroundColor;
+  final Color textColor;
 
   TextInput(
       {@required this.hintText,
@@ -20,7 +21,9 @@ class TextInput extends StatefulWidget {
       this.inputAction,
       this.keyboardType,
       this.obscureText,
-      this.onChanged});
+      this.onChanged,
+      this.backgroundColor,
+      this.textColor});
 
   @override
   State<StatefulWidget> createState() => TextInputState();
@@ -41,41 +44,38 @@ class TextInputState extends State<TextInput> {
       margin: EdgeInsets.zero,
       color: Colors.transparent,
       elevation: 0.0,
-      child: Stack(
-        children: <Widget>[
-          TextFormField(
-            style: TextStyle(color: Colors.white),
-            keyboardType: widget.keyboardType,
-            validator: widget.validator,
-            obscureText: widget.obscureText ?? false,
-            controller: widget.controller,
-            onChanged: (String text) {
-              setState(() {
-                isEmpty = text.isEmpty;
-              });
-              widget.onChanged(text);
-            },
-            decoration: InputDecoration(
-                hintText: widget.hintText,
-                focusColor: Colors.transparent,
-                filled: true,
-                suffixIcon: widget.suffixIcon,
-                hintStyle: TextStyle(color: HexColor('#8c8c8c'), fontSize: 15),
-                fillColor: HexColor('#424242'),
-                border: UnderlineInputBorder(
-                  borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.all(
-                     Radius.circular(9.0),
-                  ),
-                ),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(9.0),
-                  ),
-                )),
-          ),
-        ],
+      child: TextFormField(
+        style: TextStyle(color: widget.textColor ?? Colors.black),
+        keyboardType: widget.keyboardType,
+        validator: widget.validator,
+        obscureText: widget.obscureText ?? false,
+        controller: widget.controller,
+        onChanged: (String text) {
+          setState(() {
+            isEmpty = text.isEmpty;
+          });
+          widget.onChanged(text);
+        },
+        decoration: InputDecoration(
+            hintText: widget.hintText,
+            focusColor: Colors.transparent,
+            filled: true,
+            suffixIcon: widget.suffixIcon,
+            hintStyle: TextStyle(
+                color: widget.textColor ?? Colors.black, fontSize: 18),
+            fillColor: widget.backgroundColor ?? Colors.white,
+            border: UnderlineInputBorder(
+              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.all(
+                Radius.circular(9.0),
+              ),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.all(
+                Radius.circular(9.0),
+              ),
+            )),
       ),
     );
   }

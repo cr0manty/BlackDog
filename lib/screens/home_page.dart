@@ -39,24 +39,30 @@ class _HomePageState extends State<HomePage> {
       var result = await BarcodeScanner.scan();
       print('Scanned QR Code url: ${result.rawContent}');
 
-      await Api.instance.staffScanQRCode(result.rawContent)
-          ? await Utils.showSuccessPopUp()
-          : await Utils.showErrorPopUp();
+      if (result.rawContent.isNotEmpty) {
+        await Api.instance.staffScanQRCode(result.rawContent)
+            ? await Utils.showSuccessPopUp()
+            : await Utils.showErrorPopUp(context);
+      }
       setState(() => isLoading = !isLoading);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    initScreenSize(context);
-    return Scaffold(
-      body: ModalProgressHUD(inAsyncCall: isLoading,
-      child: SafeArea(
-          child: Container(
-        padding: EdgeInsets.all(16),
-        child: _userInterface()),
-      )),
-    );
+    Utils.initScreenSize(MediaQuery.of(context).size);
+
+    return WillPopScope(
+        onWillPop: () async => false,
+        child: Scaffold(
+          body: ModalProgressHUD(
+              inAsyncCall: isLoading,
+              progressIndicator: CupertinoActivityIndicator(),
+              child: SafeArea(
+                child: Container(
+                    padding: EdgeInsets.all(16), child: _userInterface()),
+              )),
+        ));
   }
 
   Widget _buildUserCard() {
@@ -74,7 +80,7 @@ class _HomePageState extends State<HomePage> {
             Padding(
                 padding: EdgeInsets.all(5),
                 child: Text(
-                  'Max',
+                  Account.instance.name,
                   style: TextStyle(fontSize: 24),
                 )),
             CupertinoButton(

@@ -2,7 +2,6 @@ import 'package:black_dog/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class SharedPrefs {
-  static const _lastTab = 'LastTab';
   static const _currentUser = 'CurrentUser';
   static const _currentToken = 'CurrentToken';
 
@@ -16,10 +15,6 @@ abstract class SharedPrefs {
     return _prefs;
   }
 
-  static void saveLastTab(int tabIndex) {
-    _prefs.setInt(_lastTab, tabIndex);
-  }
-
   static void logout() {
     _prefs.setString(_currentUser, "");
     _prefs.setString(_currentToken, "");
@@ -31,7 +26,7 @@ abstract class SharedPrefs {
   }
 
   static void saveUser(User user) {
-    _prefs.setString(_currentToken, userToJson(user));
+    _prefs.setString(_currentUser, userToJson(user));
   }
 
 
