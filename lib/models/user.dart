@@ -52,7 +52,7 @@ class User {
       phone: json['phone'],
       instagramUsername: json['instagram_username'],
       qrCode: json['qr_code'],
-      isStaff: json['superuser'] ?? true,
+      isStaff: json['superuser'] ?? false,
       vouchers: vouchersFromJsonList(json['vouchers'] ?? []));
 
   Map<String, dynamic> toJson() => {
