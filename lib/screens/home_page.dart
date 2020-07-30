@@ -245,6 +245,7 @@ class _HomePageState extends State<HomePage> {
                           style: TextStyle(fontSize: 20),
                         )),
                       ))),
+        Container(height: 20,)
       ],
     );
   }
