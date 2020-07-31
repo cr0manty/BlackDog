@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:black_dog/instances/shared_pref.dart';
+import 'package:black_dog/models/news.dart';
 import 'package:black_dog/models/user.dart';
 import 'package:http/http.dart';
 import 'package:http_interceptor/http_interceptor.dart';
@@ -33,15 +35,28 @@ class LogInterceptor implements InterceptorContract {
 
 class Api {
   static const String _base_url = 'https://cv.faifly.com';
-
+  bool init = false;
   Api._internal();
 
   static final Api _instance = Api._internal();
 
   static Api get instance => _instance;
 
+  List<News> _news = [];
+
+  List<News> get news => _news;
+
   Client _client = HttpClientWithInterceptor.build(
       interceptors: [LogInterceptor()], requestTimeout: Duration(seconds: 30));
+
+  Future initialize() async {
+    getNews();
+    init = true;
+  }
+  final StreamController<bool> _apiChange =
+  StreamController<bool>.broadcast();
+
+  Stream<bool> get apiChange => _apiChange.stream;
 
   Map<String, String> _headerAuth() {
     return {
@@ -83,5 +98,22 @@ class Api {
       }
       return user;
     }
+  }
+
+  Future getNews() async {
+    final response = await _client.get(_base_url + '/api/v1/posts/list',
+        headers: _headerAuth());
+
+    if (response.statusCode == 200) {
+      List body = json.decode(response.body) as List;
+      body.forEach((value) {
+        _news.add(News.fromJson(value));
+      });
+      _apiChange.add(true);
+    }
+  }
+
+  void dispose() {
+    _apiChange?.close();
   }
 }

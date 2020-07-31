@@ -16,11 +16,13 @@ abstract class ScreenSize {
 
   static double get labelIndent => width * 0.005;
 
-  static double get newsBlockHeight => height * 0.25;
+  static double get newsBlockHeight => height * 0.27;
 
-  static double get newsBlockWidth => width * 0.4;
+  static double get newsBlockWidth => width * 0.5;
 
-  static double get menuBlockHeight => width * 0.18;
+  static double get newsListBlockSize => width * 0.3;
+
+  static double get menuBlockHeight => width * 0.22;
 
   static double get qrCodeHeight => height * 0.3;
 

@@ -23,10 +23,12 @@ class _UserPageState extends State<UserPage> {
         leading: RouteButton(
           icon: SFSymbols.chevron_left,
           text: 'На Главную',
+          color: Colors.white,
           onTap: Navigator.of(context).pop,
         ),
         action: RouteButton(
           text: 'Выход',
+          color: Colors.white,
           onTap: () {
             SharedPrefs.logout();
             Navigator.of(context, rootNavigator: true)

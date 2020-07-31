@@ -26,8 +26,8 @@ class UserCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(9),
           color: Colors.grey.withOpacity(0.4),
         ),
-        margin: EdgeInsets.only(top: isStaff ? 0 : 16, left: 16, right: 18),
-        padding: EdgeInsets.only(left: 11, right: 10, top: 12, bottom: 14),
+        margin: EdgeInsets.only(top: isStaff ? 0 : 15, left: 15, right: 15),
+        padding: EdgeInsets.all(10),
         child: Column(children: [
           Row(
             mainAxisSize: MainAxisSize.max,

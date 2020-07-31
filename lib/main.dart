@@ -1,3 +1,4 @@
+import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/screens/home_page.dart';
 import 'package:black_dog/screens/sign_in.dart';
 import 'package:black_dog/utils/connection_check.dart';
@@ -19,7 +20,12 @@ void main() async {
   runApp(BlackDogApp());
 }
 
-class BlackDogApp extends StatelessWidget {
+class BlackDogApp extends StatefulWidget {
+  @override
+  _BlackDogAppState createState() => _BlackDogAppState();
+}
+
+class _BlackDogAppState extends State<BlackDogApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -31,5 +37,11 @@ class BlackDogApp extends StatelessWidget {
           ? SignInPage()
           : HomePage(),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    Api.instance.dispose();
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:barcode_scan/platform_wrapper.dart';
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/utils/size.dart';
@@ -9,6 +11,7 @@ import 'package:black_dog/widgets/bonus_card.dart';
 import 'package:black_dog/widgets/bottom_route.dart';
 import 'package:black_dog/widgets/edit_button.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
+import 'package:black_dog/widgets/route_button.dart';
 import 'package:black_dog/widgets/user_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +19,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import '../instances/account.dart';
 import '../instances/shared_pref.dart';
+import 'news_list.dart';
 import 'sign_in.dart';
 
 class HomePage extends StatefulWidget {
@@ -24,10 +28,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  StreamSubscription _apiChange;
   double buttonOpacity = 1;
   double scanIconOpacity = 1;
   bool isLoading = false;
-  List<News> _news = [];
   List<MenuCategory> _categories = [];
 
   void initScreenSize(BuildContext context) {
@@ -40,12 +44,8 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _news.add(News(
-        title: 'Test',
-        body:
-            'TestodyTestbodyTestbody Test body Test body Test body Test body Test body Test body Test body Test body Test body Test body Test body Test body',
-        previewImage:
-            'https://vesti.ua/wp-content/uploads/2018/11/313793.jpeg'));
+    _apiChange = Api.instance.apiChange.listen((event) => setState(() {}));
+
     _categories.add(MenuCategory(
         title: 'Coffee',
         previewImage:
@@ -79,7 +79,14 @@ class _HomePageState extends State<HomePage> {
     return WillPopScope(
         onWillPop: () async => false,
         child: PageScaffold(
-          action: _aboutUs(),
+          action: RouteButton(
+            iconColor: Colors.white,
+            textColor: Colors.white,
+            icon: Icons.info_outline,
+            iconFirst: false,
+            text: 'О Нас',
+            onTap: () {},
+          ),
           child: ModalProgressHUD(
               inAsyncCall: isLoading,
               progressIndicator: CupertinoActivityIndicator(),
@@ -115,15 +122,11 @@ class _HomePageState extends State<HomePage> {
         ));
   }
 
-  Widget _exitButton() {
+  Widget _actionButton(String text, {VoidCallback onTap}) {
     return GestureDetector(
-      onTap: () {
-        SharedPrefs.logout();
-        Navigator.of(context, rootNavigator: true)
-            .push(BottomRoute(page: SignInPage()));
-      },
+      onTap: onTap,
       child: Container(
-        child: Text('Выйти'),
+        child: Text(text),
       ),
     );
   }
@@ -134,32 +137,14 @@ class _HomePageState extends State<HomePage> {
           isStaff: true,
           onPressed: null,
           username: Account.instance.name,
-          trailing: _exitButton()),
+          trailing: _actionButton('Выйти', onTap: () {
+            SharedPrefs.logout();
+            Navigator.of(context, rootNavigator: true)
+                .push(BottomRoute(page: SignInPage()));
+          })),
       SizedBox(height: ScreenSize.scanQRCodeIndent),
       _buildScanQRCode()
     ]);
-  }
-
-  Widget _aboutUs() {
-    return Container(
-        alignment: Alignment.topRight,
-        margin: EdgeInsets.only(top: 10),
-        child: CupertinoButton(
-          onPressed: () {},
-          child: Row(
-            children: <Widget>[
-              Text(
-                'About',
-                style: TextStyle(color: Colors.white),
-              ),
-              SizedBox(width: 10),
-              Icon(
-                Icons.photo,
-                color: Colors.white,
-              )
-            ],
-          ),
-        ));
   }
 
   Widget _buildUser() {
@@ -176,28 +161,32 @@ class _HomePageState extends State<HomePage> {
         ),
         SizedBox(height: ScreenSize.sectionIndent - 20),
         _buildSection(
-            'Новости',
-            SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: _news.length > 0
-                    ? Row(
-                        children: List.generate(
-                            7,
-//                  _news.length > 5 ? 7 : _news.length + 2,
-                            _buildNewsBlock),
-                      )
-                    : Container(
-                        height: ScreenSize.newsBlockHeight / 3,
-                        width: ScreenSize.width,
-                        child: Center(
-                            child: Text(
-                          'Новостей еще нет',
-                          style: TextStyle(fontSize: 20),
-                        )),
+          'Новости',
+          SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Api.instance.news.length > 0
+                  ? Row(
+                      children: List.generate(
+                          Api.instance.news.length > 5
+                              ? 7
+                              : Api.instance.news.length + 2,
+                          _buildNewsBlock),
+                    )
+                  : Container(
+                      height: ScreenSize.newsBlockHeight / 3,
+                      width: ScreenSize.width,
+                      child: Center(
+                          child: Text(
+                        'Новостей еще нет',
+                        style: TextStyle(fontSize: 20),
                       )),
-            subWidgetText: _news.length > 0 ? 'Больше' : null,
-            subWidgetAction: () {}),
-        SizedBox(height: ScreenSize.sectionIndent),
+                    )),
+          subWidgetText: Api.instance.news.length > 0 ? 'Больше' : null,
+          subWidgetAction: () => Navigator.of(context).push(
+            CupertinoPageRoute(builder: (context) => NewsList()),
+          ),
+        ),
+        SizedBox(height: ScreenSize.sectionIndent / 1.5),
         _buildSection(
             'Меню',
             SingleChildScrollView(
@@ -268,11 +257,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildNewsBlock(int index) {
-    if (index == 0 || index >= 6 /*|| index > _news.length*/)
+    if (index == 0 || index >= 6 || index > Api.instance.news.length)
       return Container(width: 8);
 
-    News news = _news[0 /*index - 1*/
-        ];
+    News news = Api.instance.news[index - 1];
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(9),
@@ -299,7 +287,7 @@ class _HomePageState extends State<HomePage> {
           SizedBox(height: 10),
           Expanded(
               child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(10),
                   child: Image.network(news.previewImage, fit: BoxFit.cover)))
         ],
       ),
@@ -351,5 +339,12 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _apiChange?.cancel();
+    Api.instance.dispose();
   }
 }

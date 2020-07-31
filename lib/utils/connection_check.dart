@@ -1,27 +1,30 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
+import 'package:black_dog/instances/api.dart';
 import 'package:connectivity/connectivity.dart';
 
-class ConnectionsCheck with ChangeNotifier {
+class ConnectionsCheck {
   ConnectionsCheck._internal();
 
+  List<Function> _requestsQuery = [];
   bool isOnline = false;
 
   static final ConnectionsCheck _instance = ConnectionsCheck._internal();
 
   static ConnectionsCheck get instance => _instance;
 
-  Connectivity connectivity = Connectivity();
+  Connectivity _connectivity = Connectivity();
 
   StreamController controller = StreamController.broadcast();
 
   Stream get myStream => controller.stream;
 
+  set addRequest(Function func) => _requestsQuery.add(func);
+
   Future initialise() async {
-    ConnectivityResult result = await connectivity.checkConnectivity();
+    ConnectivityResult result = await _connectivity.checkConnectivity();
     await _checkStatus(result);
-    connectivity.onConnectivityChanged.listen((result) {
+    _connectivity.onConnectivityChanged.listen((result) {
       _checkStatus(result);
     });
   }
@@ -43,7 +46,16 @@ class ConnectionsCheck with ChangeNotifier {
         isOnline = false;
       }
     }
-    notifyListeners();
+    if (isOnline && !Api.instance.init) {
+      Api.instance.initialize();
+    }
+    _processRequestQuery();
+  }
+
+  void _processRequestQuery() {
+    _requestsQuery.forEach((element) {
+      element();
+    });
   }
 
   void disposeStream() => controller.close();
