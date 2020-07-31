@@ -1,13 +1,16 @@
 import 'package:barcode_scan/platform_wrapper.dart';
 import 'package:black_dog/instances/api.dart';
-import 'package:black_dog/instances/size.dart';
+import 'package:black_dog/utils/size.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/menu_category.dart';
 import 'package:black_dog/models/news.dart';
+import 'package:black_dog/screens/user_page.dart';
+import 'package:black_dog/widgets/bonus_card.dart';
 import 'package:black_dog/widgets/bottom_route.dart';
+import 'package:black_dog/widgets/edit_button.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
+import 'package:black_dog/widgets/user_card.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
@@ -21,7 +24,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  double scanButtonOpacity = 0;
+  double buttonOpacity = 1;
   double scanIconOpacity = 1;
   bool isLoading = false;
   List<News> _news = [];
@@ -51,7 +54,7 @@ class _HomePageState extends State<HomePage> {
 
   void _onScanTap() async {
     setState(() {
-      scanButtonOpacity = 0.4;
+      buttonOpacity = 0.4;
       scanIconOpacity = 1;
     });
     if (Account.instance.state == AccountState.STAFF) {
@@ -88,54 +91,11 @@ class _HomePageState extends State<HomePage> {
         ));
   }
 
-  Widget _buildUserCard() {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(9),
-        color: Colors.grey.withOpacity(0.4),
-      ),
-      margin: EdgeInsets.only(
-          top: Account.instance.state == AccountState.STAFF ? 0 : 16,
-          left: 16,
-          right: 18),
-      padding: EdgeInsets.only(left: 11, right: 10, top: 12, bottom: 14),
-      child: Column(children: [
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Padding(
-                padding: EdgeInsets.all(5),
-                child: Text(
-                  Account.instance.name,
-                  style: TextStyle(fontSize: 24),
-                )),
-            CupertinoButton(
-              minSize: 0,
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-              onPressed: () {
-                SharedPrefs.logout();
-                Navigator.of(context, rootNavigator: true)
-                    .push(BottomRoute(page: SignInPage()));
-              },
-              child: Text(
-                'Выйти',
-                style: TextStyle(color: Colors.white),
-              ),
-            )
-          ],
-        ),
-        SizedBox(height: ScreenSize.elementIndentHeight),
-        _bonusCard()
-      ]),
-    );
-  }
-
   Widget _buildScanQRCode() {
     return GestureDetector(
         onTap: _onScanTap,
         onTapDown: (details) => setState(() {
-              scanButtonOpacity = 0.2;
+              buttonOpacity = 0.2;
               scanIconOpacity = 0.4;
             }),
         child: Container(
@@ -146,7 +106,7 @@ class _HomePageState extends State<HomePage> {
           ),
           height: ScreenSize.scanQRCodeSize,
           width: ScreenSize.scanQRCodeSize,
-          padding: EdgeInsets.all(8),
+          padding: EdgeInsets.all(10),
           child: Icon(
             Icons.photo_camera,
             size: ScreenSize.scanQRCodeIconSize,
@@ -155,22 +115,26 @@ class _HomePageState extends State<HomePage> {
         ));
   }
 
-  Widget _bonusCard() {
-    if (Account.instance.state == AccountState.STAFF) {
-      return Container();
-    }
-    return Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(9),
-          color: Colors.grey.withOpacity(0.4),
-        ),
-        height: ScreenSize.scanQRCodeSize,
-        padding: EdgeInsets.all(8));
+  Widget _exitButton() {
+    return GestureDetector(
+      onTap: () {
+        SharedPrefs.logout();
+        Navigator.of(context, rootNavigator: true)
+            .push(BottomRoute(page: SignInPage()));
+      },
+      child: Container(
+        child: Text('Выйти'),
+      ),
+    );
   }
 
   Widget _buildStaff() {
     return Column(children: <Widget>[
-      _buildUserCard(),
+      UserCard(
+          isStaff: true,
+          onPressed: null,
+          username: Account.instance.name,
+          trailing: _exitButton()),
       SizedBox(height: ScreenSize.scanQRCodeIndent),
       _buildScanQRCode()
     ]);
@@ -179,6 +143,7 @@ class _HomePageState extends State<HomePage> {
   Widget _aboutUs() {
     return Container(
         alignment: Alignment.topRight,
+        margin: EdgeInsets.only(top: 10),
         child: CupertinoButton(
           onPressed: () {},
           child: Row(
@@ -200,7 +165,15 @@ class _HomePageState extends State<HomePage> {
   Widget _buildUser() {
     return Column(
       children: <Widget>[
-        _buildUserCard(),
+        UserCard(
+          isStaff: false,
+          onPressed: () => Navigator.of(context, rootNavigator: true).push(
+              CupertinoPageRoute(
+                  builder: (BuildContext context) => UserPage())),
+          username: Account.instance.name,
+          trailing: EditButton(),
+          additionWidget: BonusCard(),
+        ),
         SizedBox(height: ScreenSize.sectionIndent - 20),
         _buildSection(
             'Новости',
@@ -245,7 +218,9 @@ class _HomePageState extends State<HomePage> {
                           style: TextStyle(fontSize: 20),
                         )),
                       ))),
-        Container(height: 20,)
+        Container(
+          height: 20,
+        )
       ],
     );
   }
@@ -303,10 +278,10 @@ class _HomePageState extends State<HomePage> {
         borderRadius: BorderRadius.circular(9),
         color: Colors.grey.withOpacity(0.4),
       ),
-      margin: EdgeInsets.symmetric(horizontal: 8),
+      margin: EdgeInsets.symmetric(horizontal: 10),
       height: ScreenSize.newsBlockHeight,
       width: ScreenSize.newsBlockWidth,
-      padding: EdgeInsets.all(8),
+      padding: EdgeInsets.all(10),
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
@@ -339,7 +314,7 @@ class _HomePageState extends State<HomePage> {
         borderRadius: BorderRadius.circular(9),
         color: Colors.grey.withOpacity(0.4),
       ),
-      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       height: ScreenSize.menuBlockHeight,
       width: ScreenSize.width - 32,
       child: Container(
@@ -366,7 +341,7 @@ class _HomePageState extends State<HomePage> {
                   ], begin: Alignment.topRight, end: Alignment.bottomLeft)),
             ),
             Container(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+                padding: EdgeInsets.symmetric(horizontal: 20),
                 alignment: Alignment.centerLeft,
                 child: Text(
                   category.capitalizeTitle,

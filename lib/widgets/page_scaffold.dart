@@ -1,4 +1,4 @@
-import 'package:black_dog/instances/size.dart';
+import 'package:black_dog/utils/size.dart';
 import 'package:flutter/material.dart';
 
 class PageScaffold extends StatelessWidget {
@@ -11,23 +11,21 @@ class PageScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Container(
-          height: ScreenSize.height,
-          child: ListView(
-              shrinkWrap: true,
+      body: Container(
+        height: ScreenSize.height,
+        child: ListView(
+          shrinkWrap: true,
+          children: <Widget>[
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    leading ?? Container(),
-                    action ?? Container(),
-                  ],
-                ),
-                child,
+                leading ?? Container(),
+                action ?? Container(),
               ],
             ),
+            child,
+          ],
         ),
       ),
     );

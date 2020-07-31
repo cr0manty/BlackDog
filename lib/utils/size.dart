@@ -21,4 +21,7 @@ abstract class ScreenSize {
   static double get newsBlockWidth => width * 0.4;
 
   static double get menuBlockHeight => width * 0.18;
+
+  static double get qrCodeHeight => height * 0.3;
+
 }

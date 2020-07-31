@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:black_dog/instances/size.dart';
+import 'package:black_dog/utils/size.dart';
 import 'package:flutter/cupertino.dart';
 
 abstract class Utils {
