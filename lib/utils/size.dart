@@ -16,9 +16,9 @@ abstract class ScreenSize {
 
   static double get labelIndent => width * 0.005;
 
-  static double get newsBlockHeight => height * 0.27;
+  static double get newsBlockHeight => height * 0.26;
 
-  static double get newsBlockWidth => width * 0.5;
+  static double get newsBlockWidth => width * 0.38;
 
   static double get newsListBlockSize => width * 0.3;
 

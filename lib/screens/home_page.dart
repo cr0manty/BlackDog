@@ -288,7 +288,7 @@ class _HomePageState extends State<HomePage> {
           Expanded(
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: Image.network(news.previewImage, fit: BoxFit.cover)))
+                  child: Image.network(news.previewImage, fit: BoxFit.fill)))
         ],
       ),
     );
