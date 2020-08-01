@@ -3,7 +3,9 @@ import 'package:black_dog/utils/size.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
+import 'package:html/dom.dart' as dom;
 
 class NewsList extends StatefulWidget {
   @override
@@ -21,6 +23,7 @@ class _NewsListState extends State<NewsList> {
         color: Colors.white,
         onTap: Navigator.of(context).pop,
       ),
+      title: Text('Новости', style: TextStyle(fontSize: 30),),
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 16),
         child: ListView(

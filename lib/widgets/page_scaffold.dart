@@ -38,7 +38,7 @@ class PageScaffold extends StatelessWidget {
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
                   _appBar(),
-                  title ?? Container(),
+                  Container(padding: EdgeInsets.only(top: 5, bottom: 20), child: title),
                   Expanded(child: ListView(children: <Widget>[child]))
                 ]),
           )
