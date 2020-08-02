@@ -1,40 +1,17 @@
-import 'dart:convert';
+import 'abstract_model.dart';
 
-News newsFromJson(String str) {
-  if (str != null && str.isNotEmpty) {
-    final data = json.decode(str);
-    return News.fromJson(data);
-  }
-  return null;
-}
-
-class News {
+class News extends ModelItem {
   int id;
-  String title;
   String body;
-  String shortContent;
+  String shortDescription;
   String previewImage;
 
-  News({this.body, this.title, this.previewImage, this.shortContent, this.id});
+  News({String name, this.body, this.previewImage, this.shortDescription, this.id})
+      : super(name);
 
-  String get capitalizeTitle {
-    if (title == null || title.isEmpty) {
-      return title ?? '';
-    }
-
-    return title[0].toUpperCase() + title.substring(1);
-  }
-
-  factory News.fromJson(Map<String, dynamic> json) => new News(
-      title: json['title'],
-      body: json['content'],
-      previewImage: json['first_image'],
-      shortContent: json['short_content']);
-
-  Map<String, dynamic> toJson() => {
-        'first_image': previewImage,
-        'short_content': shortContent,
-        'title': title,
-        'content': body
-      };
+  factory News.fromJson(Map<String, dynamic> data) => new News(
+      name: data['title'],
+      body: data['content'],
+      previewImage: data['first_image'],
+      shortDescription: data['short_description']);
 }

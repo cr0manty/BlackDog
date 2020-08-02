@@ -21,7 +21,6 @@ class User {
   String email;
   String phone;
   String instagramUsername;
-  String qrCode;
   List<Voucher> vouchers;
   bool isStaff;
 
@@ -32,8 +31,7 @@ class User {
       this.isStaff,
       this.vouchers,
       this.lastName,
-      this.instagramUsername,
-      this.qrCode});
+      this.instagramUsername});
 
   @override
   int get hashCode => email.hashCode;
@@ -45,21 +43,19 @@ class User {
     return firstName;
   }
 
-  factory User.fromJson(Map<String, dynamic> json) => new User(
-      firstName: json['first_name'],
-      lastName: json['last_name'],
-      email: json['email'],
-      phone: json['phone'],
-      instagramUsername: json['instagram_username'],
-      qrCode: json['qr_code'],
-      isStaff: json['is_staff'],
-      vouchers: vouchersFromJsonList(json['vouchers'] ?? []));
+  factory User.fromJson(Map<String, dynamic> data) => new User(
+      firstName: data['first_name'],
+      lastName: data['last_name'],
+      email: data['email'],
+      phone: data['phone'],
+      instagramUsername: data['instagram_username'],
+      isStaff: data['is_staff'],
+      vouchers: vouchersToJsonList(data['vouchers'] ?? []));
 
   Map<String, dynamic> toJson() => {
         'first_name': firstName,
         'last_name': lastName,
         'phone': phone,
-        'qr_code': qrCode,
         'instagram_username': instagramUsername,
         'email': email,
         'is_staff': isStaff,

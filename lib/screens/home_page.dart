@@ -2,10 +2,9 @@ import 'dart:async';
 
 import 'package:barcode_scan/platform_wrapper.dart';
 import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/screens/product_list.dart';
 import 'package:black_dog/utils/size.dart';
 import 'package:black_dog/instances/utils.dart';
-import 'package:black_dog/models/menu_category.dart';
-import 'package:black_dog/models/news.dart';
 import 'package:black_dog/screens/user_page.dart';
 import 'package:black_dog/widgets/bonus_card.dart';
 import 'package:black_dog/widgets/bottom_route.dart';
@@ -32,7 +31,6 @@ class _HomePageState extends State<HomePage> {
   double buttonOpacity = 1;
   double scanIconOpacity = 1;
   bool isLoading = false;
-  List<MenuCategory> _categories = [];
 
   void initScreenSize(BuildContext context) {
     if (ScreenSize.height == null || ScreenSize.width == null) {
@@ -44,13 +42,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-
     _apiChange = Api.instance.apiChange.listen((event) => setState(() {}));
-
-    _categories.add(MenuCategory(
-        title: 'Coffee',
-        previewImage:
-            'https://storge.pic2.me/c/1360x800/700/590cd115c66e6.jpg'));
   }
 
   void _onScanTap() async {
@@ -90,7 +82,9 @@ class _HomePageState extends State<HomePage> {
                   text: 'О Нас',
                   onTap: () {},
                 )
-              : SizedBox(height: ScreenSize.sectionIndent,),
+              : SizedBox(
+                  height: ScreenSize.sectionIndent,
+                ),
           child: ModalProgressHUD(
               inAsyncCall: isLoading,
               progressIndicator: CupertinoActivityIndicator(),
@@ -195,12 +189,10 @@ class _HomePageState extends State<HomePage> {
             'Меню',
             SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: _categories.length > 0
+                child: Api.instance.categories.length > 0
                     ? Column(
                         children: List.generate(
-                            7,
-//                  _categories.length
-                            _buildMenu),
+                            Api.instance.categories.length, _buildMenu),
                       )
                     : Container(
                         height: ScreenSize.newsBlockHeight / 3,
@@ -264,7 +256,7 @@ class _HomePageState extends State<HomePage> {
     if (index == 0 || index >= 6 || index > Api.instance.news.length)
       return Container(width: 8);
 
-    News news = Api.instance.news[index - 1];
+    final news = Api.instance.news[index - 1];
     return GestureDetector(
       child: Container(
         decoration: BoxDecoration(
@@ -284,7 +276,7 @@ class _HomePageState extends State<HomePage> {
             ),
             SizedBox(height: 10),
             Text(
-              news.shortContent ?? '',
+              news.shortDescription ?? '',
               maxLines: 2,
               style: TextStyle(fontSize: 13),
               overflow: TextOverflow.ellipsis,
@@ -301,51 +293,53 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildMenu(int index) {
-    MenuCategory category = _categories[0 /*index - 1*/
-        ];
+    final category = Api.instance.categories[index];
     return GestureDetector(
+        onTap: () => Navigator.of(context).push(CupertinoPageRoute(
+            builder: (context) =>
+                ProductList(title: category.name, id: category.id))),
         child: Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(9),
-        color: Colors.grey.withOpacity(0.4),
-      ),
-      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      height: ScreenSize.menuBlockHeight,
-      width: ScreenSize.width - 32,
-      child: Container(
-        alignment: Alignment.centerLeft,
-        child: Stack(
-          children: <Widget>[
-            Container(
-              height: ScreenSize.menuBlockHeight,
-              width: ScreenSize.width - 32,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
-                child: Image.network(category.previewImage, fit: BoxFit.cover),
-              ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(9),
+            color: Colors.grey.withOpacity(0.4),
+          ),
+          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          height: ScreenSize.menuBlockHeight,
+          width: ScreenSize.width - 32,
+          child: Container(
+            alignment: Alignment.centerLeft,
+            child: Stack(
+              children: <Widget>[
+                Container(
+                  height: ScreenSize.menuBlockHeight,
+                  width: ScreenSize.width - 32,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: Image.network(category.image, fit: BoxFit.cover),
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.0),
+                      gradient: LinearGradient(colors: [
+                        Colors.grey.withOpacity(0.2),
+                        Colors.white,
+                      ], stops: [
+                        0.2,
+                        2
+                      ], begin: Alignment.topRight, end: Alignment.bottomLeft)),
+                ),
+                Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      category.capitalizeTitle,
+                      style: TextStyle(fontSize: 20, color: Colors.black),
+                    ))
+              ],
             ),
-            Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.0),
-                  gradient: LinearGradient(colors: [
-                    Colors.grey.withOpacity(0.2),
-                    Colors.white,
-                  ], stops: [
-                    0.2,
-                    2
-                  ], begin: Alignment.topRight, end: Alignment.bottomLeft)),
-            ),
-            Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  category.capitalizeTitle,
-                  style: TextStyle(fontSize: 20, color: Colors.black),
-                ))
-          ],
-        ),
-      ),
-    ));
+          ),
+        ));
   }
 
   @override

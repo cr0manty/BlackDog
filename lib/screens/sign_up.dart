@@ -1,4 +1,3 @@
-import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/utils/size.dart';
 import 'package:black_dog/instances/utils.dart';
@@ -23,7 +22,6 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _password1Controller = TextEditingController();
   final TextEditingController _password2Controller = TextEditingController();
-  final TextEditingController _dateOfBirthController = TextEditingController();
   final GlobalKey _formKey = GlobalKey<FormState>();
   Map fieldsError = {};
   bool _obscureText = true;
@@ -268,7 +266,7 @@ class _SignUpPageState extends State<SignUpPage> {
     setState(() => isLoading = !isLoading);
     fieldsError = {};
 
-    Map response = await Api.instance.registartion(_sendData());
+    Map response = await Api.instance.register(_sendData());
 
     bool result = response.remove('result');
     if (result) {

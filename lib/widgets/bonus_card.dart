@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/utils/size.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,15 +11,16 @@ class BonusCard extends StatelessWidget {
   BonusCard({this.isStaff = false});
 
   void _showQRCodeModal(BuildContext context) {
+    File qrCode = File(SharedPrefs.getQRCode());
     showDialog(
         context: context,
-        useRootNavigator:false,
+        useRootNavigator: false,
         builder: (context) => CupertinoAlertDialog(
               title: Text('Отсканиурйте QR код'),
               content: Container(
                 padding: EdgeInsets.only(top: 25),
-                child: Image.network(
-                  'https://optimakomp.ru/wp-content/uploads/2018/02/qrcode.jpg',
+                child: Image.file(
+                  qrCode,
                   height: ScreenSize.qrCodeHeight,
                   width: ScreenSize.width,
                 ),

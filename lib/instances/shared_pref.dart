@@ -19,28 +19,29 @@ abstract class SharedPrefs {
   static void logout() {
     _prefs.setString(_currentUser, "");
     _prefs.setString(_currentToken, "");
+    _prefs.setString(_qrCode, "");
   }
 
   static void saveToken(String token) {
     _prefs.setString(
-        _currentToken, (token != null && token.length > 0) ? token : "");
+        _currentToken, (token != null && token.isNotEmpty) ? token : "");
   }
 
   static void saveUser(User user) {
     _prefs.setString(_currentUser, userToJson(user));
   }
 
-
   static String getToken() {
     return _prefs.getString(_currentToken);
   }
 
   static String getQRCode() {
-    return _prefs.getString(_qrCode);
+    return _prefs.getString(_qrCode) ?? '';
   }
 
-  static void setQRCode(String qrCode) {
-    _prefs.setString(_qrCode, qrCode);
+  static void saveQRCode(String qrCode) {
+    _prefs.setString(
+        _qrCode, (qrCode != null && qrCode.isNotEmpty) ? qrCode : "");
   }
 
   static User getUser() {

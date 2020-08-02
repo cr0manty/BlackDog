@@ -1,15 +1,10 @@
-import 'dart:convert';
 
-List vouchersFromJsonList(List body) {
+List vouchersToJsonList(List vouchersList) {
   List<Voucher> vouchers = [];
-  body.forEach((value) {
-    vouchers.add(Voucher.fromJson(value));
+  vouchersList.forEach((element) {
+    vouchers.add(Voucher.fromJson(element));
   });
   return vouchers;
-}
-
-String vouchersToJsonList(List vouchers) {
-  return json.encode(vouchers);
 }
 
 class Voucher {
@@ -23,16 +18,10 @@ class Voucher {
   Voucher(
       {this.toBonus, this.currentAmount, this.bonusAmount, this.used = false});
 
-  factory Voucher.fromJson(Map<String, dynamic> json) => new Voucher(
-      bonusAmount: json['bonus_amount'],
-      toBonus: json['to_bonus'],
-      used: json['used'] ?? false,
-      currentAmount: json['current_amount']);
+  factory Voucher.fromJson(Map<String, dynamic> data) => new Voucher(
+      bonusAmount: data['bonus_amount'],
+      toBonus: data['to_bonus'],
+      used: data['used'] ?? false,
+      currentAmount: data['current_amount']);
 
-  Map<String, dynamic> toJson() => {
-        'bonus_amount': bonusAmount,
-        'to_bonus': toBonus,
-        'used': used,
-        'current_amount': currentAmount
-      };
 }

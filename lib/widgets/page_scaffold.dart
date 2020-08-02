@@ -8,10 +8,12 @@ class PageScaffold extends StatelessWidget {
   final bool alwaysNavigation;
   final Widget title;
 
-  PageScaffold({@required this.child,
-    this.action,
-    this.leading, this.title,
-    this.alwaysNavigation = false});
+  PageScaffold(
+      {@required this.child,
+      this.action,
+      this.leading,
+      this.title,
+      this.alwaysNavigation = false});
 
   Widget _appBar() {
     return Container(
@@ -33,19 +35,31 @@ class PageScaffold extends StatelessWidget {
           height: ScreenSize.height,
           child: alwaysNavigation
               ? SafeArea(
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  _appBar(),
-                  Container(padding: EdgeInsets.only(top: 5, bottom: 20), child: title),
-                  Expanded(child: ListView(children: <Widget>[child]))
-                ]),
-          )
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        _appBar(),
+                        title != null
+                            ? Container(
+                                padding: EdgeInsets.only(top: 5, bottom: 20),
+                                child: title)
+                            : Container(),
+                        Expanded(child: ListView(children: <Widget>[child]))
+                      ]),
+                )
               : ListView(
-            shrinkWrap: true,
-            children: [_appBar(), child],
-          )),
+                  shrinkWrap: true,
+                  children: [
+                    _appBar(),
+                    title != null
+                        ? Container(
+                            padding: EdgeInsets.only(top: 5, bottom: 20),
+                            child: title)
+                        : Container(),
+                    child
+                  ],
+                )),
     );
   }
 }

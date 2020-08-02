@@ -1,17 +1,15 @@
-import 'package:black_dog/models/menu_item.dart';
+import 'abstract_model.dart';
 
-class MenuCategory {
-  final String title;
-  final String previewImage;
-  List<MenuItem> items;
+class MenuCategory extends ModelItem {
+  final int id;
+  final String image;
 
-  MenuCategory({this.title, this.items, this.previewImage});
+  MenuCategory({String name, this.image, this.id}) : super(name);
 
-   String get capitalizeTitle {
-    if (title == null || title.isEmpty) {
-      return title ?? '';
-    }
 
-    return title[0].toUpperCase() + title.substring(1);
-  }
+  factory MenuCategory.fromJson(Map<String, dynamic> data) => new MenuCategory(
+      name: data['name'],
+      id: data['id'],
+      image: data['image']
+  );
 }
