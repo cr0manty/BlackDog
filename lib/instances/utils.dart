@@ -29,4 +29,11 @@ abstract class Utils {
       ScreenSize.width = size.width;
     }
   }
+
+  static String dateFormat(DateTime date) {
+    if (date == null) {
+      return null;
+    }
+    return '${date.day}/${date.month}/${date.year}';
+  }
 }

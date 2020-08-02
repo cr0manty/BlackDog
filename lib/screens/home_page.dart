@@ -15,7 +15,6 @@ import 'package:black_dog/widgets/route_button.dart';
 import 'package:black_dog/widgets/user_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import '../instances/account.dart';
@@ -45,6 +44,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+
     _apiChange = Api.instance.apiChange.listen((event) => setState(() {}));
 
     _categories.add(MenuCategory(
@@ -80,15 +80,17 @@ class _HomePageState extends State<HomePage> {
     return WillPopScope(
         onWillPop: () async => false,
         child: PageScaffold(
-          action: RouteButton(
-            usePaddign: false,
-            iconColor: Colors.white,
-            textColor: Colors.white,
-            icon: Icons.info_outline,
-            iconFirst: false,
-            text: 'О Нас',
-            onTap: () {},
-          ),
+          action: Account.instance.state != AccountState.STAFF
+              ? RouteButton(
+                  usePaddign: false,
+                  iconColor: Colors.white,
+                  textColor: Colors.white,
+                  icon: Icons.info_outline,
+                  iconFirst: false,
+                  text: 'О Нас',
+                  onTap: () {},
+                )
+              : SizedBox(height: ScreenSize.sectionIndent,),
           child: ModalProgressHUD(
               inAsyncCall: isLoading,
               progressIndicator: CupertinoActivityIndicator(),

@@ -53,9 +53,7 @@ class ConnectionsCheck {
   }
 
   void _processRequestQuery() {
-    _requestsQuery.forEach((element) {
-      element();
-    });
+    _requestsQuery.forEach((element) => element());
   }
 
   void disposeStream() => controller.close();

@@ -31,6 +31,7 @@ class Account {
   Future<bool> setUser() async {
     _user = await Api.instance.getUser();
     state = _user.isStaff ? AccountState.STAFF : AccountState.USER;
+    Api.instance.initialize();
     return _user != null;
   }
 }

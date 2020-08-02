@@ -13,10 +13,13 @@ class BonusCard extends StatelessWidget {
         useRootNavigator:false,
         builder: (context) => CupertinoAlertDialog(
               title: Text('Отсканиурйте QR код'),
-              content: Image.network(
-                'https://optimakomp.ru/wp-content/uploads/2018/02/qrcode.jpg',
-                height: ScreenSize.qrCodeHeight,
-                width: ScreenSize.width,
+              content: Container(
+                padding: EdgeInsets.only(top: 25),
+                child: Image.network(
+                  'https://optimakomp.ru/wp-content/uploads/2018/02/qrcode.jpg',
+                  height: ScreenSize.qrCodeHeight,
+                  width: ScreenSize.width,
+                ),
               ),
             ));
   }

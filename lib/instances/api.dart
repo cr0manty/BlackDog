@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/models/news.dart';
 import 'package:black_dog/models/user.dart';
@@ -36,7 +37,9 @@ class LogInterceptor implements InterceptorContract {
 
 class Api {
   static const String _base_url = 'https://cv.faifly.com';
+  static const String _base_api = 'https://cv.faifly.com/api/v1';
   bool init = false;
+
   Api._internal();
 
   static final Api _instance = Api._internal();
@@ -51,18 +54,28 @@ class Api {
       interceptors: [LogInterceptor()], requestTimeout: Duration(seconds: 30));
 
   Future initialize() async {
-    getNews();
-    init = true;
+    if (Account.instance.state != AccountState.GUEST) {
+      getNews();
+      init = true;
+    }
   }
-  final StreamController<bool> _apiChange =
-  StreamController<bool>.broadcast();
+
+  final StreamController<bool> _apiChange = StreamController<bool>.broadcast();
 
   Stream<bool> get apiChange => _apiChange.stream;
 
-  Map<String, String> _headerAuth() {
-    return {
-      'Authorization': 'Token ${SharedPrefs.getToken()}',
-    };
+  Map<String, String> _setHeaders({bool useToken = true, useJson = false}) {
+    Map<String, String> headers = {};
+
+    if (useToken) {
+      headers['Authorization'] = 'Token ${SharedPrefs.getToken()}';
+    }
+
+    if (useJson) {
+      headers['Content-Type'] = "application/json";
+    }
+
+    return headers;
   }
 
   Future staffScanQRCode(String url) async {
@@ -89,12 +102,26 @@ class Api {
     return body;
   }
 
+  Future registartion(Map content) async {
+    final response = await _client.post(_base_url + '/register/',
+        body: json.encode(content),
+        headers: _setHeaders(useJson: true, useToken: false));
+
+    Map body = json.decode(response.body);
+    if (response.statusCode == 200) {
+      return {'result': true};
+    }
+    body['result'] = false;
+    _apiChange.add(true);
+    return body;
+  }
+
   Future getUser() async {
-    final response = await _client.get(_base_url + '/api/v1/user/profile',
-        headers: _headerAuth());
+    final response =
+        await _client.get(_base_api + '/user/profile', headers: _setHeaders());
     if (response.statusCode == 200) {
       Map body = json.decode(response.body);
-      User user =  User.fromJson(body);
+      User user = User.fromJson(body);
       if (user != null ?? false) {
         SharedPrefs.saveUser(user);
       }
@@ -104,7 +131,7 @@ class Api {
 
   Future getNews() async {
     final response = await _client.get(_base_url + '/api/v1/posts/list',
-        headers: _headerAuth());
+        headers: _setHeaders());
 
     if (response.statusCode == 200) {
       List body = json.decode(response.body) as List;
@@ -121,7 +148,6 @@ class Api {
     }
 
     String documentDir = (await getApplicationDocumentsDirectory()).path;
-
   }
 
   void dispose() {
