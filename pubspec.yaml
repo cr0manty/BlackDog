@@ -36,6 +36,7 @@ dependencies:
   http_interceptor: ^0.3.2
   flutter_sfsymbols: ^1.0.0
   flutter_html: ^1.0.0
+  path_provider: ^1.6.11
 
 dev_dependencies:
   flutter_test:

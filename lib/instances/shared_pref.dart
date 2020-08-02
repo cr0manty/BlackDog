@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 abstract class SharedPrefs {
   static const _currentUser = 'CurrentUser';
   static const _currentToken = 'CurrentToken';
+  static const _qrCode = 'QRCode';
 
   static SharedPreferences _prefs;
 
@@ -32,6 +33,14 @@ abstract class SharedPrefs {
 
   static String getToken() {
     return _prefs.getString(_currentToken);
+  }
+
+  static String getQRCode() {
+    return _prefs.getString(_qrCode);
+  }
+
+  static void setQRCode(String qrCode) {
+    _prefs.setString(_qrCode, qrCode);
   }
 
   static User getUser() {

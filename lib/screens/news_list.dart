@@ -36,41 +36,43 @@ class _NewsListState extends State<NewsList> {
 
   Widget _buildNews(int index) {
     final news = Api.instance.news[index];
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 15),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          Container(
-            width: ScreenSize.newsBlockWidth,
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  news.capitalizeTitle,
-                  style: TextStyle(fontSize: 20, color: Colors.white),
-                ),
-                SizedBox(height: ScreenSize.sectionIndent / 2),
-                Text(
-                  news.body,
-                  style: TextStyle(fontSize: 14, color: Colors.white),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 5,
-                )
-              ],
+    return GestureDetector(
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 15),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            Container(
+              width: ScreenSize.newsBlockWidth,
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    news.capitalizeTitle,
+                    style: TextStyle(fontSize: 20, color: Colors.white),
+                  ),
+                  SizedBox(height: ScreenSize.sectionIndent / 2),
+                  Text(
+                    news.shortContent ?? '',
+                    style: TextStyle(fontSize: 14, color: Colors.white),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 5,
+                  )
+                ],
+              ),
             ),
-          ),
-          Container(
-            width: ScreenSize.newsListBlockSize,
-            height: ScreenSize.newsListBlockSize,
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.network(news.previewImage, fit: BoxFit.cover)),
-          )
-        ],
+            Container(
+              width: ScreenSize.newsListBlockSize,
+              height: ScreenSize.newsListBlockSize,
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.network(news.previewImage, fit: BoxFit.cover)),
+            )
+          ],
+        ),
       ),
     );
   }

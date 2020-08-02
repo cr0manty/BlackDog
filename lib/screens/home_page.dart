@@ -15,6 +15,7 @@ import 'package:black_dog/widgets/route_button.dart';
 import 'package:black_dog/widgets/user_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import '../instances/account.dart';
@@ -80,6 +81,7 @@ class _HomePageState extends State<HomePage> {
         onWillPop: () async => false,
         child: PageScaffold(
           action: RouteButton(
+            usePaddign: false,
             iconColor: Colors.white,
             textColor: Colors.white,
             icon: Icons.info_outline,
@@ -261,35 +263,37 @@ class _HomePageState extends State<HomePage> {
       return Container(width: 8);
 
     News news = Api.instance.news[index - 1];
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(9),
-        color: Colors.grey.withOpacity(0.4),
-      ),
-      margin: EdgeInsets.symmetric(horizontal: 10),
-      height: ScreenSize.newsBlockHeight,
-      width: ScreenSize.newsBlockWidth,
-      padding: EdgeInsets.all(10),
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          Text(
-            news.capitalizeTitle,
-            style: TextStyle(fontSize: 16),
-          ),
-          SizedBox(height: 10),
-          Text(
-            news.body,
-            maxLines: 2,
-            style: TextStyle(fontSize: 13),
-            overflow: TextOverflow.ellipsis,
-          ),
-          SizedBox(height: 10),
-          Expanded(
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.network(news.previewImage, fit: BoxFit.fill)))
-        ],
+    return GestureDetector(
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(9),
+          color: Colors.grey.withOpacity(0.4),
+        ),
+        margin: EdgeInsets.symmetric(horizontal: 10),
+        height: ScreenSize.newsBlockHeight,
+        width: ScreenSize.newsBlockWidth,
+        padding: EdgeInsets.all(10),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            Text(
+              news.capitalizeTitle,
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(height: 10),
+            Text(
+              news.shortContent ?? '',
+              maxLines: 2,
+              style: TextStyle(fontSize: 13),
+              overflow: TextOverflow.ellipsis,
+            ),
+            SizedBox(height: 10),
+            Expanded(
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.network(news.previewImage, fit: BoxFit.cover)))
+          ],
+        ),
       ),
     );
   }
@@ -297,7 +301,8 @@ class _HomePageState extends State<HomePage> {
   Widget _buildMenu(int index) {
     MenuCategory category = _categories[0 /*index - 1*/
         ];
-    return Container(
+    return GestureDetector(
+        child: Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(9),
         color: Colors.grey.withOpacity(0.4),
@@ -333,12 +338,12 @@ class _HomePageState extends State<HomePage> {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   category.capitalizeTitle,
-                  style: TextStyle(fontSize: 16, color: Colors.black),
+                  style: TextStyle(fontSize: 20, color: Colors.black),
                 ))
           ],
         ),
       ),
-    );
+    ));
   }
 
   @override

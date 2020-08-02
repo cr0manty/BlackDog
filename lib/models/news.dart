@@ -12,9 +12,10 @@ class News {
   int id;
   String title;
   String body;
+  String shortContent;
   String previewImage;
 
-  News({this.body, this.title, this.previewImage, this.id});
+  News({this.body, this.title, this.previewImage, this.shortContent, this.id});
 
   String get capitalizeTitle {
     if (title == null || title.isEmpty) {
@@ -25,14 +26,15 @@ class News {
   }
 
   factory News.fromJson(Map<String, dynamic> json) => new News(
-        title: json['title'],
-        body: json['short_content'],
-        previewImage: json['first_image'],
-      );
+      title: json['title'],
+      body: json['content'],
+      previewImage: json['first_image'],
+      shortContent: json['short_content']);
 
   Map<String, dynamic> toJson() => {
         'first_image': previewImage,
-        'short_content': body,
+        'short_content': shortContent,
         'title': title,
+        'content': body
       };
 }

@@ -10,6 +10,7 @@ class RouteButton extends StatelessWidget {
   final Color iconColor;
   final bool iconFirst;
   final double _indent;
+  final bool usePaddign;
 
   RouteButton(
       {this.icon,
@@ -18,7 +19,8 @@ class RouteButton extends StatelessWidget {
       this.color,
       this.textColor,
       this.iconColor,
-      this.iconFirst = true})
+      this.iconFirst = true,
+      this.usePaddign = true})
       : assert(icon != null || text != null),
         _indent = icon != null && text != null ? 5 : 0;
 
@@ -75,7 +77,9 @@ class RouteButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(15),
           color: color ?? Colors.transparent,
         ),
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        padding: usePaddign
+            ? EdgeInsets.symmetric(horizontal: 10, vertical: 5)
+            : EdgeInsets.zero,
         child: Row(
           children: iconFirst ? _iconFirstBuild() : _iconNotFirstWidget(),
         ),

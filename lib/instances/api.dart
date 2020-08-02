@@ -6,6 +6,7 @@ import 'package:black_dog/models/news.dart';
 import 'package:black_dog/models/user.dart';
 import 'package:http/http.dart';
 import 'package:http_interceptor/http_interceptor.dart';
+import 'package:path_provider/path_provider.dart';
 
 class LogInterceptor implements InterceptorContract {
   void printWrapped(String text) {
@@ -84,6 +85,7 @@ class Api {
       return {'result': true};
     }
     body['result'] = false;
+    _apiChange.add(true);
     return body;
   }
 
@@ -111,6 +113,15 @@ class Api {
       });
       _apiChange.add(true);
     }
+  }
+
+  Future saveQRCode(String url) async {
+    if (url == null || url.isEmpty) {
+      return;
+    }
+
+    String documentDir = (await getApplicationDocumentsDirectory()).path;
+
   }
 
   void dispose() {
