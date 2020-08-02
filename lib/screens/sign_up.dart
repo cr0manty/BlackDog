@@ -110,6 +110,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                     controller: _emailController,
                                     hintText: 'Email',
                                     inputAction: TextInputAction.continueAction,
+                                    keyboardType: TextInputType.emailAddress,
                                   ))),
                               _showValidateError(key: 'email'),
                               Align(
@@ -207,7 +208,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                       child: Text(
                                         'Зарегестрироваться',
                                         style: TextStyle(
-                                            fontSize: 22, color: Colors.black),
+                                            fontSize: 20, color: Colors.black),
                                       )),
                                   CupertinoButton(
                                       onPressed: Navigator.of(context).pop,

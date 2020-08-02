@@ -87,6 +87,7 @@ class _SignInPageState extends State<SignInPage> {
                                   child: Container(
                                       child: TextInput(
                                     controller: _emailFilter,
+                                    keyboardType: TextInputType.emailAddress,
                                     hintText: 'Email',
                                     inputAction: TextInputAction.continueAction,
                                   ))),
@@ -112,7 +113,8 @@ class _SignInPageState extends State<SignInPage> {
                                     ),
                                     inputAction: TextInputAction.done,
                                   ))),
-                              _showValidateError(key: 'password', bottomPadding: false),
+                              _showValidateError(
+                                  key: 'password', bottomPadding: false),
                               Container(
                                 alignment: Alignment.centerRight,
                                 child: CupertinoButton(
