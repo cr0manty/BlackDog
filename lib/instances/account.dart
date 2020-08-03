@@ -18,7 +18,7 @@ class Account {
 
   String get name => _user.firstName;
 
-  Future init() async {
+  Future initialize() async {
     _user = SharedPrefs.getUser();
 
     if (_user != null) {

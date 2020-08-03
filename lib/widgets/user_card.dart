@@ -1,3 +1,4 @@
+import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/size.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +25,7 @@ class UserCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(9),
-          color: Colors.grey.withOpacity(0.4),
+          color: HexColor.lightElement,
         ),
         margin: EdgeInsets.only(top: isStaff ? 0 : 15, left: 15, right: 15),
         padding: EdgeInsets.all(10),
@@ -39,7 +40,10 @@ class UserCard extends StatelessWidget {
                 onPressed: onPressed,
                 child: Text(
                   username,
-                  style: TextStyle(color: Colors.white, fontSize: 24),
+                  style: Theme.of(context)
+                      .textTheme
+                      .subtitle1
+                      .copyWith(color: HexColor.darkElement),
                 ),
               ),
               trailing ?? Container()

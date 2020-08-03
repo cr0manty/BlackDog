@@ -1,6 +1,8 @@
 import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/screens/sign_in.dart';
+import 'package:black_dog/utils/hex_color.dart';
+import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/widgets/bonus_card.dart';
 import 'package:black_dog/widgets/bottom_route.dart';
 import 'package:black_dog/widgets/edit_button.dart';
@@ -22,13 +24,13 @@ class _UserPageState extends State<UserPage> {
     return PageScaffold(
         leading: RouteButton(
           icon: SFSymbols.chevron_left,
-          text: 'На Главную',
-          color: Colors.white,
+          text: AppLocalizations.of(context).translate('home'),
+          color: HexColor.lightElement,
           onTap: Navigator.of(context).pop,
         ),
         action: RouteButton(
-          text: 'Выход',
-          color: Colors.white,
+          text: AppLocalizations.of(context).translate('logout'),
+          color: HexColor.lightElement,
           onTap: () {
             SharedPrefs.logout();
             Navigator.of(context, rootNavigator: true)

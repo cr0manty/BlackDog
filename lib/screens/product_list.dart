@@ -1,12 +1,14 @@
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/models/menu_item.dart';
+import 'package:black_dog/screens/product_detail.dart';
+import 'package:black_dog/utils/hex_color.dart';
+import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/utils/size.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
-import 'package:html/dom.dart' as dom;
 
 class ProductList extends StatefulWidget {
   final String title;
@@ -40,29 +42,32 @@ class _ProductListState extends State<ProductList> {
       alwaysNavigation: true,
       leading: RouteButton(
         icon: SFSymbols.chevron_left,
-        text: 'На Главную',
+        text: AppLocalizations.of(context).translate('home'),
         color: Colors.white,
         onTap: Navigator.of(context).pop,
       ),
       title: Text(
         widget.title,
-        style: TextStyle(fontSize: 30),
+        style: Theme.of(context).textTheme.caption,
       ),
       child: Container(
         height: ScreenSize.height,
         margin: EdgeInsets.symmetric(horizontal: 16),
         child: ListView(
           shrinkWrap: true,
-          children: List.generate(_menu.length, _buildNews),
+          children: List.generate(_menu.length, _buildProduct),
         ),
       ),
     );
   }
 
-  Widget _buildNews(int index) {
+  Widget _buildProduct(int index) {
     MenuItem menu = _menu[index];
     return GestureDetector(
+      onTap: () => Navigator.of(context).push(CupertinoPageRoute(
+          builder: (BuildContext context) => ProductDetail(product: menu))),
       child: Container(
+        color: Colors.transparent,
         margin: EdgeInsets.symmetric(vertical: 15),
         child: Row(
           mainAxisSize: MainAxisSize.max,
@@ -74,7 +79,9 @@ class _ProductListState extends State<ProductList> {
                   borderRadius: BorderRadius.circular(10),
                   child: menu.image != null
                       ? Image.network(menu.image, fit: BoxFit.cover)
-                      : Container(color: Colors.grey,)),
+                      : Container(
+                          color: HexColor.semiElement
+                        )),
             ),
             Container(
               margin: EdgeInsets.only(left: 20),
@@ -85,12 +92,12 @@ class _ProductListState extends State<ProductList> {
                 children: <Widget>[
                   Text(
                     menu.capitalizeTitle,
-                    style: TextStyle(fontSize: 20, color: Colors.white),
+                    style: Theme.of(context).textTheme.headline1,
                   ),
                   SizedBox(height: ScreenSize.sectionIndent / 2),
                   Text(
                     menu.priceWithCurrency ?? '',
-                    style: TextStyle(fontSize: 14, color: Colors.white),
+                    style: Theme.of(context).textTheme.subtitle1,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 5,
                   )

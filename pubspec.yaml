@@ -37,6 +37,8 @@ dependencies:
   flutter_sfsymbols: ^1.0.0
   flutter_html: ^1.0.0
   path_provider: ^1.6.11
+  flutter_localizations:
+    sdk: flutter
 
 
 dev_dependencies:
@@ -54,11 +56,20 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  assets:
+    - assets/lang/
+
   fonts:
     - family: sficonsets
       fonts:
         - asset: packages/flutter_sfsymbols/fonts/sficonsets.ttf
 
+    - family: Century-Gothic
+      fonts:
+        - asset: assets/fonts/century_gothic.ttf
+    - family: Lemon-Milk
+      fonts:
+        - asset: assets/fonts/lemon_milk.ttf
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

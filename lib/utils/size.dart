@@ -31,4 +31,6 @@ abstract class ScreenSize {
   static double get qrCodeHeight => height * 0.3;
 
   static double get menuItemSize => height * 0.1;
+
+  static double get menuItemPhotoSize => height * 0.45;
 }

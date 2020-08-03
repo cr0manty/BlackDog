@@ -1,3 +1,4 @@
+import 'package:black_dog/utils/hex_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 
@@ -25,11 +26,11 @@ class _EditButtonState extends State<EditButton> {
         height: 31,
         decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: Colors.white.withOpacity(buttonOpacity)),
+            color: HexColor.darkElement.withOpacity(buttonOpacity)),
         child: Icon(
           SFSymbols.pencil,
           size: 25,
-          color: Colors.black.withOpacity(buttonOpacity),
+          color: HexColor.lightElement.withOpacity(buttonOpacity),
         ),
       ),
     );

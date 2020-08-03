@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:black_dog/instances/shared_pref.dart';
+import 'package:black_dog/utils/hex_color.dart';
+import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/utils/size.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +18,7 @@ class BonusCard extends StatelessWidget {
         context: context,
         useRootNavigator: false,
         builder: (context) => CupertinoAlertDialog(
-              title: Text('Отсканиурйте QR код'),
+              title: Text(AppLocalizations.of(context).translate('home')),
               content: Container(
                 padding: EdgeInsets.only(top: 25),
                 child: Image.file(
@@ -37,7 +39,8 @@ class BonusCard extends StatelessWidget {
             child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(9),
-                  color: Colors.grey.withOpacity(0.4),
+                  border: Border.all(color: Colors.black, width: 1),
+                  color: HexColor.lightElement,
                 ),
                 height: ScreenSize.scanQRCodeSize,
                 padding: EdgeInsets.all(10)));

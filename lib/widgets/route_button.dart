@@ -1,3 +1,4 @@
+import 'package:black_dog/utils/hex_color.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -10,21 +11,21 @@ class RouteButton extends StatelessWidget {
   final Color iconColor;
   final bool iconFirst;
   final double _indent;
-  final bool usePaddign;
+  final EdgeInsets padding;
 
-  RouteButton(
-      {this.icon,
-      this.text,
-      this.onTap,
-      this.color,
-      this.textColor,
-      this.iconColor,
-      this.iconFirst = true,
-      this.usePaddign = true})
-      : assert(icon != null || text != null),
+  RouteButton({
+    this.icon,
+    this.text,
+    this.onTap,
+    this.color,
+    this.textColor,
+    this.iconColor,
+    this.padding,
+    this.iconFirst = true,
+  })  : assert(icon != null || text != null),
         _indent = icon != null && text != null ? 5 : 0;
 
-  List<Widget> _iconFirstBuild() {
+  List<Widget> _iconFirstBuild(BuildContext context) {
     return <Widget>[
       icon != null
           ? Icon(
@@ -40,18 +41,24 @@ class RouteButton extends StatelessWidget {
       text != null
           ? Text(
               text,
-              style: TextStyle(fontSize: 15, color: textColor ?? Colors.black),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText2
+                  .copyWith(color: textColor ?? HexColor.darkElement),
             )
           : Container()
     ];
   }
 
-  List<Widget> _iconNotFirstWidget() {
+  List<Widget> _iconNotFirstWidget(BuildContext context) {
     return <Widget>[
       text != null
           ? Text(
               text,
-              style: TextStyle(fontSize: 15, color: textColor ?? Colors.black),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText2
+                  .copyWith(color: textColor ?? HexColor.darkElement),
             )
           : Container(),
       SizedBox(width: _indent),
@@ -59,7 +66,7 @@ class RouteButton extends StatelessWidget {
           ? Icon(
               icon,
               size: 20,
-              color: iconColor ?? Colors.black,
+              color: iconColor ?? HexColor.darkElement,
             )
           : Container(
               height: 17,
@@ -77,11 +84,11 @@ class RouteButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(15),
           color: color ?? Colors.transparent,
         ),
-        padding: usePaddign
-            ? EdgeInsets.symmetric(horizontal: 10, vertical: 5)
-            : EdgeInsets.zero,
+        padding: padding ?? EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         child: Row(
-          children: iconFirst ? _iconFirstBuild() : _iconNotFirstWidget(),
+          children: iconFirst
+              ? _iconFirstBuild(context)
+              : _iconNotFirstWidget(context),
         ),
       ),
     );

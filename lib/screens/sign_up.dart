@@ -1,4 +1,5 @@
 import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/utils/size.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/screens/home_page.dart';
@@ -77,8 +78,8 @@ class _SignUpPageState extends State<SignUpPage> {
                                 top: ScreenSize.sectionIndent,
                                 bottom: ScreenSize.sectionIndent * 2),
                             child: Text(
-                              'Регистрация',
-                              style: TextStyle(fontSize: 30),
+                              AppLocalizations.of(context).translate('register'),
+                              style: Theme.of(context).textTheme.caption,
                             ),
                           ),
                           Column(
@@ -90,7 +91,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                   child: Container(
                                       child: TextInput(
                                     controller: _nameController,
-                                    hintText: 'Имя',
+                                    hintText: AppLocalizations.of(context).translate('first_name'),
                                     inputAction: TextInputAction.continueAction,
                                   ))),
                               _showValidateError(key: 'first_name'),
@@ -99,7 +100,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                   child: Container(
                                       child: TextInput(
                                     controller: _phoneController,
-                                    hintText: 'Номер',
+                                    hintText: AppLocalizations.of(context).translate('phone'),
                                     inputAction: TextInputAction.continueAction,
                                   ))),
                               _showValidateError(key: 'phone'),
@@ -108,7 +109,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                   child: Container(
                                       child: TextInput(
                                     controller: _emailController,
-                                    hintText: 'Email',
+                                    hintText: AppLocalizations.of(context).translate('email'),
                                     inputAction: TextInputAction.continueAction,
                                     keyboardType: TextInputType.emailAddress,
                                   ))),
@@ -119,13 +120,13 @@ class _SignUpPageState extends State<SignUpPage> {
                                       child: TextInput(
                                     obscureText: _obscureText,
                                     controller: _password1Controller,
-                                    hintText: 'Пароль',
+                                    hintText: AppLocalizations.of(context).translate('password'),
                                     suffixIcon: GestureDetector(
                                       child: Icon(
                                           _obscureText
                                               ? Icons.remove_red_eye
                                               : Icons.visibility_off,
-                                          color: HexColor('#6c6c6c')),
+                                          color: HexColor.darkElement),
                                       onTap: () {
                                         setState(() {
                                           _obscureText = !_obscureText;
@@ -141,13 +142,13 @@ class _SignUpPageState extends State<SignUpPage> {
                                       child: TextInput(
                                     obscureText: _obscureTextConfirm,
                                     controller: _password2Controller,
-                                    hintText: 'Подтвердите Пароль',
+                                    hintText: AppLocalizations.of(context).translate('confirm_password'),
                                     suffixIcon: GestureDetector(
                                       child: Icon(
                                           _obscureTextConfirm
                                               ? Icons.remove_red_eye
                                               : Icons.visibility_off,
-                                          color: HexColor('#6c6c6c')),
+                                          color: HexColor.darkElement),
                                       onTap: () {
                                         setState(() {
                                           _obscureTextConfirm =
@@ -157,7 +158,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                     ),
                                     validator: (String text) {
                                       if (text != _password1Controller.text) {
-                                        return 'Пароли не совпадают!';
+                                        return AppLocalizations.of(context).translate('password_mismatch');
                                       }
                                       return null;
                                     },
@@ -175,14 +176,14 @@ class _SignUpPageState extends State<SignUpPage> {
                                       decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(9),
-                                          color: Colors.white),
+                                          color: HexColor.lightElement),
                                       child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: <Widget>[
                                           Text(
                                             Utils.dateFormat(selectedDate) ??
-                                                'Дата Рождения',
+                                                AppLocalizations.of(context).translate('birth_date'),
                                             style: TextStyle(
                                                 color: Colors.black,
                                                 fontSize: 18),
@@ -204,16 +205,16 @@ class _SignUpPageState extends State<SignUpPage> {
                                 children: <Widget>[
                                   CupertinoButton(
                                       onPressed: registerClick,
-                                      color: Colors.white,
+                                      color: HexColor.lightElement,
                                       child: Text(
-                                        'Зарегестрироваться',
+                                        AppLocalizations.of(context).translate('register'),
                                         style: TextStyle(
                                             fontSize: 20, color: Colors.black),
                                       )),
                                   CupertinoButton(
                                       onPressed: Navigator.of(context).pop,
                                       child: Text(
-                                        'Уже есть аккаунт? Войдите.',
+                                        AppLocalizations.of(context).translate('already_have_account'),
                                         style: TextStyle(
                                             fontSize: 14,
                                             color:

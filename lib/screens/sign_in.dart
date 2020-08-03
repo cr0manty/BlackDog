@@ -1,6 +1,7 @@
 import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/screens/sign_up.dart';
+import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/utils/size.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/screens/home_page.dart';
@@ -61,111 +62,118 @@ class _SignInPageState extends State<SignInPage> {
                 inAsyncCall: isLoading,
                 child: SafeArea(
                   child: Form(
-                    key: _formKey,
-                    child: Container(
-                      padding: EdgeInsets.all(16),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Container(
-                            alignment: Alignment.topCenter,
-                            padding: EdgeInsets.only(
-                                top: ScreenSize.elementIndentHeight),
-                            child: Text(
-                              'Вход',
-                              style: TextStyle(fontSize: 30),
-                            ),
-                          ),
-                          Column(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Align(
-                                  alignment: Alignment.center,
-                                  child: Container(
-                                      child: TextInput(
-                                    controller: _emailFilter,
-                                    keyboardType: TextInputType.emailAddress,
-                                    hintText: 'Email',
-                                    inputAction: TextInputAction.continueAction,
-                                  ))),
-                              _showValidateError(key: 'email'),
-                              Align(
-                                  alignment: Alignment.center,
-                                  child: Container(
-                                      child: TextInput(
-                                    obscureText: _obscureText,
-                                    controller: _passwordFilter,
-                                    hintText: 'Пароль',
-                                    suffixIcon: GestureDetector(
-                                      child: Icon(
-                                          _obscureText
-                                              ? Icons.remove_red_eye
-                                              : Icons.visibility_off,
-                                          color: HexColor('#6c6c6c')),
-                                      onTap: () {
-                                        setState(() {
-                                          _obscureText = !_obscureText;
-                                        });
-                                      },
-                                    ),
-                                    inputAction: TextInputAction.done,
-                                  ))),
-                              _showValidateError(
-                                  key: 'password', bottomPadding: false),
-                              Container(
-                                alignment: Alignment.centerRight,
-                                child: CupertinoButton(
-                                    padding: EdgeInsets.only(
-                                        top: 8, bottom: 8, left: 8),
-                                    onPressed: () {},
-                                    child: Text(
-                                      'Забыли пароль?',
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.white.withOpacity(0.6)),
-                                    )),
-                              ),
-                            ],
-                          ),
-                          Container(
-                              alignment: Alignment.bottomCenter,
-                              padding: EdgeInsets.only(
-                                  bottom: ScreenSize.elementIndentHeight),
-                              child: Column(
-                                children: <Widget>[
-                                  SizedBox(
-                                    width: ScreenSize.width - 64,
-                                    child: CupertinoButton(
-                                        onPressed: loginClick,
-                                        color: Colors.white,
-                                        child: Text(
-                                          'Вход',
-                                          style: TextStyle(
-                                              fontSize: 22,
-                                              color: Colors.black),
-                                        )),
+                      key: _formKey,
+                      child: Container(
+                        padding: EdgeInsets.all(16),
+                        child: CustomScrollView(slivers: [
+                          SliverFillRemaining(
+                            hasScrollBody: false,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Container(
+                                  alignment: Alignment.topCenter,
+                                  padding: EdgeInsets.only(
+                                      top: ScreenSize.elementIndentHeight),
+                                  child: Text(
+                                    AppLocalizations.of(context).translate('sign_in'),
+                                    style: Theme.of(context).textTheme.caption,
                                   ),
-                                  CupertinoButton(
-                                      onPressed: () {
-                                        Navigator.of(context).push(
-                                            BottomRoute(page: SignUpPage()));
-                                      },
-                                      child: Text(
-                                        'Нет аккаунта? Зарегистрируйтесь.',
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            color:
-                                                Colors.white.withOpacity(0.6)),
-                                      )),
-                                ],
-                              )),
-                        ],
-                      ),
-                    ),
-                  ),
+                                ),
+                                Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Align(
+                                        alignment: Alignment.center,
+                                        child: Container(
+                                            child: TextInput(
+                                          controller: _emailFilter,
+                                          keyboardType:
+                                              TextInputType.emailAddress,
+                                          hintText: AppLocalizations.of(context).translate('email'),
+                                          inputAction:
+                                              TextInputAction.continueAction,
+                                        ))),
+                                    _showValidateError(key: 'email'),
+                                    Align(
+                                        alignment: Alignment.center,
+                                        child: Container(
+                                            child: TextInput(
+                                          obscureText: _obscureText,
+                                          controller: _passwordFilter,
+                                          hintText: AppLocalizations.of(context).translate('password'),
+                                          suffixIcon: GestureDetector(
+                                            child: Icon(
+                                                _obscureText
+                                                    ? Icons.remove_red_eye
+                                                    : Icons.visibility_off,
+                                                color: HexColor.darkElement),
+                                            onTap: () {
+                                              setState(() {
+                                                _obscureText = !_obscureText;
+                                              });
+                                            },
+                                          ),
+                                          inputAction: TextInputAction.done,
+                                        ))),
+                                    _showValidateError(
+                                        key: 'password', bottomPadding: false),
+                                    Container(
+                                      alignment: Alignment.centerRight,
+                                      child: CupertinoButton(
+                                          padding: EdgeInsets.only(
+                                              top: 8, bottom: 8, left: 8),
+                                          onPressed: () {},
+                                          child: Text(
+                                            AppLocalizations.of(context).translate('forgot_password'),
+                                            style: Theme.of(context).textTheme.bodyText2,
+                                          )),
+                                    ),
+                                  ],
+                                ),
+                                Container(
+                                    alignment: Alignment.bottomCenter,
+                                    padding: EdgeInsets.only(
+                                        bottom: ScreenSize.elementIndentHeight),
+                                    child: Column(
+                                      children: <Widget>[
+                                        SizedBox(
+                                          width: ScreenSize.width - 64,
+                                          child: CupertinoButton(
+                                              onPressed: loginClick,
+                                              color: HexColor.lightElement,
+                                              child: Text(
+                                                AppLocalizations.of(context).translate('sign_in'),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .caption
+                                                    .copyWith(
+                                                        color: HexColor
+                                                            .darkElement),
+                                              )),
+                                        ),
+                                        CupertinoButton(
+                                            onPressed: () {
+                                              Navigator.of(context).push(
+                                                  BottomRoute(
+                                                      page: SignUpPage()));
+                                            },
+                                            child: Text(
+                                              AppLocalizations.of(context).translate('no_account'),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText2,
+                                            )),
+                                      ],
+                                    )),
+                              ],
+                            ),
+                          )
+                        ]),
+                      )),
                 ))));
   }
 

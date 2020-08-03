@@ -7,6 +7,7 @@ import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/models/menu_category.dart';
 import 'package:black_dog/models/menu_item.dart';
 import 'package:black_dog/models/news.dart';
+import 'package:black_dog/models/restaurant.dart';
 import 'package:black_dog/models/user.dart';
 import 'package:http/http.dart';
 import 'package:http_interceptor/http_interceptor.dart';
@@ -64,6 +65,7 @@ class Api {
       getNews();
       getCategories();
       getUser();
+      getAboutUs();
       init = true;
     }
   }
@@ -147,6 +149,7 @@ class Api {
 
     if (response.statusCode == 200) {
       List body = json.decode(response.body) as List;
+      _news = [];
       body.forEach((value) {
         News news = News.fromJson(value);
         if (news != null) {
@@ -163,6 +166,7 @@ class Api {
 
     if (response.statusCode == 200) {
       List body = json.decode(response.body) as List;
+      _categories = [];
       body.forEach((value) {
         MenuCategory category = MenuCategory.fromJson(value);
         if (category != null) {
@@ -207,6 +211,20 @@ class Api {
       await qrCode.writeAsBytes(response.bodyBytes);
     }
     SharedPrefs.saveQRCode(qrCode.path);
+  }
+
+  Future getAboutUs() async {
+    Response response = await _client.get(_base_api + '/restaurant/config',
+        headers: _setHeaders()); //todo delete headers
+
+    if (response.statusCode == 200) {
+      Map body = json.decode(response.body) as Map;
+      Restaurant restaurant = Restaurant.fromJson(body);
+      SharedPrefs.saveRestaurant(restaurant);
+      _apiChange.add(true);
+      return restaurant;
+    }
+    return null;
   }
 
   void dispose() {

@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:barcode_scan/platform_wrapper.dart';
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/screens/product_list.dart';
+import 'package:black_dog/utils/hex_color.dart';
+import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/utils/size.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/screens/user_page.dart';
@@ -14,10 +16,12 @@ import 'package:black_dog/widgets/route_button.dart';
 import 'package:black_dog/widgets/user_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import '../instances/account.dart';
 import '../instances/shared_pref.dart';
+import 'about_us.dart';
 import 'news_list.dart';
 import 'sign_in.dart';
 
@@ -41,8 +45,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    super.initState();
     _apiChange = Api.instance.apiChange.listen((event) => setState(() {}));
+    super.initState();
   }
 
   void _onScanTap() async {
@@ -74,13 +78,14 @@ class _HomePageState extends State<HomePage> {
         child: PageScaffold(
           action: Account.instance.state != AccountState.STAFF
               ? RouteButton(
-                  usePaddign: false,
-                  iconColor: Colors.white,
-                  textColor: Colors.white,
+                  padding: EdgeInsets.only(top: 5),
+                  iconColor: HexColor.lightElement,
+                  textColor: HexColor.lightElement,
                   icon: Icons.info_outline,
                   iconFirst: false,
-                  text: 'О Нас',
-                  onTap: () {},
+                  text: AppLocalizations.of(context).translate('about_us'),
+                  onTap: () => Navigator.of(context)
+                      .push(BottomRoute(page: AboutUsPage())),
                 )
               : SizedBox(
                   height: ScreenSize.sectionIndent,
@@ -107,16 +112,16 @@ class _HomePageState extends State<HomePage> {
           alignment: Alignment.center,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(9),
-            color: Colors.grey.withOpacity(0.4),
+            color: HexColor.lightElement,
           ),
           height: ScreenSize.scanQRCodeSize,
           width: ScreenSize.scanQRCodeSize,
           padding: EdgeInsets.all(10),
           child: Icon(
-            Icons.photo_camera,
+            SFSymbols.camera_viewfinder,
             size: ScreenSize.scanQRCodeIconSize,
-            color: Colors.white.withOpacity(scanIconOpacity),
-          ), // TODO change to svg
+            color: HexColor.lightElement.withOpacity(scanIconOpacity),
+          ),
         ));
   }
 
@@ -135,7 +140,8 @@ class _HomePageState extends State<HomePage> {
           isStaff: true,
           onPressed: null,
           username: Account.instance.name,
-          trailing: _actionButton('Выйти', onTap: () {
+          trailing: _actionButton(
+              AppLocalizations.of(context).translate('logout'), onTap: () {
             SharedPrefs.logout();
             Navigator.of(context, rootNavigator: true)
                 .push(BottomRoute(page: SignInPage()));
@@ -159,7 +165,7 @@ class _HomePageState extends State<HomePage> {
         ),
         SizedBox(height: ScreenSize.sectionIndent - 20),
         _buildSection(
-          'Новости',
+          AppLocalizations.of(context).translate('news'),
           SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Api.instance.news.length > 0
@@ -175,18 +181,20 @@ class _HomePageState extends State<HomePage> {
                       width: ScreenSize.width,
                       child: Center(
                           child: Text(
-                        'Новостей еще нет',
-                        style: TextStyle(fontSize: 20),
+                        AppLocalizations.of(context).translate('no_news'),
+                        style: Theme.of(context).textTheme.subtitle1,
                       )),
                     )),
-          subWidgetText: Api.instance.news.length > 0 ? 'Больше' : null,
+          subWidgetText: Api.instance.news.length > 0
+              ? AppLocalizations.of(context).translate('more')
+              : null,
           subWidgetAction: () => Navigator.of(context).push(
             CupertinoPageRoute(builder: (context) => NewsList()),
           ),
         ),
         SizedBox(height: ScreenSize.sectionIndent / 1.5),
         _buildSection(
-            'Меню',
+            AppLocalizations.of(context).translate('menu'),
             SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Api.instance.categories.length > 0
@@ -199,8 +207,8 @@ class _HomePageState extends State<HomePage> {
                         width: ScreenSize.width,
                         child: Center(
                             child: Text(
-                          'Меню еще нет',
-                          style: TextStyle(fontSize: 20),
+                          AppLocalizations.of(context).translate('no_menu'),
+                          style: Theme.of(context).textTheme.subtitle1,
                         )),
                       ))),
         Container(
@@ -228,7 +236,7 @@ class _HomePageState extends State<HomePage> {
                 padding: EdgeInsets.symmetric(vertical: 8, horizontal: 7),
                 child: Text(
                   label,
-                  style: TextStyle(color: Colors.white, fontSize: 20),
+                  style: Theme.of(context).textTheme.caption,
                 ),
               ),
               subWidgetText != null
@@ -239,7 +247,7 @@ class _HomePageState extends State<HomePage> {
                           EdgeInsets.symmetric(vertical: 20, horizontal: 7),
                       child: Text(
                         subWidgetText,
-                        style: TextStyle(color: Colors.white, fontSize: 20),
+                        style: Theme.of(context).textTheme.subtitle1,
                       ),
                     )
                   : Container(),
@@ -261,7 +269,7 @@ class _HomePageState extends State<HomePage> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(9),
-          color: Colors.grey.withOpacity(0.4),
+          color: HexColor.lightElement,
         ),
         margin: EdgeInsets.symmetric(horizontal: 10),
         height: ScreenSize.newsBlockHeight,
@@ -272,13 +280,16 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             Text(
               news.capitalizeTitle,
-              style: TextStyle(fontSize: 16),
+              style: Theme.of(context).textTheme.headline2,
             ),
             SizedBox(height: 10),
             Text(
               news.shortDescription ?? '',
               maxLines: 2,
-              style: TextStyle(fontSize: 13),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText2
+                  .copyWith(color: HexColor.darkElement),
               overflow: TextOverflow.ellipsis,
             ),
             SizedBox(height: 10),
@@ -301,7 +312,7 @@ class _HomePageState extends State<HomePage> {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(9),
-            color: Colors.grey.withOpacity(0.4),
+            color: HexColor.lightElement,
           ),
           margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           height: ScreenSize.menuBlockHeight,
@@ -322,7 +333,7 @@ class _HomePageState extends State<HomePage> {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8.0),
                       gradient: LinearGradient(colors: [
-                        Colors.grey.withOpacity(0.2),
+                        HexColor.semiElement.withOpacity(0.2),
                         Colors.white,
                       ], stops: [
                         0.2,
@@ -334,7 +345,10 @@ class _HomePageState extends State<HomePage> {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       category.capitalizeTitle,
-                      style: TextStyle(fontSize: 20, color: Colors.black),
+                      style: Theme.of(context)
+                          .textTheme
+                          .caption
+                          .copyWith(color: HexColor.darkElement),
                     ))
               ],
             ),
