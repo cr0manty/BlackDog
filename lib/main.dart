@@ -17,8 +17,8 @@ void main() async {
     await SharedPrefs.initialize();
   }
 
-  await ConnectionsCheck.instance.initialise();
   await Account.instance.initialize();
+  await ConnectionsCheck.instance.initialise();
 
   runApp(BlackDogApp());
 }
@@ -34,13 +34,14 @@ class _BlackDogAppState extends State<BlackDogApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       supportedLocales: [
-        Locale('en', 'US'),
+//        Locale('en', 'US'),
         Locale('ru', 'RU'),
       ],
       localizationsDelegates: [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate
+        GlobalWidgetsLocalizations.delegate,
+        FallbackCupertinoLocalisationsDelegate(),
       ],
       localeListResolutionCallback: (locale, supportedLocales) {
         for (var supportedLocale in supportedLocales) {

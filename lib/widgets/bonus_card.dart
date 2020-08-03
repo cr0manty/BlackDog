@@ -18,7 +18,7 @@ class BonusCard extends StatelessWidget {
         context: context,
         useRootNavigator: false,
         builder: (context) => CupertinoAlertDialog(
-              title: Text(AppLocalizations.of(context).translate('home')),
+              title: Text(AppLocalizations.of(context).translate('scan_qr')),
               content: Container(
                 padding: EdgeInsets.only(top: 25),
                 child: Image.file(
