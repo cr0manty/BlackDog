@@ -17,11 +17,11 @@ import 'package:black_dog/widgets/user_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import '../instances/account.dart';
 import '../instances/shared_pref.dart';
 import 'about_us.dart';
+import 'news_detail.dart';
 import 'news_list.dart';
 import 'sign_in.dart';
 
@@ -61,9 +61,12 @@ class _HomePageState extends State<HomePage> {
       print('Scanned QR Code url: ${result.rawContent}');
 
       if (result.rawContent.isNotEmpty) {
-        await Api.instance.staffScanQRCode(result.rawContent)
-            ? await Utils.showSuccessPopUp()
-            : await Utils.showErrorPopUp(context);
+        Map scanned = await Api.instance.staffScanQRCode(result.rawContent.replaceAll('5', '123'));
+        if (scanned['result']) {
+          Utils.showSuccessPopUp(context, text: scanned['message']);
+        } else {
+          Utils.showErrorPopUp(context);
+        }
       }
       setState(() => isLoading = !isLoading);
     }
@@ -74,8 +77,8 @@ class _HomePageState extends State<HomePage> {
     Utils.initScreenSize(MediaQuery.of(context).size);
 
     return WillPopScope(
-        onWillPop: () async => false,
-        child: PageScaffold(
+      onWillPop: () async => false,
+      child: PageScaffold(
           action: Account.instance.state != AccountState.STAFF
               ? RouteButton(
                   padding: EdgeInsets.only(top: 5),
@@ -90,15 +93,12 @@ class _HomePageState extends State<HomePage> {
               : SizedBox(
                   height: ScreenSize.sectionIndent,
                 ),
-          child: ModalProgressHUD(
-              inAsyncCall: isLoading,
-              progressIndicator: CupertinoActivityIndicator(),
-              child: SafeArea(
-                child: Account.instance.state == AccountState.STAFF
-                    ? _buildStaff()
-                    : _buildUser(),
-              )),
-        ));
+          child: SafeArea(
+            child: Account.instance.state == AccountState.STAFF
+                ? _buildStaff()
+                : _buildUser(),
+          )),
+    );
   }
 
   Widget _buildScanQRCode() {
@@ -116,11 +116,12 @@ class _HomePageState extends State<HomePage> {
           ),
           height: ScreenSize.scanQRCodeSize,
           width: ScreenSize.scanQRCodeSize,
-          padding: EdgeInsets.all(10),
-          child: Icon(
-            SFSymbols.camera_viewfinder,
-            size: ScreenSize.scanQRCodeIconSize,
-            color: HexColor.lightElement.withOpacity(scanIconOpacity),
+          child: Center(
+            child: Icon(
+              SFSymbols.camera_viewfinder,
+              size: ScreenSize.scanQRCodeIconSize,
+              color: HexColor.darkElement.withOpacity(scanIconOpacity),
+            ),
           ),
         ));
   }
@@ -160,7 +161,7 @@ class _HomePageState extends State<HomePage> {
               CupertinoPageRoute(
                   builder: (BuildContext context) => UserPage())),
           username: Account.instance.name,
-          trailing: EditButton(),
+          trailing: EditButton(fromHome: true),
           additionWidget: BonusCard(),
         ),
         SizedBox(height: ScreenSize.sectionIndent - 20),
@@ -266,6 +267,11 @@ class _HomePageState extends State<HomePage> {
 
     final news = Api.instance.news[index - 1];
     return GestureDetector(
+      onTap: () => Navigator.of(context).push(CupertinoPageRoute(
+          builder: (BuildContext context) => NewsDetail(
+                news: news,
+                fromHome: true,
+              ))),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(9),

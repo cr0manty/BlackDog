@@ -63,7 +63,7 @@ class TextInputState extends State<TextInput> {
             filled: true,
             suffixIcon: widget.suffixIcon,
             hintStyle: Theme.of(context).textTheme.subtitle1.copyWith(
-                color: widget.textColor ?? HexColor.darkElement),
+                color: widget.textColor ?? HexColor.semiElement),
             fillColor: widget.backgroundColor ?? HexColor.lightElement,
             border: UnderlineInputBorder(
               borderSide: BorderSide.none,

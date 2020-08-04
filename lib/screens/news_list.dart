@@ -1,9 +1,11 @@
 import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/screens/news_detail.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/utils/size.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 
@@ -38,6 +40,8 @@ class _NewsListState extends State<NewsList> {
   Widget _buildNews(int index) {
     final news = Api.instance.news[index];
     return GestureDetector(
+        onTap: () => Navigator.of(context).push(CupertinoPageRoute(
+            builder: (BuildContext context) => NewsDetail(news: news,))),
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 15),
         child: Row(

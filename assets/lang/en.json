@@ -21,5 +21,9 @@
   "password_mismatch" : "Password mismatch!",
   "birth_date" : "Birth Date",
   "already_have_account" : "Already have an account? Sign in.",
-  "more" : "More"
+  "more" : "More",
+  "profile" : "Profile",
+  "save" : "Save",
+  "success" : "Success",
+  "error" : "Error"
 }

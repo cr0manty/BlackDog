@@ -8,7 +8,7 @@ abstract class ScreenSize {
 
   static double get scanQRCodeSize => height * 0.13;
 
-  static double get scanQRCodeIconSize => scanQRCodeSize * 0.7;
+  static double get scanQRCodeIconSize => scanQRCodeSize * 0.85;
 
   static double get elementIndentHeight => height * 0.03;
 

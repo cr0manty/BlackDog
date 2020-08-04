@@ -62,10 +62,12 @@ class Api {
 
   Future initialize() async {
     if (Account.instance.state != AccountState.GUEST) {
-      getNews();
-      getCategories();
       getUser();
-      getAboutUs();
+      if (Account.instance.state != AccountState.STAFF) {
+        getCategories();
+        getNews();
+        getAboutUs();
+      }
       init = true;
     }
   }
@@ -90,12 +92,14 @@ class Api {
 
   Future staffScanQRCode(String url) async {
     if (!url.startsWith(_base_url)) {
-      return false;
+      return {'result': false, 'message': ''};
     }
     Response response = await _client.post(url, headers: {
       'Authorization': "Token ${SharedPrefs.getToken()}",
     });
-    return response.statusCode == 201;
+    Map body = json.decode(response.body);
+    body['result'] = response.statusCode == 200;
+    return body;
   }
 
   Future login(String email, String password) async {
@@ -141,6 +145,19 @@ class Api {
       _apiChange.add(true);
       return user;
     }
+  }
+
+  Future updateUser(Map content) async {
+    Response response = await _client.put(_base_url + '/auth/user/',
+        body: json.encode(content), headers: _setHeaders(useJson: true));
+
+    Map body = json.decode(response.body);
+    if (response.statusCode == 200) {
+      await getUser();
+      return {'result': true};
+    }
+    body['result'] = false;
+    return body;
   }
 
   Future getNews() async {

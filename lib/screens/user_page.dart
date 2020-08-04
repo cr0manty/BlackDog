@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:black_dog/instances/account.dart';
+import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/screens/sign_in.dart';
 import 'package:black_dog/utils/hex_color.dart';
@@ -19,6 +22,14 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
+  StreamSubscription _apiChange;
+
+  @override
+  void initState() {
+    _apiChange = Api.instance.apiChange.listen((event) => setState(() {}));
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return PageScaffold(
@@ -49,5 +60,11 @@ class _UserPageState extends State<UserPage> {
             ),
           ],
         ));
+  }
+
+  @override
+  void dispose() {
+    _apiChange?.cancel();
+    super.dispose();
   }
 }

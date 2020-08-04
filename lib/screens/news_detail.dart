@@ -1,4 +1,4 @@
-import 'package:black_dog/models/menu_item.dart';
+import 'package:black_dog/models/news.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/utils/size.dart';
@@ -7,22 +7,24 @@ import 'package:black_dog/widgets/route_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 
-class ProductDetail extends StatefulWidget {
-  final MenuItem product;
+class NewsDetail extends StatefulWidget {
+  final News news;
+  final bool fromHome;
 
-  ProductDetail({@required this.product});
+  NewsDetail({@required this.news, this.fromHome = false});
 
   @override
-  _ProductDetailState createState() => _ProductDetailState();
+  _NewsDetailState createState() => _NewsDetailState();
 }
 
-class _ProductDetailState extends State<ProductDetail> {
+class _NewsDetailState extends State<NewsDetail> {
   @override
   Widget build(BuildContext context) {
     return PageScaffold(
       leading: RouteButton(
         icon: SFSymbols.chevron_left,
-        text: AppLocalizations.of(context).translate('products'),
+        text: AppLocalizations.of(context)
+            .translate(widget.fromHome ? 'home' : 'news'),
         color: HexColor.lightElement,
         onTap: Navigator.of(context).pop,
       ),
@@ -44,8 +46,8 @@ class _ProductDetailState extends State<ProductDetail> {
                     ),
                     child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
-                        child: widget.product.image != null
-                            ? Image.network(widget.product.image,
+                        child: widget.news.previewImage != null
+                            ? Image.network(widget.news.previewImage,
                                 fit: BoxFit.cover)
                             : Container(color: HexColor.semiElement))),
               ),
@@ -55,16 +57,12 @@ class _ProductDetailState extends State<ProductDetail> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       mainAxisSize: MainAxisSize.max,
                       children: <Widget>[
-                        Text(widget.product.capitalizeTitle,
+                        Text(widget.news.capitalizeTitle,
                             style: Theme.of(context).textTheme.caption),
-                        Text(widget.product.priceWithCurrency,
-                            style: Theme.of(context).textTheme.subtitle1)
                       ])),
-              Text(AppLocalizations.of(context).translate('description'),
-                  style: Theme.of(context).textTheme.subtitle1),
               Container(
                 margin: EdgeInsets.only(top: 20),
-                child: Text(widget.product.description ?? '',
+                child: Text(widget.news.body ?? '',
                     style: Theme.of(context).textTheme.subtitle2),
               )
             ],

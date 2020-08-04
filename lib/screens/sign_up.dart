@@ -29,31 +29,6 @@ class _SignUpPageState extends State<SignUpPage> {
   bool _obscureTextConfirm = true;
   bool isLoading = false;
 
-  Widget _showValidateError({String key, bool bottomPadding = true}) {
-    if (fieldsError.containsKey(key)) {
-      return Container(
-          alignment: Alignment.centerLeft,
-          padding: EdgeInsets.only(
-              top: 10,
-              left: 10,
-              bottom: bottomPadding ? ScreenSize.elementIndentHeight : 0),
-          child: Text(fieldsError[key],
-              style:
-                  TextStyle(color: Colors.red.withOpacity(0.9), fontSize: 12)));
-    } else if (fieldsError.containsKey('all')) {
-      return Container(
-          alignment: Alignment.centerLeft,
-          padding: EdgeInsets.only(
-              top: 10,
-              left: 10,
-              bottom: bottomPadding ? ScreenSize.elementIndentHeight : 0),
-          child: Text(fieldsError['all'],
-              style:
-                  TextStyle(color: Colors.red.withOpacity(0.9), fontSize: 12)));
-    }
-    return SizedBox(height: bottomPadding ? ScreenSize.elementIndentHeight : 0);
-  }
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -78,7 +53,8 @@ class _SignUpPageState extends State<SignUpPage> {
                                 top: ScreenSize.sectionIndent,
                                 bottom: ScreenSize.sectionIndent * 2),
                             child: Text(
-                              AppLocalizations.of(context).translate('register'),
+                              AppLocalizations.of(context)
+                                  .translate('register'),
                               style: Theme.of(context).textTheme.caption,
                             ),
                           ),
@@ -91,36 +67,37 @@ class _SignUpPageState extends State<SignUpPage> {
                                   child: Container(
                                       child: TextInput(
                                     controller: _nameController,
-                                    hintText: AppLocalizations.of(context).translate('first_name'),
+                                    hintText: AppLocalizations.of(context)
+                                        .translate('first_name'),
                                     inputAction: TextInputAction.continueAction,
                                   ))),
-                              _showValidateError(key: 'first_name'),
-                              Align(
+                              Utils.showValidateError(fieldsError, key: 'first_name'),
+                              Container(
                                   alignment: Alignment.center,
-                                  child: Container(
-                                      child: TextInput(
+                                  child: TextInput(
                                     controller: _phoneController,
-                                    hintText: AppLocalizations.of(context).translate('phone'),
+                                    hintText: AppLocalizations.of(context)
+                                        .translate('phone'),
                                     inputAction: TextInputAction.continueAction,
-                                  ))),
-                              _showValidateError(key: 'phone'),
-                              Align(
+                                  )),
+                              Utils.showValidateError(fieldsError, key: 'phone'),
+                              Container(
                                   alignment: Alignment.center,
-                                  child: Container(
-                                      child: TextInput(
+                                  child: TextInput(
                                     controller: _emailController,
-                                    hintText: AppLocalizations.of(context).translate('email'),
+                                    hintText: AppLocalizations.of(context)
+                                        .translate('email'),
                                     inputAction: TextInputAction.continueAction,
                                     keyboardType: TextInputType.emailAddress,
-                                  ))),
-                              _showValidateError(key: 'email'),
-                              Align(
+                                  )),
+                              Utils.showValidateError(fieldsError, key: 'email'),
+                              Container(
                                   alignment: Alignment.center,
-                                  child: Container(
-                                      child: TextInput(
+                                  child: TextInput(
                                     obscureText: _obscureText,
                                     controller: _password1Controller,
-                                    hintText: AppLocalizations.of(context).translate('password'),
+                                    hintText: AppLocalizations.of(context)
+                                        .translate('password'),
                                     suffixIcon: GestureDetector(
                                       child: Icon(
                                           _obscureText
@@ -134,15 +111,15 @@ class _SignUpPageState extends State<SignUpPage> {
                                       },
                                     ),
                                     inputAction: TextInputAction.done,
-                                  ))),
-                              _showValidateError(key: 'password1'),
-                              Align(
+                                  )),
+                              Utils.showValidateError(fieldsError, key: 'password1'),
+                              Container(
                                   alignment: Alignment.center,
-                                  child: Container(
-                                      child: TextInput(
+                                  child: TextInput(
                                     obscureText: _obscureTextConfirm,
                                     controller: _password2Controller,
-                                    hintText: AppLocalizations.of(context).translate('confirm_password'),
+                                    hintText: AppLocalizations.of(context)
+                                        .translate('confirm_password'),
                                     suffixIcon: GestureDetector(
                                       child: Icon(
                                           _obscureTextConfirm
@@ -158,13 +135,14 @@ class _SignUpPageState extends State<SignUpPage> {
                                     ),
                                     validator: (String text) {
                                       if (text != _password1Controller.text) {
-                                        return AppLocalizations.of(context).translate('password_mismatch');
+                                        return AppLocalizations.of(context)
+                                            .translate('password_mismatch');
                                       }
                                       return null;
                                     },
                                     inputAction: TextInputAction.done,
-                                  ))),
-                              _showValidateError(key: 'password2'),
+                                  )),
+                              Utils.showValidateError(fieldsError, key: 'password2'),
                               GestureDetector(
                                   onTap: () => _showModalBottomSheet(context),
                                   child: Container(
@@ -183,7 +161,8 @@ class _SignUpPageState extends State<SignUpPage> {
                                         children: <Widget>[
                                           Text(
                                             Utils.dateFormat(selectedDate) ??
-                                                AppLocalizations.of(context).translate('birth_date'),
+                                                AppLocalizations.of(context)
+                                                    .translate('birth_date'),
                                             style: TextStyle(
                                                 color: Colors.black,
                                                 fontSize: 18),
@@ -194,31 +173,41 @@ class _SignUpPageState extends State<SignUpPage> {
                                           )
                                         ],
                                       ))),
-                              _showValidateError(key: 'date_birth'),
+                              Utils.showValidateError(fieldsError, key: 'date_birth'),
                             ],
                           ),
                           Container(
-                              alignment: Alignment.center,
+                              alignment: Alignment.bottomCenter,
                               padding: EdgeInsets.symmetric(
-                                  vertical: ScreenSize.sectionIndent * 2),
+                                  vertical: ScreenSize.sectionIndent),
                               child: Column(
                                 children: <Widget>[
                                   CupertinoButton(
                                       onPressed: registerClick,
                                       color: HexColor.lightElement,
                                       child: Text(
-                                        AppLocalizations.of(context).translate('register'),
-                                        style: TextStyle(
-                                            fontSize: 20, color: Colors.black),
+                                        AppLocalizations.of(context)
+                                            .translate('register'),
+                                        overflow: TextOverflow.fade,
+                                        maxLines: 1,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline1
+                                            .copyWith(
+                                                color: HexColor.darkElement),
                                       )),
                                   CupertinoButton(
-                                      onPressed: Navigator.of(context).pop,
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                        FocusScope.of(context)
+                                            .requestFocus(FocusNode());
+                                      },
                                       child: Text(
-                                        AppLocalizations.of(context).translate('already_have_account'),
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            color:
-                                                Colors.white.withOpacity(0.6)),
+                                        AppLocalizations.of(context)
+                                            .translate('already_have_account'),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText2,
                                       )),
                                 ],
                               )),
@@ -239,7 +228,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   data: CupertinoThemeData(
                     textTheme: CupertinoTextThemeData(
                       dateTimePickerTextStyle:
-                          TextStyle(fontSize: 18, color: Colors.white),
+                          Theme.of(context).textTheme.subtitle1,
                     ),
                   ),
                   child: CupertinoDatePicker(
@@ -265,6 +254,7 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Future registerClick() async {
+    FocusScope.of(context).requestFocus(FocusNode());
     setState(() => isLoading = !isLoading);
     fieldsError = {};
 

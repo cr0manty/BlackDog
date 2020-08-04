@@ -25,31 +25,6 @@ class _SignInPageState extends State<SignInPage> {
   bool _obscureText = true;
   bool isLoading = false;
 
-  Widget _showValidateError({String key, bool bottomPadding = true}) {
-    if (fieldsError.containsKey(key)) {
-      return Container(
-          alignment: Alignment.centerLeft,
-          padding: EdgeInsets.only(
-              top: 10,
-              left: 10,
-              bottom: bottomPadding ? ScreenSize.elementIndentHeight : 0),
-          child: Text(fieldsError[key],
-              style:
-                  TextStyle(color: Colors.red.withOpacity(0.9), fontSize: 12)));
-    } else if (fieldsError.containsKey('all')) {
-      return Container(
-          alignment: Alignment.centerLeft,
-          padding: EdgeInsets.only(
-              top: 10,
-              left: 10,
-              bottom: bottomPadding ? ScreenSize.elementIndentHeight : 0),
-          child: Text(fieldsError['all'],
-              style:
-                  TextStyle(color: Colors.red.withOpacity(0.9), fontSize: 12)));
-    }
-    return SizedBox(height: bottomPadding ? ScreenSize.elementIndentHeight : 0);
-  }
-
   @override
   Widget build(BuildContext context) {
     Utils.initScreenSize(MediaQuery.of(context).size);
@@ -78,7 +53,8 @@ class _SignInPageState extends State<SignInPage> {
                                   padding: EdgeInsets.only(
                                       top: ScreenSize.elementIndentHeight),
                                   child: Text(
-                                    AppLocalizations.of(context).translate('sign_in'),
+                                    AppLocalizations.of(context)
+                                        .translate('sign_in'),
                                     style: Theme.of(context).textTheme.caption,
                                   ),
                                 ),
@@ -86,25 +62,26 @@ class _SignInPageState extends State<SignInPage> {
                                   mainAxisSize: MainAxisSize.max,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
-                                    Align(
+                                    Container(
                                         alignment: Alignment.center,
-                                        child: Container(
-                                            child: TextInput(
+                                        child: TextInput(
                                           controller: _emailFilter,
                                           keyboardType:
                                               TextInputType.emailAddress,
-                                          hintText: AppLocalizations.of(context).translate('email'),
+                                          hintText: AppLocalizations.of(context)
+                                              .translate('email'),
                                           inputAction:
                                               TextInputAction.continueAction,
-                                        ))),
-                                    _showValidateError(key: 'email'),
-                                    Align(
+                                        )),
+                                    Utils.showValidateError(fieldsError,
+                                        key: 'email'),
+                                    Container(
                                         alignment: Alignment.center,
-                                        child: Container(
-                                            child: TextInput(
+                                        child: TextInput(
                                           obscureText: _obscureText,
                                           controller: _passwordFilter,
-                                          hintText: AppLocalizations.of(context).translate('password'),
+                                          hintText: AppLocalizations.of(context)
+                                              .translate('password'),
                                           suffixIcon: GestureDetector(
                                             child: Icon(
                                                 _obscureText
@@ -118,18 +95,23 @@ class _SignInPageState extends State<SignInPage> {
                                             },
                                           ),
                                           inputAction: TextInputAction.done,
-                                        ))),
-                                    _showValidateError(
+                                        )),
+                                    Utils.showValidateError(fieldsError,
                                         key: 'password', bottomPadding: false),
                                     Container(
                                       alignment: Alignment.centerRight,
                                       child: CupertinoButton(
                                           padding: EdgeInsets.only(
                                               top: 8, bottom: 8, left: 8),
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            FocusScope.of(context).requestFocus(FocusNode());
+                                          },
                                           child: Text(
-                                            AppLocalizations.of(context).translate('forgot_password'),
-                                            style: Theme.of(context).textTheme.bodyText2,
+                                            AppLocalizations.of(context)
+                                                .translate('forgot_password'),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText2,
                                           )),
                                     ),
                                   ],
@@ -146,7 +128,8 @@ class _SignInPageState extends State<SignInPage> {
                                               onPressed: loginClick,
                                               color: HexColor.lightElement,
                                               child: Text(
-                                                AppLocalizations.of(context).translate('sign_in'),
+                                                AppLocalizations.of(context)
+                                                    .translate('sign_in'),
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .caption
@@ -157,12 +140,14 @@ class _SignInPageState extends State<SignInPage> {
                                         ),
                                         CupertinoButton(
                                             onPressed: () {
+                                              FocusScope.of(context).requestFocus(FocusNode());
                                               Navigator.of(context).push(
                                                   BottomRoute(
                                                       page: SignUpPage()));
                                             },
                                             child: Text(
-                                              AppLocalizations.of(context).translate('no_account'),
+                                              AppLocalizations.of(context)
+                                                  .translate('no_account'),
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodyText2,
@@ -178,6 +163,7 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   Future loginClick() async {
+    FocusScope.of(context).requestFocus(FocusNode());
     setState(() => isLoading = !isLoading);
     fieldsError = {};
     Map response =

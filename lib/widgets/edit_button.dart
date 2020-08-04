@@ -1,8 +1,14 @@
+import 'package:black_dog/screens/profile_settings.dart';
 import 'package:black_dog/utils/hex_color.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 
 class EditButton extends StatefulWidget {
+  final bool fromHome;
+
+  EditButton({this.fromHome = false});
+
   @override
   _EditButtonState createState() => _EditButtonState();
 }
@@ -17,6 +23,7 @@ class _EditButtonState extends State<EditButton> {
         setState(() {
           buttonOpacity = 1;
         });
+        Navigator.of(context).push(CupertinoPageRoute(builder: (context) => ProfileSettings(fromHome: widget.fromHome)));
       },
       onTapDown: (details) => setState(() {
         buttonOpacity = 0.6;

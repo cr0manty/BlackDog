@@ -17,6 +17,7 @@ class Account {
   AccountState state = AccountState.GUEST;
 
   String get name => _user.firstName;
+  User get user => _user;
 
   Future initialize() async {
     _user = SharedPrefs.getUser();
