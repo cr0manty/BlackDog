@@ -45,7 +45,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    _apiChange = Api.instance.apiChange.listen((event) => setState(() {}));
+    _apiChange = Api.instance.apiChange.listen((event) => setState(() {
+      print(Account.instance.user.firstName);
+    }));
     super.initState();
   }
 
@@ -61,7 +63,8 @@ class _HomePageState extends State<HomePage> {
       print('Scanned QR Code url: ${result.rawContent}');
 
       if (result.rawContent.isNotEmpty) {
-        Map scanned = await Api.instance.staffScanQRCode(result.rawContent.replaceAll('5', '123'));
+        Map scanned = await Api.instance
+            .staffScanQRCode(result.rawContent.replaceAll('5', '123'));
         if (scanned['result']) {
           Utils.showSuccessPopUp(context, text: scanned['message']);
         } else {
@@ -79,6 +82,7 @@ class _HomePageState extends State<HomePage> {
     return WillPopScope(
       onWillPop: () async => false,
       child: PageScaffold(
+          alwaysNavigation: Account.instance.state == AccountState.STAFF,
           action: Account.instance.state != AccountState.STAFF
               ? RouteButton(
                   padding: EdgeInsets.only(top: 5),
@@ -87,11 +91,20 @@ class _HomePageState extends State<HomePage> {
                   icon: Icons.info_outline,
                   iconFirst: false,
                   text: AppLocalizations.of(context).translate('about_us'),
-                  onTap: () => Navigator.of(context)
-                      .push(BottomRoute(page: AboutUsPage())),
+                  onTap: () async {
+                    final restaurant = await Api.instance.getAboutUs();
+                    Navigator.of(context)
+                        .push(BottomRoute(page: AboutUsPage(restaurant)));
+                  },
                 )
-              : SizedBox(
-                  height: ScreenSize.sectionIndent,
+              : RouteButton(
+                  text: AppLocalizations.of(context).translate('logout'),
+                  color: HexColor.lightElement,
+                  onTap: () {
+                    SharedPrefs.logout();
+                    Navigator.of(context, rootNavigator: true)
+                        .push(BottomRoute(page: SignInPage()));
+                  },
                 ),
           child: SafeArea(
             child: Account.instance.state == AccountState.STAFF
@@ -116,7 +129,9 @@ class _HomePageState extends State<HomePage> {
           ),
           height: ScreenSize.scanQRCodeSize,
           width: ScreenSize.scanQRCodeSize,
-          child: Center(
+          child: Container(
+            alignment: FractionalOffset.center,
+            transform: Matrix4.translationValues(0, -5, 0),
             child: Icon(
               SFSymbols.camera_viewfinder,
               size: ScreenSize.scanQRCodeIconSize,
@@ -137,16 +152,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildStaff() {
     return Column(children: <Widget>[
-      UserCard(
-          isStaff: true,
-          onPressed: null,
-          username: Account.instance.name,
-          trailing: _actionButton(
-              AppLocalizations.of(context).translate('logout'), onTap: () {
-            SharedPrefs.logout();
-            Navigator.of(context, rootNavigator: true)
-                .push(BottomRoute(page: SignInPage()));
-          })),
+      UserCard(isStaff: true, onPressed: null, username: Account.instance.name),
       SizedBox(height: ScreenSize.scanQRCodeIndent),
       _buildScanQRCode()
     ]);
@@ -178,7 +184,6 @@ class _HomePageState extends State<HomePage> {
                           _buildNewsBlock),
                     )
                   : Container(
-                      height: ScreenSize.newsBlockHeight / 3,
                       width: ScreenSize.width,
                       child: Center(
                           child: Text(
@@ -204,7 +209,6 @@ class _HomePageState extends State<HomePage> {
                             Api.instance.categories.length, _buildMenu),
                       )
                     : Container(
-                        height: ScreenSize.newsBlockHeight / 3,
                         width: ScreenSize.width,
                         child: Center(
                             child: Text(
@@ -278,8 +282,6 @@ class _HomePageState extends State<HomePage> {
           color: HexColor.lightElement,
         ),
         margin: EdgeInsets.symmetric(horizontal: 10),
-        height: ScreenSize.newsBlockHeight,
-        width: ScreenSize.newsBlockWidth,
         padding: EdgeInsets.all(10),
         child: Column(
           mainAxisSize: MainAxisSize.max,
@@ -299,7 +301,9 @@ class _HomePageState extends State<HomePage> {
               overflow: TextOverflow.ellipsis,
             ),
             SizedBox(height: 10),
-            Expanded(
+            Container(
+                height: ScreenSize.newsImageHeight,
+                width: ScreenSize.newsImageWidth,
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Image.network(news.previewImage, fit: BoxFit.cover)))

@@ -24,30 +24,29 @@ class Restaurant {
   String location;
   String workTime;
 
-  Restaurant({this.name,
-    this.email,
-    this.facebook,
-    this.instagramLink,
-    this.logo,
-    this.phone,
-    this.location,
-    this.workTime,
-    this.website});
+  Restaurant(
+      {this.name,
+      this.email,
+      this.facebook,
+      this.instagramLink,
+      this.logo,
+      this.phone,
+      this.location,
+      this.workTime,
+      this.website});
 
-  factory Restaurant.fromJson(Map<String, dynamic> data) =>
-      new Restaurant(
-          name: data['name'],
-          email: data['email'],
-          facebook: data['facebook'],
-          instagramLink: data['instagram_link'],
-          logo: data['logo'],
-          phone: data['phone'],
-          workTime: data['work_time'],
-          location: data['location'],
-          website: data['website']);
+  factory Restaurant.fromJson(Map<String, dynamic> data) => Restaurant(
+      name: data['name'],
+      email: data['email'],
+      facebook: data['facebook'],
+      instagramLink: data['instagram_link'],
+      logo: data['logo'],
+      phone: data['phone'],
+      workTime: data['work_time'],
+      location: data['location'],
+      website: data['website']);
 
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         'name': name,
         'email': email,
         'phone': phone,

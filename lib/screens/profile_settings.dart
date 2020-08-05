@@ -39,7 +39,6 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   Widget build(BuildContext context) {
     return PageScaffold(
       alwaysNavigation: true,
-      noScroll: true,
       inAsyncCall: isLoading,
       leading: RouteButton(
         icon: SFSymbols.chevron_left,

@@ -17,6 +17,7 @@ class Account {
   AccountState state = AccountState.GUEST;
 
   String get name => _user.firstName;
+
   User get user => _user;
 
   Future initialize() async {
@@ -27,12 +28,14 @@ class Account {
     }
   }
 
-  Future stuffScanQRCode() async {}
-
   Future<bool> setUser() async {
     _user = await Api.instance.getUser();
     state = _user.isStaff ? AccountState.STAFF : AccountState.USER;
     Api.instance.initialize();
     return _user != null;
+  }
+
+  void updateUser() {
+    _user = SharedPrefs.getUser();
   }
 }

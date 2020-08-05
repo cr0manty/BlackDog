@@ -18,6 +18,8 @@ class _NewsListState extends State<NewsList> {
   @override
   Widget build(BuildContext context) {
     return PageScaffold(
+      shrinkWrap: true,
+      padding: EdgeInsets.symmetric(horizontal: 16),
       alwaysNavigation: true,
       leading: RouteButton(
         icon: SFSymbols.chevron_left,
@@ -25,53 +27,63 @@ class _NewsListState extends State<NewsList> {
         color: HexColor.lightElement,
         onTap: Navigator.of(context).pop,
       ),
-      title: Text(AppLocalizations.of(context).translate('news'), style: Theme.of(context).textTheme.caption),
-      child: Container(
-        height: ScreenSize.height,
-        margin: EdgeInsets.symmetric(horizontal: 16),
-        child: ListView(
-          shrinkWrap: true,
-          children: List.generate(Api.instance.news.length, _buildNews),
-        ),
-      ),
+      title: Text(AppLocalizations.of(context).translate('news'),
+          style: Theme.of(context).textTheme.caption),
+      children: List.generate(Api.instance.news.length, _buildNews),
     );
   }
 
   Widget _buildNews(int index) {
     final news = Api.instance.news[index];
     return GestureDetector(
-        onTap: () => Navigator.of(context).push(CupertinoPageRoute(
-            builder: (BuildContext context) => NewsDetail(news: news,))),
+      onTap: () => Navigator.of(context).push(CupertinoPageRoute(
+          builder: (BuildContext context) => NewsDetail(
+                news: news,
+              ))),
       child: Container(
+        color: Colors.transparent,
         margin: EdgeInsets.symmetric(vertical: 15),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             Container(
-              width: ScreenSize.newsBlockWidth,
+              width: ScreenSize.newsListTextSize,
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(
-                    news.capitalizeTitle,
-                    style: Theme.of(context).textTheme.headline1,
+                  Container(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      news.capitalizeTitle,
+                      style: Theme.of(context).textTheme.headline1,
+                    ),
                   ),
-                  SizedBox(height: ScreenSize.sectionIndent / 2),
-                  Text(
-                    news.shortDescription ?? '',
-                    style: Theme.of(context).textTheme.subtitle2,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 5,
-                  )
+                  Container(
+                    margin: EdgeInsets.only(top: 16),
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      news.shortDescription ?? '',
+                      style: Theme.of(context).textTheme.subtitle2,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 4,
+                    ),
+                  ),
+                  news.createTime != null
+                      ? Container(
+                          alignment: Alignment.bottomRight,
+                          margin: EdgeInsets.only(top: 10),
+                          child: Text(news.createTime,
+                              style: Theme.of(context).textTheme.bodyText2),
+                        )
+                      : Container()
                 ],
               ),
             ),
             Container(
-              width: ScreenSize.newsListBlockSize,
-              height: ScreenSize.newsListBlockSize,
+              width: ScreenSize.newsListImageSize,
+              height: ScreenSize.newsListImageSize,
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Image.network(news.previewImage, fit: BoxFit.cover)),

@@ -6,7 +6,9 @@ abstract class ScreenSize {
 
   static double get scanQRCodeIndent => height * 0.1;
 
-  static double get scanQRCodeSize => height * 0.13;
+  static double get scanQRCodeSize => height * 0.17;
+
+  static double get bonusCardSize => height * 0.13;
 
   static double get scanQRCodeIconSize => scanQRCodeSize * 0.85;
 
@@ -16,15 +18,15 @@ abstract class ScreenSize {
 
   static double get labelIndent => width * 0.005;
 
-  static double get newsBlockHeight => height * 0.26;
+  static double get newsImageHeight => height * 0.18;
 
-  static double get newsBlockWidth => width * 0.38;
+  static double get newsImageWidth => width * 0.34;
 
   static double get newsSmallBlockWidth => width * 0.3;
 
   static double get newsSmallBlockHeight => height * 0.15;
 
-  static double get newsListBlockSize => width * 0.3;
+  static double get newsListImageSize => width * 0.3;
 
   static double get menuBlockHeight => width * 0.22;
 
@@ -33,4 +35,8 @@ abstract class ScreenSize {
   static double get menuItemSize => height * 0.1;
 
   static double get menuItemPhotoSize => height * 0.45;
+
+  static double get newsItemPhotoSize => height * 0.35;
+
+  static double get newsListTextSize =>  width - newsListImageSize - 48;
 }

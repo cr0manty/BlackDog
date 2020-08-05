@@ -40,6 +40,8 @@ class _ProductListState extends State<ProductList> {
   Widget build(BuildContext context) {
     return PageScaffold(
       alwaysNavigation: true,
+      shrinkWrap: true,
+      padding: EdgeInsets.symmetric(horizontal: 16),
       leading: RouteButton(
         icon: SFSymbols.chevron_left,
         text: AppLocalizations.of(context).translate('home'),
@@ -50,14 +52,7 @@ class _ProductListState extends State<ProductList> {
         widget.title,
         style: Theme.of(context).textTheme.caption,
       ),
-      child: Container(
-        height: ScreenSize.height,
-        margin: EdgeInsets.symmetric(horizontal: 16),
-        child: ListView(
-          shrinkWrap: true,
-          children: List.generate(_menu.length, _buildProduct),
-        ),
-      ),
+      children: List.generate(_menu.length, _buildProduct),
     );
   }
 
@@ -79,9 +74,7 @@ class _ProductListState extends State<ProductList> {
                   borderRadius: BorderRadius.circular(10),
                   child: menu.image != null
                       ? Image.network(menu.image, fit: BoxFit.cover)
-                      : Container(
-                          color: HexColor.semiElement
-                        )),
+                      : Container(color: HexColor.semiElement)),
             ),
             Container(
               margin: EdgeInsets.only(left: 20),

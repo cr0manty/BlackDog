@@ -18,7 +18,7 @@ class Voucher {
   Voucher(
       {this.toBonus, this.currentAmount, this.bonusAmount, this.used = false});
 
-  factory Voucher.fromJson(Map<String, dynamic> data) => new Voucher(
+  factory Voucher.fromJson(Map<String, dynamic> data) => Voucher(
       bonusAmount: data['bonus_amount'],
       toBonus: data['to_bonus'],
       used: data['used'] ?? false,

@@ -33,6 +33,7 @@ class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
     return PageScaffold(
+        alwaysNavigation: true,
         leading: RouteButton(
           icon: SFSymbols.chevron_left,
           text: AppLocalizations.of(context).translate('home'),

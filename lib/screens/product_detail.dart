@@ -4,6 +4,7 @@ import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/utils/size.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 
@@ -20,57 +21,50 @@ class _ProductDetailState extends State<ProductDetail> {
   @override
   Widget build(BuildContext context) {
     return PageScaffold(
+      shrinkWrap: true,
+      alwaysNavigation: true,
       leading: RouteButton(
         icon: SFSymbols.chevron_left,
-        text: AppLocalizations.of(context).translate('products'),
+        text: AppLocalizations.of(context).translate('back'),
         color: HexColor.lightElement,
         onTap: Navigator.of(context).pop,
       ),
-      child: SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Center(
-                child: Container(
-                    width: ScreenSize.width - 32,
-                    height: ScreenSize.menuItemPhotoSize,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.grey,
-                    ),
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: widget.product.image != null
-                            ? Image.network(widget.product.image,
-                                fit: BoxFit.cover)
-                            : Container(color: HexColor.semiElement))),
+      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+      children: <Widget>[
+        Center(
+          child: Container(
+              width: ScreenSize.width - 32,
+              height: ScreenSize.menuItemPhotoSize,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.grey,
               ),
-              Container(
-                  margin: EdgeInsets.symmetric(vertical: 34),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      mainAxisSize: MainAxisSize.max,
-                      children: <Widget>[
-                        Text(widget.product.capitalizeTitle,
-                            style: Theme.of(context).textTheme.caption),
-                        Text(widget.product.priceWithCurrency,
-                            style: Theme.of(context).textTheme.subtitle1)
-                      ])),
-              Text(AppLocalizations.of(context).translate('description'),
-                  style: Theme.of(context).textTheme.subtitle1),
-              Container(
-                margin: EdgeInsets.only(top: 20),
-                child: Text(widget.product.description ?? '',
-                    style: Theme.of(context).textTheme.subtitle2),
-              )
-            ],
-          ),
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: widget.product.image != null
+                      ? Image.network(widget.product.image, fit: BoxFit.cover)
+                      : Container(color: HexColor.semiElement))),
         ),
-      ),
+        Container(
+            margin: EdgeInsets.symmetric(vertical: 20),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  Text(widget.product.capitalizeTitle,
+                      style: Theme.of(context).textTheme.caption),
+                  Text(widget.product.priceWithCurrency,
+                      style: Theme.of(context).textTheme.subtitle1)
+                ])),
+        Divider(color: HexColor.semiElement),
+        Container(
+          margin: EdgeInsets.symmetric(vertical: 20),
+          child: Text(AppLocalizations.of(context).translate('description'),
+              style: Theme.of(context).textTheme.subtitle1),
+        ),
+        Text(widget.product.description ?? '',
+            style: Theme.of(context).textTheme.subtitle2)
+      ],
     );
   }
 }

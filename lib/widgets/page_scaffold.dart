@@ -7,19 +7,24 @@ class PageScaffold extends StatelessWidget {
   final Widget action;
   final Widget leading;
   final Widget child;
+  final List<Widget> children;
   final bool alwaysNavigation;
   final Widget title;
   final bool inAsyncCall;
-  final bool noScroll;
+  final EdgeInsets padding;
+  final bool shrinkWrap;
 
   PageScaffold(
-      {@required this.child,
+      {this.child,
+      this.children,
       this.action,
       this.leading,
       this.title,
+      this.padding,
+      this.shrinkWrap = false,
       this.alwaysNavigation = false,
-      this.inAsyncCall = false,
-      this.noScroll = false});
+      this.inAsyncCall = false})
+      : assert(child != null || children != null);
 
   Widget _appBar() {
     return Container(
@@ -32,6 +37,28 @@ class PageScaffold extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Widget _titleWidget() {
+    if (title != null) {
+      return Container(
+        alignment: Alignment.center,
+        padding: EdgeInsets.only(top: 5, bottom: 20),
+        child: title,
+      );
+    }
+    return Container(height: alwaysNavigation ? 20 : 0);
+  }
+
+  List<Widget> _buildBodyChildren(List<Widget> listChildren) {
+    if (child == null) {
+      return listChildren + children;
+    }
+    listChildren.add(Container(
+      padding: padding ?? EdgeInsets.zero,
+      child: child,
+    ));
+    return listChildren;
   }
 
   @override
@@ -48,31 +75,19 @@ class PageScaffold extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.max,
                       children: <Widget>[
-                        _appBar(),
-                        title != null
-                            ? Container(
-                                padding: EdgeInsets.only(top: 5, bottom: 20),
-                                child: title)
-                            : Container(),
-                        Expanded(
-                            child: noScroll
-                                ? child
-                                : ListView(
-                                    shrinkWrap: true,
-                                    children: <Widget>[child]))
-                      ]),
-                )
+                      _appBar(),
+                      Expanded(
+                          child: Container(
+                        padding: padding ?? EdgeInsets.zero,
+                        child: ListView(
+                            shrinkWrap: shrinkWrap,
+                            children:
+                                _buildBodyChildren(<Widget>[_titleWidget()])),
+                      ))
+                    ]))
               : ListView(
-                  shrinkWrap: true,
-                  children: [
-                    _appBar(),
-                    title != null
-                        ? Container(
-                            padding: EdgeInsets.only(top: 5, bottom: 20),
-                            child: title)
-                        : Container(),
-                    child
-                  ],
+                  shrinkWrap: shrinkWrap,
+                  children: _buildBodyChildren([_appBar(), _titleWidget()]),
                 )),
     ));
   }

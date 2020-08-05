@@ -6,7 +6,6 @@ abstract class SharedPrefs {
   static const _currentUser = 'CurrentUser';
   static const _currentToken = 'CurrentToken';
   static const _qrCode = 'QRCode';
-  static const _restaurant = 'Restaurant';
 
   static SharedPreferences _prefs;
 
@@ -41,19 +40,9 @@ abstract class SharedPrefs {
     return _prefs.getString(_qrCode) ?? '';
   }
 
-  static Restaurant getRestaurant() {
-    String jsonRestaurant = _prefs.getString(_restaurant);
-    Restaurant restaurant = restaurantFromJson(jsonRestaurant);
-    return restaurant;
-  }
-
   static void saveQRCode(String qrCode) {
     _prefs.setString(
         _qrCode, (qrCode != null && qrCode.isNotEmpty) ? qrCode : "");
-  }
-
-  static void saveRestaurant(Restaurant restaurant) {
-    _prefs.setString(_restaurant, restaurantToJson(restaurant));
   }
 
   static User getUser() {

@@ -7,7 +7,7 @@ class MenuCategory extends ModelItem {
   MenuCategory({String name, this.image, this.id}) : super(name);
 
 
-  factory MenuCategory.fromJson(Map<String, dynamic> data) => new MenuCategory(
+  factory MenuCategory.fromJson(Map<String, dynamic> data) => MenuCategory(
       name: data['name'],
       id: data['id'],
       image: data['image']

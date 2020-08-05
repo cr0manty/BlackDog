@@ -65,7 +65,7 @@ class Api {
       getUser();
       if (Account.instance.state != AccountState.STAFF) {
         getCategories();
-        getNews();
+        getNewsList();
         getAboutUs();
       }
       init = true;
@@ -142,13 +142,14 @@ class Api {
         SharedPrefs.saveUser(user);
         await saveQRCode(body['qr_code']);
       }
+      Account.instance.updateUser();
       _apiChange.add(true);
       return user;
     }
   }
 
   Future updateUser(Map content) async {
-    Response response = await _client.put(_base_url + '/auth/user/',
+    Response response = await _client.patch(_base_url + '/auth/user/',
         body: json.encode(content), headers: _setHeaders(useJson: true));
 
     Map body = json.decode(response.body);
@@ -160,7 +161,7 @@ class Api {
     return body;
   }
 
-  Future getNews() async {
+  Future getNewsList() async {
     Response response =
         await _client.get(_base_api + '/posts/list', headers: _setHeaders());
 
@@ -175,6 +176,17 @@ class Api {
       });
       _apiChange.add(true);
     }
+  }
+
+    Future getNews(int id) async {
+    Response response =
+        await _client.get(_base_api + '/posts/list/$id', headers: _setHeaders());
+
+    if (response.statusCode == 200) {
+      Map body = json.decode(response.body) as Map;
+        return News.fromJson(body);
+    }
+    return null;
   }
 
   Future getCategories() async {
@@ -232,13 +244,11 @@ class Api {
 
   Future getAboutUs() async {
     Response response = await _client.get(_base_api + '/restaurant/config',
-        headers: _setHeaders()); //todo delete headers
+        headers: _setHeaders());
 
     if (response.statusCode == 200) {
       Map body = json.decode(response.body) as Map;
       Restaurant restaurant = Restaurant.fromJson(body);
-      SharedPrefs.saveRestaurant(restaurant);
-      _apiChange.add(true);
       return restaurant;
     }
     return null;

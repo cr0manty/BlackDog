@@ -42,7 +42,7 @@ class BonusCard extends StatelessWidget {
                   border: Border.all(color: Colors.black, width: 1),
                   color: HexColor.lightElement,
                 ),
-                height: ScreenSize.scanQRCodeSize,
+                height: ScreenSize.bonusCardSize,
                 padding: EdgeInsets.all(10)));
   }
 }
