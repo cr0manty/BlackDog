@@ -19,8 +19,8 @@ void main() async {
     await SharedPrefs.initialize();
   }
 
-  await Account.instance.initialize();
-  await ConnectionsCheck.instance.initialise();
+  Account.instance.initialize();
+  ConnectionsCheck.instance.initialise();
 
   runApp(BlackDogApp());
 }

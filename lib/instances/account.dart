@@ -20,7 +20,7 @@ class Account {
 
   User get user => _user;
 
-  Future initialize() async {
+  void initialize() {
     _user = SharedPrefs.getUser();
 
     if (_user != null) {
