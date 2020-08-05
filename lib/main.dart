@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/screens/home_page.dart';
 import 'package:black_dog/screens/sign_in.dart';
@@ -34,7 +36,7 @@ class _BlackDogAppState extends State<BlackDogApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       supportedLocales: [
-//        Locale('en', 'US'),
+        Locale('en', 'US'),
         Locale('ru', 'RU'),
       ],
       localizationsDelegates: [
@@ -44,9 +46,11 @@ class _BlackDogAppState extends State<BlackDogApp> {
         FallbackCupertinoLocalisationsDelegate(),
       ],
       localeListResolutionCallback: (locale, supportedLocales) {
+        print(
+            'Device language code: ${window.locale.languageCode}, country code: ${window.locale.countryCode}');
         for (var supportedLocale in supportedLocales) {
-          if (supportedLocale.languageCode == locale[0].languageCode &&
-              supportedLocale.countryCode == locale[0].countryCode)
+          if (supportedLocale.languageCode == window.locale.languageCode &&
+              supportedLocale.countryCode == window.locale.countryCode)
             return supportedLocale;
         }
         return supportedLocales.first;
