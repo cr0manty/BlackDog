@@ -1,35 +1,41 @@
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 
 class RouteButton extends StatelessWidget {
   final String text;
   final IconData icon;
+  final Widget iconWidget;
   final VoidCallback onTap;
   final Color color;
   final Color textColor;
   final Color iconColor;
   final bool iconFirst;
+  final bool defaultIcon;
   final double _indent;
   final EdgeInsets padding;
 
-  RouteButton({
-    this.icon,
-    this.text,
-    this.onTap,
-    this.color,
-    this.textColor,
-    this.iconColor,
-    this.padding,
-    this.iconFirst = true,
-  })  : assert(icon != null || text != null),
+  RouteButton(
+      {this.icon,
+      this.text,
+      this.onTap,
+      this.color,
+      this.textColor,
+      this.iconColor,
+      this.padding,
+      this.iconWidget,
+      this.iconFirst = true,
+      this.defaultIcon = false})
+      : assert(icon != null || text != null),
+        assert(!(iconWidget != null && icon != null)),
         _indent = icon != null && text != null ? 5 : 0;
 
   List<Widget> _iconFirstBuild(BuildContext context) {
     return <Widget>[
-      icon != null
+      icon != null || defaultIcon
           ? Icon(
-              icon,
+              icon ?? SFSymbols.chevron_left,
               size: 20,
               color: iconColor ?? Colors.black,
             )
@@ -62,6 +68,7 @@ class RouteButton extends StatelessWidget {
             )
           : Container(),
       SizedBox(width: _indent),
+      iconWidget ?? Container(),
       icon != null
           ? Icon(
               icon,

@@ -1,6 +1,7 @@
 import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/utils/localization.dart';
+import 'package:black_dog/utils/scroll_glow.dart';
 import 'package:black_dog/utils/size.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/screens/home_page.dart';
@@ -47,190 +48,202 @@ class _SignUpPageState extends State<SignUpPage> {
                 progressIndicator: CupertinoActivityIndicator(),
                 inAsyncCall: isLoading,
                 child: Form(
-                  key: _formKey,
-                  child: Container(
-                    padding: EdgeInsets.all(16),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Container(
-                            alignment: Alignment.topCenter,
-                            padding: EdgeInsets.only(
-                                top: ScreenSize.sectionIndent,
-                                bottom: ScreenSize.sectionIndent * 2),
-                            child: Text(
-                              AppLocalizations.of(context)
-                                  .translate('register'),
-                              style: Theme.of(context).textTheme.caption,
-                            ),
-                          ),
-                          Column(
+                    key: _formKey,
+                    child: Container(
+                      padding: EdgeInsets.all(16),
+                      child: ScrollConfiguration(
+                        behavior: ScrollGlow(),
+                        child: SingleChildScrollView(
+                          child: Column(
                             mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Align(
-                                  alignment: Alignment.center,
-                                  child: Container(
-                                      child: TextInput(
-                                    controller: _nameController,
-                                    hintText: AppLocalizations.of(context)
-                                        .translate('first_name'),
-                                    inputAction: TextInputAction.continueAction,
-                                  ))),
-                              Utils.showValidateError(fieldsError,
-                                  key: 'first_name'),
                               Container(
-                                  alignment: Alignment.center,
-                                  child: TextInput(
-                                    controller: _phoneController,
-                                    hintText: AppLocalizations.of(context)
-                                        .translate('phone'),
-                                    inputAction: TextInputAction.continueAction,
-                                  )),
-                              Utils.showValidateError(fieldsError,
-                                  key: 'phone'),
-                              Container(
-                                  alignment: Alignment.center,
-                                  child: TextInput(
-                                    controller: _emailController,
-                                    hintText: AppLocalizations.of(context)
-                                        .translate('email'),
-                                    inputAction: TextInputAction.continueAction,
-                                    keyboardType: TextInputType.emailAddress,
-                                  )),
-                              Utils.showValidateError(fieldsError,
-                                  key: 'email'),
-                              Container(
-                                  alignment: Alignment.center,
-                                  child: TextInput(
-                                    obscureText: _obscureText,
-                                    controller: _password1Controller,
-                                    hintText: AppLocalizations.of(context)
-                                        .translate('password'),
-                                    suffixIcon: GestureDetector(
-                                      child: Icon(
-                                          _obscureText
-                                              ? Icons.remove_red_eye
-                                              : Icons.visibility_off,
-                                          color: HexColor.darkElement),
-                                      onTap: () {
-                                        setState(() {
-                                          _obscureText = !_obscureText;
-                                        });
-                                      },
-                                    ),
-                                    inputAction: TextInputAction.done,
-                                  )),
-                              Utils.showValidateError(fieldsError,
-                                  key: 'password1'),
-                              Container(
-                                  alignment: Alignment.center,
-                                  child: TextInput(
-                                    obscureText: _obscureTextConfirm,
-                                    controller: _password2Controller,
-                                    hintText: AppLocalizations.of(context)
-                                        .translate('confirm_password'),
-                                    suffixIcon: GestureDetector(
-                                      child: Icon(
-                                          _obscureTextConfirm
-                                              ? Icons.remove_red_eye
-                                              : Icons.visibility_off,
-                                          color: HexColor.darkElement),
-                                      onTap: () {
-                                        setState(() {
-                                          _obscureTextConfirm =
-                                              !_obscureTextConfirm;
-                                        });
-                                      },
-                                    ),
-                                    validator: (String text) {
-                                      if (text != _password1Controller.text) {
-                                        return AppLocalizations.of(context)
-                                            .translate('password_mismatch');
-                                      }
-                                      return null;
-                                    },
-                                    inputAction: TextInputAction.done,
-                                  )),
-                              Utils.showValidateError(fieldsError,
-                                  key: 'password2'),
-                              GestureDetector(
-                                  onTap: () => _showModalBottomSheet(context),
-                                  child: Container(
-                                      height: 50,
-                                      width: ScreenSize.width - 32,
-                                      alignment: Alignment.centerLeft,
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 16),
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(9),
-                                          color: HexColor.lightElement),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          Text(
-                                            Utils.dateFormat(selectedDate) ??
-                                                AppLocalizations.of(context)
-                                                    .translate('birth_date'),
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 18),
-                                          ),
-                                          Icon(
-                                            SFSymbols.calendar,
-                                            color: Colors.black,
-                                          )
-                                        ],
+                                alignment: Alignment.topCenter,
+                                padding: EdgeInsets.only(
+                                    top: ScreenSize.sectionIndent,
+                                    bottom: ScreenSize.sectionIndent * 2),
+                                child: Text(
+                                  AppLocalizations.of(context)
+                                      .translate('register'),
+                                  style: Theme.of(context).textTheme.caption,
+                                ),
+                              ),
+                              Column(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Align(
+                                      alignment: Alignment.center,
+                                      child: Container(
+                                          child: TextInput(
+                                        controller: _nameController,
+                                        hintText: AppLocalizations.of(context)
+                                            .translate('first_name'),
+                                        inputAction:
+                                            TextInputAction.continueAction,
                                       ))),
-                              Utils.showValidateError(fieldsError,
-                                  key: 'date_birth'),
+                                  Utils.showValidateError(fieldsError,
+                                      key: 'first_name'),
+                                  Container(
+                                      alignment: Alignment.center,
+                                      child: TextInput(
+                                        controller: _phoneController,
+                                        hintText: AppLocalizations.of(context)
+                                            .translate('phone'),
+                                        inputAction:
+                                            TextInputAction.continueAction,
+                                      )),
+                                  Utils.showValidateError(fieldsError,
+                                      key: 'phone'),
+                                  Container(
+                                      alignment: Alignment.center,
+                                      child: TextInput(
+                                        controller: _emailController,
+                                        hintText: AppLocalizations.of(context)
+                                            .translate('email'),
+                                        inputAction:
+                                            TextInputAction.continueAction,
+                                        keyboardType:
+                                            TextInputType.emailAddress,
+                                      )),
+                                  Utils.showValidateError(fieldsError,
+                                      key: 'email'),
+                                  Container(
+                                      alignment: Alignment.center,
+                                      child: TextInput(
+                                        obscureText: _obscureText,
+                                        controller: _password1Controller,
+                                        hintText: AppLocalizations.of(context)
+                                            .translate('password'),
+                                        suffixIcon: GestureDetector(
+                                          child: Icon(
+                                              _obscureText
+                                                  ? Icons.remove_red_eye
+                                                  : Icons.visibility_off,
+                                              color: HexColor.darkElement),
+                                          onTap: () {
+                                            setState(() {
+                                              _obscureText = !_obscureText;
+                                            });
+                                          },
+                                        ),
+                                        inputAction: TextInputAction.done,
+                                      )),
+                                  Utils.showValidateError(fieldsError,
+                                      key: 'password1'),
+                                  Container(
+                                      alignment: Alignment.center,
+                                      child: TextInput(
+                                        obscureText: _obscureTextConfirm,
+                                        controller: _password2Controller,
+                                        hintText: AppLocalizations.of(context)
+                                            .translate('confirm_password'),
+                                        suffixIcon: GestureDetector(
+                                          child: Icon(
+                                              _obscureTextConfirm
+                                                  ? Icons.remove_red_eye
+                                                  : Icons.visibility_off,
+                                              color: HexColor.darkElement),
+                                          onTap: () {
+                                            setState(() {
+                                              _obscureTextConfirm =
+                                                  !_obscureTextConfirm;
+                                            });
+                                          },
+                                        ),
+                                        validator: (String text) {
+                                          if (text !=
+                                              _password1Controller.text) {
+                                            return AppLocalizations.of(context)
+                                                .translate('password_mismatch');
+                                          }
+                                          return null;
+                                        },
+                                        inputAction: TextInputAction.done,
+                                      )),
+                                  Utils.showValidateError(fieldsError,
+                                      key: 'password2'),
+                                  GestureDetector(
+                                      onTap: () =>
+                                          _showModalBottomSheet(context),
+                                      child: Container(
+                                          height: 50,
+                                          width: ScreenSize.width - 32,
+                                          alignment: Alignment.centerLeft,
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 16),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(9),
+                                              color: HexColor.lightElement),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
+                                              Text(
+                                                Utils.dateFormat(
+                                                        selectedDate) ??
+                                                    AppLocalizations.of(context)
+                                                        .translate(
+                                                            'birth_date'),
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 18),
+                                              ),
+                                              Icon(
+                                                SFSymbols.calendar,
+                                                color: Colors.black,
+                                              )
+                                            ],
+                                          ))),
+                                  Utils.showValidateError(fieldsError,
+                                      key: 'date_birth'),
+                                ],
+                              ),
+                              Container(
+                                  alignment: Alignment.bottomCenter,
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: ScreenSize.sectionIndent),
+                                  child: Column(
+                                    children: <Widget>[
+                                      CupertinoButton(
+                                          onPressed: registerClick,
+                                          color: HexColor.lightElement,
+                                          child: Text(
+                                            AppLocalizations.of(context)
+                                                .translate('register'),
+                                            overflow: TextOverflow.fade,
+                                            maxLines: 1,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline1
+                                                .copyWith(
+                                                    color:
+                                                        HexColor.darkElement),
+                                          )),
+                                      CupertinoButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                            FocusScope.of(context)
+                                                .requestFocus(FocusNode());
+                                          },
+                                          child: Text(
+                                            AppLocalizations.of(context)
+                                                .translate(
+                                                    'already_have_account'),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText2,
+                                          )),
+                                    ],
+                                  )),
                             ],
                           ),
-                          Container(
-                              alignment: Alignment.bottomCenter,
-                              padding: EdgeInsets.symmetric(
-                                  vertical: ScreenSize.sectionIndent),
-                              child: Column(
-                                children: <Widget>[
-                                  CupertinoButton(
-                                      onPressed: registerClick,
-                                      color: HexColor.lightElement,
-                                      child: Text(
-                                        AppLocalizations.of(context)
-                                            .translate('register'),
-                                        overflow: TextOverflow.fade,
-                                        maxLines: 1,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline1
-                                            .copyWith(
-                                                color: HexColor.darkElement),
-                                      )),
-                                  CupertinoButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                        FocusScope.of(context)
-                                            .requestFocus(FocusNode());
-                                      },
-                                      child: Text(
-                                        AppLocalizations.of(context)
-                                            .translate('already_have_account'),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyText2,
-                                      )),
-                                ],
-                              )),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                ))));
+                    )))));
   }
 
   void _showModalBottomSheet(context) {
@@ -290,7 +303,7 @@ class _SignUpPageState extends State<SignUpPage> {
       return;
     }).catchError((error) {
       setState(() => isLoading = !isLoading);
-      Utils.showErrorPopUp(context);
+      Utils.showErrorPopUp(context, text: error);
     });
   }
 }

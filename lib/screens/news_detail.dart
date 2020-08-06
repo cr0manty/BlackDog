@@ -7,7 +7,6 @@ import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 
 class NewsDetail extends StatefulWidget {
   final News news;
@@ -43,7 +42,7 @@ class _NewsDetailState extends State<NewsDetail> {
       shrinkWrap: true,
       padding: EdgeInsets.symmetric(horizontal: 16),
       leading: RouteButton(
-        icon: SFSymbols.chevron_left,
+                defaultIcon: true,
         text: AppLocalizations.of(context)
             .translate(widget.fromHome ? 'home' : 'news'),
         color: HexColor.lightElement,
@@ -55,8 +54,6 @@ class _NewsDetailState extends State<NewsDetail> {
             options: CarouselOptions(
               height: ScreenSize.newsItemPhotoSize,
               viewportFraction: 1,
-              autoPlay: true,
-              autoPlayInterval: Duration(seconds: 10),
               enlargeCenterPage: true,
             )),
         Container(

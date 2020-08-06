@@ -3,6 +3,7 @@ import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/hex_color.dart';
+import 'package:black_dog/utils/size.dart';
 import 'package:black_dog/widgets/input_field.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
@@ -41,7 +42,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       alwaysNavigation: true,
       inAsyncCall: isLoading,
       leading: RouteButton(
-        icon: SFSymbols.chevron_left,
+        defaultIcon: true,
         text: AppLocalizations.of(context)
             .translate(widget.fromHome ? 'home' : 'profile'),
         color: HexColor.lightElement,
@@ -84,6 +85,21 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 keyboardType: TextInputType.emailAddress,
               )),
               Utils.showValidateError(fieldsError, key: 'email'),
+              Container(
+                alignment: Alignment.bottomCenter,
+                child: SizedBox(
+                  width: ScreenSize.width - 64,
+                  child: CupertinoButton(
+                      onPressed: () {},
+                      color: HexColor.lightElement,
+                      child: Text(
+                          AppLocalizations.of(context).translate('change_password'),
+                          style: Theme.of(context)
+                              .textTheme
+                              .caption
+                              .copyWith(color: HexColor.darkElement))),
+                ),
+              ),
             ],
           ),
         ),
@@ -95,7 +111,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     return {
       'first_name': _nameController.text,
       'email': _emailController.text,
-      'phone': _phoneController.text,
+      'phone_number': _phoneController.text,
     };
   }
 
@@ -118,8 +134,6 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       }
       setState(() => isLoading = !isLoading);
       return;
-    }).catchError((error) {
-
-    });
+    }).catchError((error) {});
   }
 }

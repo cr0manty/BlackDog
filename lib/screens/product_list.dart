@@ -8,7 +8,6 @@ import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 
 class ProductList extends StatefulWidget {
   final String title;
@@ -43,7 +42,7 @@ class _ProductListState extends State<ProductList> {
       shrinkWrap: true,
       padding: EdgeInsets.symmetric(horizontal: 16),
       leading: RouteButton(
-        icon: SFSymbols.chevron_left,
+        defaultIcon: true,
         text: AppLocalizations.of(context).translate('home'),
         color: Colors.white,
         onTap: Navigator.of(context).pop,

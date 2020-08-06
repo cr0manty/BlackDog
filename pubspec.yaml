@@ -39,6 +39,7 @@ dependencies:
   carousel_slider: ^2.2.1
   intl: ^0.16.1
   url_launcher: ^5.5.0
+  flutter_svg: ^0.18.0
   flutter_localizations:
     sdk: flutter
 
@@ -60,6 +61,7 @@ flutter:
 
   assets:
     - assets/lang/
+    - assets/images/
 
   fonts:
     - family: sficonsets

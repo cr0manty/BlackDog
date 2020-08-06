@@ -6,7 +6,6 @@ import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 
 class ProductDetail extends StatefulWidget {
   final MenuItem product;
@@ -24,7 +23,7 @@ class _ProductDetailState extends State<ProductDetail> {
       shrinkWrap: true,
       alwaysNavigation: true,
       leading: RouteButton(
-        icon: SFSymbols.chevron_left,
+        defaultIcon: true,
         text: AppLocalizations.of(context).translate('back'),
         color: HexColor.lightElement,
         onTap: Navigator.of(context).pop,

@@ -67,7 +67,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
       shrinkWrap: true,
       padding: EdgeInsets.symmetric(horizontal: 16),
       leading: RouteButton(
-        icon: SFSymbols.chevron_left,
+        defaultIcon: true,
         text: AppLocalizations.of(context).translate('home'),
         color: HexColor.lightElement,
         onTap: Navigator.of(context).pop,
@@ -101,6 +101,8 @@ class _AboutUsPageState extends State<AboutUsPage> {
               style: Theme.of(context).textTheme.headline1,
             )),
         _buildSection(widget.restaurant.webUrl, SFSymbols.globe, web: true),
+        _buildSection(widget.restaurant.instagramLink, SFSymbols.logo_instagram, web: true),
+        _buildSection(widget.restaurant.facebook, SFSymbols.logo_facebook, web: true),
         _buildSection(widget.restaurant.phone, SFSymbols.phone, call: true),
         _buildSection(widget.restaurant.email, SFSymbols.envelope, email: true),
       ],

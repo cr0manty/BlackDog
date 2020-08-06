@@ -39,8 +39,7 @@ class BonusCard extends StatelessWidget {
             child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(9),
-                  border: Border.all(color: Colors.black, width: 1),
-                  color: HexColor.lightElement,
+                  color: HexColor.darkElement,
                 ),
                 height: ScreenSize.bonusCardSize,
                 padding: EdgeInsets.all(10)));

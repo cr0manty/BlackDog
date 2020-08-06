@@ -267,6 +267,16 @@ class Api {
     return null;
   }
 
+  Future passwordReset(String email) async {
+    return await _client.post(
+        _setUrl(path: '/auth/password/reset/', base: true),
+        body: {'email': email}).then((response) {
+      Map body = json.decode(response.body);
+      body['result'] = response.statusCode == 200;
+      return body;
+    }).catchError((error) => {'result': false});
+  }
+
   void dispose() {
     _apiChange?.close();
   }

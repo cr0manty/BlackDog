@@ -5,6 +5,7 @@ import 'package:black_dog/utils/connection_check.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'instances/account.dart';
@@ -31,15 +32,15 @@ class BlackDogApp extends StatefulWidget {
 class _BlackDogAppState extends State<BlackDogApp> {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+        statusBarColor: HexColor.darkElement.withOpacity(0.6),
+        statusBarBrightness: Brightness.dark));
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       supportedLocales: [
         Locale('en', 'US'),
         Locale('ru', 'RU'),
         Locale('uk', 'UA'),
-        Locale('ru', 'UA'),
-        Locale('uk', 'UK'),
-        Locale('en', 'UA'),
       ],
       localizationsDelegates: [
         AppLocalizations.delegate,
@@ -50,8 +51,7 @@ class _BlackDogAppState extends State<BlackDogApp> {
       localeListResolutionCallback: (locales, supportedLocales) {
         for (Locale locale in locales) {
           for (Locale supportedLocale in supportedLocales) {
-            if (supportedLocale.languageCode == locale.languageCode &&
-                supportedLocale.countryCode == locale.countryCode) {
+            if (supportedLocale.languageCode == locale.languageCode) {
               print('Device language code: ${locale.languageCode}');
               print('Device country code: ${locale.countryCode ?? ''}');
               SharedPrefs.saveLanguageCode(locale.languageCode);
@@ -61,7 +61,8 @@ class _BlackDogAppState extends State<BlackDogApp> {
         }
 
         print('Device language code: ${supportedLocales.first.languageCode}');
-        print('Device country code: ${supportedLocales.first.countryCode ?? ''}');
+        print(
+            'Device country code: ${supportedLocales.first.countryCode ?? ''}');
 
         SharedPrefs.saveLanguageCode(supportedLocales.first.languageCode);
         return supportedLocales.first;

@@ -47,7 +47,7 @@ class User {
       firstName: data['first_name'],
       lastName: data['last_name'],
       email: data['email'],
-      phone: data['phone'],
+      phone: data['phone_number'],
       instagramUsername: data['instagram_username'],
       isStaff: data['is_staff'],
       vouchers: vouchersToJsonList(data['vouchers'] ?? []));
@@ -55,7 +55,7 @@ class User {
   Map<String, dynamic> toJson() => {
         'first_name': firstName,
         'last_name': lastName,
-        'phone': phone,
+        'phone_number': phone,
         'instagram_username': instagramUsername,
         'email': email,
         'is_staff': isStaff,

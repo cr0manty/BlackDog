@@ -7,7 +7,6 @@ import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 
 class NewsList extends StatefulWidget {
   @override
@@ -22,7 +21,7 @@ class _NewsListState extends State<NewsList> {
       padding: EdgeInsets.symmetric(horizontal: 16),
       alwaysNavigation: true,
       leading: RouteButton(
-        icon: SFSymbols.chevron_left,
+        defaultIcon: true,
         text: AppLocalizations.of(context).translate('home'),
         color: HexColor.lightElement,
         onTap: Navigator.of(context).pop,

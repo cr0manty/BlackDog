@@ -2,6 +2,7 @@ import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/screens/sign_up.dart';
 import 'package:black_dog/utils/localization.dart';
+import 'package:black_dog/utils/scroll_glow.dart';
 import 'package:black_dog/utils/size.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/screens/home_page.dart';
@@ -11,6 +12,8 @@ import 'package:black_dog/widgets/input_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+
+import 'fortgot_password.dart';
 
 class SignInPage extends StatefulWidget {
   @override
@@ -37,10 +40,12 @@ class _SignInPageState extends State<SignInPage> {
                 progressIndicator: CupertinoActivityIndicator(),
                 inAsyncCall: isLoading,
                 child: SafeArea(
-                  child: Form(
-                      key: _formKey,
-                      child: Container(
-                        padding: EdgeInsets.all(16),
+                    child: Form(
+                  key: _formKey,
+                  child: Container(
+                      padding: EdgeInsets.all(16),
+                      child: ScrollConfiguration(
+                        behavior: ScrollGlow(),
                         child: CustomScrollView(slivers: [
                           SliverFillRemaining(
                             hasScrollBody: false,
@@ -107,6 +112,10 @@ class _SignInPageState extends State<SignInPage> {
                                           onPressed: () {
                                             FocusScope.of(context)
                                                 .requestFocus(FocusNode());
+                                            Navigator.of(context).push(
+                                                CupertinoPageRoute(
+                                                    builder: (context) =>
+                                                        ForgotPassword()));
                                           },
                                           child: Text(
                                             AppLocalizations.of(context)
@@ -130,15 +139,14 @@ class _SignInPageState extends State<SignInPage> {
                                               onPressed: loginClick,
                                               color: HexColor.lightElement,
                                               child: Text(
-                                                AppLocalizations.of(context)
-                                                    .translate('sign_in'),
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .caption
-                                                    .copyWith(
-                                                        color: HexColor
-                                                            .darkElement),
-                                              )),
+                                                  AppLocalizations.of(context)
+                                                      .translate('sign_in'),
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .caption
+                                                      .copyWith(
+                                                          color: HexColor
+                                                              .darkElement))),
                                         ),
                                         CupertinoButton(
                                             onPressed: () {
@@ -149,12 +157,11 @@ class _SignInPageState extends State<SignInPage> {
                                                       page: SignUpPage()));
                                             },
                                             child: Text(
-                                              AppLocalizations.of(context)
-                                                  .translate('no_account'),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText2,
-                                            )),
+                                                AppLocalizations.of(context)
+                                                    .translate('no_account'),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText2)),
                                       ],
                                     )),
                               ],
@@ -162,7 +169,7 @@ class _SignInPageState extends State<SignInPage> {
                           )
                         ]),
                       )),
-                ))));
+                )))));
   }
 
   Future loginClick() async {
@@ -188,7 +195,7 @@ class _SignInPageState extends State<SignInPage> {
       return;
     }).catchError((error) {
       setState(() => isLoading = !isLoading);
-      Utils.showErrorPopUp(context);
+      Utils.showErrorPopUp(context, text: error);
     });
   }
 }

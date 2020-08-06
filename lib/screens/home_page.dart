@@ -5,6 +5,7 @@ import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/screens/product_list.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
+import 'package:black_dog/utils/scroll_glow.dart';
 import 'package:black_dog/utils/size.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/screens/user_page.dart';
@@ -17,6 +18,7 @@ import 'package:black_dog/widgets/user_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../instances/account.dart';
 import '../instances/shared_pref.dart';
@@ -86,7 +88,11 @@ class _HomePageState extends State<HomePage> {
                   padding: EdgeInsets.only(top: 5),
                   iconColor: HexColor.lightElement,
                   textColor: HexColor.lightElement,
-                  icon: Icons.info_outline,
+                  iconWidget: Container(
+                    margin: EdgeInsets.only(left: 10),
+                    child: SvgPicture.asset('assets/images/about_us.svg',
+                        color: HexColor.lightElement, height: 20, width: 20),
+                  ),
                   iconFirst: false,
                   text: AppLocalizations.of(context).translate('about_us'),
                   onTap: () async {
@@ -162,24 +168,28 @@ class _HomePageState extends State<HomePage> {
         SizedBox(height: ScreenSize.sectionIndent - 20),
         _buildSection(
           AppLocalizations.of(context).translate('news'),
-          SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Api.instance.news.length > 0
-                  ? Row(
-                      children: List.generate(
-                          Api.instance.news.length > 5
-                              ? 7
-                              : Api.instance.news.length + 2,
-                          _buildNewsBlock),
-                    )
-                  : Container(
-                      width: ScreenSize.width,
-                      child: Center(
-                          child: Text(
-                        AppLocalizations.of(context).translate('no_news'),
-                        style: Theme.of(context).textTheme.subtitle1,
-                      )),
-                    )),
+          ScrollConfiguration(
+              behavior: ScrollGlow(),
+              child: ScrollConfiguration(
+                  behavior: ScrollGlow(),
+                  child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Api.instance.news.length > 0
+                          ? Row(
+                              children: List.generate(
+                                  Api.instance.news.length > 5
+                                      ? 7
+                                      : Api.instance.news.length + 2,
+                                  _buildNewsBlock))
+                          : Container(
+                              width: ScreenSize.width,
+                              child: Center(
+                                  child: Text(
+                                AppLocalizations.of(context)
+                                    .translate('no_news'),
+                                style: Theme.of(context).textTheme.subtitle1,
+                              )),
+                            )))),
           subWidgetText: Api.instance.news.length > 0
               ? AppLocalizations.of(context).translate('more')
               : null,

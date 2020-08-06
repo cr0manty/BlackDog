@@ -1,3 +1,4 @@
+import 'package:black_dog/utils/scroll_glow.dart';
 import 'package:black_dog/utils/size.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ class PageScaffold extends StatelessWidget {
   final bool inAsyncCall;
   final EdgeInsets padding;
   final bool shrinkWrap;
+  final bool titleMargin;
 
   PageScaffold(
       {this.child,
@@ -23,7 +25,8 @@ class PageScaffold extends StatelessWidget {
       this.padding,
       this.shrinkWrap = false,
       this.alwaysNavigation = false,
-      this.inAsyncCall = false})
+      this.inAsyncCall = false,
+      this.titleMargin = true})
       : assert(child != null || children != null);
 
   Widget _appBar() {
@@ -47,7 +50,7 @@ class PageScaffold extends StatelessWidget {
         child: title,
       );
     }
-    return Container(height: alwaysNavigation ? 20 : 0);
+    return Container(height: alwaysNavigation && titleMargin ? 20 : 0);
   }
 
   List<Widget> _buildBodyChildren(List<Widget> listChildren) {
@@ -78,16 +81,21 @@ class PageScaffold extends StatelessWidget {
                       _appBar(),
                       Expanded(
                           child: Container(
-                        padding: padding ?? EdgeInsets.zero,
-                        child: ListView(
-                            shrinkWrap: shrinkWrap,
-                            children:
-                                _buildBodyChildren(<Widget>[_titleWidget()])),
-                      ))
+                              padding: padding ?? EdgeInsets.zero,
+                              child: ScrollConfiguration(
+                                behavior: ScrollGlow(),
+                                child: ListView(
+                                    shrinkWrap: shrinkWrap,
+                                    children: _buildBodyChildren(
+                                        <Widget>[_titleWidget()])),
+                              )))
                     ]))
-              : ListView(
-                  shrinkWrap: shrinkWrap,
-                  children: _buildBodyChildren([_appBar(), _titleWidget()]),
+              : ScrollConfiguration(
+                  behavior: ScrollGlow(),
+                  child: ListView(
+                    shrinkWrap: shrinkWrap,
+                    children: _buildBodyChildren([_appBar(), _titleWidget()]),
+                  ),
                 )),
     ));
   }

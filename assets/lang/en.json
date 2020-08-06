@@ -26,5 +26,8 @@
   "save": "Save",
   "success": "Success",
   "error": "Error",
-  "back": "Back"
+  "back": "Back",
+  "send": "Send",
+  "restore_password": "Restore Password",
+  "change_password": "Change Password"
 }
