@@ -30,37 +30,46 @@ class _UserPageState extends State<UserPage> {
     super.initState();
   }
 
+  Widget _currentBonusCard() {
+    return Container();
+  }
+
+  Widget _vouchersBody() {
+    return Container();
+  }
+
   @override
   Widget build(BuildContext context) {
     return PageScaffold(
-        alwaysNavigation: true,
-        leading: RouteButton(
-          icon: SFSymbols.chevron_left,
-          text: AppLocalizations.of(context).translate('home'),
-          color: HexColor.lightElement,
-          onTap: Navigator.of(context).pop,
+      shrinkWrap: true,
+      alwaysNavigation: true,
+      leading: RouteButton(
+        icon: SFSymbols.chevron_left,
+        text: AppLocalizations.of(context).translate('home'),
+        color: HexColor.lightElement,
+        onTap: Navigator.of(context).pop,
+      ),
+      action: RouteButton(
+        text: AppLocalizations.of(context).translate('logout'),
+        color: HexColor.lightElement,
+        onTap: () {
+          SharedPrefs.logout();
+          Navigator.of(context, rootNavigator: true)
+              .push(BottomRoute(page: SignInPage()));
+        },
+      ),
+      children: <Widget>[
+        UserCard(
+          isStaff: false,
+          onPressed: () {},
+          username: Account.instance.name,
+          trailing: EditButton(),
+          additionWidget: BonusCard(),
         ),
-        action: RouteButton(
-          text: AppLocalizations.of(context).translate('logout'),
-          color: HexColor.lightElement,
-          onTap: () {
-            SharedPrefs.logout();
-            Navigator.of(context, rootNavigator: true)
-                .push(BottomRoute(page: SignInPage()));
-          },
-        ),
-        child: ListView(
-          shrinkWrap: true,
-          children: <Widget>[
-            UserCard(
-              isStaff: false,
-              onPressed: () {},
-              username: Account.instance.name,
-              trailing: EditButton(),
-              additionWidget: BonusCard(),
-            ),
-          ],
-        ));
+        _currentBonusCard(),
+        _vouchersBody()
+      ],
+    );
   }
 
   @override

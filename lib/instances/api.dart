@@ -9,6 +9,7 @@ import 'package:black_dog/models/menu_item.dart';
 import 'package:black_dog/models/news.dart';
 import 'package:black_dog/models/restaurant.dart';
 import 'package:black_dog/models/user.dart';
+import 'package:black_dog/utils/connection_check.dart';
 import 'package:http/http.dart';
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:path_provider/path_provider.dart';
@@ -97,7 +98,7 @@ class Api {
 
   Future staffScanQRCode(String url) async {
     if (!url.startsWith(_base_url)) {
-      return {'result': false, 'message': ''};
+      return {'result': false, 'message': null};
     }
     Response response = await _client
         .post(url + '?lang=${SharedPrefs.getLanguageCode()}', headers: {
@@ -131,7 +132,8 @@ class Api {
         headers: _setHeaders(useJson: true, useToken: false));
 
     Map body = json.decode(response.body);
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201) {
+      SharedPrefs.saveToken(body['key']);
       _apiChange.add(true);
       return {'result': true};
     }
@@ -235,7 +237,7 @@ class Api {
   }
 
   Future saveQRCode(String url) async {
-    if (url == null || url.isEmpty) {
+    if (url == null || url.isEmpty || !ConnectionsCheck.instance.isOnline) {
       return;
     }
 

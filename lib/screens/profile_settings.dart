@@ -103,21 +103,23 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     setState(() => isLoading = !isLoading);
     fieldsError = {};
 
-    Map response = await Api.instance.updateUser(_sendData());
+    await Api.instance.updateUser(_sendData()).then((response) {
+      bool result = response.remove('result');
+      if (result) {
+        Navigator.of(context).pop();
+      } else {
+        response.forEach((key, value) {
+          if (key == 'email' || key == 'first_name' || key == 'phone') {
+            fieldsError[key] = value[0];
+          } else {
+            fieldsError['all'] = value[0];
+          }
+        });
+      }
+      setState(() => isLoading = !isLoading);
+      return;
+    }).catchError((error) {
 
-    bool result = response.remove('result');
-    if (result) {
-      Navigator.of(context).pop();
-    } else {
-      response.forEach((key, value) {
-        if (key == 'email' || key == 'first_name' || key == 'phone') {
-          fieldsError[key] = value[0];
-        } else {
-          fieldsError['all'] = value[0];
-        }
-      });
-    }
-
-    setState(() => isLoading = !isLoading);
+    });
   }
 }

@@ -1,3 +1,4 @@
+import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/utils/size.dart';
@@ -24,6 +25,14 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _password1Controller = TextEditingController();
   final TextEditingController _password2Controller = TextEditingController();
   final GlobalKey _formKey = GlobalKey<FormState>();
+  static const List<String> _fieldsList = [
+    'email',
+    'password1',
+    'password2',
+    'first_name',
+    'phone',
+    'date_birth'
+  ];
   Map fieldsError = {};
   bool _obscureText = true;
   bool _obscureTextConfirm = true;
@@ -71,7 +80,8 @@ class _SignUpPageState extends State<SignUpPage> {
                                         .translate('first_name'),
                                     inputAction: TextInputAction.continueAction,
                                   ))),
-                              Utils.showValidateError(fieldsError, key: 'first_name'),
+                              Utils.showValidateError(fieldsError,
+                                  key: 'first_name'),
                               Container(
                                   alignment: Alignment.center,
                                   child: TextInput(
@@ -80,7 +90,8 @@ class _SignUpPageState extends State<SignUpPage> {
                                         .translate('phone'),
                                     inputAction: TextInputAction.continueAction,
                                   )),
-                              Utils.showValidateError(fieldsError, key: 'phone'),
+                              Utils.showValidateError(fieldsError,
+                                  key: 'phone'),
                               Container(
                                   alignment: Alignment.center,
                                   child: TextInput(
@@ -90,7 +101,8 @@ class _SignUpPageState extends State<SignUpPage> {
                                     inputAction: TextInputAction.continueAction,
                                     keyboardType: TextInputType.emailAddress,
                                   )),
-                              Utils.showValidateError(fieldsError, key: 'email'),
+                              Utils.showValidateError(fieldsError,
+                                  key: 'email'),
                               Container(
                                   alignment: Alignment.center,
                                   child: TextInput(
@@ -112,7 +124,8 @@ class _SignUpPageState extends State<SignUpPage> {
                                     ),
                                     inputAction: TextInputAction.done,
                                   )),
-                              Utils.showValidateError(fieldsError, key: 'password1'),
+                              Utils.showValidateError(fieldsError,
+                                  key: 'password1'),
                               Container(
                                   alignment: Alignment.center,
                                   child: TextInput(
@@ -142,7 +155,8 @@ class _SignUpPageState extends State<SignUpPage> {
                                     },
                                     inputAction: TextInputAction.done,
                                   )),
-                              Utils.showValidateError(fieldsError, key: 'password2'),
+                              Utils.showValidateError(fieldsError,
+                                  key: 'password2'),
                               GestureDetector(
                                   onTap: () => _showModalBottomSheet(context),
                                   child: Container(
@@ -173,7 +187,8 @@ class _SignUpPageState extends State<SignUpPage> {
                                           )
                                         ],
                                       ))),
-                              Utils.showValidateError(fieldsError, key: 'date_birth'),
+                              Utils.showValidateError(fieldsError,
+                                  key: 'date_birth'),
                             ],
                           ),
                           Container(
@@ -258,26 +273,24 @@ class _SignUpPageState extends State<SignUpPage> {
     setState(() => isLoading = !isLoading);
     fieldsError = {};
 
-    Map response = await Api.instance.register(_sendData());
-
-    bool result = response.remove('result');
-    if (result) {
-      Navigator.of(context).push(BottomRoute(page: HomePage()));
-    } else {
-      response.forEach((key, value) {
-        if (key == 'email' ||
-            key == 'password1' ||
-            key == 'password2' ||
-            key == 'first_name' ||
-            key == 'phone' ||
-            key == 'date_birth') {
-          fieldsError[key] = value[0];
-        } else {
-          fieldsError['all'] = value[0];
-        }
-      });
-    }
-
-    setState(() => isLoading = !isLoading);
+    await Api.instance.register(_sendData()).then((response) async {
+      bool result = response.remove('result');
+      if (result && await Account.instance.setUser()) {
+        Navigator.of(context).push(BottomRoute(page: HomePage()));
+      } else {
+        response.forEach((key, value) {
+          if (_fieldsList.contains(key)) {
+            fieldsError[key] = value[0];
+          } else {
+            fieldsError['all'] = value[0];
+          }
+        });
+      }
+      setState(() => isLoading = !isLoading);
+      return;
+    }).catchError((error) {
+      setState(() => isLoading = !isLoading);
+      Utils.showErrorPopUp(context);
+    });
   }
 }

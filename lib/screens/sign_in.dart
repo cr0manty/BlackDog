@@ -21,6 +21,7 @@ class _SignInPageState extends State<SignInPage> {
   final TextEditingController _emailFilter = TextEditingController();
   final TextEditingController _passwordFilter = TextEditingController();
   final GlobalKey _formKey = GlobalKey<FormState>();
+  static const List<String> _fieldsList = ['email', 'password'];
   Map fieldsError = {};
   bool _obscureText = true;
   bool isLoading = false;
@@ -104,7 +105,8 @@ class _SignInPageState extends State<SignInPage> {
                                           padding: EdgeInsets.only(
                                               top: 8, bottom: 8, left: 8),
                                           onPressed: () {
-                                            FocusScope.of(context).requestFocus(FocusNode());
+                                            FocusScope.of(context)
+                                                .requestFocus(FocusNode());
                                           },
                                           child: Text(
                                             AppLocalizations.of(context)
@@ -140,7 +142,8 @@ class _SignInPageState extends State<SignInPage> {
                                         ),
                                         CupertinoButton(
                                             onPressed: () {
-                                              FocusScope.of(context).requestFocus(FocusNode());
+                                              FocusScope.of(context)
+                                                  .requestFocus(FocusNode());
                                               Navigator.of(context).push(
                                                   BottomRoute(
                                                       page: SignUpPage()));
@@ -166,21 +169,26 @@ class _SignInPageState extends State<SignInPage> {
     FocusScope.of(context).requestFocus(FocusNode());
     setState(() => isLoading = !isLoading);
     fieldsError = {};
-    Map response =
-        await Api.instance.login(_emailFilter.text, _passwordFilter.text);
-
-    bool result = response.remove('result');
-    if (result && await Account.instance.setUser()) {
-      Navigator.of(context).push(BottomRoute(page: HomePage()));
-    } else {
-      response.forEach((key, value) {
-        if (key == 'email' || key == 'password') {
-          fieldsError[key] = value[0];
-        } else {
-          fieldsError['all'] = value[0];
-        }
-      });
-    }
-    setState(() => isLoading = !isLoading);
+    await Api.instance
+        .login(_emailFilter.text, _passwordFilter.text)
+        .then((response) async {
+      bool result = response.remove('result');
+      if (result && await Account.instance.setUser()) {
+        Navigator.of(context).push(BottomRoute(page: HomePage()));
+      } else {
+        response.forEach((key, value) {
+          if (_fieldsList.contains(key)) {
+            fieldsError[key] = value[0];
+          } else {
+            fieldsError['all'] = value[0];
+          }
+        });
+      }
+      setState(() => isLoading = !isLoading);
+      return;
+    }).catchError((error) {
+      setState(() => isLoading = !isLoading);
+      Utils.showErrorPopUp(context);
+    });
   }
 }
