@@ -303,7 +303,7 @@ class _SignUpPageState extends State<SignUpPage> {
       return;
     }).catchError((error) {
       setState(() => isLoading = !isLoading);
-      Utils.showErrorPopUp(context, text: error);
+      Utils.showErrorPopUp(context);
     });
   }
 }
