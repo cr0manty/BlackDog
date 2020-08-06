@@ -139,15 +139,6 @@ class _HomePageState extends State<HomePage> {
         ));
   }
 
-  Widget _actionButton(String text, {VoidCallback onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        child: Text(text),
-      ),
-    );
-  }
-
   Widget _buildStaff() {
     return Column(children: <Widget>[
       UserCard(isStaff: true, onPressed: null, username: Account.instance.name),

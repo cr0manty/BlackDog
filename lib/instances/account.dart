@@ -24,7 +24,7 @@ class Account {
     _user = SharedPrefs.getUser();
 
     if (_user != null) {
-      state = _user.isStaff ? AccountState.STAFF : AccountState.USER;
+      state = _user.isStaff ?? false ? AccountState.STAFF : AccountState.USER;
     }
   }
 

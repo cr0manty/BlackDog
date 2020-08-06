@@ -89,11 +89,18 @@ class Api {
     return headers;
   }
 
+  String _setUrl({String path = '', bool base = false}) {
+    return (base ? _base_url : _base_api) +
+        path +
+        '?lang=${SharedPrefs.getLanguageCode()}';
+  }
+
   Future staffScanQRCode(String url) async {
     if (!url.startsWith(_base_url)) {
       return {'result': false, 'message': ''};
     }
-    Response response = await _client.post(url, headers: {
+    Response response = await _client
+        .post(url + '?lang=${SharedPrefs.getLanguageCode()}', headers: {
       'Authorization': "Token ${SharedPrefs.getToken()}",
     });
     Map body = json.decode(response.body);
@@ -102,7 +109,8 @@ class Api {
   }
 
   Future login(String email, String password) async {
-    Response response = await _client.post(_base_url + '/auth/login/',
+    Response response = await _client.post(
+        _setUrl(path: '/auth/login/', base: true),
         body: {'email': email, 'password': password});
 
     Map body = json.decode(response.body);
@@ -117,7 +125,8 @@ class Api {
   }
 
   Future register(Map content) async {
-    Response response = await _client.post(_base_url + '/register/',
+    Response response = await _client.post(
+        _setUrl(path: '/register/', base: true),
         body: json.encode(content),
         headers: _setHeaders(useJson: true, useToken: false));
 
@@ -132,8 +141,8 @@ class Api {
   }
 
   Future getUser() async {
-    Response response =
-        await _client.get(_base_api + '/user/profile', headers: _setHeaders());
+    Response response = await _client.get(_setUrl(path: '/user/profile'),
+        headers: _setHeaders());
     if (response.statusCode == 200) {
       Map body = json.decode(response.body);
       User user = User.fromJson(body);
@@ -148,8 +157,10 @@ class Api {
   }
 
   Future updateUser(Map content) async {
-    Response response = await _client.patch(_base_url + '/auth/user/',
-        body: json.encode(content), headers: _setHeaders(useJson: true));
+    Response response = await _client.patch(
+        _setUrl(path: '/auth/user/', base: true),
+        body: json.encode(content),
+        headers: _setHeaders(useJson: true));
 
     Map body = json.decode(response.body);
     if (response.statusCode == 200) {
@@ -162,7 +173,7 @@ class Api {
 
   Future getNewsList() async {
     Response response =
-        await _client.get(_base_api + '/posts/list', headers: _setHeaders());
+        await _client.get(_setUrl(path: '/posts/list'), headers: _setHeaders());
 
     if (response.statusCode == 200) {
       List body = json.decode(response.body) as List;
@@ -177,20 +188,20 @@ class Api {
     }
   }
 
-    Future getNews(int id) async {
-    Response response =
-        await _client.get(_base_api + '/posts/list/$id', headers: _setHeaders());
+  Future getNews(int id) async {
+    Response response = await _client.get(_setUrl(path: '/posts/list/$id'),
+        headers: _setHeaders());
 
     if (response.statusCode == 200) {
       Map body = json.decode(response.body) as Map;
-        return News.fromJson(body);
+      return News.fromJson(body);
     }
     return null;
   }
 
   Future getCategories() async {
-    Response response = await _client.get(_base_api + '/menu/categories-list',
-        headers: _setHeaders());
+    Response response = await _client
+        .get(_setUrl(path: '/menu/categories-list'), headers: _setHeaders());
 
     if (response.statusCode == 200) {
       List body = json.decode(response.body) as List;
@@ -206,8 +217,9 @@ class Api {
   }
 
   Future getMenu(int id) async {
-    Response response = await _client
-        .get(_base_api + '/menu/categories-list/$id', headers: _setHeaders());
+    Response response = await _client.get(
+        _setUrl(path: '/menu/categories-list/$id'),
+        headers: _setHeaders());
     List<MenuItem> menu = [];
 
     if (response.statusCode == 200) {
@@ -242,7 +254,7 @@ class Api {
   }
 
   Future getAboutUs() async {
-    Response response = await _client.get(_base_api + '/restaurant/config',
+    Response response = await _client.get(_setUrl(path: '/restaurant/config'),
         headers: _setHeaders());
 
     if (response.statusCode == 200) {

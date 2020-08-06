@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 class AppLocalizations {
   final Locale locale;
   static _AppLocalizationsDelegate delegate = _AppLocalizationsDelegate();
+  static _FallbackCupertinoLocalisationsDelegate cupertinoDelegate = _FallbackCupertinoLocalisationsDelegate();
 
   AppLocalizations(this.locale);
 
@@ -18,8 +19,7 @@ class AppLocalizations {
   Map<String, String> _localizedStrings;
 
   Future<bool> load() async {
-    String fileName =
-        '${locale.languageCode}_${locale.countryCode.toLowerCase()}.json';
+    String fileName = '${locale.languageCode}.json';
     String jsonString = await rootBundle.loadString('assets/lang/$fileName');
     Map<String, dynamic> jsonMap = json.decode(jsonString);
 
@@ -37,14 +37,13 @@ class AppLocalizations {
 
 class _AppLocalizationsDelegate
     extends LocalizationsDelegate<AppLocalizations> {
-  static const List _supportedLanguages = ['en', 'ru', 'ua'];
+  static const List _supportedLanguages = ['en', 'ru', 'uk'];
 
   const _AppLocalizationsDelegate();
 
   @override
   bool isSupported(Locale locale) {
-    return _supportedLanguages.contains(locale.languageCode) ||
-        _supportedLanguages.contains(locale.countryCode.toLowerCase());
+    return _supportedLanguages.contains(locale.languageCode);
   }
 
   @override
@@ -58,9 +57,9 @@ class _AppLocalizationsDelegate
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
-class FallbackCupertinoLocalisationsDelegate
+class _FallbackCupertinoLocalisationsDelegate
     extends LocalizationsDelegate<CupertinoLocalizations> {
-  const FallbackCupertinoLocalisationsDelegate();
+  const _FallbackCupertinoLocalisationsDelegate();
 
   @override
   bool isSupported(Locale locale) => true;
@@ -70,5 +69,5 @@ class FallbackCupertinoLocalisationsDelegate
       DefaultCupertinoLocalizations.load(locale);
 
   @override
-  bool shouldReload(FallbackCupertinoLocalisationsDelegate old) => false;
+  bool shouldReload(_FallbackCupertinoLocalisationsDelegate old) => false;
 }

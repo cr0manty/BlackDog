@@ -6,6 +6,7 @@ abstract class SharedPrefs {
   static const _currentUser = 'CurrentUser';
   static const _currentToken = 'CurrentToken';
   static const _qrCode = 'QRCode';
+  static const _localeCode = 'LocaleCode';
 
   static SharedPreferences _prefs;
 
@@ -18,18 +19,28 @@ abstract class SharedPrefs {
   }
 
   static void logout() {
-    _prefs.setString(_currentUser, "");
-    _prefs.setString(_currentToken, "");
-    _prefs.setString(_qrCode, "");
+    _prefs.setString(_currentUser, '');
+    _prefs.setString(_currentToken, '');
+    _prefs.setString(_qrCode, '');
   }
 
   static void saveToken(String token) {
     _prefs.setString(
-        _currentToken, (token != null && token.isNotEmpty) ? token : "");
+        _currentToken, (token != null && token.isNotEmpty) ? token : '');
   }
 
   static void saveUser(User user) {
     _prefs.setString(_currentUser, userToJson(user));
+  }
+
+  static void saveQRCode(String qrCode) {
+    _prefs.setString(
+        _qrCode, (qrCode != null && qrCode.isNotEmpty) ? qrCode : '');
+  }
+
+  static void saveLanguageCode(String code) {
+    _prefs.setString(
+        _localeCode, (code != null && code.isNotEmpty) ? code : '');
   }
 
   static String getToken() {
@@ -40,9 +51,8 @@ abstract class SharedPrefs {
     return _prefs.getString(_qrCode) ?? '';
   }
 
-  static void saveQRCode(String qrCode) {
-    _prefs.setString(
-        _qrCode, (qrCode != null && qrCode.isNotEmpty) ? qrCode : "");
+  static String getLanguageCode() {
+    return _prefs.getString(_localeCode) ?? 'en';
   }
 
   static User getUser() {

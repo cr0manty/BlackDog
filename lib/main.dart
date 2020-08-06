@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/screens/home_page.dart';
 import 'package:black_dog/screens/sign_in.dart';
@@ -38,27 +36,34 @@ class _BlackDogAppState extends State<BlackDogApp> {
       supportedLocales: [
         Locale('en', 'US'),
         Locale('ru', 'RU'),
+        Locale('uk', 'UA'),
+        Locale('ru', 'UA'),
+        Locale('uk', 'UK'),
         Locale('en', 'UA'),
-
       ],
       localizationsDelegates: [
         AppLocalizations.delegate,
+        AppLocalizations.cupertinoDelegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
-        FallbackCupertinoLocalisationsDelegate(),
       ],
-      localeListResolutionCallback: (locale, supportedLocales) {
-        if (window.locale == null) {
-          return supportedLocales.first;
+      localeListResolutionCallback: (locales, supportedLocales) {
+        for (Locale locale in locales) {
+          for (Locale supportedLocale in supportedLocales) {
+            if (supportedLocale.languageCode == locale.languageCode &&
+                supportedLocale.countryCode == locale.countryCode) {
+              print('Device language code: ${locale.languageCode}');
+              print('Device country code: ${locale.countryCode ?? ''}');
+              SharedPrefs.saveLanguageCode(locale.languageCode);
+              return supportedLocale;
+            }
+          }
         }
 
-        print(
-            'Device language code: ${window.locale.languageCode}, country code: ${window.locale.countryCode}');
-        for (var supportedLocale in supportedLocales) {
-          if (supportedLocale.languageCode == window.locale.languageCode &&
-              supportedLocale.countryCode == window.locale.countryCode)
-            return supportedLocale;
-        }
+        print('Device language code: ${supportedLocales.first.languageCode}');
+        print('Device country code: ${supportedLocales.first.countryCode ?? ''}');
+
+        SharedPrefs.saveLanguageCode(supportedLocales.first.languageCode);
         return supportedLocales.first;
       },
       theme: ThemeData(
