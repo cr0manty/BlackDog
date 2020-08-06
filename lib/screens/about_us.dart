@@ -40,7 +40,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
               onTap: call || email || web
                   ? () async {
                       String url =
-                          call ? "tel:" : email ? 'mailto:' : '' + text;
+                          (call ? "tel:" : email ? 'mailto:' : '') + text;
                       if (await canLaunch(url)) {
                         await launch(url);
                       } else {

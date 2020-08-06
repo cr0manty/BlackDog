@@ -38,6 +38,8 @@ class _BlackDogAppState extends State<BlackDogApp> {
       supportedLocales: [
         Locale('en', 'US'),
         Locale('ru', 'RU'),
+        Locale('en', 'UA'),
+
       ],
       localizationsDelegates: [
         AppLocalizations.delegate,
@@ -46,6 +48,10 @@ class _BlackDogAppState extends State<BlackDogApp> {
         FallbackCupertinoLocalisationsDelegate(),
       ],
       localeListResolutionCallback: (locale, supportedLocales) {
+        if (window.locale == null) {
+          return supportedLocales.first;
+        }
+
         print(
             'Device language code: ${window.locale.languageCode}, country code: ${window.locale.countryCode}');
         for (var supportedLocale in supportedLocales) {

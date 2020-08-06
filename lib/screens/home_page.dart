@@ -45,9 +45,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    _apiChange = Api.instance.apiChange.listen((event) => setState(() {
-      print(Account.instance.user.firstName);
-    }));
+    _apiChange = Api.instance.apiChange.listen((event) => setState(() {}));
     super.initState();
   }
 
@@ -201,21 +199,19 @@ class _HomePageState extends State<HomePage> {
         SizedBox(height: ScreenSize.sectionIndent / 1.5),
         _buildSection(
             AppLocalizations.of(context).translate('menu'),
-            SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Api.instance.categories.length > 0
-                    ? Column(
-                        children: List.generate(
-                            Api.instance.categories.length, _buildMenu),
-                      )
-                    : Container(
-                        width: ScreenSize.width,
-                        child: Center(
-                            child: Text(
-                          AppLocalizations.of(context).translate('no_menu'),
-                          style: Theme.of(context).textTheme.subtitle1,
-                        )),
-                      ))),
+            Api.instance.categories.length > 0
+                ? Column(
+                    children: List.generate(
+                        Api.instance.categories.length, _buildMenu),
+                  )
+                : Container(
+                    width: ScreenSize.width,
+                    child: Center(
+                        child: Text(
+                      AppLocalizations.of(context).translate('no_menu'),
+                      style: Theme.of(context).textTheme.subtitle1,
+                    )),
+                  )),
         Container(
           height: 20,
         )

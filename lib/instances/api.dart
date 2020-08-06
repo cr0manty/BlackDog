@@ -66,7 +66,6 @@ class Api {
       if (Account.instance.state != AccountState.STAFF) {
         getCategories();
         getNewsList();
-        getAboutUs();
       }
       init = true;
     }
