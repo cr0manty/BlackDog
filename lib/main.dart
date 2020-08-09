@@ -1,9 +1,9 @@
-import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/screens/home_page.dart';
-import 'package:black_dog/screens/sign_in.dart';
+import 'package:black_dog/screens/user//sign_in.dart';
 import 'package:black_dog/utils/connection_check.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -20,6 +20,9 @@ void main() async {
 
   Account.instance.initialize();
   ConnectionsCheck.instance.initialise();
+
+//  Crashlytics.instance.enableInDevMode = true;
+  FlutterError.onError = Crashlytics.instance.recordFlutterError;
 
   runApp(BlackDogApp());
 }
@@ -103,11 +106,5 @@ class _BlackDogAppState extends State<BlackDogApp> {
           ? SignInPage()
           : HomePage(),
     );
-  }
-
-  @override
-  void dispose() {
-    Api.instance.dispose();
-    super.dispose();
   }
 }

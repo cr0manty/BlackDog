@@ -5,6 +5,7 @@
   "no_account": "Нет аккаунта? Зарегистрируйтесь.",
   "scan_qr": "Отсканиурйте QR код",
   "confirm_password": "Подтвердите Пароль",
+  "new_password": "Новый Пароль",
   "already_have_account": "Уже есть аккаунт? Войдите.",
   "about_us": "О Нас",
   "logout": "Выйти",
@@ -29,5 +30,6 @@
   "back": "Назад",
   "send": "Отпрваить",
   "restore_password": "Восстановление Пароля",
-  "change_password": "Изменить Пароль"
+  "change_password": "Изменить Пароль",
+  "editing": "Редактирование"
 }

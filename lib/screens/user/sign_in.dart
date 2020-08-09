@@ -1,6 +1,6 @@
 import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/api.dart';
-import 'package:black_dog/screens/sign_up.dart';
+import 'package:black_dog/screens/user/sign_up.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/utils/scroll_glow.dart';
 import 'package:black_dog/utils/size.dart';

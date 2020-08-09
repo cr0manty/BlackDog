@@ -1,6 +1,6 @@
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/models/menu_item.dart';
-import 'package:black_dog/screens/product_detail.dart';
+import 'package:black_dog/screens/content/product_detail.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/utils/size.dart';
@@ -20,7 +20,10 @@ class ProductList extends StatefulWidget {
 }
 
 class _ProductListState extends State<ProductList> {
+  final ScrollController _scrollController = ScrollController();
   List<MenuItem> _menu = [];
+  bool showProgress = true;
+  int page = 0;
 
   Future _getMenu() async {
     List<MenuItem> menu = await Api.instance.getMenu(widget.id);
@@ -29,15 +32,26 @@ class _ProductListState extends State<ProductList> {
     });
   }
 
+  void _scrollListener() async {
+    if (_scrollController.position.maxScrollExtent ==
+        _scrollController.offset && _menu.length % 10 == 0) {
+      setState(() => showProgress = true);
+      await _getMenu();
+      setState(() => showProgress = false);
+    }
+  }
+
   @override
   void initState() {
-    super.initState();
     _getMenu();
+    _scrollController.addListener(_scrollListener);
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return PageScaffold(
+      scrollController: _scrollController,
       alwaysNavigation: true,
       shrinkWrap: true,
       padding: EdgeInsets.symmetric(horizontal: 16),
@@ -56,6 +70,14 @@ class _ProductListState extends State<ProductList> {
   }
 
   Widget _buildProduct(int index) {
+    if (index == _menu.length) {
+      return Container(
+        alignment: Alignment.center,
+        height: showProgress ? 50 : 0,
+        child: Center(child: CupertinoActivityIndicator()),
+      );
+    }
+
     MenuItem menu = _menu[index];
     return GestureDetector(
       onTap: () => Navigator.of(context).push(CupertinoPageRoute(

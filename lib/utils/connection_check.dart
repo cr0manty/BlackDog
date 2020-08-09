@@ -6,7 +6,6 @@ import 'package:connectivity/connectivity.dart';
 class ConnectionsCheck {
   ConnectionsCheck._internal();
 
-  List<Function> _requestsQuery = [];
   bool isOnline = false;
 
   static final ConnectionsCheck _instance = ConnectionsCheck._internal();
@@ -15,11 +14,9 @@ class ConnectionsCheck {
 
   Connectivity _connectivity = Connectivity();
 
-  StreamController controller = StreamController.broadcast();
+  StreamController _controller = StreamController.broadcast();
 
-  Stream get myStream => controller.stream;
-
-  set addRequest(Function func) => _requestsQuery.add(func);
+  Stream get onChange => _controller.stream;
 
   Future initialise() async {
     ConnectivityResult result = await _connectivity.checkConnectivity();
@@ -46,15 +43,8 @@ class ConnectionsCheck {
         isOnline = false;
       }
     }
-    if (isOnline && !Api.instance.init) {
-      Api.instance.initialize();
-    }
-    _processRequestQuery();
+    _controller.add(isOnline);
   }
 
-  void _processRequestQuery() {
-    _requestsQuery.forEach((element) => element());
-  }
-
-  void disposeStream() => controller.close();
+  void disposeStream() => _controller.close();
 }

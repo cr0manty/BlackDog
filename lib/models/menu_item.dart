@@ -5,16 +5,16 @@ class MenuItem extends ModelItem {
   String description;
   String shortDescription;
   String price;
-  List<String> images;
+  String image;
   bool isActive;
 
   MenuItem(
       {String name,
       this.price,
       this.description,
-      this.images,
+      this.image,
       this.isActive,
-        this.shortDescription,
+      this.shortDescription,
       this.id})
       : super(name);
 
@@ -25,17 +25,7 @@ class MenuItem extends ModelItem {
       description: data['description'],
       shortDescription: data['short_description'],
       id: data['id'],
-      images: _setImages(data['images']));
-
-  static List<String> _setImages(List images) {
-    List<String> imageList = [];
-    images.forEach((element) {
-      imageList.add(element['image']);
-    });
-    return imageList;
-  }
-
-  String get image => images.length > 0 ? images[0] : null;
+      image: data['image']);
 
   String get priceWithCurrency => '$price грн.';
 }

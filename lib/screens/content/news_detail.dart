@@ -40,9 +40,10 @@ class _NewsDetailState extends State<NewsDetail> {
     return PageScaffold(
       alwaysNavigation: true,
       shrinkWrap: true,
+      titleMargin: false,
       padding: EdgeInsets.symmetric(horizontal: 16),
       leading: RouteButton(
-                defaultIcon: true,
+        defaultIcon: true,
         text: AppLocalizations.of(context)
             .translate(widget.fromHome ? 'home' : 'news'),
         color: HexColor.lightElement,

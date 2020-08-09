@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class PageScaffold extends StatelessWidget {
+  final ScrollController scrollController;
   final Widget action;
   final Widget leading;
   final Widget child;
@@ -17,7 +18,8 @@ class PageScaffold extends StatelessWidget {
   final bool titleMargin;
 
   PageScaffold(
-      {this.child,
+      {this.scrollController,
+      this.child,
       this.children,
       this.action,
       this.leading,
@@ -68,35 +70,39 @@ class PageScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         body: ModalProgressHUD(
-      progressIndicator: CupertinoActivityIndicator(),
-      inAsyncCall: inAsyncCall,
-      child: Container(
-          height: ScreenSize.height,
-          child: alwaysNavigation
-              ? SafeArea(
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.max,
-                      children: <Widget>[
-                      _appBar(),
-                      Expanded(
-                          child: Container(
-                              padding: padding ?? EdgeInsets.zero,
-                              child: ScrollConfiguration(
-                                behavior: ScrollGlow(),
-                                child: ListView(
-                                    shrinkWrap: shrinkWrap,
-                                    children: _buildBodyChildren(
-                                        <Widget>[_titleWidget()])),
-                              )))
-                    ]))
-              : ScrollConfiguration(
-                  behavior: ScrollGlow(),
-                  child: ListView(
-                    shrinkWrap: shrinkWrap,
-                    children: _buildBodyChildren([_appBar(), _titleWidget()]),
-                  ),
-                )),
-    ));
+            progressIndicator: CupertinoActivityIndicator(),
+            inAsyncCall: inAsyncCall,
+            child: Container(
+                height: ScreenSize.height,
+                child: ScrollConfiguration(
+                    behavior: ScrollGlow(),
+                    child: alwaysNavigation
+                        ? SafeArea(
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.max,
+                                children: <Widget>[
+                                _appBar(),
+                                Expanded(
+                                    child: Container(
+                                        padding: padding ?? EdgeInsets.zero,
+                                        child: ScrollConfiguration(
+                                          behavior: ScrollGlow(),
+                                          child: ListView(
+                                              controller: scrollController,
+                                              shrinkWrap: shrinkWrap,
+                                              children: _buildBodyChildren(
+                                                  <Widget>[_titleWidget()])),
+                                        )))
+                              ]))
+                        : ScrollConfiguration(
+                            behavior: ScrollGlow(),
+                            child: ListView(
+                              controller: scrollController,
+                              shrinkWrap: shrinkWrap,
+                              children: _buildBodyChildren(
+                                  [_appBar(), _titleWidget()]),
+                            ),
+                          )))));
   }
 }

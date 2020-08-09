@@ -18,6 +18,7 @@
   "first_name": "First name",
   "phone": "Phone",
   "confirm_password": "Confirm Password",
+  "new_password": "New Password",
   "password_mismatch": "Password mismatch!",
   "birth_date": "Birth Date",
   "already_have_account": "Already have an account? Sign in.",
@@ -29,5 +30,6 @@
   "back": "Back",
   "send": "Send",
   "restore_password": "Restore Password",
-  "change_password": "Change Password"
+  "change_password": "Change Password",
+  "editing": "Edit"
 }

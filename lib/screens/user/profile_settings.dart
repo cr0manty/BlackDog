@@ -4,12 +4,14 @@ import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/size.dart';
+import 'package:black_dog/widgets/bottom_route.dart';
 import 'package:black_dog/widgets/input_field.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
+
+import 'change_password.dart';
 
 class ProfileSettings extends StatefulWidget {
   final bool fromHome;
@@ -90,13 +92,17 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 child: SizedBox(
                   width: ScreenSize.width - 64,
                   child: CupertinoButton(
-                      onPressed: () {},
+                      onPressed: () =>
+                          Navigator.of(context, rootNavigator: true).push(
+                              CupertinoPageRoute(
+                                  builder: (context) => ChangePassword())),
                       color: HexColor.lightElement,
                       child: Text(
-                          AppLocalizations.of(context).translate('change_password'),
+                          AppLocalizations.of(context)
+                              .translate('change_password'),
                           style: Theme.of(context)
                               .textTheme
-                              .caption
+                              .headline2
                               .copyWith(color: HexColor.darkElement))),
                 ),
               ),
@@ -134,6 +140,9 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       }
       setState(() => isLoading = !isLoading);
       return;
-    }).catchError((error) {});
+    }).catchError((error) {
+      setState(() => isLoading = !isLoading);
+      Utils.showErrorPopUp(context);
+    });
   }
 }

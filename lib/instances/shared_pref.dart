@@ -1,4 +1,3 @@
-import 'package:black_dog/models/restaurant.dart';
 import 'package:black_dog/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -7,6 +6,8 @@ abstract class SharedPrefs {
   static const _currentToken = 'CurrentToken';
   static const _qrCode = 'QRCode';
   static const _localeCode = 'LocaleCode';
+  static const _showNews = 'ShowNews';
+  static const _maxNewsAmount = 'MaxPostAmount';
 
   static SharedPreferences _prefs;
 
@@ -38,6 +39,14 @@ abstract class SharedPrefs {
         _qrCode, (qrCode != null && qrCode.isNotEmpty) ? qrCode : '');
   }
 
+  static void saveShowPost(bool showPost) {
+    _prefs.setBool(_showNews, showPost);
+  }
+
+  static void saveMaxNews(int maxNews) {
+    _prefs.setInt(_maxNewsAmount, maxNews);
+  }
+
   static void saveLanguageCode(String code) {
     _prefs.setString(
         _localeCode, (code != null && code.isNotEmpty) ? code : '');
@@ -53,6 +62,14 @@ abstract class SharedPrefs {
 
   static String getLanguageCode() {
     return _prefs.getString(_localeCode) ?? 'en';
+  }
+
+  static bool getShowNews() {
+    return _prefs.getBool(_showNews) ?? false;
+  }
+
+  static int getMaxNewsAmount() {
+    return _prefs.getInt(_maxNewsAmount) ?? 0;
   }
 
   static User getUser() {

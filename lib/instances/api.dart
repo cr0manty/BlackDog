@@ -27,22 +27,23 @@ class LogInterceptor implements InterceptorContract {
   @override
   Future<RequestData> interceptRequest({RequestData data}) async {
     print(
-        "Request Method: ${data.method} , Url: ${data.url} Headers: ${data.headers}");
+        "Request Method: ${data.method} , Url: ${data.url} Headers: ${data
+            .headers}");
     return data;
   }
 
   @override
   Future<ResponseData> interceptResponse({ResponseData data}) async {
     printWrapped(
-        "Response Method: ${data.method} , Url: ${data.url}, Status Code: ${data.statusCode}");
+        "Response Method: ${data.method} , Url: ${data.url}, Status Code: ${data
+            .statusCode}");
     printWrapped('Body: ${prettyJson(data.body)}');
     return data;
   }
 }
 
 class Api {
-  static const String _base_url = 'https://cv.faifly.com';
-  static const String _base_api = 'https://cv.faifly.com/api/v1';
+  static const String _base_url = 'cv.faifly.com';
   bool init = false;
 
   Api._internal();
@@ -51,13 +52,6 @@ class Api {
 
   static Api get instance => _instance;
 
-  List<News> _news = [];
-  List<MenuCategory> _categories = [];
-
-  List<News> get news => _news;
-
-  List<MenuCategory> get categories => _categories;
-
   Client _client = HttpClientWithInterceptor.build(
       interceptors: [LogInterceptor()], requestTimeout: Duration(seconds: 30));
 
@@ -65,8 +59,8 @@ class Api {
     if (Account.instance.state != AccountState.GUEST) {
       getUser();
       if (Account.instance.state != AccountState.STAFF) {
+        getNewsConfig();
         getCategories();
-        getNewsList();
       }
       init = true;
     }
@@ -90,10 +84,11 @@ class Api {
     return headers;
   }
 
-  String _setUrl({String path = '', bool base = false}) {
-    return (base ? _base_url : _base_api) +
-        path +
-        '?lang=${SharedPrefs.getLanguageCode()}';
+  Uri _setUrl(
+      {String path = '', bool base = false, Map<String, String> params}) {
+    Map<String, String> query = params ?? {};
+    query['lang'] = SharedPrefs.getLanguageCode();
+    return Uri.https(_base_url, base ? path : '/api/v1' + path, params);
   }
 
   Future staffScanQRCode(String url) async {
@@ -173,21 +168,25 @@ class Api {
     return body;
   }
 
-  Future getNewsList() async {
-    Response response =
-        await _client.get(_setUrl(path: '/posts/list'), headers: _setHeaders());
+  Future getNewsList({int limit = 10, int page = 0}) async {
+    List<News> newsList = [];
+    Response response = await _client.get(
+        _setUrl(
+          path: '/posts/list',
+          params: {'offset': '${page * limit}', 'limit': '$limit'},
+        ),
+        headers: _setHeaders());
 
     if (response.statusCode == 200) {
-      List body = json.decode(response.body) as List;
-      _news = [];
+      List body = json.decode(response.body)['results'] as List;
       body.forEach((value) {
         News news = News.fromJson(value);
         if (news != null) {
-          _news.add(news);
+          newsList.add(news);
         }
       });
-      _apiChange.add(true);
     }
+    return newsList;
   }
 
   Future getNews(int id) async {
@@ -201,26 +200,34 @@ class Api {
     return null;
   }
 
-  Future getCategories() async {
-    Response response = await _client
-        .get(_setUrl(path: '/menu/categories-list'), headers: _setHeaders());
+  Future getCategories({int limit = 10, int page = 0}) async {
+    List<MenuCategory> _categories = [];
+
+    Response response = await _client.get(
+        _setUrl(
+          path: '/menu/categories-list',
+          params: {'offset': '${page * limit}', 'limit': '$limit'},
+        ),
+        headers: _setHeaders());
 
     if (response.statusCode == 200) {
-      List body = json.decode(response.body) as List;
-      _categories = [];
+      List body = json.decode(response.body)['results'] as List;
       body.forEach((value) {
         MenuCategory category = MenuCategory.fromJson(value);
         if (category != null) {
           _categories.add(category);
         }
       });
-      _apiChange.add(true);
     }
+    return _categories;
   }
 
-  Future getMenu(int id) async {
+  Future getMenu(int id, {int limit = 10, int page = 0}) async {
     Response response = await _client.get(
-        _setUrl(path: '/menu/categories-list/$id'),
+        _setUrl(
+          path: '/menu/categories-list/$id',
+          params: {'offset': '${page * limit}', 'limit': '$limit'},
+        ),
         headers: _setHeaders());
     List<MenuItem> menu = [];
 
@@ -256,15 +263,18 @@ class Api {
   }
 
   Future getAboutUs() async {
-    Response response = await _client.get(_setUrl(path: '/restaurant/config'),
-        headers: _setHeaders());
-
-    if (response.statusCode == 200) {
-      Map body = json.decode(response.body) as Map;
-      Restaurant restaurant = Restaurant.fromJson(body);
-      return restaurant;
-    }
-    return null;
+    await _client.get(_setUrl(path: '/restaurant/config'),
+        headers: _setHeaders()).then((response) {
+      if (response.statusCode == 200) {
+        Map body = json.decode(response.body) as Map;
+        Restaurant restaurant = Restaurant.fromJson(body);
+        return restaurant;
+      }
+      return null;
+    }).catchError((e) {
+      print(e);
+      return null;
+    });
   }
 
   Future passwordReset(String email) async {
@@ -275,6 +285,32 @@ class Api {
       body['result'] = response.statusCode == 200;
       return body;
     }).catchError((error) => {'result': false});
+  }
+
+  Future getNewsConfig() async {
+    Response response = await _client.get(_setUrl(path: '/posts/config'),
+        headers: _setHeaders());
+
+    if (response.statusCode == 200) {
+      Map body = json.decode(response.body) as Map;
+      SharedPrefs.saveShowPost(body['show_post_section']);
+      SharedPrefs.saveMaxNews(body['max_post_amount']);
+      _apiChange.add(true);
+    }
+  }
+
+  Future changePassword(Map content) async {
+    Response response = await _client.post(
+        _setUrl(path: '/auth/password/change/', base: true),
+        body: json.encode(content),
+        headers: _setHeaders(useJson: true));
+
+    Map body = json.decode(response.body);
+    if (response.statusCode == 200) {
+      return {'result': true};
+    }
+    body['result'] = false;
+    return body;
   }
 
   void dispose() {
