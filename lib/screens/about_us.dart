@@ -25,7 +25,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
     }
 
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 16, horizontal: 10),
+      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -103,8 +103,8 @@ class _AboutUsPageState extends State<AboutUsPage> {
         _buildSection(widget.restaurant.webUrl, SFSymbols.globe, web: true),
         _buildSection(widget.restaurant.instagramLink, SFSymbols.logo_instagram, web: true),
         _buildSection(widget.restaurant.facebook, SFSymbols.logo_facebook, web: true),
-        _buildSection(widget.restaurant.phone, SFSymbols.phone, call: true),
-        _buildSection(widget.restaurant.email, SFSymbols.envelope, email: true),
+        _buildSection(widget.restaurant.phone, SFSymbols.phone_fill, call: true),
+        _buildSection(widget.restaurant.email, SFSymbols.envelope_fill, email: true),
       ],
     );
   }
