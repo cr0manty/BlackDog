@@ -38,9 +38,11 @@ app.*.symbols
 
 # Obfuscation related
 app.*.map.json
+.last_build_id
 
 # Exceptions to above rules.
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 
 # Firebase
 google-services.json
+GoogleService-Info.plist

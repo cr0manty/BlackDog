@@ -21,7 +21,7 @@ void main() async {
   Account.instance.initialize();
   ConnectionsCheck.instance.initialise();
 
-//  Crashlytics.instance.enableInDevMode = true;
+  Crashlytics.instance.enableInDevMode = true;
   FlutterError.onError = Crashlytics.instance.recordFlutterError;
 
   runApp(BlackDogApp());
@@ -38,6 +38,7 @@ class _BlackDogAppState extends State<BlackDogApp> {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
         statusBarColor: HexColor.darkElement.withOpacity(0.6),
         statusBarBrightness: Brightness.dark));
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       supportedLocales: [
@@ -52,23 +53,21 @@ class _BlackDogAppState extends State<BlackDogApp> {
         GlobalWidgetsLocalizations.delegate,
       ],
       localeListResolutionCallback: (locales, supportedLocales) {
+        Locale currentLocale;
         for (Locale locale in locales) {
           for (Locale supportedLocale in supportedLocales) {
             if (supportedLocale.languageCode == locale.languageCode) {
-              print('Device language code: ${locale.languageCode}');
-              print('Device country code: ${locale.countryCode ?? ''}');
-              SharedPrefs.saveLanguageCode(locale.languageCode);
-              return supportedLocale;
+              currentLocale = supportedLocale;
+              break;
             }
           }
         }
+        currentLocale ??= supportedLocales.first;
+        print('Device language code: ${currentLocale.languageCode}');
+        print('Device country code: ${currentLocale.countryCode ?? ''}');
 
-        print('Device language code: ${supportedLocales.first.languageCode}');
-        print(
-            'Device country code: ${supportedLocales.first.countryCode ?? ''}');
-
-        SharedPrefs.saveLanguageCode(supportedLocales.first.languageCode);
-        return supportedLocales.first;
+        SharedPrefs.saveLanguageCode(currentLocale.languageCode);
+        return currentLocale;
       },
       theme: ThemeData(
           brightness: Brightness.dark,
