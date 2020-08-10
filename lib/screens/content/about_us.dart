@@ -1,3 +1,4 @@
+import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/restaurant.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
@@ -76,24 +77,22 @@ class _AboutUsPageState extends State<AboutUsPage> {
           style: Theme.of(context).textTheme.caption),
       children: <Widget>[
         Center(
-          child: Container(
-              width: ScreenSize.width - 32,
-              height: ScreenSize.newsItemPhotoSize,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.grey,
-              ),
-              child: ClipRRect(
+            child: Container(
+                width: ScreenSize.width - 32,
+                height: ScreenSize.newsItemPhotoSize,
+                decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  child: widget.restaurant.logo != null
-                      ? Image.network(
-                          widget.restaurant.logo,
-                          fit: BoxFit.cover,
-                        )
-                      : Container(
-                          color: HexColor.semiElement,
-                        ))),
-        ),
+                  color: Colors.grey,
+                ),
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: widget.restaurant.logo != null
+                        ? FadeInImage.assetNetwork(
+                            placeholder: Utils.loadImage,
+                            image: widget.restaurant.logo,
+                            fit: BoxFit.cover,
+                          )
+                        : Image.asset(Utils.defaultImage, fit: BoxFit.cover)))),
         Container(
             padding: EdgeInsets.only(top: 20),
             child: Text(
@@ -101,10 +100,14 @@ class _AboutUsPageState extends State<AboutUsPage> {
               style: Theme.of(context).textTheme.headline1,
             )),
         _buildSection(widget.restaurant.webUrl, SFSymbols.globe, web: true),
-        _buildSection(widget.restaurant.instagramLink, SFSymbols.logo_instagram, web: true),
-        _buildSection(widget.restaurant.facebook, SFSymbols.logo_facebook, web: true),
-        _buildSection(widget.restaurant.phone, SFSymbols.phone_fill, call: true),
-        _buildSection(widget.restaurant.email, SFSymbols.envelope_fill, email: true),
+        _buildSection(widget.restaurant.instagramLink, SFSymbols.logo_instagram,
+            web: true),
+        _buildSection(widget.restaurant.facebook, SFSymbols.logo_facebook,
+            web: true),
+        _buildSection(widget.restaurant.phone, SFSymbols.phone_fill,
+            call: true),
+        _buildSection(widget.restaurant.email, SFSymbols.envelope_fill,
+            email: true),
       ],
     );
   }

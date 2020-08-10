@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:barcode_scan/platform_wrapper.dart';
 import 'package:black_dog/instances/api.dart';
@@ -78,9 +79,6 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         isLoadingData = false;
       });
-    } else {
-      getNewsList();
-      getMenuCategoryList();
     }
     _connectionChange = ConnectionsCheck.instance.onChange.listen((isOnline) {
       if (isOnline) {
@@ -145,16 +143,16 @@ class _HomePageState extends State<HomePage> {
                 iconWidget: Container(
                   margin: EdgeInsets.only(left: 10),
                   child: SvgPicture.asset('assets/images/about_us.svg',
-                      color: HexColor.lightElement, height: 20, width: 20),
+                      color: HexColor.lightElement, height: 25, width: 22),
                 ),
                 iconFirst: false,
                 text: AppLocalizations.of(context).translate('about_us'),
                 onTap: () async {
                   final restaurant = await Api.instance.getAboutUs();
-//                  if (restaurant != null) {
-                    Navigator.of(context)
-                        .push(BottomRoute(page: AboutUsPage(restaurant)));
-//                  }
+                  if (restaurant != null) {
+                    Navigator.of(context).push(CupertinoPageRoute(
+                        builder: (context) => AboutUsPage(restaurant)));
+                  }
                 },
               )
             : RouteButton(
@@ -326,47 +324,53 @@ class _HomePageState extends State<HomePage> {
 
     final news = _news[index - 1];
     return GestureDetector(
-      onTap: () => Navigator.of(context).push(CupertinoPageRoute(
-          builder: (BuildContext context) => NewsDetail(
-                news: news,
-                fromHome: true,
-              ))),
-      child: Container(
-        width: ScreenSize.newsImageWidth + 20,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(9),
-          color: HexColor.lightElement,
-        ),
-        margin: EdgeInsets.symmetric(horizontal: 10),
-        padding: EdgeInsets.all(10),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            Text(
-              news.capitalizeTitle,
-              style: Theme.of(context).textTheme.headline2,
-            ),
-            SizedBox(height: 10),
-            Text(
-              news.shortDescription ?? '',
-              maxLines: 2,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyText2
-                  .copyWith(color: HexColor.darkElement),
-              overflow: TextOverflow.ellipsis,
-            ),
-            SizedBox(height: 10),
-            Container(
-                height: ScreenSize.newsImageHeight,
-                width: ScreenSize.newsImageWidth,
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.network(news.previewImage, fit: BoxFit.cover)))
-          ],
-        ),
-      ),
-    );
+        onTap: () => Navigator.of(context).push(CupertinoPageRoute(
+            builder: (BuildContext context) =>
+                NewsDetail(news: news, fromHome: true))),
+        child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 10),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(9),
+                image: DecorationImage(
+                    image: AssetImage('assets/images/card_background.png'),
+                    fit: BoxFit.fitHeight)),
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(9),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(9),
+                        color: HexColor.lightElement.withOpacity(0.19)),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Text(
+                          news.capitalizeTitle,
+                          style: Theme.of(context).textTheme.headline1,
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          news.shortDescription ?? '',
+                          maxLines: 2,
+                          style: Theme.of(context).textTheme.subtitle2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(height: 10),
+                        Container(
+                            height: ScreenSize.newsImageHeight,
+                            width: ScreenSize.newsImageWidth,
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: FadeInImage.assetNetwork(
+                                    placeholder: Utils.loadImage,
+                                    image: news.previewImage,
+                                    fit: BoxFit.cover)))
+                      ],
+                    ),
+                  ),
+                ))));
   }
 
   Widget _buildMenu(int index) {
@@ -392,15 +396,18 @@ class _HomePageState extends State<HomePage> {
                   width: ScreenSize.width - 32,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8.0),
-                    child: Image.network(category.image, fit: BoxFit.cover),
+                    child: FadeInImage.assetNetwork(
+                        placeholder: Utils.loadImage,
+                        image: category.image,
+                        fit: BoxFit.cover),
                   ),
                 ),
                 Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8.0),
                       gradient: LinearGradient(colors: [
-                        HexColor.semiElement.withOpacity(0.2),
-                        Colors.white,
+                        HexColor.darkElement.withOpacity(0.2),
+                        HexColor.darkElement,
                       ], stops: [
                         0.2,
                         2
@@ -409,13 +416,8 @@ class _HomePageState extends State<HomePage> {
                 Container(
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     alignment: Alignment.centerLeft,
-                    child: Text(
-                      category.capitalizeTitle,
-                      style: Theme.of(context)
-                          .textTheme
-                          .caption
-                          .copyWith(color: HexColor.darkElement),
-                    ))
+                    child: Text(category.capitalizeTitle,
+                        style: Theme.of(context).textTheme.caption))
               ],
             ),
           ),

@@ -27,16 +27,14 @@ class LogInterceptor implements InterceptorContract {
   @override
   Future<RequestData> interceptRequest({RequestData data}) async {
     print(
-        "Request Method: ${data.method} , Url: ${data.url} Headers: ${data
-            .headers}");
+        "Request Method: ${data.method} , Url: ${data.url} Headers: ${data.headers}");
     return data;
   }
 
   @override
   Future<ResponseData> interceptResponse({ResponseData data}) async {
     printWrapped(
-        "Response Method: ${data.method} , Url: ${data.url}, Status Code: ${data
-            .statusCode}");
+        "Response Method: ${data.method} , Url: ${data.url}, Status Code: ${data.statusCode}");
     printWrapped('Body: ${prettyJson(data.body)}');
     return data;
   }
@@ -263,8 +261,9 @@ class Api {
   }
 
   Future getAboutUs() async {
-    await _client.get(_setUrl(path: '/restaurant/config'),
-        headers: _setHeaders()).then((response) {
+    return await _client
+        .get(_setUrl(path: '/restaurant/config'), headers: _setHeaders())
+        .then((response) {
       if (response.statusCode == 200) {
         Map body = json.decode(response.body) as Map;
         Restaurant restaurant = Restaurant.fromJson(body);
@@ -284,7 +283,10 @@ class Api {
       Map body = json.decode(response.body);
       body['result'] = response.statusCode == 200;
       return body;
-    }).catchError((error) => {'result': false});
+    }).catchError((error) {
+      print(error);
+      return {'result': false};
+    });
   }
 
   Future getNewsConfig() async {

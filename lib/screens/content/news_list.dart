@@ -1,4 +1,5 @@
 import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/news.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
@@ -38,7 +39,8 @@ class _NewsListState extends State<NewsList> {
 
   void _scrollListener() async {
     if (_scrollController.position.maxScrollExtent ==
-        _scrollController.offset && newsList.length % 10 == 0) {
+            _scrollController.offset &&
+        newsList.length % 10 == 0) {
       setState(() => showProgress = true);
       await getNewsList();
       setState(() => showProgress = false);
@@ -125,7 +127,10 @@ class _NewsListState extends State<NewsList> {
               height: ScreenSize.newsListImageSize,
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: Image.network(news.previewImage, fit: BoxFit.cover)),
+                  child: FadeInImage.assetNetwork(
+                      placeholder: Utils.loadImage,
+                      image: news.previewImage,
+                      fit: BoxFit.cover)),
             )
           ],
         ),

@@ -1,4 +1,5 @@
 import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/news.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
@@ -80,13 +81,15 @@ class _NewsDetailState extends State<NewsDetail> {
   Widget _buildImages(url) {
     return Builder(builder: (BuildContext context) {
       return Container(
-        width: ScreenSize.width - 32,
-        child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: url != null && url.isNotEmpty
-                ? Image.network(url, fit: BoxFit.cover)
-                : Container(color: HexColor.semiElement)),
-      );
+          width: ScreenSize.width - 32,
+          child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: url != null && url.isNotEmpty
+                  ? FadeInImage.assetNetwork(
+                      placeholder: Utils.loadImage,
+                      image: url,
+                      fit: BoxFit.cover)
+                  : Image.asset(Utils.defaultImage, fit: BoxFit.cover)));
     });
   }
 }

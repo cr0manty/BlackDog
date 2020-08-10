@@ -6,7 +6,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 abstract class Utils {
-  static void showPopUp() {}
+  static String get loadImage => 'assets/images/card_background.png';
+  static String get defaultImage => 'assets/images/card_background.png';
 
   static dynamic showSuccessPopUp(BuildContext context, {String text}) {
     return showCupertinoDialog(

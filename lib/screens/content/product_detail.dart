@@ -1,3 +1,4 @@
+import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/menu_item.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
@@ -42,8 +43,10 @@ class _ProductDetailState extends State<ProductDetail> {
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: widget.product.image != null
-                      ? Image.network(widget.product.image, fit: BoxFit.cover)
-                      : Container(color: HexColor.semiElement))),
+                      ? FadeInImage.assetNetwork(
+                                    placeholder: Utils.loadImage,
+                                    image:widget.product.image, fit: BoxFit.cover)
+                      : Image.asset(Utils.defaultImage, fit: BoxFit.cover))),
         ),
         Container(
             margin: EdgeInsets.symmetric(vertical: 20),

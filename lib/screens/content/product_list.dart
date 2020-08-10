@@ -1,4 +1,5 @@
 import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/menu_item.dart';
 import 'package:black_dog/screens/content/product_detail.dart';
 import 'package:black_dog/utils/hex_color.dart';
@@ -34,7 +35,8 @@ class _ProductListState extends State<ProductList> {
 
   void _scrollListener() async {
     if (_scrollController.position.maxScrollExtent ==
-        _scrollController.offset && _menu.length % 10 == 0) {
+            _scrollController.offset &&
+        _menu.length % 10 == 0) {
       setState(() => showProgress = true);
       await _getMenu();
       setState(() => showProgress = false);
@@ -94,8 +96,11 @@ class _ProductListState extends State<ProductList> {
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: menu.image != null
-                      ? Image.network(menu.image, fit: BoxFit.cover)
-                      : Container(color: HexColor.semiElement)),
+                      ? FadeInImage.assetNetwork(
+                          placeholder: Utils.loadImage,
+                          image: menu.image,
+                          fit: BoxFit.cover)
+                      : Image.asset(Utils.defaultImage, fit: BoxFit.cover)),
             ),
             Container(
               margin: EdgeInsets.only(left: 20),

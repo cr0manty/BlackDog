@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:black_dog/screens/home_page.dart';
 import 'package:black_dog/screens/user//sign_in.dart';
 import 'package:black_dog/utils/connection_check.dart';
@@ -21,7 +23,7 @@ void main() async {
   Account.instance.initialize();
   ConnectionsCheck.instance.initialise();
 
-  Crashlytics.instance.enableInDevMode = true;
+//  Crashlytics.instance.enableInDevMode = true;
   FlutterError.onError = Crashlytics.instance.recordFlutterError;
 
   runApp(BlackDogApp());
@@ -33,18 +35,22 @@ class BlackDogApp extends StatefulWidget {
 }
 
 class _BlackDogAppState extends State<BlackDogApp> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    Crashlytics.instance.crash();
+  void initWithContext(BuildContext context) {
+    precacheImage(AssetImage('assets/images/card_background.png'), context);
+    //pre cache default and load images TODO
+//    precacheImage(AssetImage('assets/images/card_background.png'), context);
+//    precacheImage(AssetImage('assets/images/card_background.png'), context);
+
+    if (Platform.isAndroid) {
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+          statusBarColor: HexColor.darkElement.withOpacity(0.6),
+          statusBarIconBrightness: Brightness.light));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-        statusBarColor: HexColor.darkElement.withOpacity(0.6),
-        statusBarBrightness: Brightness.dark));
+    initWithContext(context);
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
