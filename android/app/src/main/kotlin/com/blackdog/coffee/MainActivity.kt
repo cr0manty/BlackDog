@@ -1,4 +1,4 @@
-package com.test.black_dog
+package com.blackdog.coffee
 
 import io.flutter.embedding.android.FlutterActivity
 

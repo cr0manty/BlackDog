@@ -18,7 +18,6 @@ import 'package:black_dog/widgets/edit_button.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:black_dog/widgets/user_card.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
@@ -49,14 +48,8 @@ class _HomePageState extends State<HomePage> {
 
   void initScreenSize(BuildContext context) {
     if (ScreenSize.height == null || ScreenSize.width == null) {
-      ScreenSize.height = MediaQuery
-          .of(context)
-          .size
-          .height;
-      ScreenSize.width = MediaQuery
-          .of(context)
-          .size
-          .width;
+      ScreenSize.height = MediaQuery.of(context).size.height;
+      ScreenSize.width = MediaQuery.of(context).size.width;
     }
   }
 
@@ -71,7 +64,7 @@ class _HomePageState extends State<HomePage> {
 
   void getMenuCategoryList() async {
     List<MenuCategory> category =
-    await Api.instance.getCategories(page: categoryPage);
+        await Api.instance.getCategories(page: categoryPage);
     setState(() {
       categoryPage++;
       _category.addAll(category);
@@ -85,6 +78,9 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         isLoadingData = false;
       });
+    } else {
+      getNewsList();
+      getMenuCategoryList();
     }
     _connectionChange = ConnectionsCheck.instance.onChange.listen((isOnline) {
       if (isOnline) {
@@ -102,7 +98,8 @@ class _HomePageState extends State<HomePage> {
 
   void _scrollListener() async {
     if (_scrollController.position.maxScrollExtent ==
-        _scrollController.offset && _category.length % 10 == 0) {
+            _scrollController.offset &&
+        _category.length % 10 == 0) {
       getMenuCategoryList();
     }
   }
@@ -133,9 +130,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    Utils.initScreenSize(MediaQuery
-        .of(context)
-        .size);
+    Utils.initScreenSize(MediaQuery.of(context).size);
 
     return WillPopScope(
       onWillPop: () async => false,
@@ -144,34 +139,33 @@ class _HomePageState extends State<HomePage> {
         alwaysNavigation: Account.instance.state == AccountState.STAFF,
         action: Account.instance.state != AccountState.STAFF
             ? RouteButton(
-          padding: EdgeInsets.only(top: 5),
-          iconColor: HexColor.lightElement,
-          textColor: HexColor.lightElement,
-          iconWidget: Container(
-            margin: EdgeInsets.only(left: 10),
-            child: SvgPicture.asset('assets/images/about_us.svg',
-                color: HexColor.lightElement, height: 20, width: 20),
-          ),
-          iconFirst: false,
-          text: AppLocalizations.of(context).translate('about_us'),
-          onTap: () async {
-            Crashlytics.instance.crash();
-//                  final restaurant = await Api.instance.getAboutUs();
+                padding: EdgeInsets.only(top: 5),
+                iconColor: HexColor.lightElement,
+                textColor: HexColor.lightElement,
+                iconWidget: Container(
+                  margin: EdgeInsets.only(left: 10),
+                  child: SvgPicture.asset('assets/images/about_us.svg',
+                      color: HexColor.lightElement, height: 20, width: 20),
+                ),
+                iconFirst: false,
+                text: AppLocalizations.of(context).translate('about_us'),
+                onTap: () async {
+                  final restaurant = await Api.instance.getAboutUs();
 //                  if (restaurant != null) {
-//                    Navigator.of(context)
-//                        .push(BottomRoute(page: AboutUsPage(restaurant)));
+                    Navigator.of(context)
+                        .push(BottomRoute(page: AboutUsPage(restaurant)));
 //                  }
-          },
-        )
+                },
+              )
             : RouteButton(
-          text: AppLocalizations.of(context).translate('logout'),
-          color: HexColor.lightElement,
-          onTap: () {
-            SharedPrefs.logout();
-            Navigator.of(context, rootNavigator: true)
-                .push(BottomRoute(page: SignInPage()));
-          },
-        ),
+                text: AppLocalizations.of(context).translate('logout'),
+                color: HexColor.lightElement,
+                onTap: () {
+                  SharedPrefs.logout();
+                  Navigator.of(context, rootNavigator: true)
+                      .push(BottomRoute(page: SignInPage()));
+                },
+              ),
         children: Account.instance.state == AccountState.STAFF
             ? _buildStaff()
             : _buildUser(),
@@ -182,8 +176,7 @@ class _HomePageState extends State<HomePage> {
   Widget _buildScanQRCode() {
     return GestureDetector(
         onTap: _onScanTap,
-        onTapDown: (details) =>
-            setState(() {
+        onTapDown: (details) => setState(() {
               buttonOpacity = 0.2;
               scanIconOpacity = 0.4;
             }),
@@ -220,10 +213,8 @@ class _HomePageState extends State<HomePage> {
     return [
       UserCard(
         isStaff: false,
-        onPressed: () =>
-            Navigator.of(context, rootNavigator: true).push(
-                CupertinoPageRoute(
-                    builder: (BuildContext context) => UserPage())),
+        onPressed: () => Navigator.of(context, rootNavigator: true).push(
+            CupertinoPageRoute(builder: (BuildContext context) => UserPage())),
         username: Account.instance.name,
         trailing: EditButton(fromHome: true),
         additionWidget: BonusCard(),
@@ -231,61 +222,56 @@ class _HomePageState extends State<HomePage> {
       SizedBox(height: ScreenSize.sectionIndent - 20),
       SharedPrefs.getShowNews()
           ? _buildSection(
-        AppLocalizations.of(context).translate('news'),
-        ScrollConfiguration(
-            behavior: ScrollGlow(),
-            child: ScrollConfiguration(
-                behavior: ScrollGlow(),
-                child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: _news.length > 0
-                        ? Row(
-                        children: List.generate(
-                            _news.length > maxNews
-                                ? maxNews + 2
-                                : _news.length + 2,
-                            _buildNewsBlock))
-                        : Container(
-                      width: ScreenSize.width,
-                      child: Center(
-                          child: isLoadingData
-                              ? CupertinoActivityIndicator()
-                              : Text(
-                            AppLocalizations.of(context)
-                                .translate('no_news'),
-                            style: Theme
-                                .of(context)
-                                .textTheme
-                                .subtitle1,
-                          )),
-                    )))),
-        subWidgetText: AppLocalizations.of(context).translate('more'),
-        subWidgetAction: () =>
-            Navigator.of(context).push(
-              CupertinoPageRoute(builder: (context) => NewsList()),
-            ),
-      )
+              AppLocalizations.of(context).translate('news'),
+              ScrollConfiguration(
+                  behavior: ScrollGlow(),
+                  child: ScrollConfiguration(
+                      behavior: ScrollGlow(),
+                      child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: _news.length > 0
+                              ? Row(
+                                  children: List.generate(
+                                      _news.length > maxNews
+                                          ? maxNews + 2
+                                          : _news.length + 2,
+                                      _buildNewsBlock))
+                              : Container(
+                                  width: ScreenSize.width,
+                                  child: Center(
+                                      child: isLoadingData
+                                          ? CupertinoActivityIndicator()
+                                          : Text(
+                                              AppLocalizations.of(context)
+                                                  .translate('no_news'),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .subtitle1,
+                                            )),
+                                )))),
+              subWidgetText: AppLocalizations.of(context).translate('more'),
+              subWidgetAction: () => Navigator.of(context).push(
+                CupertinoPageRoute(builder: (context) => NewsList()),
+              ),
+            )
           : Container(),
       SizedBox(height: ScreenSize.sectionIndent / 1.5),
       _buildSection(
           AppLocalizations.of(context).translate('menu'),
           _category.length > 0
               ? Column(
-            children: List.generate(_category.length, _buildMenu),
-          )
+                  children: List.generate(_category.length, _buildMenu),
+                )
               : Container(
-            width: ScreenSize.width,
-            child: Center(
-                child: isLoadingData
-                    ? CupertinoActivityIndicator()
-                    : Text(
-                  AppLocalizations.of(context).translate('no_menu'),
-                  style: Theme
-                      .of(context)
-                      .textTheme
-                      .subtitle1,
+                  width: ScreenSize.width,
+                  child: Center(
+                      child: isLoadingData
+                          ? CupertinoActivityIndicator()
+                          : Text(
+                              AppLocalizations.of(context).translate('no_menu'),
+                              style: Theme.of(context).textTheme.subtitle1,
+                            )),
                 )),
-          )),
       Container(
         height: 20,
       )
@@ -310,26 +296,20 @@ class _HomePageState extends State<HomePage> {
                 padding: EdgeInsets.symmetric(vertical: 8, horizontal: 7),
                 child: Text(
                   label,
-                  style: Theme
-                      .of(context)
-                      .textTheme
-                      .caption,
+                  style: Theme.of(context).textTheme.caption,
                 ),
               ),
               subWidgetText != null
                   ? CupertinoButton(
-                onPressed: subWidgetAction,
-                minSize: 0,
-                padding:
-                EdgeInsets.symmetric(vertical: 20, horizontal: 7),
-                child: Text(
-                  subWidgetText,
-                  style: Theme
-                      .of(context)
-                      .textTheme
-                      .subtitle1,
-                ),
-              )
+                      onPressed: subWidgetAction,
+                      minSize: 0,
+                      padding:
+                          EdgeInsets.symmetric(vertical: 20, horizontal: 7),
+                      child: Text(
+                        subWidgetText,
+                        style: Theme.of(context).textTheme.subtitle1,
+                      ),
+                    )
                   : Container(),
             ],
           ),
@@ -346,13 +326,11 @@ class _HomePageState extends State<HomePage> {
 
     final news = _news[index - 1];
     return GestureDetector(
-      onTap: () =>
-          Navigator.of(context).push(CupertinoPageRoute(
-              builder: (BuildContext context) =>
-                  NewsDetail(
-                    news: news,
-                    fromHome: true,
-                  ))),
+      onTap: () => Navigator.of(context).push(CupertinoPageRoute(
+          builder: (BuildContext context) => NewsDetail(
+                news: news,
+                fromHome: true,
+              ))),
       child: Container(
         width: ScreenSize.newsImageWidth + 20,
         decoration: BoxDecoration(
@@ -366,17 +344,13 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             Text(
               news.capitalizeTitle,
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .headline2,
+              style: Theme.of(context).textTheme.headline2,
             ),
             SizedBox(height: 10),
             Text(
               news.shortDescription ?? '',
               maxLines: 2,
-              style: Theme
-                  .of(context)
+              style: Theme.of(context)
                   .textTheme
                   .bodyText2
                   .copyWith(color: HexColor.darkElement),
@@ -398,10 +372,9 @@ class _HomePageState extends State<HomePage> {
   Widget _buildMenu(int index) {
     final category = _category[index];
     return GestureDetector(
-        onTap: () =>
-            Navigator.of(context).push(CupertinoPageRoute(
-                builder: (context) =>
-                    ProductList(title: category.name, id: category.id))),
+        onTap: () => Navigator.of(context).push(CupertinoPageRoute(
+            builder: (context) =>
+                ProductList(title: category.name, id: category.id))),
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(9),
@@ -438,8 +411,7 @@ class _HomePageState extends State<HomePage> {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       category.capitalizeTitle,
-                      style: Theme
-                          .of(context)
+                      style: Theme.of(context)
                           .textTheme
                           .caption
                           .copyWith(color: HexColor.darkElement),

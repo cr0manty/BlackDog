@@ -34,6 +34,13 @@ class BlackDogApp extends StatefulWidget {
 
 class _BlackDogAppState extends State<BlackDogApp> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Crashlytics.instance.crash();
+  }
+
+  @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
         statusBarColor: HexColor.darkElement.withOpacity(0.6),
