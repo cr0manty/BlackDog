@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:barcode_scan/platform_wrapper.dart';
@@ -73,6 +74,11 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void getNewsConfig() async {
+    await Api.instance.getNewsConfig();
+    setState(() {});
+  }
+
   @override
   void initState() {
     if (!ConnectionsCheck.instance.isOnline) {
@@ -80,6 +86,13 @@ class _HomePageState extends State<HomePage> {
         isLoadingData = false;
       });
     }
+
+    if (Platform.isIOS) {
+      getNewsConfig();
+      getNewsList();
+      getMenuCategoryList();
+    }
+
     _connectionChange = ConnectionsCheck.instance.onChange.listen((isOnline) {
       if (isOnline) {
         if (_news.length == 0) {
