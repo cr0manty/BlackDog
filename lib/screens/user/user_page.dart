@@ -44,7 +44,7 @@ class _UserPageState extends State<UserPage> {
       alwaysNavigation: true,
       titleMargin: false,
       leading: RouteButton(
-                defaultIcon: true,
+        defaultIcon: true,
         text: AppLocalizations.of(context).translate('home'),
         color: HexColor.lightElement,
         onTap: Navigator.of(context).pop,

@@ -30,7 +30,7 @@ class _ProductDetailState extends State<ProductDetail> {
         color: HexColor.lightElement,
         onTap: Navigator.of(context).pop,
       ),
-      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
       children: <Widget>[
         Center(
           child: Container(

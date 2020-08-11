@@ -29,8 +29,7 @@ class _ChangePasswordState extends State<ChangePassword> {
       inAsyncCall: isLoading,
       leading: RouteButton(
         defaultIcon: true,
-        text: AppLocalizations.of(context)
-            .translate('editing'),
+        text: AppLocalizations.of(context).translate('editing'),
         color: HexColor.lightElement,
         onTap: Navigator.of(context).pop,
       ),
@@ -76,8 +75,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                   child: TextInput(
                     obscureText: _obscureText2,
                     controller: _password2Controller,
-                    hintText:
-                        AppLocalizations.of(context).translate('confirm_password'),
+                    hintText: AppLocalizations.of(context)
+                        .translate('confirm_password'),
                     suffixIcon: GestureDetector(
                       child: Icon(
                           _obscureText2

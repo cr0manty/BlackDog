@@ -23,7 +23,8 @@ class _EditButtonState extends State<EditButton> {
         setState(() {
           buttonOpacity = 1;
         });
-        Navigator.of(context).push(CupertinoPageRoute(builder: (context) => ProfileSettings(fromHome: widget.fromHome)));
+        Navigator.of(context).push(CupertinoPageRoute(
+            builder: (context) => ProfileSettings(fromHome: widget.fromHome)));
       },
       onTapDown: (details) => setState(() {
         buttonOpacity = 0.6;
