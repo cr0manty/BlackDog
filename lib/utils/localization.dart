@@ -8,7 +8,8 @@ import 'package:flutter/services.dart';
 class AppLocalizations {
   final Locale locale;
   static _AppLocalizationsDelegate delegate = _AppLocalizationsDelegate();
-  static _FallbackCupertinoLocalisationsDelegate cupertinoDelegate = _FallbackCupertinoLocalisationsDelegate();
+  static _FallbackCupertinoLocalisationsDelegate cupertinoDelegate =
+      _FallbackCupertinoLocalisationsDelegate();
 
   AppLocalizations(this.locale);
 

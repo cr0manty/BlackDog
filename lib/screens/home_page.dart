@@ -19,6 +19,7 @@ import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:black_dog/widgets/user_card.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 import 'package:flutter_svg/svg.dart';
@@ -70,7 +71,7 @@ class _HomePageState extends State<HomePage> {
     List<MenuCategory> category =
         await Api.instance.getCategories(page: categoryPage);
     setState(() {
-      if (_category.length % Api.defaultPerPage != 0)  {
+      if (_category.length % Api.defaultPerPage == 0) {
         categoryPage++;
         _category.addAll(category);
       }
@@ -91,9 +92,9 @@ class _HomePageState extends State<HomePage> {
       });
     }
 
-      getNewsConfig();
-      getNewsList();
-      getMenuCategoryList();
+    getNewsConfig();
+    getNewsList();
+    getMenuCategoryList();
 
     _connectionChange = ConnectionsCheck.instance.onChange.listen((isOnline) {
       if (isOnline) {
@@ -195,7 +196,7 @@ class _HomePageState extends State<HomePage> {
           margin: EdgeInsets.symmetric(horizontal: ScreenSize.qrCodeMargin),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(9),
+            borderRadius: BorderRadius.circular(10),
             color: HexColor.cardBackground,
           ),
           height: ScreenSize.scanQRCodeSize,
@@ -297,7 +298,7 @@ class _HomePageState extends State<HomePage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Padding(
-          padding: EdgeInsets.only(left: 27, right: 20),
+          padding: EdgeInsets.symmetric(horizontal: 26),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
@@ -315,7 +316,7 @@ class _HomePageState extends State<HomePage> {
                       onPressed: subWidgetAction,
                       minSize: 0,
                       padding:
-                          EdgeInsets.symmetric(vertical: 20, horizontal: 7),
+                          EdgeInsets.symmetric(vertical: 16, horizontal: 7),
                       child: Text(
                         subWidgetText,
                         style: Theme.of(context).textTheme.subtitle1,
@@ -333,7 +334,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildNewsBlock(int index) {
     if (index == 0 || index >= 6 || index > _news.length)
-      return Container(width: 8);
+      return Container(width: 6);
 
     final news = _news[index - 1];
     return GestureDetector(
@@ -344,7 +345,7 @@ class _HomePageState extends State<HomePage> {
         margin: EdgeInsets.symmetric(horizontal: 10),
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(9),
+            borderRadius: BorderRadius.circular(10),
             color: HexColor.cardBackground),
         child: Column(
           mainAxisSize: MainAxisSize.max,
@@ -377,17 +378,17 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildMenu(int index) {
-    final category = _category[index];
+    MenuCategory category = _category[index];
     return GestureDetector(
         onTap: () => Navigator.of(context).push(CupertinoPageRoute(
             builder: (context) =>
                 ProductList(title: category.name, id: category.id))),
         child: Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(9),
+            borderRadius: BorderRadius.circular(10),
             color: HexColor.lightElement,
           ),
-          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           height: ScreenSize.menuBlockHeight,
           width: ScreenSize.width - 32,
           child: Container(
@@ -398,7 +399,7 @@ class _HomePageState extends State<HomePage> {
                   height: ScreenSize.menuBlockHeight,
                   width: ScreenSize.width - 32,
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
+                    borderRadius: BorderRadius.circular(10),
                     child: FadeInImage.assetNetwork(
                         placeholder: Utils.loadImage,
                         image: category.image,
@@ -407,10 +408,10 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Container(
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8.0),
+                      borderRadius: BorderRadius.circular(10),
                       gradient: LinearGradient(colors: [
                         Colors.black.withOpacity(0.2),
-                        Colors.black,
+                        Colors.black.withOpacity(0.8),
                       ], stops: [
                         0.2,
                         2

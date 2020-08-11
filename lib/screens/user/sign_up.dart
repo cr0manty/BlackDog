@@ -177,7 +177,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                               horizontal: 16),
                                           decoration: BoxDecoration(
                                               borderRadius:
-                                                  BorderRadius.circular(9),
+                                                  BorderRadius.circular(10),
                                               color: HexColor.lightElement),
                                           child: Row(
                                             mainAxisAlignment:

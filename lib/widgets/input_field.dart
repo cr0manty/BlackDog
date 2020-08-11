@@ -46,7 +46,10 @@ class TextInputState extends State<TextInput> {
       color: Colors.transparent,
       elevation: 0.0,
       child: TextFormField(
-        style: Theme.of(context).textTheme.subtitle1.copyWith(color: widget.textColor ?? HexColor.darkElement),
+        style: Theme.of(context)
+            .textTheme
+            .subtitle1
+            .copyWith(color: widget.textColor ?? HexColor.darkElement),
         keyboardType: widget.keyboardType,
         validator: widget.validator,
         obscureText: widget.obscureText ?? false,
@@ -62,8 +65,10 @@ class TextInputState extends State<TextInput> {
             focusColor: Colors.transparent,
             filled: true,
             suffixIcon: widget.suffixIcon,
-            hintStyle: Theme.of(context).textTheme.subtitle1.copyWith(
-                color: widget.textColor ?? HexColor.semiElement),
+            hintStyle: Theme.of(context)
+                .textTheme
+                .subtitle1
+                .copyWith(color: widget.textColor ?? HexColor.semiElement),
             fillColor: widget.backgroundColor ?? HexColor.lightElement,
             border: UnderlineInputBorder(
               borderSide: BorderSide.none,

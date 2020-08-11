@@ -25,10 +25,11 @@ class UserCard extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
-        margin: EdgeInsets.only(top: isStaff ? 0 : 16, left: 16, right: 16, bottom: 8),
+        margin: EdgeInsets.only(
+            top: isStaff ? 0 : 16, left: 16, right: 16, bottom: 8),
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(9),
+            borderRadius: BorderRadius.circular(10),
             color: HexColor.cardBackground),
         child: Column(children: [
           Row(
@@ -37,15 +38,11 @@ class UserCard extends StatelessWidget {
             children: <Widget>[
               CupertinoButton(
                 minSize: 0,
-                padding:
-                EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                 onPressed: onPressed,
                 child: Text(
                   username,
-                  style: Theme
-                      .of(context)
-                      .textTheme
-                      .subtitle1,
+                  style: Theme.of(context).textTheme.subtitle1,
                 ),
               ),
               trailing ?? Container()
