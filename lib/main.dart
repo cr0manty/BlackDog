@@ -20,7 +20,6 @@ void main() async {
     await SharedPrefs.initialize();
   }
 
-  Account.instance.initialize();
   ConnectionsCheck.instance.initialise();
 
 //  Crashlytics.instance.enableInDevMode = true;
@@ -46,6 +45,12 @@ class _BlackDogAppState extends State<BlackDogApp> {
           statusBarColor: HexColor.darkElement.withOpacity(0.6),
           statusBarIconBrightness: Brightness.light));
     }
+  }
+
+  @override
+  void initState() {
+    Account.instance.initialize();
+    super.initState();
   }
 
   @override
@@ -84,7 +89,7 @@ class _BlackDogAppState extends State<BlackDogApp> {
       },
       theme: ThemeData(
           brightness: Brightness.dark,
-          scaffoldBackgroundColor: Color.fromRGBO(37, 36, 39, 1),
+          scaffoldBackgroundColor: HexColor.backgroundColor,
           textTheme: TextTheme(
               caption: TextStyle(
                   fontFamily: 'Lemon-Milk',

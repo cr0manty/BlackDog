@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:io';
-import 'dart:ui';
 
 import 'package:barcode_scan/platform_wrapper.dart';
 import 'package:black_dog/instances/api.dart';
@@ -33,6 +31,10 @@ import 'package:black_dog/screens/content/news_list.dart';
 import 'package:black_dog/screens/user/sign_in.dart';
 
 class HomePage extends StatefulWidget {
+  final bool isInitView;
+
+  HomePage({this.isInitView = true});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -68,8 +70,10 @@ class _HomePageState extends State<HomePage> {
     List<MenuCategory> category =
         await Api.instance.getCategories(page: categoryPage);
     setState(() {
-      categoryPage++;
-      _category.addAll(category);
+      if (_category.length % Api.defaultPerPage != 0)  {
+        categoryPage++;
+        _category.addAll(category);
+      }
       isLoadingData = false;
     });
   }
@@ -87,11 +91,9 @@ class _HomePageState extends State<HomePage> {
       });
     }
 
-    if (Platform.isIOS) {
       getNewsConfig();
       getNewsList();
       getMenuCategoryList();
-    }
 
     _connectionChange = ConnectionsCheck.instance.onChange.listen((isOnline) {
       if (isOnline) {
@@ -110,7 +112,7 @@ class _HomePageState extends State<HomePage> {
   void _scrollListener() async {
     if (_scrollController.position.maxScrollExtent ==
             _scrollController.offset &&
-        _category.length % 10 == 0) {
+        _category.length % Api.defaultPerPage == 0) {
       getMenuCategoryList();
     }
   }
@@ -185,27 +187,25 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildScanQRCode() {
-    return GestureDetector(
-        onTap: _onScanTap,
-        onTapDown: (details) => setState(() {
-              buttonOpacity = 0.2;
-              scanIconOpacity = 0.4;
-            }),
+    return CupertinoButton(
+        onPressed: _onScanTap,
+        padding: EdgeInsets.symmetric(vertical: 20),
+        minSize: 0,
         child: Container(
+          margin: EdgeInsets.symmetric(horizontal: ScreenSize.qrCodeMargin),
           alignment: Alignment.center,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(9),
-            color: HexColor.lightElement,
+            color: HexColor.cardBackground,
           ),
           height: ScreenSize.scanQRCodeSize,
-          width: ScreenSize.scanQRCodeSize,
           child: Container(
             alignment: FractionalOffset.center,
             transform: Matrix4.translationValues(0, -5, 0),
             child: Icon(
               SFSymbols.camera_viewfinder,
               size: ScreenSize.scanQRCodeIconSize,
-              color: HexColor.darkElement.withOpacity(scanIconOpacity),
+              color: HexColor.lightElement.withOpacity(scanIconOpacity),
             ),
           ),
         ));
@@ -337,53 +337,43 @@ class _HomePageState extends State<HomePage> {
 
     final news = _news[index - 1];
     return GestureDetector(
-        onTap: () => Navigator.of(context).push(CupertinoPageRoute(
-            builder: (BuildContext context) =>
-                NewsDetail(news: news, fromHome: true))),
-        child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 10),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(9),
-                image: DecorationImage(
-                    image: AssetImage('assets/images/card_background.png'),
-                    fit: BoxFit.fitHeight)),
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(9),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-                  child: Container(
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(9),
-                        color: HexColor.lightElement.withOpacity(0.19)),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      children: <Widget>[
-                        Text(
-                          news.capitalizeTitle,
-                          style: Theme.of(context).textTheme.headline1,
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          news.shortDescription ?? '',
-                          maxLines: 2,
-                          style: Theme.of(context).textTheme.subtitle2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        SizedBox(height: 10),
-                        Container(
-                            height: ScreenSize.newsImageHeight,
-                            width: ScreenSize.newsImageWidth,
-                            child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: FadeInImage.assetNetwork(
-                                    placeholder: Utils.loadImage,
-                                    image: news.previewImage,
-                                    fit: BoxFit.cover)))
-                      ],
-                    ),
-                  ),
-                ))));
+      onTap: () => Navigator.of(context).push(CupertinoPageRoute(
+          builder: (BuildContext context) =>
+              NewsDetail(news: news, fromHome: true))),
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 10),
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(9),
+            color: HexColor.cardBackground),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            Text(
+              news.capitalizeTitle,
+              style: Theme.of(context).textTheme.headline1,
+            ),
+            SizedBox(height: 10),
+            Text(
+              news.shortDescription ?? '',
+              maxLines: 2,
+              style: Theme.of(context).textTheme.subtitle2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            SizedBox(height: 10),
+            Container(
+                height: ScreenSize.newsImageHeight,
+                width: ScreenSize.newsImageWidth,
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: FadeInImage.assetNetwork(
+                        placeholder: Utils.loadImage,
+                        image: news.previewImage,
+                        fit: BoxFit.cover)))
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildMenu(int index) {
@@ -419,8 +409,8 @@ class _HomePageState extends State<HomePage> {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8.0),
                       gradient: LinearGradient(colors: [
-                        HexColor.darkElement.withOpacity(0.2),
-                        HexColor.darkElement,
+                        Colors.black.withOpacity(0.2),
+                        Colors.black,
                       ], stops: [
                         0.2,
                         2

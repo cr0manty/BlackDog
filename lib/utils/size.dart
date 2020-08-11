@@ -4,7 +4,7 @@ abstract class ScreenSize {
 
   static double get sectionIndent => height * 0.04;
 
-  static double get scanQRCodeIndent => height * 0.1;
+  static double get scanQRCodeIndent => height * 0.05;
 
   static double get scanQRCodeSize => height * 0.17;
 
@@ -38,5 +38,7 @@ abstract class ScreenSize {
 
   static double get newsItemPhotoSize => height * 0.35;
 
-  static double get newsListTextSize =>  width - newsListImageSize - 48;
+  static double get newsListTextSize => width - newsListImageSize - 48;
+
+  static double get qrCodeMargin => (width - scanQRCodeSize) / 2;
 }

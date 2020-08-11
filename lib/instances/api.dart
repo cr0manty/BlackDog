@@ -41,6 +41,7 @@ class LogInterceptor implements InterceptorContract {
 }
 
 class Api {
+  static const defaultPerPage = 10;
   static const String _base_url = 'cv.faifly.com';
   bool init = false;
 
@@ -166,7 +167,7 @@ class Api {
     return body;
   }
 
-  Future getNewsList({int limit = 10, int page = 0}) async {
+  Future getNewsList({int limit = defaultPerPage, int page = 0}) async {
     List<News> newsList = [];
     Response response = await _client.get(
         _setUrl(
@@ -198,7 +199,7 @@ class Api {
     return null;
   }
 
-  Future getCategories({int limit = 10, int page = 0}) async {
+  Future getCategories({int limit = defaultPerPage, int page = 0}) async {
     List<MenuCategory> _categories = [];
 
     Response response = await _client.get(
@@ -220,7 +221,7 @@ class Api {
     return _categories;
   }
 
-  Future getMenu(int id, {int limit = 10, int page = 0}) async {
+  Future getMenu(int id, {int limit = defaultPerPage, int page = 0}) async {
     Response response = await _client.get(
         _setUrl(
           path: '/menu/categories-list/$id',

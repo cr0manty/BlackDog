@@ -2,7 +2,6 @@ import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/menu_item.dart';
 import 'package:black_dog/screens/content/product_detail.dart';
-import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/utils/size.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
@@ -36,7 +35,7 @@ class _ProductListState extends State<ProductList> {
   void _scrollListener() async {
     if (_scrollController.position.maxScrollExtent ==
             _scrollController.offset &&
-        _menu.length % 10 == 0) {
+        _menu.length % Api.defaultPerPage == 0) {
       setState(() => showProgress = true);
       await _getMenu();
       setState(() => showProgress = false);

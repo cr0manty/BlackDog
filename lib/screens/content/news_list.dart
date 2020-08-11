@@ -40,7 +40,7 @@ class _NewsListState extends State<NewsList> {
   void _scrollListener() async {
     if (_scrollController.position.maxScrollExtent ==
             _scrollController.offset &&
-        newsList.length % 10 == 0) {
+        newsList.length % Api.defaultPerPage == 0) {
       setState(() => showProgress = true);
       await getNewsList();
       setState(() => showProgress = false);
