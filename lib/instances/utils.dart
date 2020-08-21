@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 abstract class Utils {
   static String get loadImage => 'assets/images/card_background.png';
+
   static String get defaultImage => 'assets/images/card_background.png';
 
   static dynamic showSuccessPopUp(BuildContext context, {String text}) {
@@ -46,10 +47,8 @@ abstract class Utils {
   }
 
   static void initScreenSize(Size size) {
-    if (ScreenSize.height == null || ScreenSize.width == null) {
-      ScreenSize.height = size.height;
-      ScreenSize.width = size.width;
-    }
+    ScreenSize.height = size.height;
+    ScreenSize.width = size.width;
   }
 
   static String dateFormat(DateTime date) {

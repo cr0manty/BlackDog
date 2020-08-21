@@ -71,7 +71,10 @@ class _NewsListState extends State<NewsList> {
       return Container(
         alignment: Alignment.center,
         height: showProgress ? 50 : 0,
-        child: Center(child: CupertinoActivityIndicator()),
+        child: Container(
+            alignment: Alignment.center,
+            height: 100,
+            child: CupertinoActivityIndicator()),
       );
     }
 

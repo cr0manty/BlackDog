@@ -70,7 +70,9 @@ class Api {
   Stream<bool> get apiChange => _apiChange.stream;
 
   Map<String, String> _setHeaders({bool useToken = true, useJson = false}) {
-    Map<String, String> headers = {};
+    Map<String, String> headers = {
+      'Accept-Language': SharedPrefs.getLanguageCode()
+    };
 
     if (useToken) {
       headers['Authorization'] = 'Token ${SharedPrefs.getToken()}';
@@ -85,19 +87,14 @@ class Api {
 
   Uri _setUrl(
       {String path = '', bool base = false, Map<String, String> params}) {
-    Map<String, String> query = params ?? {};
-    query['lang'] = SharedPrefs.getLanguageCode();
-    return Uri.https(_base_url, base ? path : '/api/v1' + path, params);
+    return Uri.https(_base_url, base ? path : '/api/v1' + path, params ?? {});
   }
 
   Future staffScanQRCode(String url) async {
     if (!url.startsWith(_base_url)) {
       return {'result': false, 'message': null};
     }
-    Response response = await _client
-        .post(url + '?lang=${SharedPrefs.getLanguageCode()}', headers: {
-      'Authorization': "Token ${SharedPrefs.getToken()}",
-    });
+    Response response = await _client.post(url, headers: _setHeaders());
     Map body = json.decode(response.body);
     body['result'] = response.statusCode == 200;
     return body;
@@ -106,7 +103,8 @@ class Api {
   Future login(String email, String password) async {
     Response response = await _client.post(
         _setUrl(path: '/auth/login/', base: true),
-        body: {'email': email, 'password': password});
+        body: {'email': email, 'password': password},
+        headers: _setHeaders(useToken: false));
 
     Map body = json.decode(response.body);
     if (response.statusCode == 200) {
@@ -278,9 +276,10 @@ class Api {
   }
 
   Future passwordReset(String email) async {
-    return await _client.post(
-        _setUrl(path: '/auth/password/reset/', base: true),
-        body: {'email': email}).then((response) {
+    return await _client
+        .post(_setUrl(path: '/auth/password/reset/', base: true),
+            body: {'email': email}, headers: _setHeaders(useToken: false))
+        .then((response) {
       Map body = json.decode(response.body);
       body['result'] = response.statusCode == 200;
       return body;
