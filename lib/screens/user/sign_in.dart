@@ -33,143 +33,139 @@ class _SignInPageState extends State<SignInPage> {
   Widget build(BuildContext context) {
     Utils.initScreenSize(MediaQuery.of(context).size);
 
-    return WillPopScope(
-        onWillPop: () async => false,
-        child: Scaffold(
-            body: ModalProgressHUD(
-                progressIndicator: CupertinoActivityIndicator(),
-                inAsyncCall: isLoading,
-                child: SafeArea(
-                    child: Form(
-                  key: _formKey,
-                  child: Container(
-                      padding: EdgeInsets.all(16),
-                      child: ScrollConfiguration(
-                        behavior: ScrollGlow(),
-                        child: CustomScrollView(slivers: [
-                          SliverFillRemaining(
-                            hasScrollBody: false,
-                            child: Column(
+    return Scaffold(
+        body: ModalProgressHUD(
+            progressIndicator: CupertinoActivityIndicator(),
+            inAsyncCall: isLoading,
+            child: SafeArea(
+                child: Form(
+              key: _formKey,
+              child: Container(
+                  padding: EdgeInsets.all(16),
+                  child: ScrollConfiguration(
+                    behavior: ScrollGlow(),
+                    child: CustomScrollView(slivers: [
+                      SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              alignment: Alignment.topCenter,
+                              padding: EdgeInsets.only(
+                                  top: ScreenSize.elementIndentHeight),
+                              child: Text(
+                                AppLocalizations.of(context)
+                                    .translate('sign_in'),
+                                style: Theme.of(context).textTheme.caption,
+                              ),
+                            ),
+                            Column(
                               mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Container(
-                                  alignment: Alignment.topCenter,
-                                  padding: EdgeInsets.only(
-                                      top: ScreenSize.elementIndentHeight),
-                                  child: Text(
-                                    AppLocalizations.of(context)
-                                        .translate('sign_in'),
-                                    style: Theme.of(context).textTheme.caption,
-                                  ),
-                                ),
-                                Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Container(
-                                        alignment: Alignment.center,
-                                        child: TextInput(
-                                          controller: _emailFilter,
-                                          keyboardType:
-                                              TextInputType.emailAddress,
-                                          hintText: AppLocalizations.of(context)
-                                              .translate('email'),
-                                          inputAction:
-                                              TextInputAction.continueAction,
-                                        )),
-                                    Utils.showValidateError(fieldsError,
-                                        key: 'email'),
-                                    Container(
-                                        alignment: Alignment.center,
-                                        child: TextInput(
-                                          obscureText: _obscureText,
-                                          controller: _passwordFilter,
-                                          hintText: AppLocalizations.of(context)
-                                              .translate('password'),
-                                          suffixIcon: GestureDetector(
-                                            child: Icon(
-                                                _obscureText
-                                                    ? Icons.remove_red_eye
-                                                    : Icons.visibility_off,
-                                                color: HexColor.darkElement),
-                                            onTap: () {
-                                              setState(() {
-                                                _obscureText = !_obscureText;
-                                              });
-                                            },
-                                          ),
-                                          inputAction: TextInputAction.done,
-                                        )),
-                                    Utils.showValidateError(fieldsError,
-                                        key: 'password', bottomPadding: false),
-                                    Container(
-                                      alignment: Alignment.centerRight,
-                                      child: CupertinoButton(
-                                          padding: EdgeInsets.only(
-                                              top: 8, bottom: 8, left: 8),
-                                          onPressed: () {
-                                            FocusScope.of(context)
-                                                .requestFocus(FocusNode());
-                                            Navigator.of(context).push(
-                                                CupertinoPageRoute(
-                                                    builder: (context) =>
-                                                        ForgotPassword()));
-                                          },
-                                          child: Text(
-                                            AppLocalizations.of(context)
-                                                .translate('forgot_password'),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyText2,
-                                          )),
-                                    ),
-                                  ],
-                                ),
-                                Container(
-                                    alignment: Alignment.bottomCenter,
-                                    padding: EdgeInsets.only(
-                                        bottom: ScreenSize.elementIndentHeight),
-                                    child: Column(
-                                      children: <Widget>[
-                                        SizedBox(
-                                          width: ScreenSize.width - 64,
-                                          child: CupertinoButton(
-                                              onPressed: loginClick,
-                                              color: HexColor.lightElement,
-                                              child: Text(
-                                                  AppLocalizations.of(context)
-                                                      .translate('sign_in'),
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .caption
-                                                      .copyWith(
-                                                          color: HexColor
-                                                              .darkElement))),
-                                        ),
-                                        CupertinoButton(
-                                            onPressed: () {
-                                              FocusScope.of(context)
-                                                  .requestFocus(FocusNode());
-                                              Navigator.of(context).push(
-                                                  BottomRoute(
-                                                      page: SignUpPage()));
-                                            },
-                                            child: Text(
-                                                AppLocalizations.of(context)
-                                                    .translate('no_account'),
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText2)),
-                                      ],
+                                    alignment: Alignment.center,
+                                    child: TextInput(
+                                      controller: _emailFilter,
+                                      keyboardType: TextInputType.emailAddress,
+                                      hintText: AppLocalizations.of(context)
+                                          .translate('email'),
+                                      inputAction:
+                                          TextInputAction.continueAction,
                                     )),
+                                Utils.showValidateError(fieldsError,
+                                    key: 'email'),
+                                Container(
+                                    alignment: Alignment.center,
+                                    child: TextInput(
+                                      obscureText: _obscureText,
+                                      controller: _passwordFilter,
+                                      hintText: AppLocalizations.of(context)
+                                          .translate('password'),
+                                      suffixIcon: GestureDetector(
+                                        child: Icon(
+                                            _obscureText
+                                                ? Icons.remove_red_eye
+                                                : Icons.visibility_off,
+                                            color: HexColor.darkElement),
+                                        onTap: () {
+                                          setState(() {
+                                            _obscureText = !_obscureText;
+                                          });
+                                        },
+                                      ),
+                                      inputAction: TextInputAction.done,
+                                    )),
+                                Utils.showValidateError(fieldsError,
+                                    key: 'password', bottomPadding: false),
+                                Container(
+                                  alignment: Alignment.centerRight,
+                                  child: CupertinoButton(
+                                      padding: EdgeInsets.only(
+                                          top: 8, bottom: 8, left: 8),
+                                      onPressed: () {
+                                        FocusScope.of(context)
+                                            .requestFocus(FocusNode());
+                                        Navigator.of(context).push(
+                                            CupertinoPageRoute(
+                                                builder: (context) =>
+                                                    ForgotPassword()));
+                                      },
+                                      child: Text(
+                                        AppLocalizations.of(context)
+                                            .translate('forgot_password'),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText2,
+                                      )),
+                                ),
                               ],
                             ),
-                          )
-                        ]),
-                      )),
-                )))));
+                            Container(
+                                alignment: Alignment.bottomCenter,
+                                padding: EdgeInsets.only(
+                                    bottom: ScreenSize.elementIndentHeight),
+                                child: Column(
+                                  children: <Widget>[
+                                    SizedBox(
+                                      width: ScreenSize.width - 64,
+                                      child: CupertinoButton(
+                                          onPressed: loginClick,
+                                          color: HexColor.lightElement,
+                                          child: Text(
+                                              AppLocalizations.of(context)
+                                                  .translate('sign_in'),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .caption
+                                                  .copyWith(
+                                                      color: HexColor
+                                                          .darkElement))),
+                                    ),
+                                    CupertinoButton(
+                                        onPressed: () {
+                                          FocusScope.of(context)
+                                              .requestFocus(FocusNode());
+                                          Navigator.of(context).push(
+                                              BottomRoute(page: SignUpPage()));
+                                        },
+                                        child: Text(
+                                            AppLocalizations.of(context)
+                                                .translate('no_account'),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText2)),
+                                  ],
+                                )),
+                          ],
+                        ),
+                      )
+                    ]),
+                  )),
+            ))));
   }
 
   Future loginClick() async {
@@ -181,8 +177,8 @@ class _SignInPageState extends State<SignInPage> {
         .then((response) async {
       bool result = response.remove('result');
       if (result && await Account.instance.setUser()) {
-        Navigator.of(context)
-            .push(BottomRoute(page: HomePage(isInitView: false)));
+        Navigator.of(context).pushAndRemoveUntil(
+            BottomRoute(page: HomePage(isInitView: false)), (route) => false);
       } else {
         response.forEach((key, value) {
           if (_fieldsList.contains(key)) {

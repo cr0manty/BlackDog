@@ -46,5 +46,5 @@ class ConnectionsCheck {
     _controller.add(isOnline);
   }
 
-  void disposeStream() => _controller.close();
+  void dispose() => _controller.close();
 }

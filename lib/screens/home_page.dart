@@ -19,7 +19,6 @@ import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:black_dog/widgets/user_card.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 import 'package:flutter_svg/svg.dart';
@@ -146,9 +145,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     Utils.initScreenSize(MediaQuery.of(context).size);
 
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: PageScaffold(
+    return  PageScaffold(
         scrollController: _scrollController,
         alwaysNavigation: Account.instance.state == AccountState.STAFF,
         action: Account.instance.state != AccountState.STAFF
@@ -183,8 +180,7 @@ class _HomePageState extends State<HomePage> {
         children: Account.instance.state == AccountState.STAFF
             ? _buildStaff()
             : _buildUser(),
-      ),
-    );
+      );
   }
 
   Widget _buildScanQRCode() {
@@ -278,7 +274,9 @@ class _HomePageState extends State<HomePage> {
                   width: ScreenSize.width,
                   child: Center(
                       child: isLoadingData
-                          ? CupertinoActivityIndicator()
+                          ? Container(
+                              padding: EdgeInsets.only(top: 20),
+                              child: CupertinoActivityIndicator())
                           : Text(
                               AppLocalizations.of(context).translate('no_menu'),
                               style: Theme.of(context).textTheme.subtitle1,
@@ -430,9 +428,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
-    super.dispose();
     _connectionChange?.cancel();
-    ConnectionsCheck.instance.disposeStream();
+    ConnectionsCheck.instance.dispose();
     Api.instance.dispose();
+    super.dispose();
   }
 }

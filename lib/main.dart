@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/screens/home_page.dart';
 import 'package:black_dog/screens/user//sign_in.dart';
 import 'package:black_dog/utils/connection_check.dart';
@@ -35,10 +36,8 @@ class BlackDogApp extends StatefulWidget {
 
 class _BlackDogAppState extends State<BlackDogApp> {
   void initWithContext(BuildContext context) {
-    precacheImage(AssetImage('assets/images/card_background.png'), context);
-    //pre cache default and load images TODO
-//    precacheImage(AssetImage('assets/images/card_background.png'), context);
-//    precacheImage(AssetImage('assets/images/card_background.png'), context);
+    precacheImage(AssetImage(Utils.defaultImage), context);
+    precacheImage(AssetImage(Utils.loadImage), context);
 
     if (Platform.isAndroid) {
       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
@@ -84,7 +83,7 @@ class _BlackDogAppState extends State<BlackDogApp> {
         print('Device language code: ${currentLocale.languageCode}');
         print('Device country code: ${currentLocale.countryCode ?? ''}');
 
-        SharedPrefs.saveLanguageCode(currentLocale.languageCode);
+        SharedPrefs.saveLanguageCode('${currentLocale.languageCode}_${currentLocale.countryCode}');
         return currentLocale;
       },
       theme: ThemeData(
@@ -123,5 +122,10 @@ class _BlackDogAppState extends State<BlackDogApp> {
           ? SignInPage()
           : HomePage(),
     );
+  }
+  @override
+  void dispose() {
+    ConnectionsCheck.instance.dispose();
+    super.dispose();
   }
 }

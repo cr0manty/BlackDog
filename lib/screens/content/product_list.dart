@@ -73,6 +73,7 @@ class _ProductListState extends State<ProductList> {
   Widget _buildProduct(int index) {
     if (index == _menu.length) {
       return Container(
+        padding: EdgeInsets.only(top: 20),
         alignment: Alignment.center,
         height: showProgress ? 50 : 0,
         child: Center(child: CupertinoActivityIndicator()),

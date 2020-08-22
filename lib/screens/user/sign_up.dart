@@ -290,7 +290,8 @@ class _SignUpPageState extends State<SignUpPage> {
     await Api.instance.register(_sendData()).then((response) async {
       bool result = response.remove('result');
       if (result && await Account.instance.setUser()) {
-        Navigator.of(context).push(BottomRoute(page: HomePage()));
+        Navigator.of(context).pushAndRemoveUntil(
+            BottomRoute(page: HomePage(isInitView: false)), (route) => false);
       } else {
         response.forEach((key, value) {
           if (_fieldsList.contains(key)) {

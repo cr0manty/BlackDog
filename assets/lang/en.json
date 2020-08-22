@@ -31,5 +31,7 @@
   "send": "Send",
   "restore_password": "Restore Password",
   "change_password": "Change Password",
-  "editing": "Edit"
+  "editing": "Edit",
+  "code": "Password reset code",
+  "reset_help": "A code will be sent to your E-mail for change the password."
 }
