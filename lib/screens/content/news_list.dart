@@ -69,7 +69,7 @@ class _NewsListState extends State<NewsList> {
   Widget _buildNews(int index) {
     if (index == newsList.length) {
       return Container(
-        padding: EdgeInsets.only(top: 20),
+        padding: EdgeInsets.only(top: 10),
         alignment: Alignment.center,
         height: showProgress ? 50 : 0,
         child: Container(

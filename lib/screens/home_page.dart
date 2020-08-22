@@ -274,9 +274,7 @@ class _HomePageState extends State<HomePage> {
                   width: ScreenSize.width,
                   child: Center(
                       child: isLoadingData
-                          ? Container(
-                              padding: EdgeInsets.only(top: 20),
-                              child: CupertinoActivityIndicator())
+                          ? CupertinoActivityIndicator()
                           : Text(
                               AppLocalizations.of(context).translate('no_menu'),
                               style: Theme.of(context).textTheme.subtitle1,
