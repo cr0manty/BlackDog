@@ -96,7 +96,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           alignment: Alignment.center,
           child: TextInput(
             controller: _basicController,
-            keyboardType: TextInputType.text,
+            keyboardType: TextInputType.visiblePassword,
             hintText: AppLocalizations.of(context).translate('new_password'),
             inputAction: TextInputAction.next,
           )),
@@ -105,7 +105,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           alignment: Alignment.center,
           child: TextInput(
             controller: _basicAdditionController,
-            keyboardType: TextInputType.text,
+            keyboardType: TextInputType.visiblePassword,
             hintText:
                 AppLocalizations.of(context).translate('confirm_password'),
             inputAction: TextInputAction.done,

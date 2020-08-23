@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:barcode_scan/platform_wrapper.dart';
 import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/instances/notification_manager.dart';
+import 'package:black_dog/models/restaurant.dart';
 import 'package:black_dog/screens/content/product_list.dart';
 import 'package:black_dog/screens/user/user_page.dart';
 import 'package:black_dog/utils/connection_check.dart';
@@ -38,13 +40,16 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
   StreamSubscription _connectionChange;
+  Restaurant _restaurant;
   double buttonOpacity = 1;
   double scanIconOpacity = 1;
+  int categoryPage = 0;
+
   bool isLoading = true;
+  bool isLoadingData = true;
+  bool initialLoad = true;
   List _news = [];
   List _category = [];
-  int categoryPage = 0;
-  bool isLoadingData = true;
 
   void getNewsList() async {
     List news = await Api.instance
@@ -56,8 +61,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void getMenuCategoryList() async {
-    List category =
-        await Api.instance.getCategories(page: categoryPage);
+    List category = await Api.instance.getCategories(page: categoryPage);
     setState(() {
       if (_category.length % Api.defaultPerPage == 0) {
         categoryPage++;
@@ -67,42 +71,43 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void getNewsConfig() async {
+  void initDependencies() async {
+    _restaurant = await Api.instance.getAboutUs();
     await Api.instance.getNewsConfig();
-    setState(() {});
-  }
-
-  void getUser() async {
     await Account.instance.refreshUser();
+//    await Api.instance.sendFCMToken();
     setState(() {});
   }
 
   void onNetworkChange(isOnline) {
-     if (isOnline) {
-        getUser();
+    if (isOnline && initialLoad) {
+      initialLoad = false;
+      initDependencies();
+    }
 
-        if (_news.length == 0) {
-          getNewsList();
-        }
-        if (_category.length == 0) {
-          getMenuCategoryList();
-        }
-      }
+    if (_news.length == 0) {
+      getNewsList();
+    }
+    if (_category.length == 0) {
+      getMenuCategoryList();
+    }
   }
 
   @override
   void initState() {
-     getNewsConfig();
-
     if (!ConnectionsCheck.instance.isOnline) {
       setState(() {
         isLoadingData = false;
       });
     }
 
-    _connectionChange = ConnectionsCheck.instance.onChange.listen(onNetworkChange);
+    _connectionChange =
+        ConnectionsCheck.instance.onChange.listen(onNetworkChange);
     _scrollController.addListener(_scrollListener);
-    onNetworkChange(true);
+
+    if (!widget.isInitView) {
+      onNetworkChange(true);
+    }
     super.initState();
   }
 
@@ -157,14 +162,12 @@ class _HomePageState extends State<HomePage> {
               ),
               iconFirst: false,
               text: AppLocalizations.of(context).translate('about_us'),
-              onTap: () async {
-                final restaurant = await Api.instance.getAboutUs();
-                if (restaurant != null) {
+              onTap: () {
+                if (_restaurant != null) {
                   Navigator.of(context).push(CupertinoPageRoute(
-                      builder: (context) => AboutUsPage(restaurant)));
+                      builder: (context) => AboutUsPage(_restaurant)));
                 }
-              },
-            )
+              })
           : RouteButton(
               text: AppLocalizations.of(context).translate('logout'),
               color: HexColor.lightElement,

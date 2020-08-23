@@ -54,6 +54,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                     hintText:
                         AppLocalizations.of(context).translate('new_password'),
                     inputAction: TextInputAction.done,
+                    keyboardType: TextInputType.visiblePassword,
                   )),
               Utils.showValidateError(fieldsError, key: 'new_password1'),
               Container(
@@ -63,6 +64,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                     hintText: AppLocalizations.of(context)
                         .translate('confirm_password'),
                     inputAction: TextInputAction.done,
+                    keyboardType: TextInputType.visiblePassword,
                   )),
               Utils.showValidateError(fieldsError, key: 'new_password2'),
             ],

@@ -8,6 +8,7 @@ abstract class SharedPrefs {
   static const _localeCode = 'LocaleCode';
   static const _showNews = 'ShowNews';
   static const _maxNewsAmount = 'MaxPostAmount';
+  static const _fcmToken = 'FCMToken';
 
   static SharedPreferences _prefs;
 
@@ -23,11 +24,17 @@ abstract class SharedPrefs {
     _prefs.setString(_currentUser, '');
     _prefs.setString(_currentToken, '');
     _prefs.setString(_qrCode, '');
+    _prefs.setString(_fcmToken, '');
   }
 
   static void saveToken(String token) {
     _prefs.setString(
         _currentToken, (token != null && token.isNotEmpty) ? token : '');
+  }
+
+   static void saveFCMToken(String token) {
+    _prefs.setString(
+        _fcmToken, (token != null && token.isNotEmpty) ? token : '');
   }
 
   static void saveUser(User user) {
@@ -54,6 +61,10 @@ abstract class SharedPrefs {
 
   static String getToken() {
     return _prefs.getString(_currentToken);
+  }
+
+  static String getFCMToken() {
+    return _prefs.getString(_fcmToken);
   }
 
   static String getQRCode() {

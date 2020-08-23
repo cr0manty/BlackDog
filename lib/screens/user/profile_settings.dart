@@ -68,6 +68,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 controller: _nameController,
                 hintText: AppLocalizations.of(context).translate('first_name'),
                 inputAction: TextInputAction.continueAction,
+                keyboardType: TextInputType.name,
               )),
               Utils.showValidateError(fieldsError, key: 'first_name'),
               Container(
@@ -75,6 +76,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 controller: _phoneController,
                 hintText: AppLocalizations.of(context).translate('phone'),
                 inputAction: TextInputAction.continueAction,
+                keyboardType: TextInputType.phone,
               )),
               Utils.showValidateError(fieldsError, key: 'phone'),
               Container(
@@ -87,6 +89,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
               Utils.showValidateError(fieldsError, key: 'email'),
               Container(
                 alignment: Alignment.bottomCenter,
+                margin: EdgeInsets.only(top: 20),
                 child: SizedBox(
                   width: ScreenSize.width - 64,
                   child: CupertinoButton(

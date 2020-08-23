@@ -18,27 +18,20 @@ class _EditButtonState extends State<EditButton> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          buttonOpacity = 1;
-        });
-        Navigator.of(context).push(CupertinoPageRoute(
-            builder: (context) => ProfileSettings(fromHome: widget.fromHome)));
-      },
-      onTapDown: (details) => setState(() {
-        buttonOpacity = 0.6;
-      }),
+    return CupertinoButton(
+      onPressed: () => Navigator.of(context).push(CupertinoPageRoute(
+          builder: (context) => ProfileSettings(fromHome: widget.fromHome))),
+      padding: EdgeInsets.zero,
       child: Container(
         width: 31,
         height: 31,
         decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: HexColor.darkElement.withOpacity(buttonOpacity)),
+            color: HexColor.lightElement.withOpacity(buttonOpacity)),
         child: Icon(
           SFSymbols.pencil,
           size: 25,
-          color: HexColor.lightElement.withOpacity(buttonOpacity),
+          color: HexColor.darkElement.withOpacity(buttonOpacity),
         ),
       ),
     );

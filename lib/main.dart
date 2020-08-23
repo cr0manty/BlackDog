@@ -13,6 +13,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'instances/account.dart';
 import 'instances/api.dart';
+import 'instances/notification_manager.dart';
 import 'instances/shared_pref.dart';
 
 void main() async {
@@ -22,10 +23,10 @@ void main() async {
     await SharedPrefs.initialize();
   }
 
-      ConnectionsCheck.instance.initialise();
+  ConnectionsCheck.instance.initialise();
+  NotificationManager.instance.configure();
 
-
-//  Crashlytics.instance.enableInDevMode = true;
+  //Crashlytics.instance.enableInDevMode = true;
   FlutterError.onError = Crashlytics.instance.recordFlutterError;
 
   runApp(BlackDogApp());
@@ -127,6 +128,7 @@ class _BlackDogAppState extends State<BlackDogApp> {
           : HomePage(),
     );
   }
+
   @override
   void dispose() {
     Api.instance.dispose();

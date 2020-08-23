@@ -79,6 +79,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                       child: Container(
                                           child: TextInput(
                                         controller: _nameController,
+                                        keyboardType: TextInputType.name,
                                         hintText: AppLocalizations.of(context)
                                             .translate('first_name'),
                                         inputAction:
@@ -90,6 +91,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                       alignment: Alignment.center,
                                       child: TextInput(
                                         controller: _phoneController,
+                                        keyboardType: TextInputType.phone,
                                         hintText: AppLocalizations.of(context)
                                             .translate('phone'),
                                         inputAction:

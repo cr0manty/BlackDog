@@ -43,6 +43,7 @@ class LogInterceptor implements InterceptorContract {
 class Api {
   static const defaultPerPage = 10;
   static const String _base_url = 'cv.faifly.com';
+
 //  static const String _base_url = '10.0.2.2:8000';
   bool init = false;
 
@@ -314,6 +315,13 @@ class Api {
     }
     body['result'] = false;
     return body;
+  }
+
+  void sendFCMToken() async {
+    // TODO send fcm api method
+    _client.post(_setUrl(path: '', base: true),
+        body: json.encode({'token': SharedPrefs.getFCMToken()}),
+        headers: _setHeaders(useJson: true));
   }
 
   void dispose() {

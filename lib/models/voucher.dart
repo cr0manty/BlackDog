@@ -50,7 +50,7 @@ class Voucher {
 
   String get discountType {
     if (discount == 'percentage') {
-      return '-$amount%';
+      return '-${amount.toInt()}%';
     }
     return '';
   }

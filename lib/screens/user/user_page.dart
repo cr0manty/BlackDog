@@ -48,41 +48,43 @@ class _UserPageState extends State<UserPage> {
   Widget _currentBonusCard() {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 16, horizontal: 26),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Text(AppLocalizations.of(context).translate('help_bonus'),
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.subtitle2),
-                  Container(height: 20,),
-                  Center(
-                      child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: List.generate(
-                              3,
-                              (index) => Container(
-                                  margin: EdgeInsets.all(8),
-                                  child: Icon(
-                                    SFSymbols.star_fill,
-                                    size: 13,
-                                  )))))
-                ],
-              ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Text(AppLocalizations.of(context).translate('help_bonus'),
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.subtitle2),
+                Container(
+                  height: 20,
+                ),
+                Center(
+                    child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: List.generate(
+                            3,
+                            (index) => Container(
+                                margin: EdgeInsets.all(8),
+                                child: Icon(
+                                  SFSymbols.star_fill,
+                                  size: 13,
+                                )))))
+              ],
             ),
-            Container(width: 20),
-            _bonusWidget()
-          ],
-        ),
+          ),
+          Container(width: 20),
+          _bonusWidget()
+        ],
+      ),
     );
   }
 
@@ -90,7 +92,8 @@ class _UserPageState extends State<UserPage> {
     Voucher voucher = Account.instance.user.vouchers[index];
 
     return GestureDetector(
-      onTap: () => Utils.showQRCodeModal(context, codeUrl: voucher.qrCode, isLocal: false),
+      onTap: () => Utils.showQRCodeModal(context,
+          codeUrl: voucher.qrCode, isLocal: false),
       child: Container(
         margin: EdgeInsets.only(top: 16),
         height: ScreenSize.voucherSize,
@@ -161,13 +164,14 @@ class _UserPageState extends State<UserPage> {
         ),
         _currentBonusCard(),
         Container(
-            margin: EdgeInsets.only(left: 16, right: 16, bottom: 20, top: 10),
+            margin: EdgeInsets.only(left: 16, right: 16, bottom: 4, top: 10),
             color: HexColor.semiElement,
-            height: 1),
+            height: Account.instance.user.vouchers.length != 0 ? 1 : 0),
         Container(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Column(
-              children: List.generate(Account.instance.user.vouchers.length, _voucherBuild),
+              children: List.generate(
+                  Account.instance.user.vouchers.length, _voucherBuild),
             ))
       ],
     );
