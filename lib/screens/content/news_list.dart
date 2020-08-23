@@ -115,11 +115,11 @@ class _NewsListState extends State<NewsList> {
                       maxLines: 2,
                     ),
                   ),
-                  news.createTime != null
+                  news.created != null
                       ? Container(
                           alignment: Alignment.bottomRight,
                           margin: EdgeInsets.only(top: 10),
-                          child: Text(news.createTime,
+                          child: Text(news.created,
                               style: Theme.of(context).textTheme.bodyText2),
                         )
                       : Container()

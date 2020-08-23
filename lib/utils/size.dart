@@ -28,7 +28,7 @@ abstract class ScreenSize {
 
   static double get newsListImageSize => width * 0.3;
 
-  static double get menuBlockHeight => 100;
+  static double get menuBlockHeight => 90;
 
   static double get voucherSize => 110;
 

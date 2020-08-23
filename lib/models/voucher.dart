@@ -47,4 +47,11 @@ class Voucher {
     'description': description,
     'used': used
   };
+
+  String get discountType {
+    if (discount == 'percentage') {
+      return '-$amount%';
+    }
+    return '';
+  }
 }

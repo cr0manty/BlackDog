@@ -1,10 +1,12 @@
+import 'package:black_dog/utils/localization.dart';
+
 import 'abstract_model.dart';
 
 class MenuItem extends ModelItem {
   int id;
   String description;
   String shortDescription;
-  String price;
+  double price;
   String image;
   bool isActive;
 
@@ -27,5 +29,8 @@ class MenuItem extends ModelItem {
       id: data['id'],
       image: data['image']);
 
-  String get priceWithCurrency => '$price грн.';
+  String priceWithCurrency(context) {
+    String fullPrice = '${price.toInt()} ' + AppLocalizations.of(context).translate('currency');
+    return fullPrice;
+  }
 }

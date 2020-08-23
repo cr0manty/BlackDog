@@ -56,7 +56,7 @@ class _ProductDetailState extends State<ProductDetail> {
                 children: <Widget>[
                   Text(widget.product.capitalizeTitle,
                       style: Theme.of(context).textTheme.caption),
-                  Text(widget.product.priceWithCurrency,
+                  Text(widget.product.priceWithCurrency(context),
                       style: Theme.of(context).textTheme.subtitle1)
                 ])),
         Divider(color: HexColor.semiElement),

@@ -29,8 +29,6 @@ class News extends ModelItem {
       created: data['created'],
       shortDescription: data['short_description']);
 
-  String get createTime =>
-      created != null ? DateFormat.yMd().format(DateTime.parse(created)) : null;
 
   List get images => listImages ?? [previewImage] ?? [];
 }

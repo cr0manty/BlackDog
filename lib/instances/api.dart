@@ -43,6 +43,7 @@ class LogInterceptor implements InterceptorContract {
 class Api {
   static const defaultPerPage = 10;
   static const String _base_url = 'cv.faifly.com';
+//  static const String _base_url = '10.0.2.2:8000';
   bool init = false;
 
   Api._internal();
@@ -119,7 +120,7 @@ class Api {
 
   Future register(Map content) async {
     Response response = await _client.post(
-        _setUrl(path: '/register/', base: true),
+        _setUrl(path: '/rest-auth/registration/', base: true),
         body: json.encode(content),
         headers: _setHeaders(useJson: true, useToken: false));
 
@@ -144,7 +145,7 @@ class Api {
         SharedPrefs.saveUser(user);
         await saveQRCode(body['qr_code']);
       }
-      Account.instance.updateUser();
+      Account.instance.initialize();
       _apiChange.add(true);
       return user;
     }

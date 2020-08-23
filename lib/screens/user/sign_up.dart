@@ -32,8 +32,8 @@ class _SignUpPageState extends State<SignUpPage> {
     'password1',
     'password2',
     'first_name',
-    'phone',
-    'date_birth'
+    'phone_number',
+    'birth_date'
   ];
   Map fieldsError = {};
   bool _obscureText = true;
@@ -97,7 +97,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                             TextInputAction.continueAction,
                                       )),
                                   Utils.showValidateError(fieldsError,
-                                      key: 'phone'),
+                                      key: 'phone_number'),
                                   Container(
                                       alignment: Alignment.center,
                                       child: TextInput(
@@ -200,7 +200,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                             ],
                                           ))),
                                   Utils.showValidateError(fieldsError,
-                                      key: 'date_birth'),
+                                      key: 'birth_date'),
                                 ],
                               ),
                               Container(
@@ -248,6 +248,7 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   void _showModalBottomSheet(context) {
+    FocusScope.of(context).requestFocus(FocusNode());
     showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
@@ -277,8 +278,8 @@ class _SignUpPageState extends State<SignUpPage> {
       'password1': _password1Controller.text,
       'password2': _password2Controller.text,
       'email': _emailController.text,
-      'phone': _phoneController.text,
-      'date_birth': Utils.dateFormat(selectedDate),
+      'phone_number': _phoneController.text,
+      'birth_date': Utils.dateFormat(selectedDate),
     };
   }
 

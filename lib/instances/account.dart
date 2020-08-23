@@ -35,7 +35,8 @@ class Account {
     return _user != null;
   }
 
-  void updateUser() {
-    _user = SharedPrefs.getUser();
+  Future refreshUser() async {
+    _user = await Api.instance.getUser();
+    SharedPrefs.saveUser(_user);
   }
 }

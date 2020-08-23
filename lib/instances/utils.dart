@@ -10,6 +10,7 @@ abstract class Utils {
   static String get loadImage => 'assets/images/card_background.png';
 
   static String get defaultImage => 'assets/images/card_background.png';
+  static String get bannerImage => 'assets/images/banner.png';
 
   static dynamic showSuccessPopUp(BuildContext context, {String text}) {
     return showCupertinoDialog(
@@ -56,7 +57,7 @@ abstract class Utils {
     if (date == null) {
       return null;
     }
-    return '${date.day}/${date.month}/${date.year}';
+    return '${date.year}-${date.month}-${date.day}';
   }
 
   static Widget showValidateError(Map fieldsError,
@@ -106,7 +107,7 @@ abstract class Utils {
     } else {
         codeImage = Image.network(codeUrl);
     }
-    if (codeImage?.height == null && codeImage?.width == null) {
+    if (codeImage == null) {
       showErrorPopUp(context);
     } else {
       showDialog(
@@ -116,7 +117,7 @@ abstract class Utils {
                 title: Text(AppLocalizations.of(context).translate(textKey),
                     style: Theme.of(context).textTheme.subtitle2),
                 content: Container(
-                  padding: EdgeInsets.only(top: 25),
+                  padding: EdgeInsets.only(top: 20),
                   child: codeImage,
                 ),
               ));

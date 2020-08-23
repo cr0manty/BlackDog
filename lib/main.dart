@@ -22,6 +22,8 @@ void main() async {
     await SharedPrefs.initialize();
   }
 
+      ConnectionsCheck.instance.initialise();
+
 
 //  Crashlytics.instance.enableInDevMode = true;
   FlutterError.onError = Crashlytics.instance.recordFlutterError;
@@ -83,7 +85,7 @@ class _BlackDogAppState extends State<BlackDogApp> {
         print('Device language code: ${currentLocale.languageCode}');
         print('Device country code: ${currentLocale.countryCode ?? ''}');
 
-        SharedPrefs.saveLanguageCode('${currentLocale.languageCode}_${currentLocale.countryCode}');
+        SharedPrefs.saveLanguageCode(currentLocale.languageCode);
         return currentLocale;
       },
       theme: ThemeData(

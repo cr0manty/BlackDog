@@ -77,24 +77,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   void getUser() async {
-    await Account.instance.setUser();
+    await Account.instance.refreshUser();
     setState(() {});
   }
 
-  @override
-  void initState() {
-    ConnectionsCheck.instance.initialise();
-
-    getNewsConfig();
-
-    if (!ConnectionsCheck.instance.isOnline) {
-      setState(() {
-        isLoadingData = false;
-      });
-    }
-
-    _connectionChange = ConnectionsCheck.instance.onChange.listen((isOnline) {
-      if (isOnline) {
+  void onNetworkChange(isOnline) {
+     if (isOnline) {
         getUser();
 
         if (_news.length == 0) {
@@ -104,8 +92,26 @@ class _HomePageState extends State<HomePage> {
           getMenuCategoryList();
         }
       }
-    });
+  }
+
+  void getData() {
+
+  }
+
+  @override
+  void initState() {
+     getNewsConfig();
+
+    if (!ConnectionsCheck.instance.isOnline) {
+      setState(() {
+        isLoadingData = false;
+      });
+    }
+
+    _connectionChange = ConnectionsCheck.instance.onChange.listen(onNetworkChange);
     _scrollController.addListener(_scrollListener);
+    getData();
+//    WidgetsBinding.instance.addPostFrameCallback((_) => getData());
     super.initState();
   }
 

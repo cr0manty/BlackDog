@@ -4,6 +4,7 @@ import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/instances/utils.dart';
+import 'package:black_dog/models/voucher.dart';
 import 'package:black_dog/screens/user/sign_in.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
@@ -25,7 +26,6 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
-  List _vouchers = [];
   StreamSubscription _apiChange;
 
   @override
@@ -89,8 +89,10 @@ class _UserPageState extends State<UserPage> {
   }
 
   Widget _voucherBuild(int index) {
+    Voucher voucher = Account.instance.user.vouchers[index];
+
     return GestureDetector(
-      onTap: () => Utils.showQRCodeModal(context, codeUrl: '', isLocal: false),
+      onTap: () => Utils.showQRCodeModal(context, codeUrl: voucher.qrCode, isLocal: false),
       child: Container(
         margin: EdgeInsets.only(top: 16),
         height: ScreenSize.voucherSize,
@@ -114,7 +116,7 @@ class _UserPageState extends State<UserPage> {
                 children: [
                   Text(
                     AppLocalizations.of(context).translate('current_voucher') +
-                        ': $index',
+                        ' ${voucher.discountType}',
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
                   Text(
@@ -167,7 +169,7 @@ class _UserPageState extends State<UserPage> {
         Container(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Column(
-              children: List.generate(_vouchers.length, _voucherBuild),
+              children: List.generate(Account.instance.user.vouchers.length, _voucherBuild),
             ))
       ],
     );
