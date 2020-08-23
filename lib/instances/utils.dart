@@ -155,6 +155,7 @@ abstract class Utils {
       }
     } else {
       codeImage = Image.network(codeUrl);
+      await precacheImage(codeImage.image, context);
     }
     if (codeImage == null) {
       showErrorPopUp(context);
@@ -164,7 +165,7 @@ abstract class Utils {
           useRootNavigator: false,
           builder: (context) => CupertinoAlertDialog(
                 title: Text(AppLocalizations.of(context).translate(textKey),
-                    style: Theme.of(context).textTheme.subtitle2),
+                    style: Theme.of(context).textTheme.caption),
                 content: Container(
                   padding: EdgeInsets.only(top: 20),
                   child: codeImage,

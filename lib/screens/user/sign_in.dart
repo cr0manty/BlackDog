@@ -36,7 +36,6 @@ class _SignInPageState extends State<SignInPage> {
         body: ModalProgressHUD(
             progressIndicator: CupertinoActivityIndicator(),
             inAsyncCall: isLoading,
-            child: SafeArea(
                 child: Form(
               key: _formKey,
               child: Container(
@@ -164,7 +163,7 @@ class _SignInPageState extends State<SignInPage> {
                       )
                     ]),
                   )),
-            ))));
+            )));
   }
 
   Future loginClick() async {

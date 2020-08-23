@@ -26,6 +26,7 @@ dependencies:
   firebase_crashlytics: ^0.1.4+1
   dotted_border: ^1.0.6
   firebase_messaging: ^7.0.0
+  step_progress_indicator: ^0.2.3+6
 
   flutter_localizations:
     sdk: flutter

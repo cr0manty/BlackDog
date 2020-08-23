@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/api.dart';
@@ -17,6 +18,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
+import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 class UserPage extends StatefulWidget {
   @override
@@ -33,15 +35,53 @@ class _UserPageState extends State<UserPage> {
   }
 
   Widget _bonusWidget() {
-    return ClipOval(
-      child: Container(
-        height: ScreenSize.currentBonusSize,
-        width: ScreenSize.currentBonusSize,
-        color: Colors.white,
-        child: Stack(
-          children: [],
-        ),
-      ),
+    return CircularStepProgressIndicator(
+      totalSteps: 100,
+      currentStep: 50,
+      stepSize: 10,
+      selectedColor: HexColor.lightElement,
+      unselectedColor: HexColor.semiElement,
+      padding: 0,
+      width: 150,
+      height: 150,
+      startingAngle: -math.pi * 2 / 2.7,
+      arcSize: math.pi * 2 / 3 * 2.23,
+      child: Center(
+          child: Stack(
+        children: [
+          Container(
+            alignment: Alignment.center,
+            padding: EdgeInsets.only(bottom: 20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text('-50%', style: Theme.of(context).textTheme.headline1),
+                Icon(Icons.accessibility_new, size: 37,),
+              ],
+            ),
+          ),
+          Container(
+            alignment: Alignment.bottomCenter,
+            child: RichText(
+              text: TextSpan(children: [
+                TextSpan(
+                    text: '5',
+                    style: Theme.of(context)
+                        .textTheme
+                        .subtitle1
+                        .copyWith(fontSize: 30)),
+                TextSpan(text: '/10',
+                    style: Theme.of(context)
+                        .textTheme
+                        .subtitle1
+                        .copyWith(fontSize: 25, color: HexColor.semiElement)),
+              ]),
+            ),
+          )
+        ],
+      )),
     );
   }
 
@@ -63,7 +103,7 @@ class _UserPageState extends State<UserPage> {
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.subtitle2),
                 Container(
-                  height: 20,
+                  height: 10,
                 ),
                 Center(
                     child: Row(
@@ -150,8 +190,8 @@ class _UserPageState extends State<UserPage> {
         color: HexColor.lightElement,
         onTap: () {
           SharedPrefs.logout();
-          Navigator.of(context, rootNavigator: true)
-              .push(BottomRoute(page: SignInPage()));
+          Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+              BottomRoute(page: SignInPage()), (route) => false);
         },
       ),
       children: <Widget>[

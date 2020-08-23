@@ -174,7 +174,7 @@ class _HomePageState extends State<HomePage> {
               onTap: () {
                 SharedPrefs.logout();
                 Navigator.of(context, rootNavigator: true)
-                    .push(BottomRoute(page: SignInPage()));
+                    .pushAndRemoveUntil(BottomRoute(page: SignInPage()), (route) => false);
               },
             ),
       children: Account.instance.state == AccountState.STAFF
