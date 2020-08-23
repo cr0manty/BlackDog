@@ -8,8 +8,6 @@ import 'package:black_dog/models/voucher.dart';
 import 'package:black_dog/screens/user/sign_in.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
-import 'package:black_dog/utils/size.dart';
-import 'package:black_dog/widgets/bonus_card.dart';
 import 'package:black_dog/widgets/bottom_route.dart';
 import 'package:black_dog/widgets/edit_button.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';

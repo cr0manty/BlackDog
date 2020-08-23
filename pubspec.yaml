@@ -1,5 +1,5 @@
 name: black_dog
-description: A new Flutter project.
+description: A Flutter project for black dog coffe.
 
 version: 1.0.1
 
@@ -49,6 +49,7 @@ flutter:
     - family: Century-Gothic
       fonts:
         - asset: assets/fonts/century_gothic.ttf
+
     - family: Lemon-Milk
       fonts:
         - asset: assets/fonts/lemon_milk.ttf

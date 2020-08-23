@@ -30,7 +30,6 @@ class MenuItem extends ModelItem {
       image: data['image']);
 
   String priceWithCurrency(context) {
-    String fullPrice = '${price.toInt()} ' + AppLocalizations.of(context).translate('currency');
-    return fullPrice;
+    return '${price.toInt()} ' + AppLocalizations.of(context).translate('currency');
   }
 }

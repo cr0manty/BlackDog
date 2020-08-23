@@ -1,5 +1,5 @@
+import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/scroll_glow.dart';
-import 'package:black_dog/utils/size.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';

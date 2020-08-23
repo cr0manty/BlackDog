@@ -2,17 +2,13 @@ import 'dart:async';
 
 import 'package:barcode_scan/platform_wrapper.dart';
 import 'package:black_dog/instances/api.dart';
-import 'package:black_dog/models/menu_category.dart';
-import 'package:black_dog/models/news.dart';
 import 'package:black_dog/screens/content/product_list.dart';
 import 'package:black_dog/screens/user/user_page.dart';
 import 'package:black_dog/utils/connection_check.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/utils/scroll_glow.dart';
-import 'package:black_dog/utils/size.dart';
 import 'package:black_dog/instances/utils.dart';
-import 'package:black_dog/widgets/bonus_card.dart';
 import 'package:black_dog/widgets/bottom_route.dart';
 import 'package:black_dog/widgets/edit_button.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
@@ -45,13 +41,13 @@ class _HomePageState extends State<HomePage> {
   double buttonOpacity = 1;
   double scanIconOpacity = 1;
   bool isLoading = true;
-  List<News> _news = [];
-  List<MenuCategory> _category = [];
+  List _news = [];
+  List _category = [];
   int categoryPage = 0;
   bool isLoadingData = true;
 
   void getNewsList() async {
-    List<News> news = await Api.instance
+    List news = await Api.instance
         .getNewsList(page: 0, limit: SharedPrefs.getMaxNewsAmount());
     setState(() {
       isLoadingData = false;
@@ -60,7 +56,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void getMenuCategoryList() async {
-    List<MenuCategory> category =
+    List category =
         await Api.instance.getCategories(page: categoryPage);
     setState(() {
       if (_category.length % Api.defaultPerPage == 0) {
@@ -94,10 +90,6 @@ class _HomePageState extends State<HomePage> {
       }
   }
 
-  void getData() {
-
-  }
-
   @override
   void initState() {
      getNewsConfig();
@@ -110,8 +102,7 @@ class _HomePageState extends State<HomePage> {
 
     _connectionChange = ConnectionsCheck.instance.onChange.listen(onNetworkChange);
     _scrollController.addListener(_scrollListener);
-    getData();
-//    WidgetsBinding.instance.addPostFrameCallback((_) => getData());
+    onNetworkChange(true);
     super.initState();
   }
 
@@ -380,7 +371,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildMenu(int index) {
-    MenuCategory category = _category[index];
+    final category = _category[index];
     return GestureDetector(
         onTap: () => Navigator.of(context).push(CupertinoPageRoute(
             builder: (context) =>

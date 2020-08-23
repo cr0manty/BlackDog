@@ -3,7 +3,6 @@ import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/menu_item.dart';
 import 'package:black_dog/screens/content/product_detail.dart';
 import 'package:black_dog/utils/localization.dart';
-import 'package:black_dog/utils/size.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -115,7 +114,7 @@ class _ProductListState extends State<ProductList> {
                   ),
                   SizedBox(height: ScreenSize.sectionIndent / 2),
                   Text(
-                    menu.priceWithCurrency ?? '',
+                    menu.priceWithCurrency(context) ?? '',
                     style: Theme.of(context).textTheme.subtitle1,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 5,
