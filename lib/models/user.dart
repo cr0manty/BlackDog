@@ -23,15 +23,18 @@ class User {
   String instagramUsername;
   List<Voucher> vouchers;
   bool isStaff;
+  int voucherPurchase;
+  int currentPurchase;
 
-  User(
-      {this.firstName,
-      this.email,
-      this.phone,
-      this.isStaff,
-      this.vouchers,
-      this.lastName,
-      this.instagramUsername});
+  User({this.firstName,
+    this.email,
+    this.phone,
+    this.isStaff,
+    this.vouchers,
+    this.lastName,
+    this.instagramUsername,
+    this.currentPurchase,
+    this.voucherPurchase});
 
   @override
   int get hashCode => email.hashCode;
@@ -43,22 +46,33 @@ class User {
     return firstName;
   }
 
-  factory User.fromJson(Map<String, dynamic> data) => User(
-      firstName: data['first_name'],
-      lastName: data['last_name'],
-      email: data['email'],
-      phone: data['phone_number'],
-      instagramUsername: data['instagram_username'],
-      isStaff: data['is_staff'],
-      vouchers: vouchersToJsonList(data['vouchers'] ?? []));
+  factory User.fromJson(Map<String, dynamic> data) =>
+      User(
+          firstName: data['first_name'],
+          lastName: data['last_name'],
+          email: data['email'],
+          phone: data['phone_number'],
+          instagramUsername: data['instagram_username'],
+          voucherPurchase: data['voucher_purchase_count'],
+          currentPurchase: data['current_purchase_count'],
+          isStaff: data['is_staff'],
+          vouchers: vouchersFromJsonList(data['vouchers'] ?? []));
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() =>
+      {
         'first_name': firstName,
         'last_name': lastName,
         'phone_number': phone,
         'instagram_username': instagramUsername,
-        'email': email,
+        'voucher_purchase_count': voucherPurchase,
+        'current_purchase_count': currentPurchase,
         'is_staff': isStaff,
-        'vouchers': vouchers ?? []
+        'vouchers': vouchersToJson()
       };
+
+  List vouchersToJson() {
+    List jsonVouchers = [];
+    vouchers.map((voucher) => jsonVouchers.add(voucher.toJson()));
+    return jsonVouchers;
+  }
 }

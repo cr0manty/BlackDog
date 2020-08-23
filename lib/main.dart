@@ -22,7 +22,6 @@ void main() async {
     await SharedPrefs.initialize();
   }
 
-  ConnectionsCheck.instance.initialise();
 
 //  Crashlytics.instance.enableInDevMode = true;
   FlutterError.onError = Crashlytics.instance.recordFlutterError;
@@ -128,7 +127,6 @@ class _BlackDogAppState extends State<BlackDogApp> {
   }
   @override
   void dispose() {
-    ConnectionsCheck.instance.dispose();
     Api.instance.dispose();
     super.dispose();
   }

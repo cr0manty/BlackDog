@@ -1,5 +1,4 @@
-
-List vouchersToJsonList(List vouchersList) {
+List vouchersFromJsonList(List vouchersList) {
   List<Voucher> vouchers = [];
   vouchersList.forEach((element) {
     vouchers.add(Voucher.fromJson(element));
@@ -7,21 +6,45 @@ List vouchersToJsonList(List vouchersList) {
   return vouchers;
 }
 
-class Voucher {
-  int bonusAmount; // -bonusAmount% from price
-  int toBonus; // amount users purchase to get bonus
-  int currentAmount; // current user purchase for this card
-  bool used;
 
-  bool get isBonus => currentAmount == toBonus; // is card bonus
+class Voucher {
+  int id;
+  double amount;
+  bool used;
+  String qrCode;
+  String expirationDate;
+  String discount;
+  String title;
+  String description;
 
   Voucher(
-      {this.toBonus, this.currentAmount, this.bonusAmount, this.used = false});
+      {this.qrCode,
+      this.title,
+      this.amount,
+      this.description,
+      this.discount,
+      this.expirationDate,
+      this.id,
+      this.used = false});
 
   factory Voucher.fromJson(Map<String, dynamic> data) => Voucher(
-      bonusAmount: data['bonus_amount'],
-      toBonus: data['to_bonus'],
+      qrCode: data['qr_code'],
+      title: data['title'],
+      amount: data['amount'],
+      id: data['id'],
+      expirationDate: data['expiration_date'],
+      discount: data['discount'],
       used: data['used'] ?? false,
-      currentAmount: data['current_amount']);
+      description: data['description']);
 
+  Map<String, dynamic> toJson() => {
+    'qr_code': qrCode,
+    'title': title,
+    'id': id,
+    'amount': amount,
+    'expiration_date': expirationDate,
+    'discount': discount,
+    'description': description,
+    'used': used
+  };
 }

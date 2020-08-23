@@ -44,18 +44,11 @@ class _HomePageState extends State<HomePage> {
   StreamSubscription _connectionChange;
   double buttonOpacity = 1;
   double scanIconOpacity = 1;
-  bool isLoading = false;
+  bool isLoading = true;
   List<News> _news = [];
   List<MenuCategory> _category = [];
   int categoryPage = 0;
   bool isLoadingData = true;
-
-  void initScreenSize(BuildContext context) {
-    if (ScreenSize.height == null || ScreenSize.width == null) {
-      ScreenSize.height = MediaQuery.of(context).size.height;
-      ScreenSize.width = MediaQuery.of(context).size.width;
-    }
-  }
 
   void getNewsList() async {
     List<News> news = await Api.instance
@@ -83,20 +76,27 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
   }
 
+  void getUser() async {
+    await Account.instance.setUser();
+    setState(() {});
+  }
+
   @override
   void initState() {
+    ConnectionsCheck.instance.initialise();
+
+    getNewsConfig();
+
     if (!ConnectionsCheck.instance.isOnline) {
       setState(() {
         isLoadingData = false;
       });
     }
 
-    getNewsConfig();
-    getNewsList();
-    getMenuCategoryList();
-
     _connectionChange = ConnectionsCheck.instance.onChange.listen((isOnline) {
       if (isOnline) {
+        getUser();
+
         if (_news.length == 0) {
           getNewsList();
         }

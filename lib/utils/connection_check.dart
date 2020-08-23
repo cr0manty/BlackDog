@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:black_dog/instances/api.dart';
 import 'package:connectivity/connectivity.dart';
 
 class ConnectionsCheck {
@@ -33,10 +32,7 @@ class ConnectionsCheck {
       try {
         final result = await InternetAddress.lookup('google.com')
             .timeout(Duration(seconds: 20));
-        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-          isOnline = true;
-        } else
-          isOnline = false;
+        isOnline = result.isNotEmpty && result[0].rawAddress.isNotEmpty;
       } on SocketException catch (_) {
         isOnline = false;
       } on TimeoutException catch (_) {
