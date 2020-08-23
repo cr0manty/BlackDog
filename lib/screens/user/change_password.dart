@@ -19,13 +19,12 @@ class _ChangePasswordState extends State<ChangePassword> {
   final GlobalKey _formKey = GlobalKey<FormState>();
   Map fieldsError = {};
   bool isLoading = false;
-  bool _obscureText1 = true;
-  bool _obscureText2 = true;
 
   @override
   Widget build(BuildContext context) {
     return PageScaffold(
       alwaysNavigation: true,
+      shrinkWrap: true,
       inAsyncCall: isLoading,
       leading: RouteButton(
         defaultIcon: true,
@@ -51,44 +50,18 @@ class _ChangePasswordState extends State<ChangePassword> {
               Container(
                   alignment: Alignment.center,
                   child: TextInput(
-                    obscureText: _obscureText1,
                     controller: _password1Controller,
                     hintText:
                         AppLocalizations.of(context).translate('new_password'),
-                    suffixIcon: GestureDetector(
-                      child: Icon(
-                          _obscureText1
-                              ? Icons.remove_red_eye
-                              : Icons.visibility_off,
-                          color: HexColor.darkElement),
-                      onTap: () {
-                        setState(() {
-                          _obscureText1 = !_obscureText1;
-                        });
-                      },
-                    ),
                     inputAction: TextInputAction.done,
                   )),
               Utils.showValidateError(fieldsError, key: 'new_password1'),
               Container(
                   alignment: Alignment.center,
                   child: TextInput(
-                    obscureText: _obscureText2,
                     controller: _password2Controller,
                     hintText: AppLocalizations.of(context)
                         .translate('confirm_password'),
-                    suffixIcon: GestureDetector(
-                      child: Icon(
-                          _obscureText2
-                              ? Icons.remove_red_eye
-                              : Icons.visibility_off,
-                          color: HexColor.darkElement),
-                      onTap: () {
-                        setState(() {
-                          _obscureText2 = !_obscureText2;
-                        });
-                      },
-                    ),
                     inputAction: TextInputAction.done,
                   )),
               Utils.showValidateError(fieldsError, key: 'new_password2'),

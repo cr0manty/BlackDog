@@ -12,8 +12,9 @@ enum PageState { ENTER_EMAIL, ENTER_CODE, NEW_PASSWORD }
 
 class ForgotPassword extends StatefulWidget {
   final PageState pageState;
+  final Map tokens;
 
-  ForgotPassword({this.pageState = PageState.ENTER_EMAIL});
+  ForgotPassword({this.pageState = PageState.ENTER_EMAIL, this.tokens});
 
   @override
   _ForgotPasswordState createState() => _ForgotPasswordState();
@@ -21,13 +22,15 @@ class ForgotPassword extends StatefulWidget {
 
 class _ForgotPasswordState extends State<ForgotPassword> {
   final TextEditingController _basicController = TextEditingController();
+  final TextEditingController _basicAdditionController =
+      TextEditingController();
   Map _validationError = {};
   bool isLoading = false;
   static const List<String> _fieldsList = [
     'email',
     'code',
-    'password1',
-    'password2',
+    'new_password1',
+    'new_password2',
   ];
 
   List<Widget> _buildBasicField(
@@ -44,19 +47,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             inputAction: TextInputAction.done,
           )),
       Utils.showValidateError(_validationError, key: key),
-      Container(
-        margin: EdgeInsets.symmetric(vertical: 32, horizontal: 16),
-        child: CupertinoButton(
-            onPressed: onPressed,
-            color: HexColor.lightElement,
-            child: Text(
-              AppLocalizations.of(context).translate('send'),
-              style: Theme.of(context)
-                  .textTheme
-                  .caption
-                  .copyWith(color: HexColor.darkElement),
-            )),
-      ),
+      _confirmButton(onPressed: onPressed)
     ];
   }
 
@@ -66,9 +57,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             padding: EdgeInsets.only(top: 10, bottom: 30),
             child: Text(AppLocalizations.of(context).translate('reset_help'),
                 textAlign: TextAlign.center,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText2))
+                style: Theme.of(context).textTheme.bodyText2))
         : Container();
   }
 
@@ -84,8 +73,46 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     }
   }
 
+  Widget _confirmButton(
+      {@required VoidCallback onPressed, String textKey = 'send'}) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+      child: CupertinoButton(
+          onPressed: onPressed,
+          color: HexColor.lightElement,
+          child: Text(
+            AppLocalizations.of(context).translate(textKey),
+            style: Theme.of(context)
+                .textTheme
+                .caption
+                .copyWith(color: HexColor.darkElement),
+          )),
+    );
+  }
+
   List<Widget> _buildNewPassword() {
-    return <Widget>[];
+    return <Widget>[
+      Container(
+          alignment: Alignment.center,
+          child: TextInput(
+            controller: _basicController,
+            keyboardType: TextInputType.text,
+            hintText: AppLocalizations.of(context).translate('new_password'),
+            inputAction: TextInputAction.next,
+          )),
+      Utils.showValidateError(_validationError, key: 'new_password1'),
+      Container(
+          alignment: Alignment.center,
+          child: TextInput(
+            controller: _basicAdditionController,
+            keyboardType: TextInputType.text,
+            hintText:
+                AppLocalizations.of(context).translate('confirm_password'),
+            inputAction: TextInputAction.done,
+          )),
+      Utils.showValidateError(_validationError, key: 'new_password2'),
+      _confirmButton(onPressed: _sendNewPassword, textKey: 'save')
+    ];
   }
 
   @override
@@ -93,6 +120,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     return PageScaffold(
       alwaysNavigation: true,
       inAsyncCall: isLoading,
+      shrinkWrap: true,
       padding: EdgeInsets.symmetric(horizontal: 16),
       leading: RouteButton(
         defaultIcon: true,
@@ -128,5 +156,15 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     });
   }
 
-  void _sendCodeConfirm() async {}
+  void _sendCodeConfirm() async {
+    print('asd');
+    Navigator.of(context).pushReplacement(CupertinoPageRoute(
+        builder: (context) => ForgotPassword(
+          pageState: PageState.NEW_PASSWORD, tokens: {},
+        )));
+  }
+
+  void _sendNewPassword() async {
+
+  }
 }

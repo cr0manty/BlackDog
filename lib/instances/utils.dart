@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:black_dog/utils/localization.dart';
@@ -68,8 +69,11 @@ abstract class Utils {
               left: 10,
               bottom: bottomPadding ? ScreenSize.elementIndentHeight : 0),
           child: Text(fieldsError[key],
-              style:
-                  TextStyle(color: Colors.red.withOpacity(0.9), fontSize: 12)));
+              style: TextStyle(
+                color: Colors.red.withOpacity(0.9),
+                fontSize: 12,
+                fontFamily: 'Century-Gothic',
+              )));
     } else if (fieldsError.containsKey('all')) {
       return Container(
           alignment: Alignment.centerLeft,
@@ -78,9 +82,44 @@ abstract class Utils {
               left: 10,
               bottom: bottomPadding ? ScreenSize.elementIndentHeight : 0),
           child: Text(fieldsError['all'],
-              style:
-                  TextStyle(color: Colors.red.withOpacity(0.9), fontSize: 12)));
+              style: TextStyle(
+                color: Colors.red.withOpacity(0.9),
+                fontSize: 12,
+                fontFamily: 'Century-Gothic',
+              )));
     }
     return SizedBox(height: bottomPadding ? ScreenSize.elementIndentHeight : 0);
+  }
+
+  static void showQRCodeModal(BuildContext context,
+      {@required String codeUrl,
+      String textKey = 'scan_qr',
+      bool isLocal = true}) async {
+    Image codeImage;
+    if (isLocal) {
+      File qrCode = File(codeUrl);
+
+      if (await qrCode.exists()) {
+        codeImage = Image.file(qrCode,
+            height: ScreenSize.qrCodeHeight, width: ScreenSize.width);
+      }
+    } else {
+        codeImage = Image.network(codeUrl);
+    }
+    if (codeImage?.height == null && codeImage?.width == null) {
+      showErrorPopUp(context);
+    } else {
+      showDialog(
+          context: context,
+          useRootNavigator: false,
+          builder: (context) => CupertinoAlertDialog(
+                title: Text(AppLocalizations.of(context).translate(textKey),
+                    style: Theme.of(context).textTheme.subtitle2),
+                content: Container(
+                  padding: EdgeInsets.only(top: 25),
+                  child: codeImage,
+                ),
+              ));
+    }
   }
 }

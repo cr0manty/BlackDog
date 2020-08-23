@@ -145,42 +145,42 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     Utils.initScreenSize(MediaQuery.of(context).size);
 
-    return  PageScaffold(
-        scrollController: _scrollController,
-        alwaysNavigation: Account.instance.state == AccountState.STAFF,
-        action: Account.instance.state != AccountState.STAFF
-            ? RouteButton(
-                padding: EdgeInsets.only(top: 5),
-                iconColor: HexColor.lightElement,
-                textColor: HexColor.lightElement,
-                iconWidget: Container(
-                  margin: EdgeInsets.only(left: 10),
-                  child: SvgPicture.asset('assets/images/about_us.svg',
-                      color: HexColor.lightElement, height: 25, width: 22),
-                ),
-                iconFirst: false,
-                text: AppLocalizations.of(context).translate('about_us'),
-                onTap: () async {
-                  final restaurant = await Api.instance.getAboutUs();
-                  if (restaurant != null) {
-                    Navigator.of(context).push(CupertinoPageRoute(
-                        builder: (context) => AboutUsPage(restaurant)));
-                  }
-                },
-              )
-            : RouteButton(
-                text: AppLocalizations.of(context).translate('logout'),
-                color: HexColor.lightElement,
-                onTap: () {
-                  SharedPrefs.logout();
-                  Navigator.of(context, rootNavigator: true)
-                      .push(BottomRoute(page: SignInPage()));
-                },
+    return PageScaffold(
+      scrollController: _scrollController,
+      alwaysNavigation: Account.instance.state == AccountState.STAFF,
+      action: Account.instance.state != AccountState.STAFF
+          ? RouteButton(
+              padding: EdgeInsets.only(top: 5),
+              iconColor: HexColor.lightElement,
+              textColor: HexColor.lightElement,
+              iconWidget: Container(
+                margin: EdgeInsets.only(left: 10),
+                child: SvgPicture.asset('assets/images/about_us.svg',
+                    color: HexColor.lightElement, height: 25, width: 22),
               ),
-        children: Account.instance.state == AccountState.STAFF
-            ? _buildStaff()
-            : _buildUser(),
-      );
+              iconFirst: false,
+              text: AppLocalizations.of(context).translate('about_us'),
+              onTap: () async {
+                final restaurant = await Api.instance.getAboutUs();
+                if (restaurant != null) {
+                  Navigator.of(context).push(CupertinoPageRoute(
+                      builder: (context) => AboutUsPage(restaurant)));
+                }
+              },
+            )
+          : RouteButton(
+              text: AppLocalizations.of(context).translate('logout'),
+              color: HexColor.lightElement,
+              onTap: () {
+                SharedPrefs.logout();
+                Navigator.of(context, rootNavigator: true)
+                    .push(BottomRoute(page: SignInPage()));
+              },
+            ),
+      children: Account.instance.state == AccountState.STAFF
+          ? _buildStaff()
+          : _buildUser(),
+    );
   }
 
   Widget _buildScanQRCode() {
@@ -405,13 +405,17 @@ class _HomePageState extends State<HomePage> {
                 Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      gradient: LinearGradient(colors: [
-                        Colors.black.withOpacity(0.2),
-                        Colors.black.withOpacity(0.8),
-                      ], stops: [
-                        0.2,
-                        2
-                      ], begin: Alignment.topRight, end: Alignment.bottomLeft)),
+                      gradient: LinearGradient(
+                          colors: [
+                            Colors.black.withOpacity(0.2),
+                            Colors.black.withOpacity(0.8),
+                          ],
+                          stops: [
+                            0.2,
+                            2
+                          ],
+                          begin: Alignment.centerRight,
+                          end: Alignment.centerLeft)),
                 ),
                 Container(
                     padding: EdgeInsets.symmetric(horizontal: 20),
@@ -428,7 +432,6 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     _connectionChange?.cancel();
     ConnectionsCheck.instance.dispose();
-    Api.instance.dispose();
     super.dispose();
   }
 }

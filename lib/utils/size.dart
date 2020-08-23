@@ -8,7 +8,7 @@ abstract class ScreenSize {
 
   static double get scanQRCodeSize => height * 0.17;
 
-  static double get bonusCardSize => height * 0.13;
+  static double get bonusCardSize => height * 0.12;
 
   static double get scanQRCodeIconSize => scanQRCodeSize * 0.85;
 
@@ -28,7 +28,9 @@ abstract class ScreenSize {
 
   static double get newsListImageSize => width * 0.3;
 
-  static double get menuBlockHeight => width * 0.22;
+  static double get menuBlockHeight => 100;
+
+  static double get voucherSize => 110;
 
   static double get qrCodeHeight => height * 0.3;
 
@@ -41,4 +43,6 @@ abstract class ScreenSize {
   static double get newsListTextSize => width - newsListImageSize - 48;
 
   static double get qrCodeMargin => (width - scanQRCodeSize) / 2;
+
+  static double get currentBonusSize => height * 0.2;
 }

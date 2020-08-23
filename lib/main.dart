@@ -12,6 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'instances/account.dart';
+import 'instances/api.dart';
 import 'instances/shared_pref.dart';
 
 void main() async {
@@ -87,6 +88,8 @@ class _BlackDogAppState extends State<BlackDogApp> {
         return currentLocale;
       },
       theme: ThemeData(
+          textSelectionColor: Colors.grey.withOpacity(0.5),
+          textSelectionHandleColor: Colors.grey,
           brightness: Brightness.dark,
           scaffoldBackgroundColor: HexColor.backgroundColor,
           textTheme: TextTheme(
@@ -126,6 +129,7 @@ class _BlackDogAppState extends State<BlackDogApp> {
   @override
   void dispose() {
     ConnectionsCheck.instance.dispose();
+    Api.instance.dispose();
     super.dispose();
   }
 }

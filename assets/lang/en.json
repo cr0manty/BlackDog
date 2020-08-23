@@ -33,5 +33,8 @@
   "change_password": "Change Password",
   "editing": "Edit",
   "code": "Password reset code",
-  "reset_help": "A code will be sent to your E-mail for change the password."
+  "reset_help": "A code will be sent to your E-mail for change the password.",
+  "current_voucher": "Current discount",
+  "click_to_open": "Click to open",
+  "help_bonus": "Make purchases and scan the code for receiving bonuses in Black Dog"
 }
