@@ -56,6 +56,7 @@ class _NewsDetailState extends State<NewsDetail> {
               height: ScreenSize.newsItemPhotoSize,
               viewportFraction: 1,
               enlargeCenterPage: true,
+              autoPlay: true,
             )),
         Container(
             margin: EdgeInsets.symmetric(vertical: 20),

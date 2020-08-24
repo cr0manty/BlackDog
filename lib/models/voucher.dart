@@ -51,6 +51,8 @@ class Voucher {
   String get discountType {
     if (discount == 'percentage') {
       return '-${amount.toInt()}%';
+    } else if (discount == 'free_item') {
+      return title;
     }
     return '';
   }

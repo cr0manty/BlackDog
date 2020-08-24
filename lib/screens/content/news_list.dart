@@ -71,10 +71,7 @@ class _NewsListState extends State<NewsList> {
         padding: EdgeInsets.only(top: 10),
         alignment: Alignment.center,
         height: showProgress ? 50 : 0,
-        child: Container(
-            alignment: Alignment.center,
-            height: 100,
-            child: CupertinoActivityIndicator()),
+        child: CupertinoActivityIndicator(),
       );
     }
 

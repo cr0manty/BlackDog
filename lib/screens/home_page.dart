@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:barcode_scan/platform_wrapper.dart';
 import 'package:black_dog/instances/api.dart';
-import 'package:black_dog/instances/notification_manager.dart';
 import 'package:black_dog/models/restaurant.dart';
 import 'package:black_dog/screens/content/product_list.dart';
 import 'package:black_dog/screens/user/user_page.dart';
@@ -41,11 +40,9 @@ class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
   StreamSubscription _connectionChange;
   Restaurant _restaurant;
-  double buttonOpacity = 1;
-  double scanIconOpacity = 1;
   int categoryPage = 0;
 
-  bool isLoading = true;
+  bool isLoading = false;
   bool isLoadingData = true;
   bool initialLoad = true;
   List _news = [];
@@ -55,7 +52,6 @@ class _HomePageState extends State<HomePage> {
     List news = await Api.instance
         .getNewsList(page: 0, limit: SharedPrefs.getMaxNewsAmount());
     setState(() {
-      isLoadingData = false;
       _news.addAll(news);
     });
   }
@@ -67,7 +63,6 @@ class _HomePageState extends State<HomePage> {
         categoryPage++;
         _category.addAll(category);
       }
-      isLoadingData = false;
     });
   }
 
@@ -76,7 +71,7 @@ class _HomePageState extends State<HomePage> {
     await Api.instance.getNewsConfig();
     await Account.instance.refreshUser();
 //    await Api.instance.sendFCMToken();
-    setState(() {});
+    setState(() => isLoadingData = false);
   }
 
   void onNetworkChange(isOnline) {
@@ -105,7 +100,11 @@ class _HomePageState extends State<HomePage> {
         ConnectionsCheck.instance.onChange.listen(onNetworkChange);
     _scrollController.addListener(_scrollListener);
 
-    if (!widget.isInitView) {
+    if (!ConnectionsCheck.instance.isOnline) {
+      setState(() {
+        isLoadingData = false;
+      });
+    } else {
       onNetworkChange(true);
     }
     super.initState();
@@ -120,10 +119,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _onScanTap() async {
-    setState(() {
-      buttonOpacity = 0.4;
-      scanIconOpacity = 1;
-    });
     if (Account.instance.state == AccountState.STAFF) {
       setState(() => isLoading = !isLoading);
 
@@ -148,6 +143,7 @@ class _HomePageState extends State<HomePage> {
     Utils.initScreenSize(MediaQuery.of(context).size);
 
     return PageScaffold(
+      inAsyncCall: isLoading,
       scrollController: _scrollController,
       alwaysNavigation: Account.instance.state == AccountState.STAFF,
       action: Account.instance.state != AccountState.STAFF
@@ -173,8 +169,8 @@ class _HomePageState extends State<HomePage> {
               color: HexColor.lightElement,
               onTap: () {
                 SharedPrefs.logout();
-                Navigator.of(context, rootNavigator: true)
-                    .pushAndRemoveUntil(BottomRoute(page: SignInPage()), (route) => false);
+                Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+                    BottomRoute(page: SignInPage()), (route) => false);
               },
             ),
       children: Account.instance.state == AccountState.STAFF
@@ -202,7 +198,7 @@ class _HomePageState extends State<HomePage> {
             child: Icon(
               SFSymbols.camera_viewfinder,
               size: ScreenSize.scanQRCodeIconSize,
-              color: HexColor.lightElement.withOpacity(scanIconOpacity),
+              color: HexColor.lightElement,
             ),
           ),
         ));
