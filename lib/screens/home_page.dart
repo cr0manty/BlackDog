@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:barcode_scan/platform_wrapper.dart';
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/models/restaurant.dart';
+import 'package:black_dog/models/voucher.dart';
 import 'package:black_dog/screens/content/product_list.dart';
 import 'package:black_dog/screens/user/user_page.dart';
 import 'package:black_dog/utils/connection_check.dart';
@@ -40,6 +41,7 @@ class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
   StreamSubscription _connectionChange;
   Restaurant _restaurant;
+  BaseVoucher _currentVoucher;
   int categoryPage = 0;
 
   bool isLoading = false;
@@ -70,6 +72,7 @@ class _HomePageState extends State<HomePage> {
     _restaurant = await Api.instance.getAboutUs();
     await Api.instance.getNewsConfig();
     await Account.instance.refreshUser();
+    await Api.instance.voucherDetails();
 //    await Api.instance.sendFCMToken();
     setState(() => isLoadingData = false);
   }

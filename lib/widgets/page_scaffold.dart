@@ -59,10 +59,7 @@ class PageScaffold extends StatelessWidget {
     if (child == null) {
       return listChildren + children;
     }
-    listChildren.add(Container(
-      padding: padding ?? EdgeInsets.zero,
-      child: child,
-    ));
+    listChildren.add(child);
     return listChildren;
   }
 

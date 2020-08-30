@@ -39,6 +39,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   @override
   Widget build(BuildContext context) {
     return PageScaffold(
+      shrinkWrap: true,
+      padding: EdgeInsets.symmetric(horizontal: 16),
       alwaysNavigation: true,
       inAsyncCall: isLoading,
       leading: RouteButton(
@@ -55,38 +57,25 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       ),
       child: Form(
         key: _formKey,
-        child: Container(
-          alignment: Alignment.center,
-          padding: EdgeInsets.all(16),
           child: Column(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Container(
-                  child: TextInput(
+              TextInput(
                 controller: _nameController,
                 hintText: AppLocalizations.of(context).translate('first_name'),
                 inputAction: TextInputAction.continueAction,
                 keyboardType: TextInputType.name,
-              )),
+              ),
               Utils.showValidateError(fieldsError, key: 'first_name'),
-              Container(
-                  child: TextInput(
+              TextInput(
                 controller: _phoneController,
                 hintText: AppLocalizations.of(context).translate('phone'),
                 inputAction: TextInputAction.continueAction,
                 keyboardType: TextInputType.phone,
-              )),
+              ),
               Utils.showValidateError(fieldsError, key: 'phone'),
-              Container(
-                  child: TextInput(
-                controller: _emailController,
-                hintText: AppLocalizations.of(context).translate('email'),
-                inputAction: TextInputAction.continueAction,
-                keyboardType: TextInputType.emailAddress,
-              )),
-              Utils.showValidateError(fieldsError, key: 'email'),
               Container(
                 alignment: Alignment.bottomCenter,
                 margin: EdgeInsets.only(top: 20),
@@ -110,7 +99,6 @@ class _ProfileSettingsState extends State<ProfileSettings> {
             ],
           ),
         ),
-      ),
     );
   }
 

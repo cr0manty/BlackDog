@@ -9,6 +9,7 @@ import 'package:black_dog/models/menu_item.dart';
 import 'package:black_dog/models/news.dart';
 import 'package:black_dog/models/restaurant.dart';
 import 'package:black_dog/models/user.dart';
+import 'package:black_dog/models/voucher.dart';
 import 'package:black_dog/utils/connection_check.dart';
 import 'package:http/http.dart';
 import 'package:http_interceptor/http_interceptor.dart';
@@ -125,7 +126,7 @@ class Api {
         body: json.encode(content),
         headers: _setHeaders(useJson: true, useToken: false));
 
-            Map body = json.decode(utf8.decode(response.bodyBytes)) as Map;
+    Map body = json.decode(utf8.decode(response.bodyBytes)) as Map;
     if (response.statusCode == 201) {
       SharedPrefs.saveToken(body['key']);
       _apiChange.add(true);
@@ -140,7 +141,7 @@ class Api {
     Response response = await _client.get(_setUrl(path: '/user/profile'),
         headers: _setHeaders());
     if (response.statusCode == 200) {
-            Map body = json.decode(utf8.decode(response.bodyBytes)) as Map;
+      Map body = json.decode(utf8.decode(response.bodyBytes)) as Map;
       User user = User.fromJson(body);
       if (user != null ?? false) {
         SharedPrefs.saveUser(user);
@@ -157,7 +158,7 @@ class Api {
         _setUrl(path: '/auth/user/', base: true),
         body: json.encode(content),
         headers: _setHeaders(useJson: true));
-      Map body = json.decode(utf8.decode(response.bodyBytes)) as Map;
+    Map body = json.decode(utf8.decode(response.bodyBytes)) as Map;
     if (response.statusCode == 200) {
       await getUser();
       return {'result': true};
@@ -312,11 +313,20 @@ class Api {
         headers: _setHeaders(useJson: true));
 
     Map body = json.decode(utf8.decode(response.bodyBytes));
-    if (response.statusCode == 200) {
-      return {'result': true};
-    }
-    body['result'] = false;
+    body['result'] = response.statusCode == 200;
     return body;
+  }
+
+  Future voucherDetails() async {
+    Response response = await _client.get(
+        _setUrl(path: '/user/user-voucher-details'),
+        headers: _setHeaders());
+
+    Map body = json.decode(utf8.decode(response.bodyBytes));
+    if (response.statusCode == 200) {
+      BaseVoucher voucher = BaseVoucher.fromJson(body);
+      SharedPrefs.saveCurrentVoucher(voucher);
+    }
   }
 
   void sendFCMToken() async {

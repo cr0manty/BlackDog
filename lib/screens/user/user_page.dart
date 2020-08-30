@@ -29,17 +29,21 @@ class UserPage extends StatefulWidget {
 
 class _UserPageState extends State<UserPage> {
   StreamSubscription _apiChange;
+  BaseVoucher currentVoucher;
 
   @override
   void initState() {
     _apiChange = Api.instance.apiChange.listen((event) => setState(() {}));
+    setState(() {
+      currentVoucher = SharedPrefs.getCurrentVoucher();
+    });
     super.initState();
   }
 
   Widget _bonusWidget() {
     return CircularStepProgressIndicator(
       totalSteps: 100,
-      currentStep: 52,
+      currentStep: currentVoucher.currentStep,
       stepSize: 10,
       selectedColor: HexColor.lightElement,
       unselectedColor: HexColor.semiElement,
@@ -59,7 +63,7 @@ class _UserPageState extends State<UserPage> {
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text('-50%', style: Theme.of(context).textTheme.headline1),
+                Text(currentVoucher.name, style: Theme.of(context).textTheme.headline1),
                 SvgPicture.asset('assets/images/coffee.svg',
                     color: HexColor.lightElement, height: 37, width: 37),
               ],
@@ -70,13 +74,13 @@ class _UserPageState extends State<UserPage> {
             child: RichText(
               text: TextSpan(children: [
                 TextSpan(
-                    text: '5',
+                    text: '${currentVoucher.purchaseCount}',
                     style: Theme.of(context)
                         .textTheme
                         .subtitle1
                         .copyWith(fontSize: 30)),
                 TextSpan(
-                    text: '/10',
+                    text: '/${currentVoucher.purchaseToBonus}',
                     style: Theme.of(context)
                         .textTheme
                         .subtitle1

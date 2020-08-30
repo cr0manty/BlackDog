@@ -1,4 +1,5 @@
 import 'package:black_dog/models/user.dart';
+import 'package:black_dog/models/voucher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class SharedPrefs {
@@ -9,6 +10,7 @@ abstract class SharedPrefs {
   static const _showNews = 'ShowNews';
   static const _maxNewsAmount = 'MaxPostAmount';
   static const _fcmToken = 'FCMToken';
+  static const _currentVoucher = 'CurrentVoucher';
 
   static SharedPreferences _prefs;
 
@@ -32,7 +34,7 @@ abstract class SharedPrefs {
         _currentToken, (token != null && token.isNotEmpty) ? token : '');
   }
 
-   static void saveFCMToken(String token) {
+  static void saveFCMToken(String token) {
     _prefs.setString(
         _fcmToken, (token != null && token.isNotEmpty) ? token : '');
   }
@@ -59,6 +61,10 @@ abstract class SharedPrefs {
         _localeCode, (code != null && code.isNotEmpty) ? code : '');
   }
 
+  static void saveCurrentVoucher(BaseVoucher voucher) {
+    _prefs.setString(_currentVoucher, voucherToJson(voucher));
+  }
+
   static String getToken() {
     return _prefs.getString(_currentToken);
   }
@@ -83,9 +89,13 @@ abstract class SharedPrefs {
     return _prefs.getInt(_maxNewsAmount) ?? 0;
   }
 
+  static BaseVoucher getCurrentVoucher() {
+    String jsonVoucher = _prefs.getString(_currentVoucher);
+    return  voucherFromJson(jsonVoucher);
+  }
+
   static User getUser() {
     String jsonUser = _prefs.getString(_currentUser);
-    User user = userFromJson(jsonUser);
-    return user;
+    return userFromJson(jsonUser);
   }
 }
