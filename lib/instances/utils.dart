@@ -61,6 +61,10 @@ abstract class Utils {
 
   static String get bannerImage => 'assets/images/banner.png';
 
+  static String get backgroundImage => 'assets/images/background.jpg';
+
+  static String get logo => 'assets/images/logo.svg';
+
   static dynamic showSuccessPopUp(BuildContext context, {String text}) {
     return showCupertinoDialog(
       context: context,
