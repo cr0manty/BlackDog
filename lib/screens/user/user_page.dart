@@ -20,6 +20,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
+import 'package:flutter_svg/svg.dart';
 
 class UserPage extends StatefulWidget {
   @override
@@ -59,10 +60,8 @@ class _UserPageState extends State<UserPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text('-50%', style: Theme.of(context).textTheme.headline1),
-                Icon(
-                  Icons.accessibility_new,
-                  size: 37,
-                ),
+                SvgPicture.asset('assets/images/coffee.svg',
+                    color: HexColor.lightElement, height: 37, width: 37),
               ],
             ),
           ),

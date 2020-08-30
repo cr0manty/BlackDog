@@ -81,7 +81,7 @@ class Api {
     }
 
     if (useJson) {
-      headers['Content-Type'] = "application/json";
+      headers['Content-Type'] = "application/json; charset=utf-8";
     }
 
     return headers;
@@ -108,7 +108,7 @@ class Api {
         body: {'email': email, 'password': password},
         headers: _setHeaders(useToken: false));
 
-    Map body = json.decode(response.body);
+    Map body = json.decode(utf8.decode(response.bodyBytes)) as Map;
     if (response.statusCode == 200) {
       SharedPrefs.saveToken(body['key']);
       _apiChange.add(true);
@@ -125,7 +125,7 @@ class Api {
         body: json.encode(content),
         headers: _setHeaders(useJson: true, useToken: false));
 
-    Map body = json.decode(response.body);
+            Map body = json.decode(utf8.decode(response.bodyBytes)) as Map;
     if (response.statusCode == 201) {
       SharedPrefs.saveToken(body['key']);
       _apiChange.add(true);
@@ -140,7 +140,7 @@ class Api {
     Response response = await _client.get(_setUrl(path: '/user/profile'),
         headers: _setHeaders());
     if (response.statusCode == 200) {
-      Map body = json.decode(response.body);
+            Map body = json.decode(utf8.decode(response.bodyBytes)) as Map;
       User user = User.fromJson(body);
       if (user != null ?? false) {
         SharedPrefs.saveUser(user);
@@ -157,8 +157,7 @@ class Api {
         _setUrl(path: '/auth/user/', base: true),
         body: json.encode(content),
         headers: _setHeaders(useJson: true));
-
-    Map body = json.decode(response.body);
+      Map body = json.decode(utf8.decode(response.bodyBytes)) as Map;
     if (response.statusCode == 200) {
       await getUser();
       return {'result': true};
@@ -177,7 +176,8 @@ class Api {
         headers: _setHeaders());
 
     if (response.statusCode == 200) {
-      List body = json.decode(response.body)['results'] as List;
+      List body =
+          json.decode(utf8.decode(response.bodyBytes))['results'] as List;
       body.forEach((value) {
         News news = News.fromJson(value);
         if (news != null) {
@@ -193,7 +193,7 @@ class Api {
         headers: _setHeaders());
 
     if (response.statusCode == 200) {
-      Map body = json.decode(response.body) as Map;
+      Map body = json.decode(utf8.decode(response.bodyBytes)) as Map;
       return News.fromJson(body);
     }
     return null;
@@ -210,7 +210,8 @@ class Api {
         headers: _setHeaders());
 
     if (response.statusCode == 200) {
-      List body = json.decode(response.body)['results'] as List;
+      List body =
+          json.decode(utf8.decode(response.bodyBytes))['results'] as List;
       body.forEach((value) {
         MenuCategory category = MenuCategory.fromJson(value);
         if (category != null) {
@@ -231,7 +232,8 @@ class Api {
     List<MenuItem> menu = [];
 
     if (response.statusCode == 200) {
-      Map body = json.decode(response.body) as Map;
+      Map body = json.decode(utf8.decode(response.bodyBytes)) as Map;
+
       body['products'].forEach((value) {
         MenuItem category = MenuItem.fromJson(value);
         if (category != null) {
@@ -266,7 +268,7 @@ class Api {
         .get(_setUrl(path: '/restaurant/config'), headers: _setHeaders())
         .then((response) {
       if (response.statusCode == 200) {
-        Map body = json.decode(response.body) as Map;
+        Map body = json.decode(utf8.decode(response.bodyBytes));
         Restaurant restaurant = Restaurant.fromJson(body);
         return restaurant;
       }
@@ -282,7 +284,7 @@ class Api {
         .post(_setUrl(path: '/auth/password/reset/', base: true),
             body: {'email': email}, headers: _setHeaders(useToken: false))
         .then((response) {
-      Map body = json.decode(response.body);
+      Map body = json.decode(utf8.decode(response.bodyBytes));
       body['result'] = response.statusCode == 200;
       return body;
     }).catchError((error) {
@@ -296,7 +298,7 @@ class Api {
         headers: _setHeaders());
 
     if (response.statusCode == 200) {
-      Map body = json.decode(response.body) as Map;
+      Map body = json.decode(utf8.decode(response.bodyBytes));
       SharedPrefs.saveShowPost(body['show_post_section']);
       SharedPrefs.saveMaxNews(body['max_post_amount']);
       _apiChange.add(true);
@@ -309,7 +311,7 @@ class Api {
         body: json.encode(content),
         headers: _setHeaders(useJson: true));
 
-    Map body = json.decode(response.body);
+    Map body = json.decode(utf8.decode(response.bodyBytes));
     if (response.statusCode == 200) {
       return {'result': true};
     }
