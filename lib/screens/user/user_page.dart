@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 import 'dart:math' as math;
 
 import 'package:black_dog/instances/account.dart';
@@ -10,6 +11,7 @@ import 'package:black_dog/screens/user/sign_in.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/widgets/bottom_route.dart';
+import 'package:black_dog/widgets/circular_progress_indicator.dart';
 import 'package:black_dog/widgets/edit_button.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
@@ -18,7 +20,6 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
-import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 class UserPage extends StatefulWidget {
   @override
@@ -37,7 +38,7 @@ class _UserPageState extends State<UserPage> {
   Widget _bonusWidget() {
     return CircularStepProgressIndicator(
       totalSteps: 100,
-      currentStep: 50,
+      currentStep: 52,
       stepSize: 10,
       selectedColor: HexColor.lightElement,
       unselectedColor: HexColor.semiElement,
@@ -58,7 +59,10 @@ class _UserPageState extends State<UserPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text('-50%', style: Theme.of(context).textTheme.headline1),
-                Icon(Icons.accessibility_new, size: 37,),
+                Icon(
+                  Icons.accessibility_new,
+                  size: 37,
+                ),
               ],
             ),
           ),
@@ -72,7 +76,8 @@ class _UserPageState extends State<UserPage> {
                         .textTheme
                         .subtitle1
                         .copyWith(fontSize: 30)),
-                TextSpan(text: '/10',
+                TextSpan(
+                    text: '/10',
                     style: Theme.of(context)
                         .textTheme
                         .subtitle1
@@ -197,7 +202,7 @@ class _UserPageState extends State<UserPage> {
       children: <Widget>[
         UserCard(
           isStaff: false,
-          onPressed: () {},
+          onPressed: null,
           username: Account.instance.name,
           trailing: EditButton(),
           additionWidget: BonusCard(),
@@ -212,7 +217,10 @@ class _UserPageState extends State<UserPage> {
             child: Column(
               children: List.generate(
                   Account.instance.user.vouchers.length, _voucherBuild),
-            ))
+            )),
+        SizedBox(
+          height: 20,
+        )
       ],
     );
   }
