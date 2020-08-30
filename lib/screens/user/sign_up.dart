@@ -6,6 +6,7 @@ import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/widgets/bottom_route.dart';
 import 'package:black_dog/widgets/input_field.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
@@ -282,6 +283,24 @@ class _SignUpPageState extends State<SignUpPage> {
       'phone_number': _phoneController.text,
       'birth_date': Utils.dateFormat(selectedDate),
     };
+  }
+
+  Future updateCode() async {
+    FirebaseAuth.instance.verifyPhoneNumber(
+        phoneNumber: _phoneController.text,
+        timeout: Duration(seconds: 30),
+        verificationCompleted: (AuthCredential authCredential) {},
+        verificationFailed: (FirebaseAuthException authException){
+          print(authException.message);
+        },
+        codeSent: (String verificationId, [int forceResendingToken]) {
+          AuthCredential _credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: _codeController.text.trim());
+          FirebaseAuth.instance.signInWithCredential(_credential).then((AuthResult result){
+            Navigator.pushReplacement(context, MaterialPageRoute(
+                builder: (context) => HomeScreen(result.user)
+            ));
+        });},
+        codeAutoRetrievalTimeout: null);
   }
 
   Future registerClick() async {
