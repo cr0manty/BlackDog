@@ -41,10 +41,12 @@ class _BlackDogAppState extends State<BlackDogApp> {
   void initWithContext(BuildContext context) {
     precacheImage(AssetImage(Utils.defaultImage), context);
     precacheImage(AssetImage(Utils.loadImage), context);
+//    precacheImage(AssetImage(Utils.backgroundImage), context);
+//    precacheImage(AssetImage(Utils.logo), context);
 
     if (Platform.isAndroid) {
       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-          statusBarColor: HexColor.darkElement.withOpacity(0.6),
+          statusBarColor: HexColor.darkElement.withOpacity(0.3),
           statusBarIconBrightness: Brightness.light));
     }
   }

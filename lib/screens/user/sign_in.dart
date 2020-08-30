@@ -10,6 +10,7 @@ import 'package:black_dog/widgets/bottom_route.dart';
 import 'package:black_dog/widgets/input_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'fortgot_password.dart';
@@ -36,7 +37,7 @@ class _SignInPageState extends State<SignInPage> {
         body: ModalProgressHUD(
             progressIndicator: CupertinoActivityIndicator(),
             inAsyncCall: isLoading,
-                child: Form(
+            child: Form(
               key: _formKey,
               child: Container(
                   padding: EdgeInsets.all(16),
@@ -60,6 +61,12 @@ class _SignInPageState extends State<SignInPage> {
                                 style: Theme.of(context).textTheme.caption,
                               ),
                             ),
+//                            Container(
+//                              margin: EdgeInsets.all(16),
+//                              alignment: Alignment.center,
+//                              child: SvgPicture.asset(Utils.logo,
+//                                  color: Colors.black, height: 25, width: 22),
+//                            ),
                             Column(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.center,

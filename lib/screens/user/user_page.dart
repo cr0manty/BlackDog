@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 import 'dart:math' as math;
 
 import 'package:black_dog/instances/account.dart';
@@ -10,6 +11,7 @@ import 'package:black_dog/screens/user/sign_in.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/widgets/bottom_route.dart';
+import 'package:black_dog/widgets/circular_progress_indicator.dart';
 import 'package:black_dog/widgets/edit_button.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
@@ -18,7 +20,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
-import 'package:step_progress_indicator/step_progress_indicator.dart';
+import 'package:flutter_svg/svg.dart';
 
 class UserPage extends StatefulWidget {
   @override
@@ -27,17 +29,21 @@ class UserPage extends StatefulWidget {
 
 class _UserPageState extends State<UserPage> {
   StreamSubscription _apiChange;
+  BaseVoucher currentVoucher;
 
   @override
   void initState() {
     _apiChange = Api.instance.apiChange.listen((event) => setState(() {}));
+    setState(() {
+      currentVoucher = SharedPrefs.getCurrentVoucher();
+    });
     super.initState();
   }
 
   Widget _bonusWidget() {
     return CircularStepProgressIndicator(
       totalSteps: 100,
-      currentStep: 50,
+      currentStep: currentVoucher.currentStep,
       stepSize: 10,
       selectedColor: HexColor.lightElement,
       unselectedColor: HexColor.semiElement,
@@ -57,8 +63,9 @@ class _UserPageState extends State<UserPage> {
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text('-50%', style: Theme.of(context).textTheme.headline1),
-                Icon(Icons.accessibility_new, size: 37,),
+                Text(currentVoucher.name, style: Theme.of(context).textTheme.headline1),
+                SvgPicture.asset('assets/images/coffee.svg',
+                    color: HexColor.lightElement, height: 37, width: 37),
               ],
             ),
           ),
@@ -67,12 +74,13 @@ class _UserPageState extends State<UserPage> {
             child: RichText(
               text: TextSpan(children: [
                 TextSpan(
-                    text: '5',
+                    text: '${currentVoucher.purchaseCount}',
                     style: Theme.of(context)
                         .textTheme
                         .subtitle1
                         .copyWith(fontSize: 30)),
-                TextSpan(text: '/10',
+                TextSpan(
+                    text: '/${currentVoucher.purchaseToBonus}',
                     style: Theme.of(context)
                         .textTheme
                         .subtitle1
@@ -136,7 +144,6 @@ class _UserPageState extends State<UserPage> {
           codeUrl: voucher.qrCode, isLocal: false),
       child: Container(
         margin: EdgeInsets.only(top: 16),
-        height: ScreenSize.voucherSize,
         width: ScreenSize.width - 32,
         padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -156,10 +163,14 @@ class _UserPageState extends State<UserPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    AppLocalizations.of(context).translate('current_voucher') +
-                        ' ${voucher.discountType}',
+                    AppLocalizations.of(context).translate('current_voucher'),
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
+                  Text(
+                    voucher.discountType,
+                    style: Theme.of(context).textTheme.subtitle1,
+                  ),
+                  SizedBox(height: 5),
                   Text(
                     AppLocalizations.of(context).translate('click_to_open'),
                     style: Theme.of(context).textTheme.subtitle2,
@@ -197,7 +208,7 @@ class _UserPageState extends State<UserPage> {
       children: <Widget>[
         UserCard(
           isStaff: false,
-          onPressed: () {},
+          onPressed: null,
           username: Account.instance.name,
           trailing: EditButton(),
           additionWidget: BonusCard(),
@@ -212,7 +223,10 @@ class _UserPageState extends State<UserPage> {
             child: Column(
               children: List.generate(
                   Account.instance.user.vouchers.length, _voucherBuild),
-            ))
+            )),
+        SizedBox(
+          height: 20,
+        )
       ],
     );
   }
