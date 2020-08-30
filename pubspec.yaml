@@ -28,6 +28,7 @@ dependencies:
   firebase_messaging:
   step_progress_indicator:
   firebase_auth:
+  firebase_core:
 
   flutter_localizations:
     sdk: flutter

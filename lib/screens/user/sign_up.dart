@@ -11,7 +11,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-
+import 'package:firebase_core/firebase_core.dart';
 import '../home_page.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -23,7 +23,7 @@ class _SignUpPageState extends State<SignUpPage> {
   DateTime selectedDate;
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _codeController = TextEditingController();
   final TextEditingController _password1Controller = TextEditingController();
   final TextEditingController _password2Controller = TextEditingController();
   final GlobalKey _formKey = GlobalKey<FormState>();
@@ -39,6 +39,15 @@ class _SignUpPageState extends State<SignUpPage> {
   bool _obscureText = true;
   bool _obscureTextConfirm = true;
   bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    Firebase.initializeApp().whenComplete(() {
+      print("completed");
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +77,10 @@ class _SignUpPageState extends State<SignUpPage> {
                                 child: Text(
                                   AppLocalizations.of(context)
                                       .translate('register'),
-                                  style: Theme.of(context).textTheme.caption,
+                                  style: Theme
+                                      .of(context)
+                                      .textTheme
+                                      .caption,
                                 ),
                               ),
                               Column(
@@ -79,13 +91,14 @@ class _SignUpPageState extends State<SignUpPage> {
                                       alignment: Alignment.center,
                                       child: Container(
                                           child: TextInput(
-                                        controller: _nameController,
-                                        keyboardType: TextInputType.name,
-                                        hintText: AppLocalizations.of(context)
-                                            .translate('first_name'),
-                                        inputAction:
+                                            controller: _nameController,
+                                            keyboardType: TextInputType.name,
+                                            hintText: AppLocalizations.of(
+                                                context)
+                                                .translate('first_name'),
+                                            inputAction:
                                             TextInputAction.continueAction,
-                                      ))),
+                                          ))),
                                   Utils.showValidateError(fieldsError,
                                       key: 'first_name'),
                                   Container(
@@ -96,23 +109,10 @@ class _SignUpPageState extends State<SignUpPage> {
                                         hintText: AppLocalizations.of(context)
                                             .translate('phone'),
                                         inputAction:
-                                            TextInputAction.continueAction,
+                                        TextInputAction.continueAction,
                                       )),
                                   Utils.showValidateError(fieldsError,
                                       key: 'phone_number'),
-                                  Container(
-                                      alignment: Alignment.center,
-                                      child: TextInput(
-                                        controller: _emailController,
-                                        hintText: AppLocalizations.of(context)
-                                            .translate('email'),
-                                        inputAction:
-                                            TextInputAction.continueAction,
-                                        keyboardType:
-                                            TextInputType.emailAddress,
-                                      )),
-                                  Utils.showValidateError(fieldsError,
-                                      key: 'email'),
                                   Container(
                                       alignment: Alignment.center,
                                       child: TextInput(
@@ -152,7 +152,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                           onTap: () {
                                             setState(() {
                                               _obscureTextConfirm =
-                                                  !_obscureTextConfirm;
+                                              !_obscureTextConfirm;
                                             });
                                           },
                                         ),
@@ -179,18 +179,18 @@ class _SignUpPageState extends State<SignUpPage> {
                                               horizontal: 16),
                                           decoration: BoxDecoration(
                                               borderRadius:
-                                                  BorderRadius.circular(10),
+                                              BorderRadius.circular(10),
                                               color: HexColor.lightElement),
                                           child: Row(
                                             mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
+                                            MainAxisAlignment.spaceBetween,
                                             children: <Widget>[
                                               Text(
                                                 Utils.dateFormat(
-                                                        selectedDate) ??
+                                                    selectedDate) ??
                                                     AppLocalizations.of(context)
                                                         .translate(
-                                                            'birth_date'),
+                                                        'birth_date'),
                                                 style: TextStyle(
                                                     color: Colors.black,
                                                     fontSize: 18),
@@ -212,19 +212,20 @@ class _SignUpPageState extends State<SignUpPage> {
                                   child: Column(
                                     children: <Widget>[
                                       CupertinoButton(
-                                          onPressed: registerClick,
+                                          onPressed: registerWithPhone,
                                           color: HexColor.lightElement,
                                           child: Text(
                                             AppLocalizations.of(context)
                                                 .translate('register'),
                                             overflow: TextOverflow.fade,
                                             maxLines: 1,
-                                            style: Theme.of(context)
+                                            style: Theme
+                                                .of(context)
                                                 .textTheme
                                                 .headline1
                                                 .copyWith(
-                                                    color:
-                                                        HexColor.darkElement),
+                                                color:
+                                                HexColor.darkElement),
                                           )),
                                       CupertinoButton(
                                           onPressed: () {
@@ -235,8 +236,9 @@ class _SignUpPageState extends State<SignUpPage> {
                                           child: Text(
                                             AppLocalizations.of(context)
                                                 .translate(
-                                                    'already_have_account'),
-                                            style: Theme.of(context)
+                                                'already_have_account'),
+                                            style: Theme
+                                                .of(context)
                                                 .textTheme
                                                 .bodyText2,
                                           )),
@@ -255,12 +257,19 @@ class _SignUpPageState extends State<SignUpPage> {
         context: context,
         builder: (BuildContext context) {
           return Container(
-              height: MediaQuery.of(context).copyWith().size.height / 3,
+              height: MediaQuery
+                  .of(context)
+                  .copyWith()
+                  .size
+                  .height / 3,
               child: CupertinoTheme(
                   data: CupertinoThemeData(
                     textTheme: CupertinoTextThemeData(
                       dateTimePickerTextStyle:
-                          Theme.of(context).textTheme.subtitle1,
+                      Theme
+                          .of(context)
+                          .textTheme
+                          .subtitle1,
                     ),
                   ),
                   child: CupertinoDatePicker(
@@ -279,28 +288,71 @@ class _SignUpPageState extends State<SignUpPage> {
       'first_name': _nameController.text,
       'password1': _password1Controller.text,
       'password2': _password2Controller.text,
-      'email': _emailController.text,
       'phone_number': _phoneController.text,
       'birth_date': Utils.dateFormat(selectedDate),
     };
   }
 
-  Future updateCode() async {
+  Future registerWithPhone() async {
     FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: _phoneController.text,
         timeout: Duration(seconds: 30),
-        verificationCompleted: (AuthCredential authCredential) {},
-        verificationFailed: (FirebaseAuthException authException){
+        verificationCompleted: (AuthCredential credential) {
+          FirebaseAuth.instance.signInWithCredential(credential).then((result) {
+            Navigator.of(context).pushAndRemoveUntil(
+                BottomRoute(page: HomePage(isInitView: false)),
+                    (route) => false);
+          }).catchError((e) {
+            print(e);
+          });
+        },
+        verificationFailed: (FirebaseAuthException authException) {
           print(authException.message);
         },
         codeSent: (String verificationId, [int forceResendingToken]) {
-          AuthCredential _credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: _codeController.text.trim());
-          FirebaseAuth.instance.signInWithCredential(_credential).then((AuthResult result){
-            Navigator.pushReplacement(context, MaterialPageRoute(
-                builder: (context) => HomeScreen(result.user)
-            ));
-        });},
-        codeAutoRetrievalTimeout: null);
+          showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) =>
+                  AlertDialog(
+                    title: Text("Enter SMS Code"),
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        TextField(
+                          controller: _codeController,
+                        ),
+                      ],
+                    ),
+                    actions: <Widget>[
+                      FlatButton(
+                        child: Text("Done"),
+                        textColor: Colors.white,
+                        color: Colors.redAccent,
+                        onPressed: () {
+                          AuthCredential credential =
+                          PhoneAuthProvider.credential(
+                              verificationId: verificationId,
+                              smsCode: _codeController.text.trim());
+                          FirebaseAuth.instance
+                              .signInWithCredential(credential)
+                              .then((result) {
+                            Navigator.of(context).pushAndRemoveUntil(
+                                BottomRoute(page: HomePage(isInitView: false)),
+                                    (route) => false);
+                          }).catchError((e) {
+                            print(e);
+                          });
+                        },
+                      )
+                    ],
+                  ));
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          verificationId = verificationId;
+          print(verificationId);
+          print("Timout");
+        });
   }
 
   Future registerClick() async {
