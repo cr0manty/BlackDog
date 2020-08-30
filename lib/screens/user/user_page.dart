@@ -140,7 +140,6 @@ class _UserPageState extends State<UserPage> {
           codeUrl: voucher.qrCode, isLocal: false),
       child: Container(
         margin: EdgeInsets.only(top: 16),
-        height: ScreenSize.voucherSize,
         width: ScreenSize.width - 32,
         padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -160,10 +159,14 @@ class _UserPageState extends State<UserPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    AppLocalizations.of(context).translate('current_voucher') +
-                        ' ${voucher.discountType}',
+                    AppLocalizations.of(context).translate('current_voucher'),
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
+                  Text(
+                    voucher.discountType,
+                    style: Theme.of(context).textTheme.subtitle1,
+                  ),
+                  SizedBox(height: 5),
                   Text(
                     AppLocalizations.of(context).translate('click_to_open'),
                     style: Theme.of(context).textTheme.subtitle2,
