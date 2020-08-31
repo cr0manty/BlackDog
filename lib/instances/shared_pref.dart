@@ -11,6 +11,7 @@ abstract class SharedPrefs {
   static const _maxNewsAmount = 'MaxPostAmount';
   static const _fcmToken = 'FCMToken';
   static const _currentVoucher = 'CurrentVoucher';
+  static const _firebaseUserUid = 'FirebaseUserUID';
 
   static SharedPreferences _prefs;
 
@@ -27,6 +28,7 @@ abstract class SharedPrefs {
     _prefs.setString(_currentToken, '');
     _prefs.setString(_qrCode, '');
     _prefs.setString(_fcmToken, '');
+    _prefs.setString(_firebaseUserUid, '');
   }
 
   static void saveToken(String token) {
@@ -46,6 +48,11 @@ abstract class SharedPrefs {
   static void saveQRCode(String qrCode) {
     _prefs.setString(
         _qrCode, (qrCode != null && qrCode.isNotEmpty) ? qrCode : '');
+  }
+
+  static void saveUserFirebaseUid(String uid) {
+    _prefs.setString(
+        _firebaseUserUid, (uid != null && uid.isNotEmpty) ? uid : '');
   }
 
   static void saveShowPost(bool showPost) {
@@ -91,7 +98,11 @@ abstract class SharedPrefs {
 
   static BaseVoucher getCurrentVoucher() {
     String jsonVoucher = _prefs.getString(_currentVoucher);
-    return  voucherFromJson(jsonVoucher);
+    return voucherFromJson(jsonVoucher);
+  }
+
+  static String getUserFirebaseUID() {
+    return _prefs.getString(_firebaseUserUid);
   }
 
   static User getUser() {
