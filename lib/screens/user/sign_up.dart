@@ -57,192 +57,195 @@ class _SignUpPageState extends State<SignUpPage> {
             body: ModalProgressHUD(
                 progressIndicator: CupertinoActivityIndicator(),
                 inAsyncCall: isLoading,
-                child: Form(
-                    key: _formKey,
-                    child: Container(
-                      padding: EdgeInsets.all(16),
-                      child: ScrollConfiguration(
-                        behavior: ScrollGlow(),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Container(
-                                alignment: Alignment.topCenter,
-                                padding: EdgeInsets.only(
-                                    top: ScreenSize.sectionIndent,
-                                    bottom: ScreenSize.sectionIndent * 2),
-                                child: Text(
-                                  AppLocalizations.of(context)
-                                      .translate('register'),
-                                  style: Theme.of(context).textTheme.caption,
+                child: GestureDetector(
+                  onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+                  child: Form(
+                      key: _formKey,
+                      child: Container(
+                        padding: EdgeInsets.only(top: 16, bottom: 8, left: 16, right: 16),
+                        child: ScrollConfiguration(
+                          behavior: ScrollGlow(),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Container(
+                                  alignment: Alignment.topCenter,
+                                  padding: EdgeInsets.only(
+                                      top: ScreenSize.sectionIndent,
+                                      bottom: ScreenSize.sectionIndent * 2),
+                                  child: Text(
+                                    AppLocalizations.of(context)
+                                        .translate('register'),
+                                    style: Theme.of(context).textTheme.caption,
+                                  ),
                                 ),
-                              ),
-                              Column(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Align(
-                                      alignment: Alignment.center,
-                                      child: Container(
-                                          child: TextInput(
-                                        controller: _nameController,
-                                        keyboardType: TextInputType.name,
-                                        hintText: AppLocalizations.of(context)
-                                            .translate('first_name'),
-                                        inputAction:
-                                            TextInputAction.continueAction,
-                                      ))),
-                                  Utils.showValidateError(fieldsError,
-                                      key: 'first_name'),
-                                  Container(
-                                      alignment: Alignment.center,
-                                      child: TextInput(
-                                        controller: _phoneController,
-                                        keyboardType: TextInputType.phone,
-                                        hintText: AppLocalizations.of(context)
-                                            .translate('phone'),
-                                        inputAction:
-                                            TextInputAction.continueAction,
-                                      )),
-                                  Utils.showValidateError(fieldsError,
-                                      key: 'phone_number'),
-                                  Container(
-                                      alignment: Alignment.center,
-                                      child: TextInput(
-                                        obscureText: _obscureText,
-                                        controller: _password1Controller,
-                                        hintText: AppLocalizations.of(context)
-                                            .translate('password'),
-                                        suffixIcon: GestureDetector(
-                                          child: Icon(
-                                              _obscureText
-                                                  ? Icons.remove_red_eye
-                                                  : Icons.visibility_off,
-                                              color: HexColor.darkElement),
-                                          onTap: () {
-                                            setState(() {
-                                              _obscureText = !_obscureText;
-                                            });
+                                Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Align(
+                                        alignment: Alignment.center,
+                                        child: Container(
+                                            child: TextInput(
+                                          controller: _nameController,
+                                          keyboardType: TextInputType.name,
+                                          hintText: AppLocalizations.of(context)
+                                              .translate('first_name'),
+                                          inputAction:
+                                              TextInputAction.continueAction,
+                                        ))),
+                                    Utils.showValidateError(fieldsError,
+                                        key: 'first_name'),
+                                    Container(
+                                        alignment: Alignment.center,
+                                        child: TextInput(
+                                          controller: _phoneController,
+                                          keyboardType: TextInputType.phone,
+                                          hintText: AppLocalizations.of(context)
+                                              .translate('phone'),
+                                          inputAction:
+                                              TextInputAction.continueAction,
+                                        )),
+                                    Utils.showValidateError(fieldsError,
+                                        key: 'phone_number'),
+                                    Container(
+                                        alignment: Alignment.center,
+                                        child: TextInput(
+                                          obscureText: _obscureText,
+                                          controller: _password1Controller,
+                                          hintText: AppLocalizations.of(context)
+                                              .translate('password'),
+                                          suffixIcon: GestureDetector(
+                                            child: Icon(
+                                                _obscureText
+                                                    ? Icons.remove_red_eye
+                                                    : Icons.visibility_off,
+                                                color: HexColor.darkElement),
+                                            onTap: () {
+                                              setState(() {
+                                                _obscureText = !_obscureText;
+                                              });
+                                            },
+                                          ),
+                                          inputAction: TextInputAction.done,
+                                        )),
+                                    Utils.showValidateError(fieldsError,
+                                        key: 'password1'),
+                                    Container(
+                                        alignment: Alignment.center,
+                                        child: TextInput(
+                                          obscureText: _obscureTextConfirm,
+                                          controller: _password2Controller,
+                                          hintText: AppLocalizations.of(context)
+                                              .translate('confirm_password'),
+                                          suffixIcon: GestureDetector(
+                                            child: Icon(
+                                                _obscureTextConfirm
+                                                    ? Icons.remove_red_eye
+                                                    : Icons.visibility_off,
+                                                color: HexColor.darkElement),
+                                            onTap: () {
+                                              setState(() {
+                                                _obscureTextConfirm =
+                                                    !_obscureTextConfirm;
+                                              });
+                                            },
+                                          ),
+                                          validator: (String text) {
+                                            if (text !=
+                                                _password1Controller.text) {
+                                              return AppLocalizations.of(context)
+                                                  .translate('password_mismatch');
+                                            }
+                                            return null;
                                           },
-                                        ),
-                                        inputAction: TextInputAction.done,
-                                      )),
-                                  Utils.showValidateError(fieldsError,
-                                      key: 'password1'),
-                                  Container(
-                                      alignment: Alignment.center,
-                                      child: TextInput(
-                                        obscureText: _obscureTextConfirm,
-                                        controller: _password2Controller,
-                                        hintText: AppLocalizations.of(context)
-                                            .translate('confirm_password'),
-                                        suffixIcon: GestureDetector(
-                                          child: Icon(
-                                              _obscureTextConfirm
-                                                  ? Icons.remove_red_eye
-                                                  : Icons.visibility_off,
-                                              color: HexColor.darkElement),
-                                          onTap: () {
-                                            setState(() {
-                                              _obscureTextConfirm =
-                                                  !_obscureTextConfirm;
-                                            });
-                                          },
-                                        ),
-                                        validator: (String text) {
-                                          if (text !=
-                                              _password1Controller.text) {
-                                            return AppLocalizations.of(context)
-                                                .translate('password_mismatch');
-                                          }
-                                          return null;
-                                        },
-                                        inputAction: TextInputAction.done,
-                                      )),
-                                  Utils.showValidateError(fieldsError,
-                                      key: 'password2'),
-                                  GestureDetector(
-                                      onTap: () =>
-                                          _showModalBottomSheet(context),
-                                      child: Container(
-                                          height: 50,
-                                          width: ScreenSize.width - 32,
-                                          alignment: Alignment.centerLeft,
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 16),
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              color: HexColor.lightElement),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: <Widget>[
-                                              Text(
-                                                Utils.dateFormat(
-                                                        selectedDate) ??
-                                                    AppLocalizations.of(context)
-                                                        .translate(
-                                                            'birth_date'),
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 18),
-                                              ),
-                                              Icon(
-                                                SFSymbols.calendar,
-                                                color: Colors.black,
-                                              )
-                                            ],
-                                          ))),
-                                  Utils.showValidateError(fieldsError,
-                                      key: 'birth_date'),
-                                ],
-                              ),
-                              Container(
-                                  alignment: Alignment.bottomCenter,
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: ScreenSize.sectionIndent),
-                                  child: Column(
-                                    children: <Widget>[
-                                      CupertinoButton(
-                                          onPressed: registerWithPhone,
-                                          color: HexColor.lightElement,
-                                          child: Text(
-                                            AppLocalizations.of(context)
-                                                .translate('register'),
-                                            overflow: TextOverflow.fade,
-                                            maxLines: 1,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline1
-                                                .copyWith(
-                                                    color:
-                                                        HexColor.darkElement),
-                                          )),
-                                      CupertinoButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                            FocusScope.of(context)
-                                                .requestFocus(FocusNode());
-                                          },
-                                          child: Text(
-                                            AppLocalizations.of(context)
-                                                .translate(
-                                                    'already_have_account'),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyText2,
-                                          )),
-                                    ],
-                                  )),
-                            ],
+                                          inputAction: TextInputAction.done,
+                                        )),
+                                    Utils.showValidateError(fieldsError,
+                                        key: 'password2'),
+                                    GestureDetector(
+                                        onTap: () =>
+                                            _showModalBottomSheet(context),
+                                        child: Container(
+                                            height: 50,
+                                            width: ScreenSize.width - 32,
+                                            alignment: Alignment.centerLeft,
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 16),
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                color: HexColor.lightElement),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceBetween,
+                                              children: <Widget>[
+                                                Text(
+                                                  Utils.dateFormat(
+                                                          selectedDate) ??
+                                                      AppLocalizations.of(context)
+                                                          .translate(
+                                                              'birth_date'),
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 18),
+                                                ),
+                                                Icon(
+                                                  SFSymbols.calendar,
+                                                  color: Colors.black,
+                                                )
+                                              ],
+                                            ))),
+                                    Utils.showValidateError(fieldsError,
+                                        key: 'birth_date'),
+                                  ],
+                                ),
+                                Container(
+                                    alignment: Alignment.bottomCenter,
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: ScreenSize.sectionIndent),
+                                    child: Column(
+                                      children: <Widget>[
+                                        CupertinoButton(
+                                            onPressed: registerWithPhone,
+                                            color: HexColor.lightElement,
+                                            child: Text(
+                                              AppLocalizations.of(context)
+                                                  .translate('register'),
+                                              overflow: TextOverflow.fade,
+                                              maxLines: 1,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headline1
+                                                  .copyWith(
+                                                      color:
+                                                          HexColor.darkElement),
+                                            )),
+                                        CupertinoButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                              FocusScope.of(context)
+                                                  .requestFocus(FocusNode());
+                                            },
+                                            child: Text(
+                                              AppLocalizations.of(context)
+                                                  .translate(
+                                                      'already_have_account'),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText2,
+                                            )),
+                                      ],
+                                    )),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    )))));
+                      )),
+                ))));
   }
 
   void _showModalBottomSheet(context) {
@@ -290,44 +293,49 @@ class _SignUpPageState extends State<SignUpPage> {
                 BottomRoute(page: HomePage(isInitView: false)),
                 (route) => false);
           }).catchError((e) {
+            Utils.showErrorPopUp(context, text: e);
             print(e);
           });
         },
         verificationFailed: (FirebaseAuthException authException) {
+          Utils.showErrorPopUp(context, text: authException.message);
           print(authException.message);
         },
         codeSent: (String verificationId, [int forceResendingToken]) {
-          showDialog(
+          showCupertinoDialog(
               context: context,
-              barrierDismissible: false,
-              builder: (context) => AlertDialog(
-                    title: Text("Enter SMS Code"),
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        TextField(
-                          controller: _codeController,
-                        ),
-                      ],
+              builder: (context) => CupertinoAlertDialog(
+                    title: Text(
+                        AppLocalizations.of(context).translate('enter_code'),
+                        style: Theme.of(context).textTheme.headline1),
+                    content: Container(
+                      margin: EdgeInsets.only(top: 10),
+                      child: CupertinoTextField(
+                        style: Theme.of(context).textTheme.subtitle2,
+                        controller: _codeController,
+                      ),
                     ),
-                    actions: <Widget>[
-                      FlatButton(
-                        child: Text("Done"),
-                        textColor: Colors.white,
-                        color: Colors.redAccent,
-                        onPressed: () {
+                    actions: [
+                      CupertinoDialogAction(
+                        child: Text('Done'),
+                        onPressed: () async {
                           AuthCredential credential =
                               PhoneAuthProvider.credential(
                                   verificationId: verificationId,
                                   smsCode: _codeController.text.trim());
-                          var result = FirebaseAuth.instance
+                          var result = await FirebaseAuth.instance
                               .signInWithCredential(credential);
-                          if (result != null) {
-                            Navigator.of(context).pushAndRemoveUntil(
-                                BottomRoute(page: HomePage(isInitView: false)),
-                                (route) => false);
-                          }
+                          // if (result != null) {
+                          //   Navigator.of(context).pushAndRemoveUntil(
+                          //       BottomRoute(page: HomePage(isInitView: false)),
+                          //       (route) => false);
+                          // }
                         },
+                      ),
+                      CupertinoDialogAction(
+                        isDestructiveAction: true,
+                        child: Text('Cancel'),
+                        onPressed: Navigator.of(context).pop,
                       )
                     ],
                   ));
@@ -335,7 +343,7 @@ class _SignUpPageState extends State<SignUpPage> {
         codeAutoRetrievalTimeout: (String verificationId) {
           verificationId = verificationId;
           print(verificationId);
-          print("Timout");
+          print("Time out");
         });
   }
 
@@ -347,8 +355,7 @@ class _SignUpPageState extends State<SignUpPage> {
     await Api.instance.register(_sendData()).then((response) async {
       bool result = response.remove('result');
       if (result && await Account.instance.setUser()) {
-        Navigator.of(context).pushAndRemoveUntil(
-            BottomRoute(page: HomePage(isInitView: false)), (route) => false);
+        registerWithPhone();
       } else {
         response.forEach((key, value) {
           if (_fieldsList.contains(key)) {
