@@ -16,6 +16,8 @@ class ChangePassword extends StatefulWidget {
 class _ChangePasswordState extends State<ChangePassword> {
   final TextEditingController _password1Controller = TextEditingController();
   final TextEditingController _password2Controller = TextEditingController();
+  final FocusNode _password1Focus = FocusNode();
+  final FocusNode _password2Focus = FocusNode();
   final GlobalKey _formKey = GlobalKey<FormState>();
   Map fieldsError = {};
   bool isLoading = false;
@@ -51,6 +53,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                   alignment: Alignment.center,
                   child: TextInput(
                     controller: _password1Controller,
+                    focusNode: _password1Focus,
+                    targetFocus: _password2Focus,
                     hintText:
                         AppLocalizations.of(context).translate('new_password'),
                     inputAction: TextInputAction.done,
@@ -61,6 +65,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                   alignment: Alignment.center,
                   child: TextInput(
                     controller: _password2Controller,
+                    focusNode: _password2Focus,
                     hintText: AppLocalizations.of(context)
                         .translate('confirm_password'),
                     inputAction: TextInputAction.done,

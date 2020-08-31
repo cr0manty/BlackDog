@@ -13,6 +13,8 @@ class TextInput extends StatefulWidget {
   final ValueChanged<String> onChanged;
   final Color backgroundColor;
   final Color textColor;
+  final FocusNode focusNode;
+  final FocusNode targetFocus;
 
   TextInput(
       {@required this.hintText,
@@ -24,7 +26,9 @@ class TextInput extends StatefulWidget {
       this.obscureText,
       this.onChanged,
       this.backgroundColor,
-      this.textColor});
+      this.textColor,
+      this.focusNode,
+      this.targetFocus});
 
   @override
   State<StatefulWidget> createState() => TextInputState();
@@ -46,11 +50,13 @@ class TextInputState extends State<TextInput> {
       color: Colors.transparent,
       elevation: 0.0,
       child: TextFormField(
+        focusNode: widget.focusNode,
         style: Theme.of(context)
             .textTheme
             .subtitle1
             .copyWith(color: widget.textColor ?? HexColor.darkElement),
         keyboardType: widget.keyboardType,
+        textInputAction: widget.inputAction ?? TextInputAction.next,
         validator: widget.validator,
         obscureText: widget.obscureText ?? false,
         controller: widget.controller,
@@ -60,6 +66,9 @@ class TextInputState extends State<TextInput> {
           });
           widget.onChanged(text);
         },
+        onFieldSubmitted: widget.inputAction == TextInputAction.next
+            ?  (_) => FocusScope.of(context).requestFocus(widget.targetFocus)
+            : (_) => FocusScope.of(context).unfocus(),
         decoration: InputDecoration(
             hintText: widget.hintText,
             focusColor: Colors.transparent,

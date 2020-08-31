@@ -24,6 +24,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   final TextEditingController _basicController = TextEditingController();
   final TextEditingController _basicAdditionController =
       TextEditingController();
+  final FocusNode _password1Focus = FocusNode();
+  final FocusNode _password2Focus = FocusNode();
   Map _validationError = {};
   bool isLoading = false;
   static const List<String> _fieldsList = [
@@ -96,6 +98,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           alignment: Alignment.center,
           child: TextInput(
             controller: _basicController,
+            focusNode: _password1Focus,
+            targetFocus: _password2Focus,
             keyboardType: TextInputType.visiblePassword,
             hintText: AppLocalizations.of(context).translate('new_password'),
             inputAction: TextInputAction.next,
@@ -104,6 +108,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       Container(
           alignment: Alignment.center,
           child: TextInput(
+            focusNode: _password2Focus,
             controller: _basicAdditionController,
             keyboardType: TextInputType.visiblePassword,
             hintText:

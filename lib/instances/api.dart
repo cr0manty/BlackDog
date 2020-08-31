@@ -103,10 +103,10 @@ class Api {
     return body;
   }
 
-  Future login(String email, String password) async {
+  Future login(String phone, String password) async {
     Response response = await _client.post(
         _setUrl(path: '/auth/login/', base: true),
-        body: {'email': email, 'password': password},
+        body: {'phone_number': phone, 'password': password},
         headers: _setHeaders(useToken: false));
 
     Map body = json.decode(utf8.decode(response.bodyBytes)) as Map;
@@ -330,9 +330,20 @@ class Api {
   }
 
   void sendFCMToken() async {
-    // TODO send fcm api method
+    _client.post(_setUrl(path: '/register-notify-token/', base: true),
+        body: json.encode({
+          'registration_id': SharedPrefs.getFCMToken(),
+          'type':
+              Platform.isIOS ? 'ios' : (Platform.isAndroid ? 'android' : 'web')
+        }),
+        headers: _setHeaders(useJson: true));
+  }
+
+  void sendFirebaseUserUID() async {
     _client.post(_setUrl(path: '', base: true),
-        body: json.encode({'token': SharedPrefs.getFCMToken()}),
+        body: json.encode({
+          'token': SharedPrefs.getUserFirebaseUID(),
+        }),
         headers: _setHeaders(useJson: true));
   }
 

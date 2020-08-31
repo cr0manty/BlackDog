@@ -22,8 +22,7 @@ class ProfileSettings extends StatefulWidget {
 
 class _ProfileSettingsState extends State<ProfileSettings> {
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
   final GlobalKey _formKey = GlobalKey<FormState>();
   Map fieldsError = {};
   bool isLoading = false;
@@ -31,8 +30,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   @override
   void initState() {
     _nameController.text = Account.instance.user.firstName;
-    _phoneController.text = Account.instance.user.phone;
-    _emailController.text = Account.instance.user.email;
+    _lastNameController.text = Account.instance.user.phone;
     super.initState();
   }
 
@@ -70,12 +68,12 @@ class _ProfileSettingsState extends State<ProfileSettings> {
               ),
               Utils.showValidateError(fieldsError, key: 'first_name'),
               TextInput(
-                controller: _phoneController,
-                hintText: AppLocalizations.of(context).translate('phone'),
+                controller: _lastNameController,
+                hintText: AppLocalizations.of(context).translate('last_name'),
                 inputAction: TextInputAction.continueAction,
                 keyboardType: TextInputType.phone,
               ),
-              Utils.showValidateError(fieldsError, key: 'phone'),
+              Utils.showValidateError(fieldsError, key: 'last_name'),
               Container(
                 alignment: Alignment.bottomCenter,
                 margin: EdgeInsets.only(top: 20),
@@ -105,8 +103,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   Map<String, String> _sendData() {
     return {
       'first_name': _nameController.text,
-      'email': _emailController.text,
-      'phone_number': _phoneController.text,
+      'last_name': _lastNameController.text,
     };
   }
 
@@ -120,7 +117,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
         Navigator.of(context).pop();
       } else {
         response.forEach((key, value) {
-          if (key == 'email' || key == 'first_name' || key == 'phone') {
+          if (key == 'last_name' || key == 'first_name') {
             fieldsError[key] = value[0];
           } else {
             fieldsError['all'] = value[0];

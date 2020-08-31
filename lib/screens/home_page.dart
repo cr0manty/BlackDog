@@ -41,7 +41,6 @@ class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
   StreamSubscription _connectionChange;
   Restaurant _restaurant;
-  BaseVoucher _currentVoucher;
   int categoryPage = 0;
 
   bool isLoading = false;
@@ -73,7 +72,7 @@ class _HomePageState extends State<HomePage> {
     await Api.instance.getNewsConfig();
     await Account.instance.refreshUser();
     await Api.instance.voucherDetails();
-//    await Api.instance.sendFCMToken();
+    Api.instance.sendFCMToken();
     setState(() => isLoadingData = false);
   }
 

@@ -20,10 +20,12 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
-  final TextEditingController _emailFilter = TextEditingController();
-  final TextEditingController _passwordFilter = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final FocusNode _phoneFocus = FocusNode();
+  final FocusNode _passwordFocus = FocusNode();
   final GlobalKey _formKey = GlobalKey<FormState>();
-  static const List<String> _fieldsList = ['email', 'password'];
+  static const List<String> _fieldsList = ['phone_number', 'password'];
   Map fieldsError = {};
   bool _obscureText = true;
   bool isLoading = false;
@@ -55,7 +57,7 @@ class _SignInPageState extends State<SignInPage> {
             progressIndicator: CupertinoActivityIndicator(),
             inAsyncCall: isLoading,
             child: GestureDetector(
-              onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+              onTap: () => FocusScope.of(context).unfocus(),
               child: Form(
                 key: _formKey,
                 child: Container(
@@ -94,7 +96,9 @@ class _SignInPageState extends State<SignInPage> {
                                   Container(
                                       alignment: Alignment.center,
                                       child: TextInput(
-                                        controller: _emailFilter,
+                                        focusNode: _phoneFocus,
+                                        targetFocus: _passwordFocus,
+                                        controller: _phoneController,
                                         keyboardType:
                                             TextInputType.emailAddress,
                                         hintText: AppLocalizations.of(context)
@@ -103,12 +107,13 @@ class _SignInPageState extends State<SignInPage> {
                                             TextInputAction.continueAction,
                                       )),
                                   Utils.showValidateError(fieldsError,
-                                      key: 'phone'),
+                                      key: 'phone_number'),
                                   Container(
                                       alignment: Alignment.center,
                                       child: TextInput(
                                         obscureText: _obscureText,
-                                        controller: _passwordFilter,
+                                        controller: _passwordController,
+                                        focusNode: _passwordFocus,
                                         hintText: AppLocalizations.of(context)
                                             .translate('password'),
                                         suffixIcon: GestureDetector(
@@ -181,7 +186,7 @@ class _SignInPageState extends State<SignInPage> {
     setState(() => isLoading = !isLoading);
     fieldsError = {};
     await Api.instance
-        .login(_emailFilter.text, _passwordFilter.text)
+        .login(_phoneController.text, _passwordController.text)
         .then((response) async {
       bool result = response.remove('result');
       if (result && await Account.instance.setUser()) {
