@@ -20,7 +20,6 @@ class _ProductDetailState extends State<ProductDetail> {
   @override
   Widget build(BuildContext context) {
     return PageScaffold(
-      titleMargin: false,
       shrinkWrap: true,
       alwaysNavigation: true,
       leading: RouteButton(

@@ -56,7 +56,7 @@ class PageScaffold extends StatelessWidget {
         child: title,
       );
     }
-    return Container(height: alwaysNavigation ? 20 : 0);
+    return Container(height: alwaysNavigation && titleMargin ? 20 : 0);
   }
 
   List<Widget> _buildBodyChildren(List<Widget> listChildren) {

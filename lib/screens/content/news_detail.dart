@@ -40,7 +40,6 @@ class _NewsDetailState extends State<NewsDetail> {
     return PageScaffold(
       alwaysNavigation: true,
       shrinkWrap: true,
-      titleMargin: false,
       padding: EdgeInsets.symmetric(horizontal: 16),
       leading: RouteButton(
         defaultIcon: true,
