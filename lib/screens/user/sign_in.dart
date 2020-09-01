@@ -61,6 +61,11 @@ class _SignInPageState extends State<SignInPage> {
               child: Form(
                 key: _formKey,
                 child: Container(
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(Utils.backgroundImage),
+                          fit: BoxFit.cover,
+                        )),
                     padding: EdgeInsets.only(
                         top: 20, bottom: 16, left: 16, right: 16),
                     child: ScrollConfiguration(
@@ -100,11 +105,9 @@ class _SignInPageState extends State<SignInPage> {
                                         targetFocus: _passwordFocus,
                                         controller: _phoneController,
                                         keyboardType:
-                                            TextInputType.emailAddress,
+                                            TextInputType.phone,
                                         hintText: AppLocalizations.of(context)
                                             .translate('phone'),
-                                        inputAction:
-                                            TextInputAction.continueAction,
                                       )),
                                   Utils.showValidateError(fieldsError,
                                       key: 'phone_number'),

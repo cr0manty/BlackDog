@@ -4,34 +4,27 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 
-class EditButton extends StatefulWidget {
+class EditButton extends StatelessWidget {
   final bool fromHome;
 
   EditButton({this.fromHome = false});
 
   @override
-  _EditButtonState createState() => _EditButtonState();
-}
-
-class _EditButtonState extends State<EditButton> {
-  double buttonOpacity = 1;
-
-  @override
   Widget build(BuildContext context) {
     return CupertinoButton(
       onPressed: () => Navigator.of(context).push(CupertinoPageRoute(
-          builder: (context) => ProfileSettings(fromHome: widget.fromHome))),
+          builder: (context) => ProfileSettings(fromHome: fromHome))),
       padding: EdgeInsets.zero,
       child: Container(
         width: 31,
         height: 31,
         decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: HexColor.lightElement.withOpacity(buttonOpacity)),
+            color: HexColor.lightElement),
         child: Icon(
           SFSymbols.pencil,
           size: 25,
-          color: HexColor.darkElement.withOpacity(buttonOpacity),
+          color: HexColor.darkElement,
         ),
       ),
     );

@@ -33,13 +33,17 @@ class PageScaffold extends StatelessWidget {
 
   Widget _appBar() {
     return Container(
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          leading ?? Container(),
-          action ?? Container(),
-        ],
+      color:
+          alwaysNavigation ? Colors.black.withOpacity(0.4) : Colors.transparent,
+      child: SafeArea(
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            leading ?? Container(),
+            action ?? Container(),
+          ],
+        ),
       ),
     );
   }
@@ -48,11 +52,11 @@ class PageScaffold extends StatelessWidget {
     if (title != null) {
       return Container(
         alignment: Alignment.center,
-        padding: EdgeInsets.only(top: 5, bottom: 20),
+        padding: EdgeInsets.only(top: 20, bottom: 10),
         child: title,
       );
     }
-    return Container(height: alwaysNavigation && titleMargin ? 20 : 0);
+    return Container(height: alwaysNavigation ? 20 : 0);
   }
 
   List<Widget> _buildBodyChildren(List<Widget> listChildren) {
@@ -72,12 +76,16 @@ class PageScaffold extends StatelessWidget {
             child: GestureDetector(
               onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
               child: Container(
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                    image: AssetImage(Utils.backgroundImage),
+                    fit: BoxFit.cover,
+                  )),
                   height: ScreenSize.height,
                   child: ScrollConfiguration(
                       behavior: ScrollGlow(),
                       child: alwaysNavigation
-                          ? SafeArea(
-                              child: Column(
+                          ? Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   mainAxisSize: MainAxisSize.max,
                                   children: <Widget>[
@@ -93,7 +101,7 @@ class PageScaffold extends StatelessWidget {
                                                 children: _buildBodyChildren(
                                                     <Widget>[_titleWidget()])),
                                           )))
-                                ]))
+                                ])
                           : ScrollConfiguration(
                               behavior: ScrollGlow(),
                               child: ListView(

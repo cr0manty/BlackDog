@@ -7,6 +7,8 @@ class NotificationManager {
   static final NotificationManager instance = NotificationManager._internal();
   final StreamController<Map> _onMessage = StreamController<Map>.broadcast();
 
+  Stream<Map> get onMessage => _onMessage.stream;
+
   NotificationManager._internal();
 
   FirebaseMessaging _fcm;
@@ -23,6 +25,10 @@ class NotificationManager {
     _fcm.configure(
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage: $message");
+
+        if (message['data'] != null) {
+          _onMessage.add(message);
+        }
       },
       onLaunch: (Map<String, dynamic> message) async {
         print("onLaunch: $message");
@@ -33,7 +39,7 @@ class NotificationManager {
     );
   }
 
-   Future<String> getToken() {
+  Future<String> getToken() {
     return _fcm.getToken();
   }
 

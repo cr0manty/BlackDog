@@ -63,14 +63,12 @@ class _ProfileSettingsState extends State<ProfileSettings> {
               TextInput(
                 controller: _nameController,
                 hintText: AppLocalizations.of(context).translate('first_name'),
-                inputAction: TextInputAction.continueAction,
                 keyboardType: TextInputType.name,
               ),
               Utils.showValidateError(fieldsError, key: 'first_name'),
               TextInput(
                 controller: _lastNameController,
                 hintText: AppLocalizations.of(context).translate('last_name'),
-                inputAction: TextInputAction.continueAction,
                 keyboardType: TextInputType.phone,
               ),
               Utils.showValidateError(fieldsError, key: 'last_name'),

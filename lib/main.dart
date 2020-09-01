@@ -43,13 +43,7 @@ class _BlackDogAppState extends State<BlackDogApp> {
     precacheImage(AssetImage(Utils.loadImage), context);
     precacheImage(AssetImage(Utils.bannerImage), context);
     precacheImage(AssetImage(Utils.logo), context);
-    //    precacheImage(AssetImage(Utils.backgroundImage), context);
-
-    if (Platform.isAndroid) {
-      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-          statusBarColor: HexColor.darkElement.withOpacity(0.3),
-          statusBarIconBrightness: Brightness.light));
-    }
+    precacheImage(AssetImage(Utils.backgroundImage), context);
   }
 
   @override
@@ -135,6 +129,7 @@ class _BlackDogAppState extends State<BlackDogApp> {
   @override
   void dispose() {
     Api.instance.dispose();
+    NotificationManager.instance.dispose();
     super.dispose();
   }
 }

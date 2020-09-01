@@ -67,6 +67,11 @@ class _SignUpPageState extends State<SignUpPage> {
               child: Form(
                   key: _formKey,
                   child: Container(
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(Utils.backgroundImage),
+                          fit: BoxFit.cover,
+                        )),
                     padding: EdgeInsets.only(
                         top: 16, bottom: 8, left: 16, right: 16),
                     child: ScrollConfiguration(
@@ -101,8 +106,6 @@ class _SignUpPageState extends State<SignUpPage> {
                                       keyboardType: TextInputType.name,
                                       hintText: AppLocalizations.of(context)
                                           .translate('first_name'),
-                                      inputAction:
-                                          TextInputAction.continueAction,
                                     )),
                                 Utils.showValidateError(fieldsError,
                                     key: 'first_name'),
@@ -115,8 +118,6 @@ class _SignUpPageState extends State<SignUpPage> {
                                       keyboardType: TextInputType.name,
                                       hintText: AppLocalizations.of(context)
                                           .translate('last_name'),
-                                      inputAction:
-                                          TextInputAction.continueAction,
                                     )),
                                 Utils.showValidateError(fieldsError,
                                     key: 'last_name'),
@@ -129,8 +130,6 @@ class _SignUpPageState extends State<SignUpPage> {
                                       keyboardType: TextInputType.phone,
                                       hintText: AppLocalizations.of(context)
                                           .translate('phone'),
-                                      inputAction:
-                                          TextInputAction.continueAction,
                                     )),
                                 Utils.showValidateError(fieldsError,
                                     key: 'phone_number'),

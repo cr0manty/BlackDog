@@ -25,7 +25,7 @@ class UserCard extends StatelessWidget {
       onTap: onPressed,
       child: Container(
         margin: EdgeInsets.only(
-            top: isStaff ? 0 : 16, left: 16, right: 16, bottom: 8),
+            top: isStaff ? 0 : 16, left: 16, right: 8, bottom: 8),
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
@@ -75,8 +75,8 @@ class BonusCard extends StatelessWidget {
               color: HexColor.darkElement,
             ),
             height: ScreenSize.bonusCardSize,
-            width: ScreenSize.width -52,
-            margin: EdgeInsets.only(bottom: 5),
+            width: ScreenSize.width - 52,
+            margin: EdgeInsets.only(bottom: 3),
             child: Image.asset(
               Utils.bannerImage,
               fit: BoxFit.fill,

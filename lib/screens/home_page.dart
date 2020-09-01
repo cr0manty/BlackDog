@@ -80,13 +80,13 @@ class _HomePageState extends State<HomePage> {
     if (isOnline && initialLoad) {
       initialLoad = false;
       initDependencies();
-    }
 
-    if (_news.length == 0) {
-      getNewsList();
-    }
-    if (_category.length == 0) {
-      getMenuCategoryList();
+      if (_news.length == 0) {
+        getNewsList();
+      }
+      if (_category.length == 0) {
+        getMenuCategoryList();
+      }
     }
   }
 
@@ -107,6 +107,7 @@ class _HomePageState extends State<HomePage> {
         isLoadingData = false;
       });
     } else {
+      // Future.delayed(Duration(seconds: 1), () => onNetworkChange(true));
       onNetworkChange(true);
     }
     super.initState();
@@ -128,11 +129,11 @@ class _HomePageState extends State<HomePage> {
       print('Scanned QR Code url: ${result.rawContent}');
 
       if (result.rawContent.isNotEmpty) {
-        Map scanned = await Api.instance
-            .staffScanQRCode(result.rawContent.replaceAll('5', '123'));
+        Map scanned = await Api.instance.staffScanQRCode(result.rawContent);
         if (scanned['result']) {
           Utils.showSuccessPopUp(context, text: scanned['message']);
         } else {
+          print(scanned);
           Utils.showErrorPopUp(context);
         }
       }

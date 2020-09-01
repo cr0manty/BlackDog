@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:ffi';
 import 'dart:math' as math;
 
 import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/instances/notification_manager.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/voucher.dart';
@@ -29,15 +29,26 @@ class UserPage extends StatefulWidget {
 
 class _UserPageState extends State<UserPage> {
   StreamSubscription _apiChange;
+  StreamSubscription _onMessage;
   BaseVoucher currentVoucher;
 
   @override
   void initState() {
     _apiChange = Api.instance.apiChange.listen((event) => setState(() {}));
+    _onMessage = NotificationManager.instance.onMessage.listen(onNotificationMessage);
+
     setState(() {
       currentVoucher = SharedPrefs.getCurrentVoucher();
     });
     super.initState();
+  }
+
+  void onNotificationMessage(Map message) {
+    if (message['data']['code'] == 'qr_code_scanned') {
+    } else if (message['data']['code'] == 'voucher_received') {
+    } else if (message['data']['code'] == 'voucher_scanned') {}
+
+    setState(() {});
   }
 
   Widget _bonusWidget() {
@@ -63,7 +74,8 @@ class _UserPageState extends State<UserPage> {
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(currentVoucher.name, style: Theme.of(context).textTheme.headline1),
+                Text(currentVoucher.name,
+                    style: Theme.of(context).textTheme.headline1),
                 SvgPicture.asset('assets/images/coffee.svg',
                     color: HexColor.lightElement, height: 37, width: 37),
               ],
@@ -234,6 +246,7 @@ class _UserPageState extends State<UserPage> {
   @override
   void dispose() {
     _apiChange?.cancel();
+    _onMessage?.cancel();
     super.dispose();
   }
 }
