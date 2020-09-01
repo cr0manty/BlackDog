@@ -93,9 +93,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     if (!ConnectionsCheck.instance.isOnline) {
-      setState(() {
-        isLoadingData = false;
-      });
+      setState(() => isLoadingData = false);
     }
 
     _connectionChange =
@@ -103,11 +101,8 @@ class _HomePageState extends State<HomePage> {
     _scrollController.addListener(_scrollListener);
 
     if (!ConnectionsCheck.instance.isOnline) {
-      setState(() {
-        isLoadingData = false;
-      });
+      setState(() => isLoadingData = false);
     } else {
-      // Future.delayed(Duration(seconds: 1), () => onNetworkChange(true));
       onNetworkChange(true);
     }
     super.initState();

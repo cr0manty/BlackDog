@@ -52,7 +52,7 @@ class PageScaffold extends StatelessWidget {
     if (title != null) {
       return Container(
         alignment: Alignment.center,
-        padding: EdgeInsets.only(top: 20, bottom: 10),
+        padding: EdgeInsets.only(top: 10, bottom: 10),
         child: title,
       );
     }

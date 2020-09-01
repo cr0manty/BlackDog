@@ -43,7 +43,7 @@ class LogInterceptor implements InterceptorContract {
 
 class Api {
   static const defaultPerPage = 10;
-  static const String _base_url = 'cv.faifly.com';
+  static const String _base_url = 'black-dog.redfoxproject.com';
   bool init = false;
 
   Api._internal();
