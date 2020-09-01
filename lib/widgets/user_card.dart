@@ -5,18 +5,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class UserCard extends StatelessWidget {
-  final bool isStaff;
   final String username;
   final Function onPressed;
   final Widget additionWidget;
   final Widget trailing;
+  final double topPadding;
 
   UserCard({
     @required this.username,
     @required this.onPressed,
     this.additionWidget,
     this.trailing,
-    this.isStaff = false,
+    this.topPadding = 0
   });
 
   @override
@@ -24,8 +24,7 @@ class UserCard extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
-        margin: EdgeInsets.only(
-            top: isStaff ? 0 : 16, left: 16, right: 8, bottom: 8),
+        margin: EdgeInsets.only(top: topPadding, left: 16, right: 8, bottom: 8),
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
@@ -58,15 +57,9 @@ class UserCard extends StatelessWidget {
 }
 
 class BonusCard extends StatelessWidget {
-  final bool isStaff;
-
-  BonusCard({this.isStaff = false});
-
   @override
   Widget build(BuildContext context) {
-    return isStaff
-        ? Container()
-        : GestureDetector(
+    return GestureDetector(
         onTap: () => Utils.showQRCodeModal(context,
             codeUrl: SharedPrefs.getQRCode()),
         child: Container(

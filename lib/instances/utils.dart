@@ -21,6 +21,8 @@ abstract class ScreenSize {
 
   static double get elementIndentHeight => height * 0.03;
 
+  static double get mainMarginTop => height * 0.07;
+
   static double get elementIndentWidth => width * 0.02;
 
   static double get labelIndent => width * 0.005;
@@ -64,6 +66,8 @@ abstract class Utils {
   static String get backgroundImage => 'assets/images/background.png';
 
   static String get logo => 'assets/images/logo.png';
+
+  static String get bonusIcon => 'assets/images/coffee.svg';
 
   static dynamic showSuccessPopUp(BuildContext context, {String text}) {
     return showCupertinoDialog(

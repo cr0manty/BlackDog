@@ -25,7 +25,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
     }
 
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.start,

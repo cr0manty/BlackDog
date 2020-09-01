@@ -8,6 +8,7 @@ import 'package:black_dog/screens/home_page.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/widgets/bottom_route.dart';
 import 'package:black_dog/widgets/input_field.dart';
+import 'package:black_dog/widgets/soacial_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -31,7 +32,6 @@ class _SignInPageState extends State<SignInPage> {
   bool isLoading = false;
 
   Widget _forgotPassword() {
-    return SizedBox(height: 50);
     return Container(
       alignment: Alignment.centerRight,
       child: CupertinoButton(
@@ -53,21 +53,30 @@ class _SignInPageState extends State<SignInPage> {
     Utils.initScreenSize(MediaQuery.of(context).size);
 
     return Scaffold(
-        body: ModalProgressHUD(
+        body: Stack(
+      children: [
+        Positioned(
+          top: 0.0,
+          child: Container(
+                height: ScreenSize.height,
+                width: ScreenSize.width,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                  image: AssetImage(Utils.backgroundImage),
+                  fit: BoxFit.fill,
+                )),
+        )),
+        ModalProgressHUD(
             progressIndicator: CupertinoActivityIndicator(),
             inAsyncCall: isLoading,
             child: GestureDetector(
               onTap: () => FocusScope.of(context).unfocus(),
-              child: Form(
-                key: _formKey,
-                child: Container(
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(Utils.backgroundImage),
-                          fit: BoxFit.cover,
-                        )),
-                    padding: EdgeInsets.only(
-                        top: 20, bottom: 16, left: 16, right: 16),
+              child: Container(
+                 height: ScreenSize.height,
+                width: ScreenSize.width,
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Form(
+                    key: _formKey,
                     child: ScrollConfiguration(
                       behavior: ScrollGlow(),
                       child: CustomScrollView(slivers: [
@@ -81,7 +90,7 @@ class _SignInPageState extends State<SignInPage> {
                               Container(
                                 alignment: Alignment.topCenter,
                                 padding: EdgeInsets.only(
-                                    top: ScreenSize.elementIndentHeight),
+                                    top: ScreenSize.mainMarginTop),
                                 child: Text(
                                   AppLocalizations.of(context)
                                       .translate('sign_in'),
@@ -92,7 +101,7 @@ class _SignInPageState extends State<SignInPage> {
                                 margin: EdgeInsets.all(16),
                                 alignment: Alignment.center,
                                 child: Image.asset(Utils.logo,
-                                    height: 200, width: 200),
+                                    height: 125, width: 125),
                               ),
                               Column(
                                 mainAxisSize: MainAxisSize.max,
@@ -104,8 +113,7 @@ class _SignInPageState extends State<SignInPage> {
                                         focusNode: _phoneFocus,
                                         targetFocus: _passwordFocus,
                                         controller: _phoneController,
-                                        keyboardType:
-                                            TextInputType.phone,
+                                        keyboardType: TextInputType.phone,
                                         hintText: AppLocalizations.of(context)
                                             .translate('phone'),
                                       )),
@@ -138,6 +146,7 @@ class _SignInPageState extends State<SignInPage> {
                                   _forgotPassword()
                                 ],
                               ),
+                              SocialAuth(textKey: 'sign_in_with'),
                               Container(
                                   alignment: Alignment.bottomCenter,
                                   padding: EdgeInsets.only(
@@ -181,7 +190,9 @@ class _SignInPageState extends State<SignInPage> {
                       ]),
                     )),
               ),
-            )));
+            )),
+      ],
+    ));
   }
 
   Future loginClick() async {

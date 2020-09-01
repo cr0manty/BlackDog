@@ -8,13 +8,13 @@ import 'package:black_dog/widgets/route_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-enum PageState { ENTER_EMAIL, ENTER_CODE, NEW_PASSWORD }
+enum PageState { ENTER_PHONE, ENTER_CODE, NEW_PASSWORD }
 
 class ForgotPassword extends StatefulWidget {
   final PageState pageState;
   final Map tokens;
 
-  ForgotPassword({this.pageState = PageState.ENTER_EMAIL, this.tokens});
+  ForgotPassword({this.pageState = PageState.ENTER_PHONE, this.tokens});
 
   @override
   _ForgotPasswordState createState() => _ForgotPasswordState();
@@ -29,22 +29,21 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   Map _validationError = {};
   bool isLoading = false;
   static const List<String> _fieldsList = [
-    'email',
+    'phone_number',
     'code',
     'new_password1',
     'new_password2',
   ];
 
   List<Widget> _buildBasicField(
-      {String key, VoidCallback onPressed, String hint, bool isEmail = false}) {
+      {String key, VoidCallback onPressed, String hint, bool isPhone = false}) {
     return <Widget>[
       _helpText(),
       Container(
           alignment: Alignment.center,
           child: TextInput(
             controller: _basicController,
-            keyboardType:
-                isEmail ? TextInputType.emailAddress : TextInputType.text,
+            keyboardType: isPhone ? TextInputType.phone : TextInputType.text,
             hintText: AppLocalizations.of(context).translate(hint ?? key),
             inputAction: TextInputAction.done,
           )),
@@ -65,9 +64,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   List<Widget> _switchPages() {
     switch (widget.pageState) {
-      case PageState.ENTER_EMAIL:
+      case PageState.ENTER_PHONE:
         return _buildBasicField(
-            isEmail: true, key: 'email', onPressed: _sendEmailClick);
+            isPhone: true,
+            key: 'phone',
+            hint: 'phone',
+            onPressed: _sendPhoneClick);
       case PageState.ENTER_CODE:
         return _buildBasicField(key: 'code', onPressed: _sendCodeConfirm);
       case PageState.NEW_PASSWORD:
@@ -139,7 +141,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     );
   }
 
-  void _sendEmailClick() async {
+  void _sendPhoneClick() async {
     setState(() => isLoading = !isLoading);
     await Api.instance.passwordReset(_basicController.text).then((response) {
       _validationError = {};
@@ -162,14 +164,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   }
 
   void _sendCodeConfirm() async {
-    print('asd');
     Navigator.of(context).pushReplacement(CupertinoPageRoute(
         builder: (context) => ForgotPassword(
-          pageState: PageState.NEW_PASSWORD, tokens: {},
-        )));
+              pageState: PageState.NEW_PASSWORD,
+              tokens: {},
+            )));
   }
 
-  void _sendNewPassword() async {
-
-  }
+  void _sendNewPassword() async {}
 }

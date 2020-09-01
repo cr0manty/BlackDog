@@ -67,7 +67,7 @@ class TextInputState extends State<TextInput> {
           widget.onChanged(text);
         },
         onFieldSubmitted: widget.inputAction == TextInputAction.next
-            ?  (_) => FocusScope.of(context).requestFocus(widget.targetFocus)
+            ?  (_) => FocusScope.of(context).nextFocus()
             : (_) => FocusScope.of(context).unfocus(),
         decoration: InputDecoration(
             hintText: widget.hintText,
@@ -77,7 +77,7 @@ class TextInputState extends State<TextInput> {
             hintStyle: Theme.of(context)
                 .textTheme
                 .subtitle1
-                .copyWith(color: widget.textColor ?? HexColor.semiElement),
+                .copyWith(color: widget.textColor ?? HexColor.inputHintColor),
             fillColor: widget.backgroundColor ?? HexColor.lightElement,
             border: UnderlineInputBorder(
               borderSide: BorderSide.none,

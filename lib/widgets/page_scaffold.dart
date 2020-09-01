@@ -52,11 +52,11 @@ class PageScaffold extends StatelessWidget {
     if (title != null) {
       return Container(
         alignment: Alignment.center,
-        padding: EdgeInsets.only(top: 10, bottom: 10),
+        padding: EdgeInsets.only(top: 0, bottom: 20),
         child: title,
       );
     }
-    return Container(height: alwaysNavigation && titleMargin ? 20 : 0);
+    return Container(height: alwaysNavigation && titleMargin ? 10 : 0);
   }
 
   List<Widget> _buildBodyChildren(List<Widget> listChildren) {
@@ -70,25 +70,34 @@ class PageScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: ModalProgressHUD(
+        body: Stack(
+      children: [
+        Positioned(
+            top: 0.0,
+            child: Container(
+              height: ScreenSize.height,
+              width: ScreenSize.width,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                image: AssetImage(Utils.backgroundImage),
+                fit: BoxFit.fill,
+              )),
+            )),
+        ModalProgressHUD(
             progressIndicator: CupertinoActivityIndicator(),
             inAsyncCall: inAsyncCall,
             child: GestureDetector(
               onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
               child: Container(
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                    image: AssetImage(Utils.backgroundImage),
-                    fit: BoxFit.cover,
-                  )),
                   height: ScreenSize.height,
+                  width: ScreenSize.width,
                   child: ScrollConfiguration(
                       behavior: ScrollGlow(),
                       child: alwaysNavigation
                           ? Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: <Widget>[
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
                                   _appBar(),
                                   Expanded(
                                       child: Container(
@@ -111,6 +120,8 @@ class PageScaffold extends StatelessWidget {
                                     [_appBar(), _titleWidget()]),
                               ),
                             ))),
-            )));
+            )),
+      ],
+    ));
   }
 }

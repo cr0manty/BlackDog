@@ -204,7 +204,7 @@ class _HomePageState extends State<HomePage> {
 
   List<Widget> _buildStaff() {
     return <Widget>[
-      UserCard(isStaff: true, onPressed: null, username: Account.instance.name),
+      UserCard(onPressed: null, username: Account.instance.name),
       SizedBox(height: ScreenSize.scanQRCodeIndent),
       _buildScanQRCode()
     ];
@@ -214,7 +214,7 @@ class _HomePageState extends State<HomePage> {
     int maxNews = SharedPrefs.getMaxNewsAmount();
     return [
       UserCard(
-        isStaff: false,
+        topPadding: 10,
         onPressed: () => Navigator.of(context, rootNavigator: true).push(
             CupertinoPageRoute(builder: (BuildContext context) => UserPage())),
         username: Account.instance.name,

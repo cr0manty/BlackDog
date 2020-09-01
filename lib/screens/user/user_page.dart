@@ -76,7 +76,7 @@ class _UserPageState extends State<UserPage> {
               children: [
                 Text(currentVoucher.name,
                     style: Theme.of(context).textTheme.headline1),
-                SvgPicture.asset('assets/images/coffee.svg',
+                SvgPicture.asset(Utils.bonusIcon,
                     color: HexColor.lightElement, height: 37, width: 37),
               ],
             ),
@@ -219,7 +219,6 @@ class _UserPageState extends State<UserPage> {
       ),
       children: <Widget>[
         UserCard(
-          isStaff: false,
           onPressed: null,
           username: Account.instance.name,
           trailing: EditButton(),
