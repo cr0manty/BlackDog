@@ -117,6 +117,13 @@ abstract class Utils {
     return '${date.year}-${date.month}-${date.day}';
   }
 
+  static String showDateFormat(DateTime date) {
+    if (date == null) {
+      return null;
+    }
+    return '${date.day}/${date.month}/${date.year}';
+  }
+
   static Widget showValidateError(Map fieldsError,
       {String key, bool bottomPadding = true}) {
     if (fieldsError.containsKey(key)) {

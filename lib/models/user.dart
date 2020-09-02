@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:black_dog/models/voucher.dart';
 
+import 'abstract_model.dart';
+
 String userToJson(User data) {
   final str = data.toJson();
   return json.encode(str);
@@ -74,5 +76,10 @@ class User {
     List jsonVouchers = [];
     vouchers.map((voucher) => jsonVouchers.add(voucher.toJson()));
     return jsonVouchers;
+  }
+
+  String get fullName {
+    return lastName != null ? '${ModelItem.capitalize(firstName)} ${ModelItem
+        .capitalize(lastName)}' : ModelItem.capitalize(firstName);
   }
 }

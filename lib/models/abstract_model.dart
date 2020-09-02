@@ -10,4 +10,12 @@ abstract class ModelItem {
 
     return name[0].toUpperCase() + name.substring(1);
   }
+
+  static String capitalize(String text) {
+    if (text == null || text.isEmpty) {
+      return text ?? '';
+    }
+
+    return text[0].toUpperCase() + text.substring(1);
+  }
 }

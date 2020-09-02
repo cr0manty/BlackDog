@@ -13,9 +13,9 @@ class NotificationManager {
 
   FirebaseMessaging _fcm;
 
-  void configure() {
+  Future configure() async {
     _fcm = FirebaseMessaging();
-    _fcm.requestNotificationPermissions();
+    await _fcm.requestNotificationPermissions();
 
     _fcm.onTokenRefresh.listen((token) async {
       SharedPrefs.saveFCMToken(token);

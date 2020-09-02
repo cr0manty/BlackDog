@@ -153,7 +153,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text(
-                      Utils.dateFormat(selectedDate) ??
+                      Utils.showDateFormat(selectedDate) ??
                           AppLocalizations.of(context).translate('birth_date'),
                       style: TextStyle(color: Colors.black, fontSize: 18),
                     ),
@@ -262,6 +262,8 @@ class _SignUpPageState extends State<SignUpPage> {
 
   void _showModalBottomSheet(context) {
     FocusScope.of(context).requestFocus(FocusNode());
+    DateTime today = DateTime.now();
+
     showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
@@ -275,11 +277,11 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                   ),
                   child: CupertinoDatePicker(
-                    initialDateTime: DateTime.now(),
+                    initialDateTime: today,
                     onDateTimeChanged: (DateTime newDate) =>
                         setState(() => selectedDate = newDate),
-                    minimumYear: 1900,
-                    maximumYear: 2100,
+                    minimumYear: today.year - 200,
+                    maximumYear: today.year +  2,
                     mode: CupertinoDatePickerMode.date,
                   )));
         });

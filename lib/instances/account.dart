@@ -16,7 +16,7 @@ class Account {
 
   AccountState state = AccountState.GUEST;
 
-  String get name => _user.firstName;
+  String get name => _user.fullName;
 
   User get user => _user;
 

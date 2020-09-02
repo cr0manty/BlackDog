@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:barcode_scan/platform_wrapper.dart';
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/models/restaurant.dart';
-import 'package:black_dog/models/voucher.dart';
 import 'package:black_dog/screens/content/product_list.dart';
 import 'package:black_dog/screens/user/user_page.dart';
 import 'package:black_dog/utils/connection_check.dart';
@@ -39,6 +38,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
+  StreamSubscription _apiChange;
   StreamSubscription _connectionChange;
   Restaurant _restaurant;
   int categoryPage = 0;
@@ -92,6 +92,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    _apiChange = Api.instance.apiChange.listen((event) => setState(() {}));
+
     if (!ConnectionsCheck.instance.isOnline) {
       setState(() => isLoadingData = false);
     }
@@ -425,6 +427,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void dispose() {
     _connectionChange?.cancel();
+    _apiChange?.cancel();
     ConnectionsCheck.instance.dispose();
     super.dispose();
   }

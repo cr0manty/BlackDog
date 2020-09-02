@@ -30,7 +30,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   @override
   void initState() {
     _nameController.text = Account.instance.user.firstName;
-    _lastNameController.text = Account.instance.user.phone;
+    _lastNameController.text = Account.instance.user.lastName;
     super.initState();
   }
 
