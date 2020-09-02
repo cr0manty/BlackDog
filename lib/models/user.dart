@@ -82,4 +82,8 @@ class User {
     return lastName != null ? '${ModelItem.capitalize(firstName)} ${ModelItem
         .capitalize(lastName)}' : ModelItem.capitalize(firstName);
   }
+
+  void removeVoucher(int id) {
+    vouchers.removeWhere((item) => item.id == id);
+  }
 }

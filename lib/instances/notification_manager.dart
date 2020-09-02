@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/shared_pref.dart';
+import 'package:black_dog/models/voucher.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 class NotificationManager {
@@ -27,6 +29,13 @@ class NotificationManager {
         print("onMessage: $message");
 
         if (message['data'] != null) {
+          print("Message date type: ${message['data']['code']}");
+          if (message['data']['code'] == 'voucher_received') {
+            Voucher voucher = Voucher.fromStringJson(message['data']['voucher']);
+            Account.instance.user.vouchers.add(voucher);
+          } else if (message['data']['code'] == 'voucher_scanned') {
+            Account.instance.user.removeVoucher(int.parse(message['data']['voucher_id']));
+          }
           _onMessage.add(message);
         }
       },

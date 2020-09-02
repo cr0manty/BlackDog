@@ -44,7 +44,8 @@ class LogInterceptor implements InterceptorContract {
 class Api {
   static const defaultPerPage = 10;
   static const String _base_url = 'black-dog.redfoxproject.com';
-  bool init = false;
+
+//  static const String _base_url = '10.0.2.2:8000';
 
   Api._internal();
 
@@ -54,17 +55,6 @@ class Api {
 
   Client _client = HttpClientWithInterceptor.build(
       interceptors: [LogInterceptor()], requestTimeout: Duration(seconds: 30));
-
-  // Future initialize() async {
-  //   if (Account.instance.state != AccountState.GUEST) {
-  //     getUser();
-  //     if (Account.instance.state != AccountState.STAFF) {
-  //       getNewsConfig();
-  //       getCategories();
-  //     }
-  //     init = true;
-  //   }
-  // }
 
   final StreamController<bool> _apiChange = StreamController<bool>.broadcast();
 
@@ -88,7 +78,7 @@ class Api {
 
   Uri _setUrl(
       {String path = '', bool base = false, Map<String, String> params}) {
-    return Uri.https(_base_url, base ? path : '/api/v1' + path, params ?? {});
+    return Uri.http(_base_url, base ? path : '/api/v1' + path, params ?? {});
   }
 
   Future staffScanQRCode(String url) async {

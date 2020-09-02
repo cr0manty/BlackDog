@@ -23,12 +23,12 @@ String voucherToJson(BaseVoucher data) {
 
 class BaseVoucher {
   int id;
-  String discount = '';
+  String discount;
 
-  int purchaseCount = 0;
-  int purchaseToBonus = 10;
-  String baseAmount = '';
-  String name = '';
+  int purchaseCount;
+  int purchaseToBonus;
+  String baseAmount;
+  String name;
 
   BaseVoucher(
       {this.name,
@@ -39,12 +39,12 @@ class BaseVoucher {
       this.purchaseToBonus});
 
   factory BaseVoucher.fromJson(Map<String, dynamic> data) => BaseVoucher(
-      name: data['name'],
-      baseAmount: data['amount'],
-      id: data['id'],
+      name: data['name'] ?? '',
+      baseAmount: data['amount'] ?? '',
+      id: data['id'] ?? -1,
       discount: data['discount'],
-      purchaseToBonus: data['purchase_count'],
-      purchaseCount: data['user_current_purchase_count']);
+      purchaseToBonus: data['purchase_count'] ?? 10,
+      purchaseCount: data['user_current_purchase_count'] ?? 0);
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -72,15 +72,20 @@ class Voucher extends BaseVoucher {
       this.description,
       this.expirationDate,
       this.used = false,
-      this.amount,
+      this.amount,String baseAmount,
       int id,
       String discount})
-      : super(id: id, discount: discount);
+      : super(id: id, discount: discount,baseAmount:baseAmount);
+
+  factory Voucher.fromStringJson(String data) {
+    Map jsonData = json.decode(data);
+    return Voucher.fromJson(jsonData);
+  }
 
   factory Voucher.fromJson(Map<String, dynamic> data) => Voucher(
       qrCode: data['qr_code'],
       title: data['title'],
-      amount: data['amount'],
+      baseAmount: data['amount'],
       id: data['id'],
       expirationDate: data['expiration_date'],
       discount: data['discount'],

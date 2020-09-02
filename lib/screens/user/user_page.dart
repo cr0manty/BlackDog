@@ -35,19 +35,25 @@ class _UserPageState extends State<UserPage> {
   @override
   void initState() {
     _apiChange = Api.instance.apiChange.listen((event) => setState(() {}));
-    _onMessage = NotificationManager.instance.onMessage.listen(onNotificationMessage);
+    _onMessage =
+        NotificationManager.instance.onMessage.listen(onNotificationMessage);
 
-    setState(() {
-      currentVoucher = SharedPrefs.getCurrentVoucher();
-    });
+    setState(() => currentVoucher = SharedPrefs.getCurrentVoucher());
     super.initState();
+  }
+
+  void updateCounter(int counter) {
+    currentVoucher = SharedPrefs.getCurrentVoucher();
+    currentVoucher.purchaseCount = counter;
+    SharedPrefs.saveCurrentVoucher(currentVoucher);
   }
 
   void onNotificationMessage(Map message) {
     if (message['data']['code'] == 'qr_code_scanned') {
+      updateCounter(int.parse(message['data']['updated_counter'] ?? '0'));
     } else if (message['data']['code'] == 'voucher_received') {
-    } else if (message['data']['code'] == 'voucher_scanned') {}
-
+      updateCounter(int.parse(message['data']['updated_counter'] ?? '0'));
+    }
     setState(() {});
   }
 
