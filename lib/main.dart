@@ -26,7 +26,7 @@ void main() async {
   ConnectionsCheck.instance.initialise();
   await NotificationManager.instance.configure();
 
-  //Crashlytics.instance.enableInDevMode = true;
+  Crashlytics.instance.enableInDevMode = true;
   FlutterError.onError = Crashlytics.instance.recordFlutterError;
 
   runApp(BlackDogApp());

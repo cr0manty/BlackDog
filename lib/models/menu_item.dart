@@ -6,7 +6,7 @@ class MenuItem extends ModelItem {
   int id;
   String description;
   String shortDescription;
-  double price;
+  String price;
   String image;
   bool isActive;
 
@@ -30,6 +30,6 @@ class MenuItem extends ModelItem {
       image: data['image']);
 
   String priceWithCurrency(context) {
-    return '${price.toInt()} ' + AppLocalizations.of(context).translate('currency');
+    return '$price ' + AppLocalizations.of(context).translate('currency');
   }
 }

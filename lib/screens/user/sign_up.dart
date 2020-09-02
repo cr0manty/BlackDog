@@ -67,7 +67,7 @@ class _SignUpPageState extends State<SignUpPage> {
               keyboardType: TextInputType.name,
               hintText: AppLocalizations.of(context).translate('first_name'),
             )),
-        Utils.showValidateError(fieldsError, key: 'first_name'),
+        Utils.instance.showValidateError(fieldsError, key: 'first_name'),
         Container(
             alignment: Alignment.center,
             child: TextInput(
@@ -77,7 +77,7 @@ class _SignUpPageState extends State<SignUpPage> {
               keyboardType: TextInputType.name,
               hintText: AppLocalizations.of(context).translate('last_name'),
             )),
-        Utils.showValidateError(fieldsError, key: 'last_name'),
+        Utils.instance.showValidateError(fieldsError, key: 'last_name'),
         Container(
             alignment: Alignment.center,
             child: TextInput(
@@ -87,7 +87,7 @@ class _SignUpPageState extends State<SignUpPage> {
               keyboardType: TextInputType.phone,
               hintText: AppLocalizations.of(context).translate('phone'),
             )),
-        Utils.showValidateError(fieldsError, key: 'phone_number'),
+        Utils.instance.showValidateError(fieldsError, key: 'phone_number'),
         Container(
             alignment: Alignment.center,
             child: TextInput(
@@ -108,7 +108,7 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
               inputAction: TextInputAction.done,
             )),
-        Utils.showValidateError(fieldsError, key: 'password1'),
+        Utils.instance.showValidateError(fieldsError, key: 'password1'),
         Container(
             alignment: Alignment.center,
             child: TextInput(
@@ -138,7 +138,7 @@ class _SignUpPageState extends State<SignUpPage> {
               },
               inputAction: TextInputAction.done,
             )),
-        Utils.showValidateError(fieldsError, key: 'password2'),
+        Utils.instance.showValidateError(fieldsError, key: 'password2'),
         GestureDetector(
             onTap: () => _showModalBottomSheet(context),
             child: Container(
@@ -153,7 +153,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text(
-                      Utils.showDateFormat(selectedDate) ??
+                      Utils.instance.showDateFormat(selectedDate) ??
                           AppLocalizations.of(context).translate('birth_date'),
                       style: TextStyle(color: Colors.black, fontSize: 18),
                     ),
@@ -163,7 +163,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     )
                   ],
                 ))),
-        Utils.showValidateError(fieldsError, key: 'birth_date'),
+        Utils.instance.showValidateError(fieldsError, key: 'birth_date'),
       ],
     );
   }
@@ -189,8 +189,8 @@ class _SignUpPageState extends State<SignUpPage> {
             child: GestureDetector(
                 onTap: () => FocusScope.of(context).unfocus(),
                 child: Container(
-                   height: ScreenSize.height,
-                width: ScreenSize.width,
+                    height: ScreenSize.height,
+                    width: ScreenSize.width,
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Form(
                       key: _formKey,
@@ -281,7 +281,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     onDateTimeChanged: (DateTime newDate) =>
                         setState(() => selectedDate = newDate),
                     minimumYear: today.year - 200,
-                    maximumYear: today.year +  2,
+                    maximumYear: today.year + 2,
                     mode: CupertinoDatePickerMode.date,
                   )));
         });
@@ -294,7 +294,7 @@ class _SignUpPageState extends State<SignUpPage> {
       'password1': _password1Controller.text,
       'password2': _password2Controller.text,
       'phone_number': _phoneController.text,
-      'birth_date': Utils.dateFormat(selectedDate),
+      'birth_date': Utils.instance.dateFormat(selectedDate),
     };
   }
 
@@ -311,14 +311,14 @@ class _SignUpPageState extends State<SignUpPage> {
                 (route) => false);
           }).catchError((e) {
             Navigator.of(context).pop();
-            Utils.showErrorPopUp(context, text: e);
+            Utils.instance.showErrorPopUp(context, text: e);
             print(e);
           });
         },
         verificationFailed: (FirebaseAuthException authException) {
           print(authException.message);
           Navigator.of(context).pop();
-          Utils.showErrorPopUp(context, text: authException.message);
+          Utils.instance.showErrorPopUp(context, text: authException.message);
         },
         codeSent: (String verificationId, [int forceResendingToken]) {
           showCupertinoDialog(
@@ -389,8 +389,9 @@ class _SignUpPageState extends State<SignUpPage> {
       setState(() => isLoading = !isLoading);
       return;
     }).catchError((error) {
+      print(error);
       setState(() => isLoading = !isLoading);
-      Utils.showErrorPopUp(context);
+      Utils.instance.showErrorPopUp(context);
     });
   }
 }

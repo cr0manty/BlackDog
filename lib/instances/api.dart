@@ -78,7 +78,7 @@ class Api {
 
   Uri _setUrl(
       {String path = '', bool base = false, Map<String, String> params}) {
-    return Uri.http(_base_url, base ? path : '/api/v1' + path, params ?? {});
+    return Uri.https(_base_url, base ? path : '/api/v1' + path, params ?? {});
   }
 
   Future staffScanQRCode(String url) async {

@@ -128,10 +128,10 @@ class _HomePageState extends State<HomePage> {
       if (result.rawContent.isNotEmpty) {
         Map scanned = await Api.instance.staffScanQRCode(result.rawContent);
         if (scanned['result']) {
-          Utils.showSuccessPopUp(context, text: scanned['message']);
+          Utils.instance.showSuccessPopUp(context, text: scanned['message']);
         } else {
           print(scanned);
-          Utils.showErrorPopUp(context);
+          Utils.instance.showErrorPopUp(context);
         }
       }
       setState(() => isLoading = !isLoading);
@@ -140,7 +140,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    Utils.initScreenSize(MediaQuery.of(context).size);
+    Utils.instance.initScreenSize(MediaQuery.of(context).size);
 
     return PageScaffold(
       inAsyncCall: isLoading,

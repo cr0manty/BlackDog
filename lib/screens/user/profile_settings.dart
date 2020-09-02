@@ -65,13 +65,13 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 hintText: AppLocalizations.of(context).translate('first_name'),
                 keyboardType: TextInputType.name,
               ),
-              Utils.showValidateError(fieldsError, key: 'first_name'),
+              Utils.instance.showValidateError(fieldsError, key: 'first_name'),
               TextInput(
                 controller: _lastNameController,
                 hintText: AppLocalizations.of(context).translate('last_name'),
                 keyboardType: TextInputType.phone,
               ),
-              Utils.showValidateError(fieldsError, key: 'last_name'),
+              Utils.instance.showValidateError(fieldsError, key: 'last_name'),
               Container(
                 alignment: Alignment.bottomCenter,
                 margin: EdgeInsets.only(top: 20),
@@ -125,8 +125,9 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       setState(() => isLoading = !isLoading);
       return;
     }).catchError((error) {
+      print(error);
       setState(() => isLoading = !isLoading);
-      Utils.showErrorPopUp(context);
+      Utils.instance.showErrorPopUp(context);
     });
   }
 }

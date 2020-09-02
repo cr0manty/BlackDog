@@ -47,7 +47,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             hintText: AppLocalizations.of(context).translate(hint ?? key),
             inputAction: TextInputAction.done,
           )),
-      Utils.showValidateError(_validationError, key: key),
+      Utils.instance.showValidateError(_validationError, key: key),
       _confirmButton(onPressed: onPressed)
     ];
   }
@@ -106,7 +106,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             hintText: AppLocalizations.of(context).translate('new_password'),
             inputAction: TextInputAction.next,
           )),
-      Utils.showValidateError(_validationError, key: 'new_password1'),
+      Utils.instance.showValidateError(_validationError, key: 'new_password1'),
       Container(
           alignment: Alignment.center,
           child: TextInput(
@@ -117,7 +117,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 AppLocalizations.of(context).translate('confirm_password'),
             inputAction: TextInputAction.done,
           )),
-      Utils.showValidateError(_validationError, key: 'new_password2'),
+      Utils.instance.showValidateError(_validationError, key: 'new_password2'),
       _confirmButton(onPressed: _sendNewPassword, textKey: 'save')
     ];
   }
@@ -158,8 +158,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         setState(() => isLoading = !isLoading);
       }
     }).catchError((error) {
+      print(error);
       setState(() => isLoading = !isLoading);
-      Utils.showErrorPopUp(context, text: error.toString());
+      Utils.instance.showErrorPopUp(context, text: error.toString());
     });
   }
 

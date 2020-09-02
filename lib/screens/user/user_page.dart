@@ -158,7 +158,7 @@ class _UserPageState extends State<UserPage> {
     Voucher voucher = Account.instance.user.vouchers[index];
 
     return GestureDetector(
-      onTap: () => Utils.showQRCodeModal(context,
+      onTap: () => Utils.instance.showQRCodeModal(context,
           codeUrl: voucher.qrCode, isLocal: false),
       child: Container(
         margin: EdgeInsets.only(top: 16),

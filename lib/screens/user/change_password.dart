@@ -43,7 +43,7 @@ class _ChangePasswordState extends State<ChangePassword> {
         key: _formKey,
         child: Container(
           alignment: Alignment.center,
-          padding: EdgeInsets.all(16),
+          padding: EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -60,7 +60,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                     inputAction: TextInputAction.done,
                     keyboardType: TextInputType.visiblePassword,
                   )),
-              Utils.showValidateError(fieldsError, key: 'new_password1'),
+              Utils.instance.showValidateError(fieldsError, key: 'new_password1'),
               Container(
                   alignment: Alignment.center,
                   child: TextInput(
@@ -71,7 +71,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                     inputAction: TextInputAction.done,
                     keyboardType: TextInputType.visiblePassword,
                   )),
-              Utils.showValidateError(fieldsError, key: 'new_password2'),
+              Utils.instance.showValidateError(fieldsError, key: 'new_password2'),
             ],
           ),
         ),
@@ -93,7 +93,7 @@ class _ChangePasswordState extends State<ChangePassword> {
     await Api.instance.changePassword(_sendData()).then((response) {
       bool result = response.remove('result');
       if (result) {
-        Utils.showSuccessPopUp(context, text: response['detail']);
+        Utils.instance.showSuccessPopUp(context, text: response['detail']);
         Navigator.of(context).pop();
       } else {
         response.forEach((key, value) {
@@ -107,8 +107,9 @@ class _ChangePasswordState extends State<ChangePassword> {
       setState(() => isLoading = !isLoading);
       return;
     }).catchError((error) {
+      print(error);
       setState(() => isLoading = !isLoading);
-      Utils.showErrorPopUp(context);
+      Utils.instance.showErrorPopUp(context);
     });
   }
 }

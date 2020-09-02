@@ -27,12 +27,12 @@ class BaseVoucher {
 
   int purchaseCount;
   int purchaseToBonus;
-  String baseAmount;
+  String amount;
   String name;
 
   BaseVoucher(
       {this.name,
-      this.baseAmount,
+      this.amount,
       this.id,
       this.discount,
       this.purchaseCount,
@@ -40,7 +40,7 @@ class BaseVoucher {
 
   factory BaseVoucher.fromJson(Map<String, dynamic> data) => BaseVoucher(
       name: data['name'] ?? '',
-      baseAmount: data['amount'] ?? '',
+      amount: data['amount'] ?? '',
       id: data['id'] ?? -1,
       discount: data['discount'],
       purchaseToBonus: data['purchase_count'] ?? 10,
@@ -51,7 +51,7 @@ class BaseVoucher {
         'discount': discount,
         'user_current_purchase_count': purchaseCount,
         'purchase_count': purchaseToBonus,
-        'amount': baseAmount,
+        'amount': amount,
         'name': name,
       };
 
@@ -64,7 +64,6 @@ class Voucher extends BaseVoucher {
   String expirationDate;
   String title;
   String description;
-  double amount;
 
   Voucher(
       {this.qrCode,
@@ -72,10 +71,10 @@ class Voucher extends BaseVoucher {
       this.description,
       this.expirationDate,
       this.used = false,
-      this.amount,String baseAmount,
       int id,
+      String amount,
       String discount})
-      : super(id: id, discount: discount,baseAmount:baseAmount);
+      : super(id: id, discount: discount, amount: amount);
 
   factory Voucher.fromStringJson(String data) {
     Map jsonData = json.decode(data);
@@ -85,7 +84,7 @@ class Voucher extends BaseVoucher {
   factory Voucher.fromJson(Map<String, dynamic> data) => Voucher(
       qrCode: data['qr_code'],
       title: data['title'],
-      baseAmount: data['amount'],
+      amount: data['amount'],
       id: data['id'],
       expirationDate: data['expiration_date'],
       discount: data['discount'],
@@ -105,7 +104,7 @@ class Voucher extends BaseVoucher {
 
   String get discountType {
     if (discount == 'percentage') {
-      return '-${amount.toInt()}%';
+      return '-$amount%';
     } else if (discount == 'free_item') {
       return title;
     }
