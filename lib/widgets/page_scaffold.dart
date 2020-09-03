@@ -53,6 +53,7 @@ class PageScaffold extends StatelessWidget {
       return Container(
         alignment: Alignment.center,
         padding: EdgeInsets.only(top: 0, bottom: 10),
+        width: ScreenSize.mainTextWidth,
         child: title,
       );
     }

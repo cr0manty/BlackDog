@@ -1,5 +1,3 @@
-import 'package:intl/intl.dart';
-
 import 'abstract_model.dart';
 
 class News extends ModelItem {

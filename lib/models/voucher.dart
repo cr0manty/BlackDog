@@ -1,19 +1,37 @@
 import 'dart:convert';
 
-List vouchersFromJsonList(List vouchersList) {
+import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/instances/shared_pref.dart';
+
+Future vouchersFromJsonList(List vouchersList) async {
   List<Voucher> vouchers = [];
-  vouchersList.forEach((element) {
-    vouchers.add(Voucher.fromJson(element));
-  });
+  await Future.wait(vouchersList.map((element) async {
+    Voucher voucher = Voucher.fromJson(element);
+    await voucher.saveQrCode();
+    vouchers.add(voucher);
+  }));
   return vouchers;
 }
 
-BaseVoucher voucherFromJson(String str) {
+BaseVoucher baseVoucherFromJson(String str) {
   if (str != null && str.isNotEmpty) {
     final data = json.decode(str);
     return BaseVoucher.fromJson(data);
   }
   return BaseVoucher();
+}
+
+String baseVoucherToJson(BaseVoucher data) {
+  final str = data.toJson();
+  return json.encode(str);
+}
+
+Voucher voucherFromJson(String str) {
+  if (str != null && str.isNotEmpty) {
+    final data = json.decode(str);
+    return Voucher.fromJson(data);
+  }
+  return Voucher();
 }
 
 String voucherToJson(BaseVoucher data) {
@@ -61,6 +79,7 @@ class BaseVoucher {
 class Voucher extends BaseVoucher {
   bool used;
   String qrCode;
+  String qrCodeLocal;
   String expirationDate;
   String title;
   String description;
@@ -70,6 +89,7 @@ class Voucher extends BaseVoucher {
       this.title,
       this.description,
       this.expirationDate,
+      this.qrCodeLocal,
       this.used = false,
       int id,
       String amount,
@@ -88,6 +108,7 @@ class Voucher extends BaseVoucher {
       id: data['id'],
       expirationDate: data['expiration_date'],
       discount: data['discount'],
+      qrCodeLocal: data['qr_code_local'],
       used: data['used'] ?? false,
       description: data['description']);
 
@@ -99,15 +120,26 @@ class Voucher extends BaseVoucher {
         'expiration_date': expirationDate,
         'discount': discount,
         'description': description,
-        'used': used
+        'used': used,
+        'qr_code_local': qrCodeLocal
       };
+
+  int _doubleStringToInt(String text) => int.parse(amount.split('.')[0]);
 
   String get discountType {
     if (discount == 'percentage') {
-      return '-$amount%';
+      return '-${_doubleStringToInt(amount)}%';
     } else if (discount == 'free_item') {
       return title;
     }
     return '';
+  }
+
+  bool get isLocal => qrCodeLocal != null && qrCodeLocal.isNotEmpty;
+
+  Future saveQrCode() async {
+    if (qrCodeLocal == null || qrCodeLocal.isEmpty) {
+      qrCodeLocal = await Api.instance.saveQRCode(qrCode);
+    }
   }
 }

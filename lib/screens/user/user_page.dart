@@ -31,14 +31,15 @@ class _UserPageState extends State<UserPage> {
   StreamSubscription _apiChange;
   StreamSubscription _onMessage;
   BaseVoucher currentVoucher;
+  List<Voucher> _vouchers = [];
 
   @override
   void initState() {
     _apiChange = Api.instance.apiChange.listen((event) => setState(() {}));
     _onMessage =
         NotificationManager.instance.onMessage.listen(onNotificationMessage);
-
-    setState(() => currentVoucher = SharedPrefs.getCurrentVoucher());
+    _vouchers = SharedPrefs.getActiveVouchers();
+    currentVoucher = SharedPrefs.getCurrentVoucher();
     super.initState();
   }
 
@@ -82,6 +83,7 @@ class _UserPageState extends State<UserPage> {
               children: [
                 Text(currentVoucher.name,
                     style: Theme.of(context).textTheme.headline1),
+                Container(height: 8),
                 SvgPicture.asset(Utils.bonusIcon,
                     color: HexColor.lightElement, height: 37, width: 37),
               ],
@@ -155,11 +157,13 @@ class _UserPageState extends State<UserPage> {
   }
 
   Widget _voucherBuild(int index) {
-    Voucher voucher = Account.instance.user.vouchers[index];
+    Voucher voucher = _vouchers[index];
 
     return GestureDetector(
       onTap: () => Utils.instance.showQRCodeModal(context,
-          codeUrl: voucher.qrCode, isLocal: false),
+          codeUrl: voucher.qrCodeLocal ?? voucher.qrCode,
+          isLocal: voucher.isLocal,
+          textKey: 'scan_voucher'),
       child: Container(
         margin: EdgeInsets.only(top: 16),
         width: ScreenSize.width - 32,
@@ -184,9 +188,14 @@ class _UserPageState extends State<UserPage> {
                     AppLocalizations.of(context).translate('current_voucher'),
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
-                  Text(
-                    voucher.discountType,
-                    style: Theme.of(context).textTheme.subtitle1,
+                  SizedBox(
+                    width: ScreenSize.maxTextWidth,
+                    child: Text(
+                      voucher.discountType,
+                      style: Theme.of(context).textTheme.subtitle1,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
                   ),
                   SizedBox(height: 5),
                   Text(
@@ -234,12 +243,11 @@ class _UserPageState extends State<UserPage> {
         Container(
             margin: EdgeInsets.only(left: 16, right: 16, bottom: 4, top: 10),
             color: HexColor.semiElement,
-            height: Account.instance.user.vouchers.length != 0 ? 1 : 0),
+            height: _vouchers.length != 0 ? 1 : 0),
         Container(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Column(
-              children: List.generate(
-                  Account.instance.user.vouchers.length, _voucherBuild),
+              children: List.generate(_vouchers.length, _voucherBuild),
             )),
         SizedBox(
           height: 20,

@@ -64,6 +64,8 @@ class _ProductListState extends State<ProductList> {
       title: Text(
         widget.title,
         style: Theme.of(context).textTheme.caption,
+        overflow: TextOverflow.ellipsis,
+        maxLines: 1,
       ),
       children: List.generate(_menu.length, _buildProduct),
     );
@@ -108,17 +110,24 @@ class _ProductListState extends State<ProductList> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(
-                    menu.capitalizeTitle,
-                    style: Theme.of(context).textTheme.headline1,
+                  SizedBox(
+                    width: ScreenSize.mainTextWidth,
+                    child: Text(
+                      menu.capitalizeTitle,
+                      style: Theme.of(context).textTheme.headline1,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
                   ),
                   SizedBox(height: ScreenSize.sectionIndent / 2),
-                  Text(
-                    menu.priceWithCurrency(context) ?? '',
-                    style: Theme.of(context).textTheme.subtitle1,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 5,
-                  )
+                  SizedBox(
+                      width: ScreenSize.mainTextWidth,
+                      child: Text(
+                        menu.priceWithCurrency(context) ?? '',
+                        style: Theme.of(context).textTheme.subtitle1,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 5,
+                      ))
                 ],
               ),
             ),

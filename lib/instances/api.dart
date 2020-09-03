@@ -131,10 +131,17 @@ class Api {
     if (response.statusCode == 200) {
       Map body = json.decode(utf8.decode(response.bodyBytes)) as Map;
       User user = User.fromJson(body);
+
       if (user != null ?? false) {
         SharedPrefs.saveUser(user);
-        await saveQRCode(body['qr_code']);
+
+        String path = await saveQRCode(body['qr_code']);
+        SharedPrefs.saveQRCode(path);
+
+        List vouchers = await vouchersFromJsonList(body['vouchers'] ?? []);
+        SharedPrefs.saveActiveVoucher(vouchers);
       }
+
       Account.instance.initialize();
       _apiChange.add(true);
       return user;
@@ -146,11 +153,13 @@ class Api {
         _setUrl(path: '/auth/user/', base: true),
         body: json.encode(content),
         headers: _setHeaders(useJson: true));
+
     Map body = json.decode(utf8.decode(response.bodyBytes)) as Map;
     if (response.statusCode == 200) {
       await getUser();
       return {'result': true};
     }
+
     body['result'] = false;
     return body;
   }
@@ -238,7 +247,7 @@ class Api {
       return;
     }
 
-    print('Saving qr code');
+    print('Saving qr code $url');
     String documentDir = (await getApplicationDocumentsDirectory()).path;
     String fileName = url.substring(url.lastIndexOf('/'));
     File qrCode = File(documentDir + fileName);
@@ -249,7 +258,7 @@ class Api {
       Response response = await get(url);
       await qrCode.writeAsBytes(response.bodyBytes);
     }
-    SharedPrefs.saveQRCode(qrCode.path);
+    return qrCode.path;
   }
 
   Future getAboutUs() async {

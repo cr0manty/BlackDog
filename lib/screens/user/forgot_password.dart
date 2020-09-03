@@ -75,6 +75,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       case PageState.NEW_PASSWORD:
         return _buildNewPassword();
     }
+    return [];
   }
 
   Widget _confirmButton(

@@ -59,8 +59,12 @@ class _NewsListState extends State<NewsList> {
           color: HexColor.lightElement,
           onTap: Navigator.of(context).pop,
         ),
-        title: Text(AppLocalizations.of(context).translate('news'),
-            style: Theme.of(context).textTheme.caption),
+        title: Text(
+          AppLocalizations.of(context).translate('news'),
+          style: Theme.of(context).textTheme.caption,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+        ),
         children:
             List.generate(newsList.length + 1, (index) => _buildNews(index)));
   }
@@ -96,14 +100,18 @@ class _NewsListState extends State<NewsList> {
                 children: <Widget>[
                   Container(
                     alignment: Alignment.topLeft,
+                    width: ScreenSize.mainTextWidth,
                     child: Text(
                       news.capitalizeTitle,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
                       style: Theme.of(context).textTheme.headline1,
                     ),
                   ),
                   Container(
                     margin: EdgeInsets.only(top: 16),
                     alignment: Alignment.centerLeft,
+                    width: ScreenSize.mainTextWidth,
                     child: Text(
                       news.shortDescription ?? '',
                       style: Theme.of(context).textTheme.subtitle2,
@@ -114,9 +122,14 @@ class _NewsListState extends State<NewsList> {
                   news.created != null
                       ? Container(
                           alignment: Alignment.bottomRight,
+                          width: ScreenSize.mainTextWidth,
                           margin: EdgeInsets.only(top: 10),
-                          child: Text(news.created,
-                              style: Theme.of(context).textTheme.bodyText2),
+                          child: Text(
+                            news.created,
+                            style: Theme.of(context).textTheme.bodyText2,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
                         )
                       : Container()
                 ],

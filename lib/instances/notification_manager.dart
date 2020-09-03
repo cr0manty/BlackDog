@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/models/voucher.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -31,10 +30,11 @@ class NotificationManager {
         if (message['data'] != null) {
           print("Message date type: ${message['data']['code']}");
           if (message['data']['code'] == 'voucher_received') {
-            Voucher voucher = Voucher.fromStringJson(message['data']['voucher']);
-            Account.instance.user.vouchers.add(voucher);
+            Voucher voucher =
+                Voucher.fromStringJson(message['data']['voucher']);
+            _updateVouchers(voucher: voucher);
           } else if (message['data']['code'] == 'voucher_scanned') {
-            Account.instance.user.removeVoucher(int.parse(message['data']['voucher_id']));
+            _updateVouchers(id: int.parse(message['data']['voucher_id']));
           }
           _onMessage.add(message);
         }
@@ -46,6 +46,17 @@ class NotificationManager {
         print("onResume: $message");
       },
     );
+  }
+
+  void _updateVouchers({Voucher voucher, int id}) {
+    List<Voucher> vouchers = SharedPrefs.getActiveVouchers();
+
+    if (id != null) {
+      vouchers.removeWhere((item) => item.id == id);
+    } else if (voucher != null) {
+      vouchers.add(voucher);
+    }
+    SharedPrefs.saveActiveVoucher(vouchers);
   }
 
   Future<String> getToken() {

@@ -54,6 +54,10 @@ abstract class ScreenSize {
   static double get qrCodeMargin => (width - scanQRCodeSize) / 2;
 
   static double get currentBonusSize => height * 0.2;
+
+  static double get mainTextWidth => width * 0.65;
+
+  static double get maxTextWidth => width * 0.45;
 }
 
 class Utils {
@@ -191,7 +195,7 @@ class Utils {
           useRootNavigator: false,
           builder: (context) => CupertinoAlertDialog(
                 title: Text(AppLocalizations.of(context).translate(textKey),
-                    style: Theme.of(context).textTheme.caption),
+                    style: Theme.of(context).textTheme.headline1),
                 content: Container(
                   padding: EdgeInsets.only(top: 20),
                   child: codeImage,

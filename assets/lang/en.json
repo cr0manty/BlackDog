@@ -14,6 +14,7 @@
   "forgot_password": "Forgot Password?",
   "no_account": "Don't have an account? Register.",
   "scan_qr": "Scan the QR code",
+  "scan_voucher": "Scan the voucher",
   "register": "Sign Up",
   "first_name": "First name",
   "phone": "Phone",
@@ -41,5 +42,6 @@
   "enter_code": "Enter SMS code",
   "last_name": "Last name",
   "sign_in_with": "Login with",
-  "sign_up_with": "Register with"
+  "sign_up_with": "Register with",
+  "size": "Size"
 }

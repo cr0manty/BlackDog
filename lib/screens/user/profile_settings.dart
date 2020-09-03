@@ -55,46 +55,57 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       ),
       child: Form(
         key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              TextInput(
-                controller: _nameController,
-                hintText: AppLocalizations.of(context).translate('first_name'),
-                keyboardType: TextInputType.name,
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.only(left: 10, bottom: 5),
+              alignment: Alignment.centerLeft,
+                child: Text(
+                    AppLocalizations.of(context).translate('first_name'),
+                    style: Theme.of(context).textTheme.bodyText1)),
+            TextInput(
+              controller: _nameController,
+              hintText: AppLocalizations.of(context).translate('first_name'),
+              keyboardType: TextInputType.name,
+            ),
+            Utils.instance.showValidateError(fieldsError, key: 'first_name'),
+            Container(
+              padding: EdgeInsets.only(left: 10, bottom: 5),
+              alignment: Alignment.centerLeft,
+                child: Text(
+                    AppLocalizations.of(context).translate('last_name'),
+                    style: Theme.of(context).textTheme.bodyText1)),
+            TextInput(
+              controller: _lastNameController,
+              hintText: AppLocalizations.of(context).translate('last_name'),
+              keyboardType: TextInputType.phone,
+            ),
+            Utils.instance.showValidateError(fieldsError, key: 'last_name'),
+            Container(
+              alignment: Alignment.bottomCenter,
+              margin: EdgeInsets.only(top: 20),
+              child: SizedBox(
+                width: ScreenSize.width - 64,
+                child: CupertinoButton(
+                    onPressed: () => Navigator.of(context, rootNavigator: true)
+                        .push(CupertinoPageRoute(
+                            builder: (context) => ChangePassword())),
+                    color: HexColor.lightElement,
+                    child: Text(
+                        AppLocalizations.of(context)
+                            .translate('change_password'),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline2
+                            .copyWith(color: HexColor.darkElement))),
               ),
-              Utils.instance.showValidateError(fieldsError, key: 'first_name'),
-              TextInput(
-                controller: _lastNameController,
-                hintText: AppLocalizations.of(context).translate('last_name'),
-                keyboardType: TextInputType.phone,
-              ),
-              Utils.instance.showValidateError(fieldsError, key: 'last_name'),
-              Container(
-                alignment: Alignment.bottomCenter,
-                margin: EdgeInsets.only(top: 20),
-                child: SizedBox(
-                  width: ScreenSize.width - 64,
-                  child: CupertinoButton(
-                      onPressed: () =>
-                          Navigator.of(context, rootNavigator: true).push(
-                              CupertinoPageRoute(
-                                  builder: (context) => ChangePassword())),
-                      color: HexColor.lightElement,
-                      child: Text(
-                          AppLocalizations.of(context)
-                              .translate('change_password'),
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline2
-                              .copyWith(color: HexColor.darkElement))),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
+      ),
     );
   }
 

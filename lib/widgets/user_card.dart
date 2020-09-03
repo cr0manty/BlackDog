@@ -34,13 +34,16 @@ class UserCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              CupertinoButton(
-                minSize: 0,
+              Container(
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                onPressed: onPressed,
-                child: Text(
-                  username,
-                  style: Theme.of(context).textTheme.subtitle1,
+                child: SizedBox(
+                  width: ScreenSize.mainTextWidth,
+                  child: Text(
+                    username,
+                    style: Theme.of(context).textTheme.subtitle1,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ),
               trailing ?? Container()

@@ -1,7 +1,4 @@
 import 'dart:convert';
-
-import 'package:black_dog/models/voucher.dart';
-
 import 'abstract_model.dart';
 
 String userToJson(User data) {
@@ -23,7 +20,6 @@ class User {
   String email;
   String phone;
   String instagramUsername;
-  List<Voucher> vouchers;
   bool isStaff;
   int voucherPurchase;
   int currentPurchase;
@@ -32,7 +28,6 @@ class User {
     this.email,
     this.phone,
     this.isStaff,
-    this.vouchers,
     this.lastName,
     this.instagramUsername,
     this.currentPurchase,
@@ -57,8 +52,7 @@ class User {
           instagramUsername: data['instagram_username'],
           voucherPurchase: data['voucher_purchase_count'],
           currentPurchase: data['current_purchase_count'],
-          isStaff: data['is_staff'],
-          vouchers: vouchersFromJsonList(data['vouchers'] ?? []));
+          isStaff: data['is_staff']);
 
   Map<String, dynamic> toJson() =>
       {
@@ -69,21 +63,10 @@ class User {
         'voucher_purchase_count': voucherPurchase,
         'current_purchase_count': currentPurchase,
         'is_staff': isStaff,
-        'vouchers': vouchersToJson()
       };
-
-  List vouchersToJson() {
-    List jsonVouchers = [];
-    vouchers.map((voucher) => jsonVouchers.add(voucher.toJson()));
-    return jsonVouchers;
-  }
 
   String get fullName {
     return lastName != null ? '${ModelItem.capitalize(firstName)} ${ModelItem
         .capitalize(lastName)}' : ModelItem.capitalize(firstName);
-  }
-
-  void removeVoucher(int id) {
-    vouchers.removeWhere((item) => item.id == id);
   }
 }
