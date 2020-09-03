@@ -63,7 +63,7 @@ class _UserPageState extends State<UserPage> {
       currentStep: currentVoucher.currentStep,
       stepSize: 10,
       selectedColor: HexColor.lightElement,
-      unselectedColor: HexColor.semiElement,
+      unselectedColor: HexColor.inputHintColor,
       padding: 0,
       width: 150,
       height: 150,
