@@ -60,7 +60,7 @@ class BonusCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTap: () => Utils.showQRCodeModal(context,
+        onTap: () => Utils.instance.showQRCodeModal(context,
             codeUrl: SharedPrefs.getQRCode()),
         child: Container(
             decoration: BoxDecoration(

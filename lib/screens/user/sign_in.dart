@@ -50,7 +50,7 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
-    Utils.initScreenSize(MediaQuery.of(context).size);
+    Utils.instance.initScreenSize(MediaQuery.of(context).size);
 
     return Scaffold(
         body: Stack(
@@ -117,7 +117,7 @@ class _SignInPageState extends State<SignInPage> {
                                         hintText: AppLocalizations.of(context)
                                             .translate('phone'),
                                       )),
-                                  Utils.showValidateError(fieldsError,
+                                  Utils.instance.showValidateError(fieldsError,
                                       key: 'phone_number'),
                                   Container(
                                       alignment: Alignment.center,
@@ -141,7 +141,7 @@ class _SignInPageState extends State<SignInPage> {
                                         ),
                                         inputAction: TextInputAction.done,
                                       )),
-                                  Utils.showValidateError(fieldsError,
+                                  Utils.instance.showValidateError(fieldsError,
                                       key: 'password', bottomPadding: false),
                                   _forgotPassword()
                                 ],
@@ -219,7 +219,8 @@ class _SignInPageState extends State<SignInPage> {
       return;
     }).catchError((error) {
       setState(() => isLoading = !isLoading);
-      Utils.showErrorPopUp(context);
+      print(error);
+      Utils.instance.showErrorPopUp(context);
     });
   }
 }

@@ -56,7 +56,12 @@ abstract class ScreenSize {
   static double get currentBonusSize => height * 0.2;
 }
 
-abstract class Utils {
+class Utils {
+  static final Utils instance = Utils._internal();
+  Future _showPopUp;
+
+  Utils._internal();
+
   static String get loadImage => 'assets/images/card_background.png';
 
   static String get defaultImage => 'assets/images/card_background.png';
@@ -69,8 +74,11 @@ abstract class Utils {
 
   static String get bonusIcon => 'assets/images/coffee.svg';
 
-  static dynamic showSuccessPopUp(BuildContext context, {String text}) {
-    return showCupertinoDialog(
+  void showSuccessPopUp(BuildContext context, {String text}) {
+    if (_showPopUp != null) {
+      return;
+    }
+    _showPopUp = showCupertinoDialog(
       context: context,
       builder: (context) {
         return CupertinoAlertDialog(
@@ -84,11 +92,11 @@ abstract class Utils {
           ],
         );
       },
-    );
+    ).then((_) => _showPopUp = null);
   }
 
-  static dynamic showErrorPopUp(BuildContext context, {String text}) {
-    return showCupertinoDialog(
+  void showErrorPopUp(BuildContext context, {String text}) {
+    _showPopUp = showCupertinoDialog(
       context: context,
       builder: (context) {
         return CupertinoAlertDialog(
@@ -102,29 +110,29 @@ abstract class Utils {
           ],
         );
       },
-    );
+    ).then((_) => _showPopUp = null);
   }
 
-  static void initScreenSize(Size size) {
+  void initScreenSize(Size size) {
     ScreenSize.height = size.height;
     ScreenSize.width = size.width;
   }
 
-  static String dateFormat(DateTime date) {
+  String dateFormat(DateTime date) {
     if (date == null) {
       return null;
     }
     return '${date.year}-${date.month}-${date.day}';
   }
 
-  static String showDateFormat(DateTime date) {
+  String showDateFormat(DateTime date) {
     if (date == null) {
       return null;
     }
     return '${date.day}/${date.month}/${date.year}';
   }
 
-  static Widget showValidateError(Map fieldsError,
+  Widget showValidateError(Map fieldsError,
       {String key, bool bottomPadding = true}) {
     if (fieldsError.containsKey(key)) {
       return Container(
@@ -156,7 +164,7 @@ abstract class Utils {
     return SizedBox(height: bottomPadding ? ScreenSize.elementIndentHeight : 0);
   }
 
-  static void showQRCodeModal(BuildContext context,
+  void showQRCodeModal(BuildContext context,
       {@required String codeUrl,
       String textKey = 'scan_qr',
       bool isLocal = true}) async {
@@ -175,7 +183,10 @@ abstract class Utils {
     if (codeImage == null) {
       showErrorPopUp(context);
     } else {
-      showDialog(
+      if (_showPopUp != null) {
+        return;
+      }
+      _showPopUp = showDialog(
           context: context,
           useRootNavigator: false,
           builder: (context) => CupertinoAlertDialog(
@@ -185,7 +196,7 @@ abstract class Utils {
                   padding: EdgeInsets.only(top: 20),
                   child: codeImage,
                 ),
-              ));
+              )).then((_) => _showPopUp = null);
     }
   }
 }

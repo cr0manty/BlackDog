@@ -23,35 +23,35 @@ String voucherToJson(BaseVoucher data) {
 
 class BaseVoucher {
   int id;
-  String discount = '';
+  String discount;
 
-  int purchaseCount = 0;
-  int purchaseToBonus = 10;
-  String baseAmount = '';
-  String name = '';
+  int purchaseCount;
+  int purchaseToBonus;
+  String amount;
+  String name;
 
   BaseVoucher(
       {this.name,
-      this.baseAmount,
+      this.amount,
       this.id,
       this.discount,
       this.purchaseCount,
       this.purchaseToBonus});
 
   factory BaseVoucher.fromJson(Map<String, dynamic> data) => BaseVoucher(
-      name: data['name'],
-      baseAmount: data['amount'],
-      id: data['id'],
+      name: data['name'] ?? '',
+      amount: data['amount'] ?? '',
+      id: data['id'] ?? -1,
       discount: data['discount'],
-      purchaseToBonus: data['purchase_count'],
-      purchaseCount: data['user_current_purchase_count']);
+      purchaseToBonus: data['purchase_count'] ?? 10,
+      purchaseCount: data['user_current_purchase_count'] ?? 0);
 
   Map<String, dynamic> toJson() => {
         'id': id,
         'discount': discount,
         'user_current_purchase_count': purchaseCount,
         'purchase_count': purchaseToBonus,
-        'amount': baseAmount,
+        'amount': amount,
         'name': name,
       };
 
@@ -64,7 +64,6 @@ class Voucher extends BaseVoucher {
   String expirationDate;
   String title;
   String description;
-  double amount;
 
   Voucher(
       {this.qrCode,
@@ -72,10 +71,15 @@ class Voucher extends BaseVoucher {
       this.description,
       this.expirationDate,
       this.used = false,
-      this.amount,
       int id,
+      String amount,
       String discount})
-      : super(id: id, discount: discount);
+      : super(id: id, discount: discount, amount: amount);
+
+  factory Voucher.fromStringJson(String data) {
+    Map jsonData = json.decode(data);
+    return Voucher.fromJson(jsonData);
+  }
 
   factory Voucher.fromJson(Map<String, dynamic> data) => Voucher(
       qrCode: data['qr_code'],
@@ -100,7 +104,7 @@ class Voucher extends BaseVoucher {
 
   String get discountType {
     if (discount == 'percentage') {
-      return '-${amount.toInt()}%';
+      return '-$amount%';
     } else if (discount == 'free_item') {
       return title;
     }
