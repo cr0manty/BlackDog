@@ -446,13 +446,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.9.5"
-  step_progress_indicator:
-    dependency: "direct main"
-    description:
-      name: step_progress_indicator
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.4+7"
   stream_channel:
     dependency: transitive
     description:
