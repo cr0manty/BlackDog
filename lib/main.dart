@@ -45,7 +45,6 @@ class _BlackDogAppState extends State<BlackDogApp> {
     precacheImage(AssetImage(Utils.logo), context);
     precacheImage(AssetImage(Utils.backgroundImage), context);
 
-
     if (Platform.isAndroid) {
       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
           statusBarColor: Colors.transparent,
