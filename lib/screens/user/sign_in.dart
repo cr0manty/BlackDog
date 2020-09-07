@@ -6,11 +6,11 @@ import 'package:black_dog/utils/scroll_glow.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/screens/home_page.dart';
 import 'package:black_dog/utils/hex_color.dart';
-import 'package:black_dog/widgets/bottom_route.dart';
 import 'package:black_dog/widgets/input_field.dart';
 import 'package:black_dog/widgets/soacial_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'forgot_password.dart';
@@ -56,23 +56,23 @@ class _SignInPageState extends State<SignInPage> {
         body: Stack(
       children: [
         Positioned(
-          top: 0.0,
-          child: Container(
-                height: ScreenSize.height,
-                width: ScreenSize.width,
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                  image: AssetImage(Utils.backgroundImage),
-                  fit: BoxFit.fill,
-                )),
-        )),
+            top: 0.0,
+            child: Container(
+              height: ScreenSize.height,
+              width: ScreenSize.width,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                image: AssetImage(Utils.backgroundImage),
+                fit: BoxFit.fill,
+              )),
+            )),
         ModalProgressHUD(
             progressIndicator: CupertinoActivityIndicator(),
             inAsyncCall: isLoading,
             child: GestureDetector(
               onTap: () => FocusScope.of(context).unfocus(),
               child: Container(
-                 height: ScreenSize.height,
+                height: ScreenSize.height,
                 width: ScreenSize.width,
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Form(
@@ -173,8 +173,9 @@ class _SignInPageState extends State<SignInPage> {
                                             FocusScope.of(context)
                                                 .requestFocus(FocusNode());
                                             Navigator.of(context).push(
-                                                BottomRoute(
-                                                    page: SignUpPage()));
+                                                CupertinoPageRoute(
+                                                    builder: (context) =>
+                                                        SignUpPage()));
                                           },
                                           child: Text(
                                               AppLocalizations.of(context)
@@ -205,7 +206,9 @@ class _SignInPageState extends State<SignInPage> {
       bool result = response.remove('result');
       if (result && await Account.instance.setUser()) {
         Navigator.of(context).pushAndRemoveUntil(
-            BottomRoute(page: HomePage(isInitView: false)), (route) => false);
+            CupertinoPageRoute(
+                builder: (context) => HomePage(isInitView: false)),
+            (route) => false);
       } else {
         response.forEach((key, value) {
           if (_fieldsList.contains(key)) {
@@ -220,7 +223,8 @@ class _SignInPageState extends State<SignInPage> {
     }).catchError((error) {
       setState(() => isLoading = !isLoading);
       print(error);
-      Utils.instance.showErrorPopUp(context);
+      EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
+      EasyLoading.showError('');
     });
   }
 }

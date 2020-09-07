@@ -137,7 +137,7 @@ abstract class SharedPrefs {
   static int getMaxNewsAmount() {
     print('SharedPrefs: getMaxNewsAmount');
 
-    return _prefs.getInt(_maxNewsAmount) ?? 0;
+    return _prefs.getInt(_maxNewsAmount) ?? 5;
   }
 
   static BaseVoucher getCurrentVoucher() {

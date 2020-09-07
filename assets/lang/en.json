@@ -43,5 +43,7 @@
   "last_name": "Last name",
   "sign_in_with": "Login with",
   "sign_up_with": "Register with",
-  "size": "Size"
+  "size": "Size",
+  "work_time": "Work time:",
+  "weekday_working": "В Выходные дни:"
 }

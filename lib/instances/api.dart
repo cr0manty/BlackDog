@@ -8,12 +8,14 @@ import 'package:black_dog/models/menu_category.dart';
 import 'package:black_dog/models/menu_item.dart';
 import 'package:black_dog/models/news.dart';
 import 'package:black_dog/models/restaurant.dart';
+import 'package:black_dog/models/restaurant_config.dart';
 import 'package:black_dog/models/user.dart';
 import 'package:black_dog/models/voucher.dart';
-import 'package:black_dog/utils/connection_check.dart';
 import 'package:http/http.dart';
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:path_provider/path_provider.dart';
+
+import 'connection_check.dart';
 
 class LogInterceptor implements InterceptorContract {
   void printWrapped(String text) {
@@ -275,6 +277,23 @@ class Api {
       print(e);
       return null;
     });
+  }
+
+  Future getRestaurantConfig({int limit = defaultPerPage, int page = 0}) async {
+    List<RestaurantConfig> configs = [];
+    Response response = await _client.get(
+        _setUrl(
+          path: '/restaurant/branches',
+          params: {'offset': '${page * limit}', 'limit': '$limit'},
+        ),
+        headers: _setHeaders());
+
+    if (response.statusCode == 200) {
+      Map body = json.decode(utf8.decode(response.bodyBytes));
+      body['results']
+          .forEach((value) => configs.add(RestaurantConfig.fromJson(value)));
+    }
+    return configs;
   }
 
   Future passwordReset(String email) async {

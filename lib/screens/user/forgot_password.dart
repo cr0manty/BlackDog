@@ -7,6 +7,7 @@ import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 enum PageState { ENTER_PHONE, ENTER_CODE, NEW_PASSWORD }
 
@@ -161,7 +162,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     }).catchError((error) {
       print(error);
       setState(() => isLoading = !isLoading);
-      Utils.instance.showErrorPopUp(context, text: error.toString());
+      EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
+      EasyLoading.showError(error.toString());
     });
   }
 

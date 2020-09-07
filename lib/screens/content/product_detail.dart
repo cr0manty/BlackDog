@@ -2,6 +2,7 @@ import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/menu_item.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
+import 'package:black_dog/utils/scroll_glow.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,26 +22,19 @@ class _ProductDetailState extends State<ProductDetail>
     with TickerProviderStateMixin {
   MenuItemVariation selectedVariation;
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
   Widget _buildVariation(int index) {
     MenuItemVariation variation = widget.product.variations[index];
     return GestureDetector(
       onTap: () => setState(() => selectedVariation = variation),
       child: Container(
-          height: 50,
-          width: 100,
-          padding: EdgeInsets.all(10),
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           margin: EdgeInsets.symmetric(horizontal: 10),
           decoration: BoxDecoration(
               color: HexColor.cardBackground.withOpacity(0.6),
               borderRadius: BorderRadius.circular(10)),
           child: Center(
               child: Text(variation.name,
-                  style: Theme.of(context).textTheme.caption))),
+                  style: Theme.of(context).textTheme.headline1))),
     );
   }
 
@@ -93,6 +87,7 @@ class _ProductDetailState extends State<ProductDetail>
                               actualPrice: selectedVariation?.price),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
+                          textAlign: TextAlign.right,
                           style: Theme.of(context).textTheme.subtitle1)),
                 ])),
         widget.product.variations.length != 0
@@ -112,14 +107,25 @@ class _ProductDetailState extends State<ProductDetail>
                   ),
                   SizedBox(height: 10),
                   SizedBox(
-                    height: 50,
-                    child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: widget.product.variations.length,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) =>
-                            _buildVariation(index)),
-                  )
+                      height: 50,
+                      width: ScreenSize.width,
+                      child: ScrollConfiguration(
+                          behavior: ScrollGlow(),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                minWidth: MediaQuery.of(context).size.width,
+                              ),
+                              child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: List.generate(
+                                      widget.product.variations.length,
+                                      (index) => _buildVariation(index))),
+                            ),
+                          )))
                 ],
               )
             : Container(),

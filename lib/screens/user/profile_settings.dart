@@ -8,6 +8,7 @@ import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'change_password.dart';
 
@@ -61,8 +62,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Container(
-              padding: EdgeInsets.only(left: 10, bottom: 5),
-              alignment: Alignment.centerLeft,
+                padding: EdgeInsets.only(left: 10, bottom: 5),
+                alignment: Alignment.centerLeft,
                 child: Text(
                     AppLocalizations.of(context).translate('first_name'),
                     style: Theme.of(context).textTheme.bodyText1)),
@@ -73,10 +74,9 @@ class _ProfileSettingsState extends State<ProfileSettings> {
             ),
             Utils.instance.showValidateError(fieldsError, key: 'first_name'),
             Container(
-              padding: EdgeInsets.only(left: 10, bottom: 5),
-              alignment: Alignment.centerLeft,
-                child: Text(
-                    AppLocalizations.of(context).translate('last_name'),
+                padding: EdgeInsets.only(left: 10, bottom: 5),
+                alignment: Alignment.centerLeft,
+                child: Text(AppLocalizations.of(context).translate('last_name'),
                     style: Theme.of(context).textTheme.bodyText1)),
             TextInput(
               controller: _lastNameController,
@@ -138,7 +138,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     }).catchError((error) {
       print(error);
       setState(() => isLoading = !isLoading);
-      Utils.instance.showErrorPopUp(context);
+      EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
+      EasyLoading.showError('');
     });
   }
 }

@@ -2,21 +2,22 @@ import 'dart:async';
 
 import 'package:barcode_scan/platform_wrapper.dart';
 import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/instances/connection_check.dart';
 import 'package:black_dog/models/restaurant.dart';
+import 'package:black_dog/models/restaurant_config.dart';
 import 'package:black_dog/screens/content/product_list.dart';
 import 'package:black_dog/screens/user/user_page.dart';
-import 'package:black_dog/utils/connection_check.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/utils/scroll_glow.dart';
 import 'package:black_dog/instances/utils.dart';
-import 'package:black_dog/widgets/bottom_route.dart';
 import 'package:black_dog/widgets/edit_button.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:black_dog/widgets/user_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -40,21 +41,19 @@ class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
   StreamSubscription _apiChange;
   StreamSubscription _connectionChange;
-  Restaurant _restaurant;
   int categoryPage = 0;
 
   bool isLoading = false;
   bool isLoadingData = true;
   bool initialLoad = true;
+  bool isCalling = false;
   List _news = [];
   List _category = [];
 
   void getNewsList() async {
     List news = await Api.instance
         .getNewsList(page: 0, limit: SharedPrefs.getMaxNewsAmount());
-    setState(() {
-      _news.addAll(news);
-    });
+    setState(() => _news.addAll(news));
   }
 
   void getMenuCategoryList() async {
@@ -68,16 +67,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   void initDependencies() async {
-    _restaurant = await Api.instance.getAboutUs();
     await Api.instance.getNewsConfig();
     await Account.instance.refreshUser();
     await Api.instance.voucherDetails();
-    Api.instance.sendFCMToken();
     setState(() => isLoadingData = false);
   }
 
   void onNetworkChange(isOnline) {
-    if (isOnline && initialLoad) {
+    if (isOnline && initialLoad && !Account.instance.user.isStaff) {
       initialLoad = false;
       initDependencies();
 
@@ -88,20 +85,18 @@ class _HomePageState extends State<HomePage> {
         getMenuCategoryList();
       }
     }
+    if (initialLoad) Api.instance.sendFCMToken();
   }
 
   @override
   void initState() {
     _apiChange = Api.instance.apiChange.listen((event) => setState(() {}));
 
-    if (!ConnectionsCheck.instance.isOnline) {
-      setState(() => isLoadingData = false);
+    if (!Account.instance.user.isStaff) {
+      _connectionChange =
+          ConnectionsCheck.instance.onChange.listen(onNetworkChange);
+      _scrollController.addListener(_scrollListener);
     }
-
-    _connectionChange =
-        ConnectionsCheck.instance.onChange.listen(onNetworkChange);
-    _scrollController.addListener(_scrollListener);
-
     if (!ConnectionsCheck.instance.isOnline) {
       setState(() => isLoadingData = false);
     } else {
@@ -128,10 +123,12 @@ class _HomePageState extends State<HomePage> {
       if (result.rawContent.isNotEmpty) {
         Map scanned = await Api.instance.staffScanQRCode(result.rawContent);
         if (scanned['result']) {
-          Utils.instance.showSuccessPopUp(context, text: scanned['message']);
+          EasyLoading.instance..backgroundColor = Colors.green.withOpacity(0.8);
+          EasyLoading.showSuccess(scanned['message']);
         } else {
           print(scanned);
-          Utils.instance.showErrorPopUp(context);
+          EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
+          EasyLoading.showError('');
         }
       }
       setState(() => isLoading = !isLoading);
@@ -158,19 +155,30 @@ class _HomePageState extends State<HomePage> {
               ),
               iconFirst: false,
               text: AppLocalizations.of(context).translate('about_us'),
-              onTap: () {
-                if (_restaurant != null) {
-                  Navigator.of(context).push(CupertinoPageRoute(
-                      builder: (context) => AboutUsPage(_restaurant)));
-                }
-              })
+              onTap: isCalling
+                  ? null
+                  : () async {
+                      setState(
+                          () => isCalling = ConnectionsCheck.instance.isOnline);
+                      Restaurant _restaurant = await Api.instance.getAboutUs();
+                      List<RestaurantConfig> _restaurantConfigs =
+                          await Api.instance.getRestaurantConfig();
+                      if (_restaurant != null && _restaurantConfigs != null) {
+                        setState(() => isCalling = false);
+                        Navigator.of(context).push(CupertinoPageRoute(
+                            builder: (context) => AboutUsPage(
+                                restaurant: _restaurant,
+                                restaurantConfig: _restaurantConfigs)));
+                      }
+                    })
           : RouteButton(
               text: AppLocalizations.of(context).translate('logout'),
               color: HexColor.lightElement,
               onTap: () {
                 SharedPrefs.logout();
                 Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-                    BottomRoute(page: SignInPage()), (route) => false);
+                    CupertinoPageRoute(builder: (context) => SignInPage()),
+                    (route) => false);
               },
             ),
       children: Account.instance.state == AccountState.STAFF
@@ -229,30 +237,28 @@ class _HomePageState extends State<HomePage> {
               AppLocalizations.of(context).translate('news'),
               ScrollConfiguration(
                   behavior: ScrollGlow(),
-                  child: ScrollConfiguration(
-                      behavior: ScrollGlow(),
-                      child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: _news.length > 0
-                              ? Row(
-                                  children: List.generate(
-                                      _news.length > maxNews
-                                          ? maxNews + 2
-                                          : _news.length + 2,
-                                      _buildNewsBlock))
-                              : Container(
-                                  width: ScreenSize.width,
-                                  child: Center(
-                                      child: isLoadingData
-                                          ? CupertinoActivityIndicator()
-                                          : Text(
-                                              AppLocalizations.of(context)
-                                                  .translate('no_news'),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .subtitle1,
-                                            )),
-                                )))),
+                  child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: _news.length > 0
+                          ? Row(
+                              children: List.generate(
+                                  _news.length > maxNews
+                                      ? maxNews + 2
+                                      : _news.length + 2,
+                                  _buildNewsBlock))
+                          : Container(
+                              width: ScreenSize.width,
+                              child: Center(
+                                  child: isLoadingData
+                                      ? CupertinoActivityIndicator()
+                                      : Text(
+                                          AppLocalizations.of(context)
+                                              .translate('no_news'),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .subtitle1,
+                                        )),
+                            ))),
               subWidgetText: AppLocalizations.of(context).translate('more'),
               subWidgetAction: () => Navigator.of(context).push(
                 CupertinoPageRoute(builder: (context) => NewsList()),
@@ -263,9 +269,7 @@ class _HomePageState extends State<HomePage> {
       _buildSection(
           AppLocalizations.of(context).translate('menu'),
           _category.length > 0
-              ? Column(
-                  children: List.generate(_category.length, _buildMenu),
-                )
+              ? Column(children: List.generate(_category.length, _buildMenu))
               : Container(
                   width: ScreenSize.width,
                   child: Center(
@@ -276,9 +280,7 @@ class _HomePageState extends State<HomePage> {
                               style: Theme.of(context).textTheme.subtitle1,
                             )),
                 )),
-      Container(
-        height: 20,
-      )
+      Container(height: 20)
     ];
   }
 
@@ -325,7 +327,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildNewsBlock(int index) {
-    if (index == 0 || index >= 6 || index > _news.length)
+    int maxNews = SharedPrefs.getMaxNewsAmount() + 2;
+
+    if (index == 0 || index >= maxNews || index > _news.length)
       return Container(width: 6);
 
     final news = _news[index - 1];

@@ -3,16 +3,17 @@ import 'dart:io';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/screens/home_page.dart';
 import 'package:black_dog/screens/user//sign_in.dart';
-import 'package:black_dog/utils/connection_check.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'instances/account.dart';
 import 'instances/api.dart';
+import 'instances/connection_check.dart';
 import 'instances/notification_manager.dart';
 import 'instances/shared_pref.dart';
 
@@ -26,7 +27,7 @@ void main() async {
   ConnectionsCheck.instance.initialise();
   await NotificationManager.instance.configure();
 
-  Crashlytics.instance.enableInDevMode = true;
+  // Crashlytics.instance.enableInDevMode = true;
   FlutterError.onError = Crashlytics.instance.recordFlutterError;
 
   runApp(BlackDogApp());
@@ -49,14 +50,28 @@ class _BlackDogAppState extends State<BlackDogApp> {
   @override
   void initState() {
     Account.instance.initialize();
+    configurePopUp();
     super.initState();
+  }
+
+  void configurePopUp() {
+    EasyLoading.instance
+      ..loadingStyle = EasyLoadingStyle.custom
+      ..displayDuration = const Duration(seconds: 1)
+      ..progressColor = Colors.white
+      ..indicatorSize = 50
+      ..radius = 10.0
+      ..indicatorColor = Colors.white
+      ..textColor = Colors.white
+      ..backgroundColor = Colors.red.withOpacity(0.8);
   }
 
   @override
   Widget build(BuildContext context) {
     initWithContext(context);
 
-    return MaterialApp(
+    return FlutterEasyLoading(
+        child: MaterialApp(
       debugShowCheckedModeBanner: false,
       supportedLocales: [
         Locale('en', 'US'),
@@ -123,7 +138,7 @@ class _BlackDogAppState extends State<BlackDogApp> {
       home: Account.instance.state == AccountState.GUEST
           ? SignInPage()
           : HomePage(),
-    );
+    ));
   }
 
   @override

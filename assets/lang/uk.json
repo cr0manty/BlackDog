@@ -43,5 +43,7 @@
   "last_name": "Фамилия",
   "sign_in_with": "Войти с помощью",
   "sign_up_with": "Зарегистрироваться с помощью",
-  "size": "Размер"
+  "size": "Размер",
+  "work_time": "Часы работы:",
+  "weekday_working": "Weekends:"
 }

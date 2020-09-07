@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:black_dog/utils/localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 abstract class ScreenSize {
   static double height;
@@ -45,7 +46,7 @@ abstract class ScreenSize {
 
   static double get menuItemSize => height * 0.1;
 
-  static double get menuItemPhotoSize => height * 0.45;
+  static double get menuItemPhotoSize => height * 0.4;
 
   static double get newsItemPhotoSize => height * 0.35;
 
@@ -78,44 +79,44 @@ class Utils {
 
   static String get bonusIcon => 'assets/images/coffee.svg';
 
-  void showSuccessPopUp(BuildContext context, {String text}) {
-    if (_showPopUp != null) {
-      return;
-    }
-    _showPopUp = showCupertinoDialog(
-      context: context,
-      builder: (context) {
-        return CupertinoAlertDialog(
-          content: Text(
-            text ?? AppLocalizations.of(context).translate('success'),
-            style: Theme.of(context).textTheme.subtitle2,
-          ),
-          actions: <Widget>[
-            CupertinoDialogAction(
-                child: Text('OK'), onPressed: () => Navigator.pop(context))
-          ],
-        );
-      },
-    ).then((_) => _showPopUp = null);
-  }
-
-  void showErrorPopUp(BuildContext context, {String text}) {
-    _showPopUp = showCupertinoDialog(
-      context: context,
-      builder: (context) {
-        return CupertinoAlertDialog(
-          content: Text(
-            text ?? AppLocalizations.of(context).translate('error'),
-            style: Theme.of(context).textTheme.subtitle2,
-          ),
-          actions: <Widget>[
-            CupertinoDialogAction(
-                child: Text('OK'), onPressed: () => Navigator.pop(context))
-          ],
-        );
-      },
-    ).then((_) => _showPopUp = null);
-  }
+  // void showSuccessPopUp(BuildContext context, {String text}) {
+  //   if (_showPopUp != null) {
+  //     return;
+  //   }
+  //   _showPopUp = showCupertinoDialog(
+  //     context: context,
+  //     builder: (context) {
+  //       return CupertinoAlertDialog(
+  //         content: Text(
+  //           text ?? AppLocalizations.of(context).translate('success'),
+  //           style: Theme.of(context).textTheme.subtitle2,
+  //         ),
+  //         actions: <Widget>[
+  //           CupertinoDialogAction(
+  //               child: Text('OK'), onPressed: () => Navigator.pop(context))
+  //         ],
+  //       );
+  //     },
+  //   ).then((_) => _showPopUp = null);
+  // }
+  //
+  // void showErrorPopUp(BuildContext context, {String text}) {
+  //   _showPopUp = showCupertinoDialog(
+  //     context: context,
+  //     builder: (context) {
+  //       return CupertinoAlertDialog(
+  //         content: Text(
+  //           text ?? AppLocalizations.of(context).translate('error'),
+  //           style: Theme.of(context).textTheme.subtitle2,
+  //         ),
+  //         actions: <Widget>[
+  //           CupertinoDialogAction(
+  //               child: Text('OK'), onPressed: () => Navigator.pop(context))
+  //         ],
+  //       );
+  //     },
+  //   ).then((_) => _showPopUp = null);
+  // }
 
   void initScreenSize(Size size) {
     ScreenSize.height = size.height;
@@ -185,7 +186,8 @@ class Utils {
       await precacheImage(codeImage.image, context);
     }
     if (codeImage == null) {
-      showErrorPopUp(context);
+      EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
+      EasyLoading.showError('');
     } else {
       if (_showPopUp != null) {
         return;

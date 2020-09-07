@@ -10,7 +10,6 @@ import 'package:black_dog/models/voucher.dart';
 import 'package:black_dog/screens/user/sign_in.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
-import 'package:black_dog/widgets/bottom_route.dart';
 import 'package:black_dog/widgets/circular_progress_indicator.dart';
 import 'package:black_dog/widgets/edit_button.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
@@ -190,12 +189,11 @@ class _UserPageState extends State<UserPage> {
                   ),
                   SizedBox(
                     width: ScreenSize.maxTextWidth,
-                    child: Text(
-                      voucher.discountType,
-                      style: Theme.of(context).textTheme.subtitle1,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
+                    child: Text(voucher.discountType,
+                        style: Theme.of(context).textTheme.subtitle1,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        textAlign: TextAlign.center),
                   ),
                   SizedBox(height: 5),
                   Text(
@@ -229,7 +227,8 @@ class _UserPageState extends State<UserPage> {
         onTap: () {
           SharedPrefs.logout();
           Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-              BottomRoute(page: SignInPage()), (route) => false);
+              CupertinoPageRoute(builder: (context) => SignInPage()),
+              (route) => false);
         },
       ),
       children: <Widget>[

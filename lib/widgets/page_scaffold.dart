@@ -95,30 +95,34 @@ class PageScaffold extends StatelessWidget {
                   child: ScrollConfiguration(
                       behavior: ScrollGlow(),
                       child: alwaysNavigation
-                          ? Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
-                                  _appBar(),
-                                  Expanded(
-                                      child: Container(
-                                          padding: padding ?? EdgeInsets.zero,
-                                          child: ScrollConfiguration(
-                                            behavior: ScrollGlow(),
-                                            child: ListView(
-                                                controller: scrollController,
-                                                shrinkWrap: shrinkWrap,
-                                                children: _buildBodyChildren(
-                                                    <Widget>[_titleWidget()])),
-                                          )))
-                                ])
+                          ? Expanded(
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.max,
+                                children: <Widget>[
+                                    _appBar(),
+                                    Expanded(
+                                        child: Container(
+                                            padding: padding ?? EdgeInsets.zero,
+                                            child: ScrollConfiguration(
+                                              behavior: ScrollGlow(),
+                                              child: ListView(
+                                                  controller: scrollController,
+                                                  shrinkWrap: shrinkWrap,
+                                                  children: _buildBodyChildren(
+                                                      <Widget>[_titleWidget()])),
+                                            )))
+                                  ]),
+                          )
                           : ScrollConfiguration(
                               behavior: ScrollGlow(),
-                              child: ListView(
-                                controller: scrollController,
-                                shrinkWrap: shrinkWrap,
-                                children: _buildBodyChildren(
-                                    [_appBar(), _titleWidget()]),
+                              child: Container(
+                                child: ListView(
+                                  controller: scrollController,
+                                  shrinkWrap: shrinkWrap,
+                                  children: _buildBodyChildren(
+                                      [_appBar(), _titleWidget()]),
+                                ),
                               ),
                             ))),
             )),
