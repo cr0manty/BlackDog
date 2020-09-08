@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class PageScaffold extends StatelessWidget {
+  final GlobalKey<ScaffoldState> scaffoldKey;
   final ScrollController scrollController;
   final Widget action;
   final Widget leading;
@@ -19,6 +20,7 @@ class PageScaffold extends StatelessWidget {
 
   PageScaffold(
       {this.scrollController,
+      this.scaffoldKey,
       this.child,
       this.children,
       this.action,
@@ -71,52 +73,50 @@ class PageScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: scaffoldKey,
         body: Stack(
-      children: [
-        Positioned(
-            top: 0.0,
-            child: Container(
-              height: ScreenSize.height,
-              width: ScreenSize.width,
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                image: AssetImage(Utils.backgroundImage),
-                fit: BoxFit.fill,
-              )),
-            )),
-        ModalProgressHUD(
-            progressIndicator: CupertinoActivityIndicator(),
-            inAsyncCall: inAsyncCall,
-            child: GestureDetector(
-              onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-              child: Container(
+          children: [
+            Positioned(
+                top: 0.0,
+                child: Container(
                   height: ScreenSize.height,
                   width: ScreenSize.width,
-                  child: ScrollConfiguration(
-                      behavior: ScrollGlow(),
-                      child: alwaysNavigation
-                          ? Expanded(
-                            child: Column(
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                    image: AssetImage(Utils.backgroundImage),
+                    fit: BoxFit.fill,
+                  )),
+                )),
+            ModalProgressHUD(
+                progressIndicator: CupertinoActivityIndicator(),
+                inAsyncCall: inAsyncCall,
+                child: GestureDetector(
+                  onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+                  child: Container(
+                      height: ScreenSize.height,
+                      width: ScreenSize.width,
+                      child: ScrollConfiguration(
+                        behavior: ScrollGlow(),
+                        child: alwaysNavigation
+                            ? Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.max,
                                 children: <Widget>[
-                                    _appBar(),
-                                    Expanded(
-                                        child: Container(
-                                            padding: padding ?? EdgeInsets.zero,
-                                            child: ScrollConfiguration(
-                                              behavior: ScrollGlow(),
-                                              child: ListView(
-                                                  controller: scrollController,
-                                                  shrinkWrap: shrinkWrap,
-                                                  children: _buildBodyChildren(
-                                                      <Widget>[_titleWidget()])),
-                                            )))
-                                  ]),
-                          )
-                          : ScrollConfiguration(
-                              behavior: ScrollGlow(),
-                              child: Container(
+                                  _appBar(),
+                                  Expanded(
+                                      child: Container(
+                                          padding: padding ?? EdgeInsets.zero,
+                                          child: ScrollConfiguration(
+                                            behavior: ScrollGlow(),
+                                            child: ListView(
+                                                controller: scrollController,
+                                                shrinkWrap: shrinkWrap,
+                                                children: _buildBodyChildren(
+                                                    <Widget>[_titleWidget()])),
+                                          )))
+                                ],
+                              )
+                            : Container(
                                 child: ListView(
                                   controller: scrollController,
                                   shrinkWrap: shrinkWrap,
@@ -124,9 +124,9 @@ class PageScaffold extends StatelessWidget {
                                       [_appBar(), _titleWidget()]),
                                 ),
                               ),
-                            ))),
-            )),
-      ],
-    ));
+                      )),
+                )),
+          ],
+        ));
   }
 }

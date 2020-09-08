@@ -44,6 +44,6 @@
   "sign_in_with": "Войти с помощью",
   "sign_up_with": "Зарегистрироваться с помощью",
   "size": "Размер",
-  "work_time": "Часы работы:",
-  "weekday_working": "Weekends:"
+  "weekday_working": "В Выходные дни:",
+  "clipboard_copy": "Сокпировано в буфер обмена"
 }

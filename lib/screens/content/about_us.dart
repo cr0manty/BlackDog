@@ -7,6 +7,7 @@ import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -21,7 +22,19 @@ class AboutUsPage extends StatefulWidget {
 }
 
 class _AboutUsPageState extends State<AboutUsPage> {
-  void copyText(String text) {}
+  final GlobalKey<ScaffoldState> key = GlobalKey<ScaffoldState>();
+
+  void copyText(String text) {
+    Clipboard.setData(ClipboardData(text: text));
+
+    SnackBar snackBar = SnackBar(
+      content: Text(AppLocalizations.of(context).translate('clipboard_copy'),
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.subtitle2),
+      backgroundColor: Colors.black.withOpacity(0.9),
+    );
+    key.currentState.showSnackBar(snackBar);
+  }
 
   void launchUrl(String url) async {
     if (await canLaunch(url)) {
@@ -41,7 +54,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
     }
 
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 26),
+      margin: EdgeInsets.symmetric(vertical: 7, horizontal: 26),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -62,7 +75,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
                   margin: EdgeInsets.symmetric(horizontal: 15),
                   child: Text(text,
                       style: Theme.of(context).textTheme.subtitle2.copyWith(
-                          decoration: call || email || web || copy
+                          decoration: call || email || web
                               ? TextDecoration.underline
                               : TextDecoration.none))))
         ],
@@ -71,40 +84,45 @@ class _AboutUsPageState extends State<AboutUsPage> {
   }
 
   String workTime(RestaurantConfig config) {
-    return AppLocalizations.of(context).translate('work_time') +
-        '\n${config.weekdayWorkingHours ?? ''}\n' +
+    if (config?.weekdayWorkingHours == null ||
+        config?.weekendWorkingHours == null) {
+      return null;
+    }
+    return '${config?.weekdayWorkingHours ?? ''}\n' +
         AppLocalizations.of(context).translate('weekday_working') +
-        '${config.weekendWorkingHours ?? ''}';
+        '${config?.weekendWorkingHours ?? ''}';
   }
 
-  Widget _buildRestaurant(RestaurantConfig config) {
-    return Builder(builder: (BuildContext context) {
-      return Container(
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          //TODO
-          Container(
-              width: ScreenSize.width - 16,
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: config.image != null && config.image.isNotEmpty
-                      ? FadeInImage.assetNetwork(
-                          placeholder: Utils.loadImage,
-                          image: config.image,
-                          fit: BoxFit.cover)
-                      : Image.asset(Utils.defaultImage, fit: BoxFit.cover))),
-          _buildSection(config.address, SFSymbols.placemark_fill, copy: true),
-          _buildSection(workTime(config), SFSymbols.clock_fill),
-          _buildSection(config.branchPhone, SFSymbols.phone_fill, call: true),
-        ]),
-      );
-    });
+  Widget _buildRestaurant(int index) {
+    RestaurantConfig config = widget.restaurantConfig[index];
+    return Column(
+      children: [
+        Expanded(
+          child: Container(
+            width: ScreenSize.width - 32,
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: config.image != null && config.image.isNotEmpty
+                    ? FadeInImage.assetNetwork(
+                        placeholder: Utils.loadImage,
+                        image: config.image,
+                        fit: BoxFit.fitWidth)
+                    : Image.asset(Utils.defaultImage, fit: BoxFit.cover)),
+          ),
+        ),
+        _buildSection(config.address, SFSymbols.placemark_fill, copy: true),
+        _buildSection(workTime(config), SFSymbols.clock_fill),
+        _buildSection(config.branchPhone, SFSymbols.phone_fill, call: true),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return PageScaffold(
+      scaffoldKey: key,
       shrinkWrap: true,
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      alwaysNavigation: true,
       leading: RouteButton(
         defaultIcon: true,
         text: AppLocalizations.of(context).translate('home'),
@@ -114,17 +132,16 @@ class _AboutUsPageState extends State<AboutUsPage> {
       title: Text(AppLocalizations.of(context).translate('about_us'),
           style: Theme.of(context).textTheme.caption),
       children: <Widget>[
+        CarouselSlider.builder(
+            itemBuilder: (context, index) => _buildRestaurant(index),
+            itemCount: widget.restaurantConfig.length,
+            options: CarouselOptions(
+              height: ScreenSize.aboutUsCurrentHeight,
+              enlargeCenterPage: true,
+              enableInfiniteScroll: true,
+            )),
         Container(
-            margin: EdgeInsets.only(bottom: 20, top: 10),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: CarouselSlider(
-                items: widget.restaurantConfig.map(_buildRestaurant).toList(),
-                options: CarouselOptions(
-                    enlargeCenterPage: true, enableInfiniteScroll: false))),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 16),
+          padding: EdgeInsets.only(left: 16, right: 16, top: 20, bottom: 10),
           child: Text(
             widget.restaurant.name,
             style: Theme.of(context).textTheme.headline1,
