@@ -80,45 +80,6 @@ class Utils {
 
   static String get bonusIcon => 'assets/images/coffee.svg';
 
-  // void showSuccessPopUp(BuildContext context, {String text}) {
-  //   if (_showPopUp != null) {
-  //     return;
-  //   }
-  //   _showPopUp = showCupertinoDialog(
-  //     context: context,
-  //     builder: (context) {
-  //       return CupertinoAlertDialog(
-  //         content: Text(
-  //           text ?? AppLocalizations.of(context).translate('success'),
-  //           style: Theme.of(context).textTheme.subtitle2,
-  //         ),
-  //         actions: <Widget>[
-  //           CupertinoDialogAction(
-  //               child: Text('OK'), onPressed: () => Navigator.pop(context))
-  //         ],
-  //       );
-  //     },
-  //   ).then((_) => _showPopUp = null);
-  // }
-  //
-  // void showErrorPopUp(BuildContext context, {String text}) {
-  //   _showPopUp = showCupertinoDialog(
-  //     context: context,
-  //     builder: (context) {
-  //       return CupertinoAlertDialog(
-  //         content: Text(
-  //           text ?? AppLocalizations.of(context).translate('error'),
-  //           style: Theme.of(context).textTheme.subtitle2,
-  //         ),
-  //         actions: <Widget>[
-  //           CupertinoDialogAction(
-  //               child: Text('OK'), onPressed: () => Navigator.pop(context))
-  //         ],
-  //       );
-  //     },
-  //   ).then((_) => _showPopUp = null);
-  // }
-
   void initScreenSize(Size size) {
     ScreenSize.height = size.height;
     ScreenSize.width = size.width;

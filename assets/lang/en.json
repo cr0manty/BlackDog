@@ -46,5 +46,7 @@
   "size": "Size",
   "work_time": "Work time:",
   "weekday_working": "Weekends:",
-  "clipboard_copy": "Copied to Сlipboard"
+  "clipboard_copy": "Copied to Сlipboard",
+  "done": "Done",
+  "cancel": "Cancel"
 }

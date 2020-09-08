@@ -70,8 +70,7 @@ class _BlackDogAppState extends State<BlackDogApp> {
   Widget build(BuildContext context) {
     initWithContext(context);
 
-    return FlutterEasyLoading(
-        child: MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       supportedLocales: [
         Locale('en', 'US'),
@@ -135,16 +134,22 @@ class _BlackDogAppState extends State<BlackDogApp> {
                   fontFamily: 'Century-Gothic',
                   fontSize: 15,
                   color: HexColor.semiElement))),
+      builder: (BuildContext context, Widget child) {
+        return FlutterEasyLoading(
+          child: child,
+        );
+      },
       home: Account.instance.state == AccountState.GUEST
           ? SignInPage()
           : HomePage(),
-    ));
+    );
   }
 
   @override
   void dispose() {
     Api.instance.dispose();
     NotificationManager.instance.dispose();
+    ConnectionsCheck.instance.dispose();
     super.dispose();
   }
 }

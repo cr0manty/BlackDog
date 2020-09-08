@@ -3,6 +3,7 @@ import 'dart:math' as math;
 
 import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/instances/connection_check.dart';
 import 'package:black_dog/instances/notification_manager.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/instances/utils.dart';
@@ -27,6 +28,7 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
+  StreamSubscription _connectionChange;
   StreamSubscription _apiChange;
   StreamSubscription _onMessage;
   BaseVoucher currentVoucher;
@@ -39,6 +41,7 @@ class _UserPageState extends State<UserPage> {
         NotificationManager.instance.onMessage.listen(onNotificationMessage);
     _vouchers = SharedPrefs.getActiveVouchers();
     currentVoucher = SharedPrefs.getCurrentVoucher();
+    _connectionChange = ConnectionsCheck.instance.onChange.listen((event) => setState(() {}));
     super.initState();
   }
 
@@ -259,6 +262,7 @@ class _UserPageState extends State<UserPage> {
   void dispose() {
     _apiChange?.cancel();
     _onMessage?.cancel();
+    _connectionChange?.cancel();
     super.dispose();
   }
 }

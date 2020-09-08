@@ -1,4 +1,5 @@
 import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/instances/connection_check.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/news.dart';
 import 'package:black_dog/utils/hex_color.dart';
@@ -35,6 +36,10 @@ class _NewsDetailState extends State<NewsDetail> {
     super.initState();
   }
 
+  Widget _clipImage(Widget child) {
+    return ClipRRect(borderRadius: BorderRadius.circular(10), child: child);
+  }
+
   @override
   Widget build(BuildContext context) {
     return PageScaffold(
@@ -49,14 +54,19 @@ class _NewsDetailState extends State<NewsDetail> {
         onTap: Navigator.of(context).pop,
       ),
       children: <Widget>[
-        CarouselSlider(
-            items: news.images.map(_buildImages).toList(),
-            options: CarouselOptions(
-              height: ScreenSize.newsItemPhotoSize,
-              viewportFraction: 1,
-              enlargeCenterPage: true,
-              autoPlay: true,
-            )),
+        news?.images?.length != null && news.images.length > 0
+            ? CarouselSlider.builder(
+                itemBuilder: (context, index) => _buildImages(index),
+                itemCount: news?.images?.length ?? 0,
+                options: CarouselOptions(
+                  height: ScreenSize.newsItemPhotoSize,
+                  viewportFraction: 1,
+                  enlargeCenterPage: true,
+                  autoPlay: true,
+                ))
+            : _clipImage(Container(
+                height: ScreenSize.newsItemPhotoSize,
+                child: Image.asset(Utils.defaultImage, fit: BoxFit.cover))),
         Container(
             margin: EdgeInsets.symmetric(vertical: 20),
             alignment: Alignment.center,
@@ -84,18 +94,15 @@ class _NewsDetailState extends State<NewsDetail> {
     );
   }
 
-  Widget _buildImages(url) {
-    return Builder(builder: (BuildContext context) {
-      return Container(
-          width: ScreenSize.width - 32,
-          child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: url != null && url.isNotEmpty
-                  ? FadeInImage.assetNetwork(
-                      placeholder: Utils.loadImage,
-                      image: url,
-                      fit: BoxFit.cover)
-                  : Image.asset(Utils.defaultImage, fit: BoxFit.cover)));
-    });
+  Widget _buildImages(int index) {
+    String url = news.images[index];
+
+    return Container(
+        width: ScreenSize.width - 32,
+        child: _clipImage(
+            url != null && url.isNotEmpty && ConnectionsCheck.instance.isOnline
+                ? FadeInImage.assetNetwork(
+                    placeholder: Utils.loadImage, image: url, fit: BoxFit.cover)
+                : Image.asset(Utils.defaultImage, fit: BoxFit.cover)));
   }
 }

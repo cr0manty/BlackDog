@@ -430,9 +430,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
-    _connectionChange?.cancel();
     _apiChange?.cancel();
-    ConnectionsCheck.instance.dispose();
+    _connectionChange?.cancel();
     super.dispose();
   }
 }

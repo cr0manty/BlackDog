@@ -32,12 +32,23 @@ class SocialAuth extends StatelessWidget {
               color: HexColor.lightElement,
             ),
           ),
+          SizedBox(width: 10),
+          CupertinoButton(
+            onPressed: _onAppleClick,
+            child: Icon(
+              SFSymbols.logo_apple,
+              size: 30,
+              color: HexColor.lightElement,
+            ),
+          ),
         ]);
   }
 
   void _onGoogleClick() {}
 
   void _onFacebookClick() {}
+
+  void _onAppleClick() {}
 
   @override
   Widget build(BuildContext context) {

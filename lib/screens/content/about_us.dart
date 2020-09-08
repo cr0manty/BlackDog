@@ -138,7 +138,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
             options: CarouselOptions(
               height: ScreenSize.aboutUsCurrentHeight,
               enlargeCenterPage: true,
-              enableInfiniteScroll: true,
+              enableInfiniteScroll: false,
             )),
         Container(
           padding: EdgeInsets.only(left: 16, right: 16, top: 20, bottom: 10),

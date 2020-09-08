@@ -196,21 +196,20 @@ class _SignUpPageState extends State<SignUpPage> {
               )),
             )),
         ModalProgressHUD(
-            progressIndicator: CupertinoActivityIndicator(),
-            inAsyncCall: isLoading,
-            child: GestureDetector(
-                onTap: FocusScope.of(context).unfocus,
-                child: Container(
-                    height: ScreenSize.height,
-                    width: ScreenSize.width,
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Form(
-                      key: _formKey,
-                      child: ScrollConfiguration(
+          progressIndicator: CupertinoActivityIndicator(),
+          inAsyncCall: isLoading,
+          child: GestureDetector(
+              onTap: FocusScope.of(context).unfocus,
+              child: Container(
+                  height: ScreenSize.height,
+                  width: ScreenSize.width,
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Form(
+                    key: _formKey,
+                    child: ScrollConfiguration(
                         behavior: ScrollGlow(),
-                        child:  Column(
+                        child: Column(
                             mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Container(
@@ -237,15 +236,10 @@ class _SignUpPageState extends State<SignUpPage> {
                                   child: Column(
                                     children: <Widget>[
                                       CupertinoButton(
-                                          onPressed: () => Navigator.of(context)
-                                              .pushReplacement(
-                                                  CupertinoPageRoute(
-                                                      builder: (context) =>
-                                                          SignUpPage(
-                                                            signUpPageType:
-                                                                SignUpPageType
-                                                                    .ADDITION_DATA,
-                                                          ))),
+                                          onPressed: widget.signUpPageType ==
+                                                  SignUpPageType.MAIN_DATA
+                                              ? _mainRegistration
+                                              : _sendAdditionData,
                                           color: HexColor.lightElement,
                                           child: Text(
                                             AppLocalizations.of(context)
@@ -260,30 +254,21 @@ class _SignUpPageState extends State<SignUpPage> {
                                                         HexColor.darkElement),
                                           )),
                                       CupertinoButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                            // Navigator.of(context,
-                                            //         rootNavigator: true)
-                                            //     .pushAndRemoveUntil(
-                                            //         BottomRoute(
-                                            //             page: SignInPage()),
-                                            //         (route) => false);
-                                          },
-                                          child: Text(
-                                            AppLocalizations.of(context)
-                                                .translate(
-                                                    'already_have_account'),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyText2,
-                                          )),
+                                        onPressed: Navigator.of(context).pop,
+                                        child: Text(
+                                          AppLocalizations.of(context)
+                                              .translate(
+                                                  'already_have_account'),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyText2,
+                                        ),
+                                      ),
                                     ],
-                                  )),
-                            ],
-                          ),
-                        ),
-                      ),
-                    )))
+                                  ))
+                            ])),
+                  ))),
+        ),
       ]),
     );
   }
@@ -367,7 +352,8 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                     actions: [
                       CupertinoDialogAction(
-                        child: Text('Done'),
+                        child: Text(
+                            AppLocalizations.of(context).translate('done')),
                         onPressed: () async {
                           AuthCredential credential =
                               PhoneAuthProvider.credential(
@@ -378,17 +364,18 @@ class _SignUpPageState extends State<SignUpPage> {
                           if (result != null && result.user != null) {
                             SharedPrefs.saveUserFirebaseUid(result.user.uid);
                             Api.instance.sendFirebaseUserUID();
-                            Navigator.of(context).pushAndRemoveUntil(
-                                CupertinoPageRoute(
-                                    builder: (context) =>
-                                        HomePage(isInitView: false)),
-                                (route) => false);
+                            Navigator.of(context)
+                                .pushReplacement(CupertinoPageRoute(
+                                    builder: (context) => SignUpPage(
+                                          signUpPageType:
+                                              SignUpPageType.ADDITION_DATA,
+                                        )));
                           }
                         },
                       ),
                       CupertinoDialogAction(
                         isDestructiveAction: true,
-                        child: Text('Cancel'),
+                        child: Text(AppLocalizations.of(context).translate('cancel')),
                         onPressed: () => Navigator.of(context).pop,
                       )
                     ],
@@ -396,13 +383,18 @@ class _SignUpPageState extends State<SignUpPage> {
         },
         codeAutoRetrievalTimeout: (String verificationId) {
           verificationId = verificationId;
-          print(verificationId);
-          print("Time out");
+          print('Time out: $verificationId');
         });
   }
 
-  Future registerClick() async {
-    FocusScope.of(context).requestFocus(FocusNode());
+  Future _sendAdditionData() async {
+    setState(() => isLoading = !isLoading);
+    EasyLoading.showError('');
+    setState(() => isLoading = !isLoading);
+  }
+
+  Future _mainRegistration() async {
+    FocusScope.of(context).unfocus();
     setState(() => isLoading = !isLoading);
     fieldsError = {};
 

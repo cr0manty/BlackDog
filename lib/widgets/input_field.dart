@@ -60,14 +60,9 @@ class TextInputState extends State<TextInput> {
         validator: widget.validator,
         obscureText: widget.obscureText ?? false,
         controller: widget.controller,
-        onChanged: (String text) {
-          setState(() {
-            isEmpty = text.isEmpty;
-          });
-          widget.onChanged(text);
-        },
+        onChanged: (String text) => setState(() => isEmpty = text.isEmpty),
         onFieldSubmitted: widget.inputAction == TextInputAction.next
-            ?  (_) => FocusScope.of(context).nextFocus()
+            ? (_) => FocusScope.of(context).nextFocus()
             : (_) => FocusScope.of(context).unfocus(),
         decoration: InputDecoration(
             hintText: widget.hintText,
