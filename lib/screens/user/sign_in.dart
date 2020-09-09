@@ -53,7 +53,6 @@ class _SignInPageState extends State<SignInPage> {
     Utils.instance.initScreenSize(MediaQuery.of(context).size);
 
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
         body: Stack(
       children: [
         Positioned(
