@@ -53,6 +53,7 @@ class _SignInPageState extends State<SignInPage> {
     Utils.instance.initScreenSize(MediaQuery.of(context).size);
 
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
         body: Stack(
       children: [
         Positioned(
@@ -87,22 +88,29 @@ class _SignInPageState extends State<SignInPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Container(
-                                alignment: Alignment.topCenter,
-                                padding: EdgeInsets.only(
-                                    top: ScreenSize.mainMarginTop),
-                                child: Text(
-                                  AppLocalizations.of(context)
-                                      .translate('sign_in'),
-                                  style: Theme.of(context).textTheme.caption,
-                                ),
+                              Column(
+                                children: [
+                                  Container(
+                                    alignment: Alignment.topCenter,
+                                    padding: EdgeInsets.only(
+                                        top: ScreenSize.mainMarginTop),
+                                    child: Text(
+                                      AppLocalizations.of(context)
+                                          .translate('sign_in'),
+                                      style:
+                                          Theme.of(context).textTheme.caption,
+                                    ),
+                                  ),
+
+                                ],
                               ),
                               Container(
-                                margin: EdgeInsets.all(16),
-                                alignment: Alignment.center,
-                                child: Image.asset(Utils.logo,
-                                    height: 125, width: 125),
-                              ),
+                                    margin: EdgeInsets.all(16),
+                                    alignment: Alignment.center,
+                                    child: Image.asset(Utils.logo,
+                                        height: ScreenSize.logoHeight,
+                                        width: ScreenSize.logoWidth),
+                                  ),
                               Column(
                                 mainAxisSize: MainAxisSize.max,
                                 mainAxisAlignment: MainAxisAlignment.center,

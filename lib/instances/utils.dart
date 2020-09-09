@@ -59,7 +59,12 @@ abstract class ScreenSize {
   static double get mainTextWidth => width * 0.65;
 
   static double get maxTextWidth => width * 0.45;
+
   static double get aboutUsCurrentHeight => height * 0.5;
+
+  static double get logoWidth => width * 0.55;
+
+  static double get logoHeight => height * 0.3;
 }
 
 class Utils {
