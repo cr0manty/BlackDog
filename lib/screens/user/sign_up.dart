@@ -13,8 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:firebase_core/firebase_core.dart';
-import '../home_page.dart';
 
 enum SignUpPageType { MAIN_DATA, ADDITION_DATA }
 
@@ -53,12 +51,6 @@ class _SignUpPageState extends State<SignUpPage> {
   bool _obscureText = true;
   bool _obscureTextConfirm = true;
   bool isLoading = false;
-
-  @override
-  void initState() {
-    super.initState();
-    Firebase.initializeApp().whenComplete(() => setState(() {}));
-  }
 
   Widget _buildFields() {
     return Column(
@@ -196,22 +188,25 @@ class _SignUpPageState extends State<SignUpPage> {
               )),
             )),
         ModalProgressHUD(
-          progressIndicator: CupertinoActivityIndicator(),
-          inAsyncCall: isLoading,
-          child: GestureDetector(
+            progressIndicator: CupertinoActivityIndicator(),
+            inAsyncCall: isLoading,
+            child: GestureDetector(
               onTap: FocusScope.of(context).unfocus,
               child: Container(
                   height: ScreenSize.height,
                   width: ScreenSize.width,
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Form(
-                    key: _formKey,
-                    child: ScrollConfiguration(
+                      key: _formKey,
+                      child: ScrollConfiguration(
                         behavior: ScrollGlow(),
-                        child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
+                        child: SingleChildScrollView(
+                            child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                mainAxisSize: MainAxisSize.max,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
                               Container(
                                 alignment: Alignment.topCenter,
                                 padding: EdgeInsets.only(
@@ -227,12 +222,12 @@ class _SignUpPageState extends State<SignUpPage> {
                                       SignUpPageType.ADDITION_DATA
                                   ? _buildAddition()
                                   : _buildFields(),
-                              widget.signUpPageType == SignUpPageType.MAIN_DATA
-                                  ? SocialAuth(textKey: 'sign_up_with')
-                                  : Container(),
+                              // widget.signUpPageType == SignUpPageType.MAIN_DATA
+                              //     ? SocialAuth(textKey: 'sign_up_with')
+                              //     : Container(), // todo: after release
                               Container(
                                   alignment: Alignment.bottomCenter,
-                                  padding: EdgeInsets.symmetric(vertical: 5),
+                                  padding: EdgeInsets.symmetric(vertical: 20),
                                   child: Column(
                                     children: <Widget>[
                                       CupertinoButton(
@@ -267,8 +262,8 @@ class _SignUpPageState extends State<SignUpPage> {
                                     ],
                                   ))
                             ])),
-                  ))),
-        ),
+                      ))),
+            )),
       ]),
     );
   }
@@ -317,19 +312,7 @@ class _SignUpPageState extends State<SignUpPage> {
     FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: _phoneController.text,
         timeout: Duration(seconds: 60),
-        verificationCompleted: (AuthCredential credential) {
-          FirebaseAuth.instance.signInWithCredential(credential).then((result) {
-            Navigator.of(context).pushAndRemoveUntil(
-                CupertinoPageRoute(
-                    builder: (context) => HomePage(isInitView: false)),
-                (route) => false);
-          }).catchError((e) {
-            Navigator.of(context).pop();
-            EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
-            EasyLoading.showError(e);
-            print(e);
-          });
-        },
+        verificationCompleted: (AuthCredential credential) {},
         verificationFailed: (FirebaseAuthException authException) {
           print(authException.message);
           Navigator.of(context).pop();
@@ -362,8 +345,9 @@ class _SignUpPageState extends State<SignUpPage> {
                           UserCredential result = await FirebaseAuth.instance
                               .signInWithCredential(credential);
                           if (result != null && result.user != null) {
+                            Api.instance
+                                .updateUser({'firebase_uid': result.user.uid});
                             SharedPrefs.saveUserFirebaseUid(result.user.uid);
-                            Api.instance.sendFirebaseUserUID();
                             Navigator.of(context)
                                 .pushReplacement(CupertinoPageRoute(
                                     builder: (context) => SignUpPage(
@@ -375,8 +359,12 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                       CupertinoDialogAction(
                         isDestructiveAction: true,
-                        child: Text(AppLocalizations.of(context).translate('cancel')),
-                        onPressed: () => Navigator.of(context).pop,
+                        child: Text(
+                            AppLocalizations.of(context).translate('cancel')),
+                        onPressed: () {
+                          setState(() => isLoading = false);
+                          Navigator.of(context).pop();
+                        },
                       )
                     ],
                   ));

@@ -355,12 +355,35 @@ class Api {
         headers: _setHeaders(useJson: true));
   }
 
-  void sendFirebaseUserUID() async {
-    _client.post(_setUrl(path: '', base: true),
-        body: json.encode({
-          'token': SharedPrefs.getUserFirebaseUID(),
-        }),
-        headers: _setHeaders(useJson: true));
+  Future<bool> checkPhoneNumberExist(String phone) async {
+    final response =
+        await _client.post(_setUrl(path: '/user/is-phone-number-taken/'),
+            body: {
+              'phone_number': phone,
+            },
+            headers: _setHeaders(useToken: false));
+    Map body = json.decode(utf8.decode(response.bodyBytes));
+    return body['phone_number_taken'];
+  }
+
+  Future loginByFirebaseUserUid(String token) async {
+    return _client
+        .post(_setUrl(path: '/user/get-token-by-firebaseuid/'),
+            body: {
+              'firebase_uid': token,
+            },
+            headers: _setHeaders(useToken: false))
+        .then((response) {
+      bool result = response.statusCode == 200;
+      if (result) {
+        Map body = json.decode(response.body);
+        SharedPrefs.saveToken(body['token']);
+      }
+      return result;
+    }).catchError((error) {
+      print(error);
+      return {'result': false};
+    });
   }
 
   void dispose() {

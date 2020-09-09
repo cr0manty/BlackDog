@@ -20,22 +20,55 @@ class ProductDetail extends StatefulWidget {
 
 class _ProductDetailState extends State<ProductDetail>
     with TickerProviderStateMixin {
+  AnimationController animationController;
   MenuItemVariation selectedVariation;
+  Animation animation;
+  int selectedVariationIndex = 0;
 
   Widget _buildVariation(int index) {
     MenuItemVariation variation = widget.product.variations[index];
     return GestureDetector(
-      onTap: () => setState(() => selectedVariation = variation),
-      child: Container(
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-          margin: EdgeInsets.symmetric(horizontal: 10),
-          decoration: BoxDecoration(
-              color: HexColor.cardBackground.withOpacity(0.6),
-              borderRadius: BorderRadius.circular(10)),
-          child: Center(
-              child: Text(variation.name,
-                  style: Theme.of(context).textTheme.headline1))),
+        onTap: () async {
+          if (selectedVariation != variation) {
+            animationController.reverse().then((value) {
+              setState(() {
+                selectedVariation = variation;
+                selectedVariationIndex = index;
+              });
+              animationController.forward();
+            });
+          }
+        },
+        child: selectedVariationIndex != index
+            ? _buildSizeElement(index)
+            : FadeTransition(
+                opacity: animationController
+                    .drive(CurveTween(curve: Curves.easeOut)),
+                child: _buildSizeElement(index)));
+  }
+
+  Widget _buildSizeElement(int index) {
+    return Container(
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+        margin: EdgeInsets.symmetric(horizontal: 10),
+        decoration: BoxDecoration(
+            color: selectedVariationIndex != index
+                ? HexColor.cardBackground.withOpacity(0.6)
+                : HexColor.semiElement.withOpacity(0.4),
+            borderRadius: BorderRadius.circular(10)),
+        child: Center(
+            child: Text(widget.product.variations[index].name,
+                style: Theme.of(context).textTheme.headline1)));
+  }
+
+  @override
+  void initState() {
+    animationController = AnimationController(
+      duration: Duration(milliseconds: 250),
+      vsync: this,
     );
+    animationController.forward();
+    super.initState();
   }
 
   @override
@@ -80,15 +113,18 @@ class _ProductDetailState extends State<ProductDetail>
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                           style: Theme.of(context).textTheme.caption)),
-                  SizedBox(
-                      width: ScreenSize.maxTextWidth,
-                      child: Text(
-                          widget.product.priceWithCurrency(context,
-                              actualPrice: selectedVariation?.price),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          textAlign: TextAlign.right,
-                          style: Theme.of(context).textTheme.subtitle1)),
+                  FadeTransition(
+                      opacity: animationController
+                          .drive(CurveTween(curve: Curves.easeOut)),
+                      child: Container(
+                          width: ScreenSize.maxTextWidth,
+                          child: Text(
+                              widget.product.priceWithCurrency(context,
+                                  actualPrice: selectedVariation?.price),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              textAlign: TextAlign.right,
+                              style: Theme.of(context).textTheme.subtitle1))),
                 ])),
         widget.product.variations.length != 0
             ? Column(

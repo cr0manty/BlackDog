@@ -146,7 +146,7 @@ class _SignInPageState extends State<SignInPage> {
                                   _forgotPassword()
                                 ],
                               ),
-                              SocialAuth(textKey: 'sign_in_with'),
+                              // SocialAuth(textKey: 'sign_in_with'), //todo: after release
                               Container(
                                   alignment: Alignment.bottomCenter,
                                   padding: EdgeInsets.only(

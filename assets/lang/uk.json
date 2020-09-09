@@ -47,5 +47,8 @@
   "weekday_working": "В Выходные дни:",
   "clipboard_copy": "Сокпировано в буфер обмена",
   "done": "Готово",
-  "cancel": "Отменить"
+  "cancel": "Отменить",
+  "phone_not_found": "Пользователя с таким номером не существует",
+  "success_password_change": "Пароль изменен",
+  "success_password_change_help": "Теперь вы можете авторизоваться с новым паролем"
 }

@@ -48,5 +48,8 @@
   "weekday_working": "Weekends:",
   "clipboard_copy": "Copied to Сlipboard",
   "done": "Done",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "phone_not_found": "User with this phone number does not exist",
+  "success_password_change": "Password changed",
+  "success_password_change_help": "Now you can log in with a new password"
 }

@@ -65,6 +65,7 @@ abstract class SharedPrefs {
 
   static void saveUserFirebaseUid(String uid) {
     print('SharedPrefs: saveUserFirebaseUid');
+    print('Frirebase user uid: $uid');
 
     _prefs.setString(
         _firebaseUserUid, (uid != null && uid.isNotEmpty) ? uid : '');

@@ -5,6 +5,7 @@ import 'package:black_dog/screens/home_page.dart';
 import 'package:black_dog/screens/user//sign_in.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,6 +30,7 @@ void main() async {
 
   // Crashlytics.instance.enableInDevMode = true;
   FlutterError.onError = Crashlytics.instance.recordFlutterError;
+  Firebase.initializeApp();
 
   runApp(BlackDogApp());
 }

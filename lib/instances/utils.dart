@@ -121,7 +121,7 @@ class Utils {
               top: 10,
               left: 10,
               bottom: bottomPadding ? ScreenSize.elementIndentHeight : 0),
-          child: Text(fieldsError['all'],
+          child: Text(fieldsError['all'] ?? '',
               style: TextStyle(
                 color: Colors.red.withOpacity(0.9),
                 fontSize: 12,
