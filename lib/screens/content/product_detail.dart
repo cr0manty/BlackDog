@@ -1,6 +1,7 @@
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/menu_item.dart';
 import 'package:black_dog/utils/hex_color.dart';
+import 'package:black_dog/utils/image_view.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/utils/scroll_glow.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
@@ -94,12 +95,7 @@ class _ProductDetailState extends State<ProductDetail>
               ),
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: widget.product.image != null
-                      ? FadeInImage.assetNetwork(
-                          placeholder: Utils.loadImage,
-                          image: widget.product.image,
-                          fit: BoxFit.cover)
-                      : Image.asset(Utils.defaultImage, fit: BoxFit.cover))),
+                  child: ImageView(widget.product.image))),
         ),
         Container(
             margin: EdgeInsets.symmetric(vertical: 20, horizontal: 16),

@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:barcode_scan/platform_wrapper.dart';
 import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/models/log.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/instances/utils.dart';
+import 'package:black_dog/widgets/log_card.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:black_dog/widgets/user_card.dart';
@@ -16,6 +18,9 @@ import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/screens/user/sign_in.dart';
+import 'package:intl/intl.dart';
+
+import 'content/log_list.dart';
 
 class StaffHomePage extends StatefulWidget {
   @override
@@ -25,71 +30,85 @@ class StaffHomePage extends StatefulWidget {
 class _StaffHomePageState extends State<StaffHomePage> {
   final ScrollController _scrollController = ScrollController();
   StreamSubscription _apiChange;
+  List<Log> _logs = [];
 
   bool isLoading = false;
-  bool isLoadingData = true;
-  bool initialLoad = true;
   bool isCalling = false;
 
   void initDependencies() async {
-    await Account.instance.refreshUser();
-    setState(() => isLoadingData = false);
+    Account.instance.refreshUser().then((value) => setState(() {}));
+    setState(() {});
   }
+
+  String get currentDate => DateFormat('M/d/y').format(DateTime.now());
 
   @override
   void initState() {
     _apiChange = Api.instance.apiChange.listen((event) => setState(() {}));
     Api.instance.sendFCMToken();
+    _logs = SharedPrefs.getLastLogs();
+    Api.instance.getLogs(date: currentDate).then((logs) {
+      SharedPrefs.saveLastLogs(logs);
+      setState(() => _logs = logs);
+    });
     super.initState();
   }
 
   void _onScanTap() async {
-      setState(() => isLoading = !isLoading);
+    setState(() => isLoading = !isLoading);
 
-      var result = await BarcodeScanner.scan();
-      print('Scanned QR Code url: ${result.rawContent}');
+    var result = await BarcodeScanner.scan();
+    print('Scanned QR Code url: ${result.rawContent}');
 
-      if (result.rawContent.isNotEmpty) {
-        Map scanned = await Api.instance.staffScanQRCode(result.rawContent);
-        if (scanned['result']) {
-          EasyLoading.instance..backgroundColor = Colors.green.withOpacity(0.8);
-          EasyLoading.showSuccess(scanned['message']);
-        } else {
-          print(scanned);
-          EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
-          EasyLoading.showError('');
-        }
+    if (result.rawContent.isNotEmpty) {
+      Map scanned = await Api.instance.staffScanQRCode(result.rawContent);
+      if (scanned['result']) {
+        EasyLoading.instance..backgroundColor = Colors.green.withOpacity(0.8);
+        EasyLoading.showSuccess(scanned['message']);
+      } else {
+        print(scanned);
+        EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
+        EasyLoading.showError('');
       }
-      setState(() => isLoading = !isLoading);
+    }
+    setState(() => isLoading = !isLoading);
   }
 
   @override
   Widget build(BuildContext context) {
-    Utils.instance.initScreenSize(MediaQuery
-        .of(context)
-        .size);
+    Utils.instance.initScreenSize(MediaQuery.of(context).size);
 
     return PageScaffold(
-      inAsyncCall: isLoading,
-      scrollController: _scrollController,
-      alwaysNavigation: true,
-      action:
-      RouteButton(
-        text: AppLocalizations.of(context).translate('logout'),
-        color: HexColor.lightElement,
-        onTap: () {
-          SharedPrefs.logout();
-          Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-              CupertinoPageRoute(builder: (context) => SignInPage()),
-                  (route) => false);
-        },
-      ),
-      children: <Widget>[
-        UserCard(onPressed: null, username: Account.instance.name),
-        SizedBox(height: ScreenSize.scanQRCodeIndent),
-        _buildScanQRCode()
-      ]
-    );
+        inAsyncCall: isLoading,
+        scrollController: _scrollController,
+        alwaysNavigation: true,
+        action: RouteButton(
+          text: AppLocalizations.of(context).translate('logout'),
+          color: HexColor.lightElement,
+          onTap: () {
+            SharedPrefs.logout();
+            Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+                CupertinoPageRoute(builder: (context) => SignInPage()),
+                (route) => false);
+          },
+        ),
+        children: <Widget>[
+          UserCard(onPressed: null, username: Account.instance.name),
+          _buildScanQRCode(),
+          _buildSection(
+            AppLocalizations.of(context).translate('scans'),
+            Column(
+                children: List.generate(
+                    _logs.length,
+                    (index) => LogCard(
+                          log: _logs[index],
+                        ))),
+            subWidgetText: AppLocalizations.of(context).translate('more'),
+            subWidgetAction: () => Navigator.of(context).push(
+              CupertinoPageRoute(builder: (context) => LogListPage()),
+            ),
+          )
+        ]);
   }
 
   Widget _buildScanQRCode() {
@@ -135,26 +154,20 @@ class _StaffHomePageState extends State<StaffHomePage> {
                 padding: EdgeInsets.symmetric(vertical: 8, horizontal: 7),
                 child: Text(
                   label,
-                  style: Theme
-                      .of(context)
-                      .textTheme
-                      .caption,
+                  style: Theme.of(context).textTheme.caption,
                 ),
               ),
               subWidgetText != null
                   ? CupertinoButton(
-                onPressed: subWidgetAction,
-                minSize: 0,
-                padding:
-                EdgeInsets.symmetric(vertical: 16, horizontal: 7),
-                child: Text(
-                  subWidgetText,
-                  style: Theme
-                      .of(context)
-                      .textTheme
-                      .subtitle1,
-                ),
-              )
+                      onPressed: subWidgetAction,
+                      minSize: 0,
+                      padding:
+                          EdgeInsets.symmetric(vertical: 16, horizontal: 7),
+                      child: Text(
+                        subWidgetText,
+                        style: Theme.of(context).textTheme.subtitle1,
+                      ),
+                    )
                   : Container(),
             ],
           ),

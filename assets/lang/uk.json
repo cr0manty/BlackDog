@@ -50,5 +50,11 @@
   "phone_not_found": "Пользователя с таким номером не существует",
   "success_password_change": "Пароль изменен",
   "success_password_change_help": "Теперь вы можете авторизоваться с новым паролем",
-  "continue": "Продолжить"
+  "continue": "Продолжить",
+  "scans": "Сканы",
+  "error_log": "Ошибка сканирования",
+  "success_log": "Успешное сканирование",
+  "scanned_user": "Пользователь",
+  "scanned_voucher": "Купон",
+  "unknown": "Неизвестно"
 }

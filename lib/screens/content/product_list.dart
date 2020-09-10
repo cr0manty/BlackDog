@@ -2,6 +2,7 @@ import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/menu_item.dart';
 import 'package:black_dog/screens/content/product_detail.dart';
+import 'package:black_dog/utils/image_view.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
@@ -96,12 +97,7 @@ class _ProductListState extends State<ProductList> {
               height: ScreenSize.menuItemSize,
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: menu.image != null
-                      ? FadeInImage.assetNetwork(
-                          placeholder: Utils.loadImage,
-                          image: menu.image,
-                          fit: BoxFit.cover)
-                      : Image.asset(Utils.defaultImage, fit: BoxFit.cover)),
+                  child: ImageView(menu.image)),
             ),
             Container(
               margin: EdgeInsets.only(left: 20),

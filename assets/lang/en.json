@@ -51,5 +51,11 @@
   "phone_not_found": "User with this phone number does not exist",
   "success_password_change": "Password changed",
   "success_password_change_help": "Now you can log in with a new password",
-  "continue": "Continue"
+  "continue": "Continue",
+  "scans": "Scans",
+  "error_log": "Scan error",
+  "success_log": "Successful scan",
+  "scanned_user": "User",
+  "scanned_voucher": "Voucher",
+  "unknown": "Unknown"
 }

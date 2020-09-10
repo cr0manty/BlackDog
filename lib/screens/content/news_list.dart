@@ -2,6 +2,7 @@ import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/news.dart';
 import 'package:black_dog/utils/hex_color.dart';
+import 'package:black_dog/utils/image_view.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
@@ -140,10 +141,7 @@ class _NewsListState extends State<NewsList> {
               height: ScreenSize.newsListImageSize,
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: FadeInImage.assetNetwork(
-                      placeholder: Utils.loadImage,
-                      image: news.previewImage,
-                      fit: BoxFit.cover)),
+                  child: ImageView(news.previewImage)),
             )
           ],
         ),

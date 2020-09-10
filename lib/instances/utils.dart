@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:black_dog/utils/image_view.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -60,11 +61,15 @@ abstract class ScreenSize {
 
   static double get maxTextWidth => width * 0.45;
 
+  static double get logMaxTextWidth => width * 0.5;
+
   static double get aboutUsCurrentHeight => height * 0.5;
 
   static double get logoWidth => width * 0.55;
 
   static double get logoHeight => height * 0.3;
+
+  static double get logHeight => 80;
 }
 
 class Utils {
@@ -140,7 +145,7 @@ class Utils {
       {@required String codeUrl,
       String textKey = 'scan_qr',
       bool isLocal = true}) async {
-    Image codeImage;
+    Widget codeImage;
     if (isLocal) {
       File qrCode = File(codeUrl);
 
@@ -149,8 +154,7 @@ class Utils {
             height: ScreenSize.qrCodeHeight, width: ScreenSize.width);
       }
     } else {
-      codeImage = Image.network(codeUrl);
-      await precacheImage(codeImage.image, context);
+      codeImage = ImageView(codeUrl);
     }
     if (codeImage == null) {
       EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);

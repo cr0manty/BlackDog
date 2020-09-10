@@ -2,6 +2,7 @@ import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/restaurant.dart';
 import 'package:black_dog/models/restaurant_config.dart';
 import 'package:black_dog/utils/hex_color.dart';
+import 'package:black_dog/utils/image_view.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
@@ -102,12 +103,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
             width: ScreenSize.width - 32,
             child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: config.image != null && config.image.isNotEmpty
-                    ? FadeInImage.assetNetwork(
-                        placeholder: Utils.loadImage,
-                        image: config.image,
-                        fit: BoxFit.fitWidth)
-                    : Image.asset(Utils.defaultImage, fit: BoxFit.cover)),
+                child: ImageView(config.image)),
           ),
         ),
         _buildSection(config.address, SFSymbols.placemark_fill, copy: true),

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:black_dog/models/log.dart';
 import 'package:black_dog/models/user.dart';
 import 'package:black_dog/models/voucher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,6 +16,7 @@ abstract class SharedPrefs {
   static const _currentVoucher = 'CurrentVoucher';
   static const _firebaseUserUid = 'FirebaseUserUID';
   static const _activeVouchers = 'ActiveVouchers';
+  static const _lastLogs = 'LastLogs';
 
   static SharedPreferences _prefs;
 
@@ -97,12 +99,21 @@ abstract class SharedPrefs {
   }
 
   static void saveActiveVoucher(List<Voucher> vouchers) {
-    print('SharedPrefs: $saveActiveVoucher');
+    print('SharedPrefs: saveActiveVoucher');
     List<String> _voucherStrings = [];
     vouchers.forEach((Voucher voucher) {
       _voucherStrings.add(voucherToJson(voucher));
     });
     _prefs.setStringList(_activeVouchers, _voucherStrings);
+  }
+
+  static void saveLastLogs(List<Log> logs) {
+    print('SharedPrefs: saveLastLogs');
+    List<String> _logStrings = [];
+    logs.forEach((Log log) {
+      _logStrings.add(logToJson(log));
+    });
+    _prefs.setStringList(_lastLogs, _logStrings);
   }
 
   static String getToken() {
@@ -164,13 +175,27 @@ abstract class SharedPrefs {
   static List<Voucher> getActiveVouchers() {
     print('SharedPrefs: getActiveVouchers');
     List<Voucher> vouchers = [];
+    List<String> activeVouchers = _prefs.getStringList(_activeVouchers) ?? [];
 
-    _prefs.getStringList(_activeVouchers).forEach((String voucherString) {
+    activeVouchers.forEach((String voucherString) {
       Map jsonData = json.decode(voucherString);
-      Voucher voucher = Voucher.fromJson(jsonData);
-      vouchers.add(voucher);
+      vouchers.add(Voucher.fromJson(jsonData));
     });
 
     return vouchers;
+  }
+
+   static List<Log> getLastLogs() {
+    print('SharedPrefs: getLastLogs');
+    List<Log> logs = [];
+
+    List<String> lastLogs = _prefs.getStringList(_lastLogs) ?? [];
+
+    lastLogs.forEach((String voucherString) {
+      Map jsonData = json.decode(voucherString);
+      logs.add(Log.fromJson(jsonData));
+    });
+
+    return logs;
   }
 }

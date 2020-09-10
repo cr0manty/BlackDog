@@ -7,6 +7,7 @@ import 'package:black_dog/models/restaurant_config.dart';
 import 'package:black_dog/screens/content/product_list.dart';
 import 'package:black_dog/screens/user/user_page.dart';
 import 'package:black_dog/utils/hex_color.dart';
+import 'package:black_dog/utils/image_view.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/utils/scroll_glow.dart';
 import 'package:black_dog/instances/utils.dart';
@@ -291,10 +292,7 @@ class _HomePageState extends State<HomePage> {
                 width: ScreenSize.newsImageWidth,
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
-                    child: FadeInImage.assetNetwork(
-                        placeholder: Utils.loadImage,
-                        image: news.previewImage,
-                        fit: BoxFit.cover)))
+                    child: ImageView(news.previewImage)))
           ],
         ),
       ),
@@ -323,12 +321,8 @@ class _HomePageState extends State<HomePage> {
                   height: ScreenSize.menuBlockHeight,
                   width: ScreenSize.width - 32,
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: FadeInImage.assetNetwork(
-                        placeholder: Utils.loadImage,
-                        image: category.image,
-                        fit: BoxFit.cover),
-                  ),
+                      borderRadius: BorderRadius.circular(10),
+                      child: ImageView(category.image)),
                 ),
                 Container(
                   decoration: BoxDecoration(

@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/shared_pref.dart';
+import 'package:black_dog/models/log.dart';
 import 'package:black_dog/models/menu_category.dart';
 import 'package:black_dog/models/menu_item.dart';
 import 'package:black_dog/models/news.dart';
@@ -46,8 +47,6 @@ class LogInterceptor implements InterceptorContract {
 class Api {
   static const defaultPerPage = 10;
   static const String _base_url = 'black-dog.redfoxproject.com';
-
-//  static const String _base_url = '10.0.2.2:8000';
 
   Api._internal();
 
@@ -384,6 +383,23 @@ class Api {
       print(error);
       return {'result': false};
     });
+  }
+
+  Future<List<Log>> getLogs(
+      {String date, int limit = defaultPerPage, int page = 0}) async {
+    final response = await _client.get(
+        _setUrl(path: '/logs/list/', params: {
+          'created': date,
+          'offset': '${page * limit}',
+          'limit': '$limit'
+        }),
+        headers: _setHeaders());
+    Map body = json.decode(utf8.decode(response.bodyBytes));
+    List<Log> logs = [];
+    if (response.statusCode == 200) {
+      body['results'].forEach((data) => logs.add(Log.fromJson(data)));
+    }
+    return logs;
   }
 
   void dispose() {
