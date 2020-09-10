@@ -38,7 +38,7 @@ class _UserPageState extends State<UserPage> {
   void initState() {
     _apiChange = Api.instance.apiChange.listen((event) => setState(() {}));
     _onMessage =
-        NotificationManager.instance.onMessage.listen(onNotificationMessage);
+        NotificationManager.instance.onMessage.listen((event) => setState(() {}));
     _vouchers = SharedPrefs.getActiveVouchers();
     currentVoucher = SharedPrefs.getCurrentVoucher();
     _connectionChange = ConnectionsCheck.instance.onChange.listen((event) => setState(() {}));
@@ -49,15 +49,6 @@ class _UserPageState extends State<UserPage> {
     currentVoucher = SharedPrefs.getCurrentVoucher();
     currentVoucher.purchaseCount = counter;
     SharedPrefs.saveCurrentVoucher(currentVoucher);
-  }
-
-  void onNotificationMessage(Map message) {
-    if (message['data']['code'] == 'qr_code_scanned') {
-      updateCounter(int.parse(message['data']['updated_counter'] ?? '0'));
-    } else if (message['data']['code'] == 'voucher_received') {
-      updateCounter(int.parse(message['data']['updated_counter'] ?? '0'));
-    }
-    setState(() {});
   }
 
   Widget _bonusWidget() {

@@ -33,8 +33,12 @@ class NotificationManager {
             Voucher voucher =
                 Voucher.fromStringJson(message['data']['voucher']);
             _updateVouchers(voucher: voucher);
+            _updateCounter(
+                int.parse(message['data']['updated_counter'] ?? '0'));
           } else if (message['data']['code'] == 'voucher_scanned') {
             _updateVouchers(id: int.parse(message['data']['voucher_id']));
+            _updateCounter(
+                int.parse(message['data']['updated_counter'] ?? '0'));
           }
           _onMessage.add(message);
         }
@@ -57,6 +61,12 @@ class NotificationManager {
       vouchers.add(voucher);
     }
     SharedPrefs.saveActiveVoucher(vouchers);
+  }
+
+  void _updateCounter(int counter) {
+    Voucher currentVoucher = SharedPrefs.getCurrentVoucher();
+    currentVoucher.purchaseCount = counter;
+    SharedPrefs.saveCurrentVoucher(currentVoucher);
   }
 
   Future<String> getToken() {

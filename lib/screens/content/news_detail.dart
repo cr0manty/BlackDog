@@ -45,7 +45,6 @@ class _NewsDetailState extends State<NewsDetail> {
     return PageScaffold(
       alwaysNavigation: true,
       shrinkWrap: true,
-      padding: EdgeInsets.symmetric(horizontal: 16),
       leading: RouteButton(
         defaultIcon: true,
         text: AppLocalizations.of(context)
@@ -68,7 +67,7 @@ class _NewsDetailState extends State<NewsDetail> {
                 height: ScreenSize.newsItemPhotoSize,
                 child: Image.asset(Utils.defaultImage, fit: BoxFit.cover))),
         Container(
-            margin: EdgeInsets.symmetric(vertical: 20),
+            margin: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
             alignment: Alignment.center,
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -84,9 +83,14 @@ class _NewsDetailState extends State<NewsDetail> {
                     ),
                   ),
                 ])),
-        Divider(color: HexColor.semiElement),
         Container(
-          margin: EdgeInsets.symmetric(vertical: 20),
+          child: Divider(
+            color: HexColor.semiElement,
+          ),
+          margin: EdgeInsets.symmetric(horizontal: 16),
+        ),
+        Container(
+          margin: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
           child: Text(widget.news.body ?? '',
               style: Theme.of(context).textTheme.subtitle2),
         )
