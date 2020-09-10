@@ -167,7 +167,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           print(authException.message);
           Navigator.of(context).pop();
           EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
-          EasyLoading.showError(authException.message);
+          EasyLoading.showError('');
         },
         codeSent: (String verificationId, [int forceResendingToken]) {
           showCupertinoDialog(

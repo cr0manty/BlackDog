@@ -97,7 +97,7 @@ class _ChangePasswordState extends State<ChangePassword> {
       bool result = response.remove('result');
       if (result) {
         EasyLoading.instance..backgroundColor = Colors.green.withOpacity(0.8);
-        EasyLoading.showSuccess(response['detail']);
+        EasyLoading.showSuccess('');
         Navigator.of(context).pop();
       } else {
         response.forEach((key, value) {

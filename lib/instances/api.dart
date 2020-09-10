@@ -83,7 +83,7 @@ class Api {
   }
 
   Future staffScanQRCode(String url) async {
-    if (!url.startsWith(_base_url)) {
+    if (!url.contains(_base_url)) {
       return {'result': false, 'message': null};
     }
     Response response = await _client.post(url, headers: _setHeaders());

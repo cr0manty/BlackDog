@@ -64,7 +64,7 @@ class _StaffHomePageState extends State<StaffHomePage> {
       Map scanned = await Api.instance.staffScanQRCode(result.rawContent);
       if (scanned['result']) {
         EasyLoading.instance..backgroundColor = Colors.green.withOpacity(0.8);
-        EasyLoading.showSuccess(scanned['message']);
+        EasyLoading.showSuccess('');
       } else {
         print(scanned);
         EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
