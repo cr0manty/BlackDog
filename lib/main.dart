@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/screens/home_page.dart';
+import 'package:black_dog/screens/staff_home.dart';
 import 'package:black_dog/screens/user//sign_in.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
@@ -141,10 +142,21 @@ class _BlackDogAppState extends State<BlackDogApp> {
           child: child,
         );
       },
-      home: Account.instance.state == AccountState.GUEST
-          ? SignInPage()
-          : HomePage(),
+      home: switchPages(),
     );
+  }
+
+  Widget switchPages() {
+    switch (Account.instance.state) {
+      case AccountState.GUEST:
+        return SignInPage();
+      case AccountState.STAFF:
+        return StaffHomePage();
+      case AccountState.USER:
+        return HomePage();
+      default:
+        return Container();
+    }
   }
 
   @override

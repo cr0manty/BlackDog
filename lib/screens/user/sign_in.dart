@@ -1,5 +1,6 @@
 import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/screens/staff_home.dart';
 import 'package:black_dog/screens/user/sign_up.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/utils/scroll_glow.dart';
@@ -7,7 +8,6 @@ import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/screens/home_page.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/widgets/input_field.dart';
-import 'package:black_dog/widgets/soacial_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -100,16 +100,15 @@ class _SignInPageState extends State<SignInPage> {
                                           Theme.of(context).textTheme.caption,
                                     ),
                                   ),
-
                                 ],
                               ),
                               Container(
-                                    margin: EdgeInsets.all(16),
-                                    alignment: Alignment.center,
-                                    child: Image.asset(Utils.logo,
-                                        height: ScreenSize.logoHeight,
-                                        width: ScreenSize.logoWidth),
-                                  ),
+                                margin: EdgeInsets.all(16),
+                                alignment: Alignment.center,
+                                child: Image.asset(Utils.logo,
+                                    height: ScreenSize.logoHeight,
+                                    width: ScreenSize.logoWidth),
+                              ),
                               Column(
                                 mainAxisSize: MainAxisSize.max,
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -214,7 +213,9 @@ class _SignInPageState extends State<SignInPage> {
       if (result && await Account.instance.setUser()) {
         Navigator.of(context).pushAndRemoveUntil(
             CupertinoPageRoute(
-                builder: (context) => HomePage(isInitView: false)),
+                builder: (context) => Account.instance.user.isStaff
+                    ? StaffHomePage()
+                    : HomePage(isInitView: false)),
             (route) => false);
       } else {
         response.forEach((key, value) {

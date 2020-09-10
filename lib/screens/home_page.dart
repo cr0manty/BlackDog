@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:barcode_scan/platform_wrapper.dart';
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/instances/connection_check.dart';
 import 'package:black_dog/models/restaurant.dart';
@@ -17,8 +16,6 @@ import 'package:black_dog/widgets/route_button.dart';
 import 'package:black_dog/widgets/user_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:black_dog/instances/account.dart';
@@ -26,7 +23,6 @@ import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/screens/content/about_us.dart';
 import 'package:black_dog/screens/content/news_detail.dart';
 import 'package:black_dog/screens/content/news_list.dart';
-import 'package:black_dog/screens/user/sign_in.dart';
 
 class HomePage extends StatefulWidget {
   final bool isInitView;
@@ -113,28 +109,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void _onScanTap() async {
-    if (Account.instance.state == AccountState.STAFF) {
-      setState(() => isLoading = !isLoading);
-
-      var result = await BarcodeScanner.scan();
-      print('Scanned QR Code url: ${result.rawContent}');
-
-      if (result.rawContent.isNotEmpty) {
-        Map scanned = await Api.instance.staffScanQRCode(result.rawContent);
-        if (scanned['result']) {
-          EasyLoading.instance..backgroundColor = Colors.green.withOpacity(0.8);
-          EasyLoading.showSuccess(scanned['message']);
-        } else {
-          print(scanned);
-          EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
-          EasyLoading.showError('');
-        }
-      }
-      setState(() => isLoading = !isLoading);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     Utils.instance.initScreenSize(MediaQuery.of(context).size);
@@ -142,82 +116,36 @@ class _HomePageState extends State<HomePage> {
     return PageScaffold(
       inAsyncCall: isLoading,
       scrollController: _scrollController,
-      alwaysNavigation: Account.instance.state == AccountState.STAFF,
-      action: Account.instance.state != AccountState.STAFF
-          ? RouteButton(
-              padding: EdgeInsets.only(top: 5),
-              iconColor: HexColor.lightElement,
-              textColor: HexColor.lightElement,
-              iconWidget: Container(
-                margin: EdgeInsets.only(left: 10),
-                child: SvgPicture.asset('assets/images/about_us.svg',
-                    color: HexColor.lightElement, height: 25, width: 22),
-              ),
-              iconFirst: false,
-              text: AppLocalizations.of(context).translate('about_us'),
-              onTap: isCalling
-                  ? null
-                  : () async {
-                      setState(
-                          () => isCalling = ConnectionsCheck.instance.isOnline);
-                      Restaurant _restaurant = await Api.instance.getAboutUs();
-                      List<RestaurantConfig> _restaurantConfigs =
-                          await Api.instance.getRestaurantConfig();
-                      if (_restaurant != null && _restaurantConfigs != null) {
-                        setState(() => isCalling = false);
-                        Navigator.of(context).push(CupertinoPageRoute(
-                            builder: (context) => AboutUsPage(
-                                restaurant: _restaurant,
-                                restaurantConfig: _restaurantConfigs)));
-                      }
-                    })
-          : RouteButton(
-              text: AppLocalizations.of(context).translate('logout'),
-              color: HexColor.lightElement,
-              onTap: () {
-                SharedPrefs.logout();
-                Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-                    CupertinoPageRoute(builder: (context) => SignInPage()),
-                    (route) => false);
-              },
-            ),
-      children: Account.instance.state == AccountState.STAFF
-          ? _buildStaff()
-          : _buildUser(),
+      alwaysNavigation: false,
+      action: RouteButton(
+          padding: EdgeInsets.only(top: 5),
+          iconColor: HexColor.lightElement,
+          textColor: HexColor.lightElement,
+          iconWidget: Container(
+            margin: EdgeInsets.only(left: 10),
+            child: SvgPicture.asset('assets/images/about_us.svg',
+                color: HexColor.lightElement, height: 25, width: 22),
+          ),
+          iconFirst: false,
+          text: AppLocalizations.of(context).translate('about_us'),
+          onTap: isCalling
+              ? null
+              : () async {
+                  setState(
+                      () => isCalling = ConnectionsCheck.instance.isOnline);
+                  Restaurant _restaurant = await Api.instance.getAboutUs();
+                  List<RestaurantConfig> _restaurantConfigs =
+                      await Api.instance.getRestaurantConfig();
+                  if (_restaurant != null && _restaurantConfigs != null) {
+                    setState(() => isCalling = false);
+                    Navigator.of(context).push(CupertinoPageRoute(
+                        builder: (context) => AboutUsPage(
+                            restaurant: _restaurant,
+                            restaurantConfig: _restaurantConfigs)));
+                  }
+                }),
+      children: _buildUser(),
     );
-  }
-
-  Widget _buildScanQRCode() {
-    return CupertinoButton(
-        onPressed: _onScanTap,
-        padding: EdgeInsets.symmetric(vertical: 20),
-        minSize: 0,
-        child: Container(
-          margin: EdgeInsets.symmetric(horizontal: ScreenSize.qrCodeMargin),
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: HexColor.cardBackground,
-          ),
-          height: ScreenSize.scanQRCodeSize,
-          child: Container(
-            alignment: FractionalOffset.center,
-            transform: Matrix4.translationValues(0, -5, 0),
-            child: Icon(
-              SFSymbols.camera_viewfinder,
-              size: ScreenSize.scanQRCodeIconSize,
-              color: HexColor.lightElement,
-            ),
-          ),
-        ));
-  }
-
-  List<Widget> _buildStaff() {
-    return <Widget>[
-      UserCard(onPressed: null, username: Account.instance.name),
-      SizedBox(height: ScreenSize.scanQRCodeIndent),
-      _buildScanQRCode()
-    ];
   }
 
   List<Widget> _buildUser() {
