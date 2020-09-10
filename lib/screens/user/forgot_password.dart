@@ -39,6 +39,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   List<Widget> _buildPhoneRequest() {
     return <Widget>[
       Container(
+          margin: EdgeInsets.only(top: 20),
           alignment: Alignment.center,
           child: TextInput(
             controller: _basicController,
@@ -81,6 +82,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   List<Widget> _buildNewPassword() {
     return <Widget>[
       Container(
+          margin: EdgeInsets.only(top: 20),
           alignment: Alignment.center,
           child: TextInput(
             controller: _basicController,
@@ -112,6 +114,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       alwaysNavigation: true,
       inAsyncCall: isLoading,
       shrinkWrap: true,
+      titleMargin: true,
       padding: EdgeInsets.symmetric(horizontal: 16),
       leading: RouteButton(
         defaultIcon: true,

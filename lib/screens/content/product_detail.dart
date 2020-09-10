@@ -132,16 +132,6 @@ class _ProductDetailState extends State<ProductDetail>
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    margin: EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      AppLocalizations.of(context).translate('size'),
-                      style: Theme.of(context).textTheme.subtitle1,
-                      textAlign: TextAlign.start,
-                    ),
-                  ),
-                  SizedBox(height: 10),
                   SizedBox(
                       height: 50,
                       width: ScreenSize.width,

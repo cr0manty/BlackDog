@@ -230,24 +230,32 @@ class _SignUpPageState extends State<SignUpPage> {
                                   padding: EdgeInsets.symmetric(vertical: 20),
                                   child: Column(
                                     children: <Widget>[
-                                      CupertinoButton(
-                                          onPressed: widget.signUpPageType ==
-                                                  SignUpPageType.MAIN_DATA
-                                              ? _mainRegistration
-                                              : _sendAdditionData,
-                                          color: HexColor.lightElement,
-                                          child: Text(
-                                            AppLocalizations.of(context)
-                                                .translate('register'),
-                                            overflow: TextOverflow.fade,
-                                            maxLines: 1,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline1
-                                                .copyWith(
-                                                    color:
-                                                        HexColor.darkElement),
-                                          )),
+                                      SizedBox(
+                                          width: ScreenSize.width - 64,
+                                          child: CupertinoButton(
+                                              onPressed: widget
+                                                          .signUpPageType ==
+                                                      SignUpPageType.MAIN_DATA
+                                                  ? _mainRegistration
+                                                  : _sendAdditionData,
+                                              color: HexColor.lightElement,
+                                              child: Text(
+                                                AppLocalizations.of(context)
+                                                    .translate(
+                                                        widget.signUpPageType ==
+                                                                SignUpPageType
+                                                                    .MAIN_DATA
+                                                            ? 'continue'
+                                                            : 'register'),
+                                                overflow: TextOverflow.fade,
+                                                maxLines: 1,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline1
+                                                    .copyWith(
+                                                        color: HexColor
+                                                            .darkElement),
+                                              ))),
                                       CupertinoButton(
                                         onPressed: Navigator.of(context).pop,
                                         child: Text(

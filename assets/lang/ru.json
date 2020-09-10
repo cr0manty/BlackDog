@@ -43,7 +43,6 @@
   "last_name": "Фамилия",
   "sign_in_with": "Войти с помощью",
   "sign_up_with": "Зарегистрироваться с помощью",
-  "size": "Размер",
   "work_time": "Часы работы:",
   "weekday_working": "В Выходные дни:",
   "clipboard_copy": "Сокпировано в буфер обмена",
@@ -51,5 +50,6 @@
   "cancel": "Отменить",
   "phone_not_found": "Пользователя с таким номером не существует",
   "success_password_change": "Пароль изменен",
-  "success_password_change_help": "Теперь вы можете авторизоваться с новым паролем"
+  "success_password_change_help": "Теперь вы можете авторизоваться с новым паролем",
+  "continue": "Продолжить"
 }

@@ -43,7 +43,6 @@
   "last_name": "Last name",
   "sign_in_with": "Login with",
   "sign_up_with": "Register with",
-  "size": "Size",
   "work_time": "Work time:",
   "weekday_working": "Weekends:",
   "clipboard_copy": "Copied to Сlipboard",
@@ -51,5 +50,6 @@
   "cancel": "Cancel",
   "phone_not_found": "User with this phone number does not exist",
   "success_password_change": "Password changed",
-  "success_password_change_help": "Now you can log in with a new password"
+  "success_password_change_help": "Now you can log in with a new password",
+  "continue": "Continue"
 }
