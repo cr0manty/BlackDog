@@ -82,5 +82,5 @@ class Log {
   String scanType(BuildContext context) =>
       AppLocalizations.of(context).translate(errorMessage != null
           ? 'unknown'
-          : (voucher != null ? 'scanned_user' : 'scanned_voucher'));
+          : (voucher != null ? 'scanned_voucher': 'scanned_user'));
 }

@@ -1,5 +1,4 @@
 import 'package:black_dog/instances/api.dart';
-import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/models/log.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
@@ -58,16 +57,26 @@ class _LogListPageState extends State<LogListPage> {
           onTap: Navigator.of(context).pop,
         ),
         title: Text(
-          AppLocalizations.of(context).translate('news'),
+          AppLocalizations.of(context).translate('scans'),
           style: Theme.of(context).textTheme.caption,
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
         ),
-        children: List.generate(
-            logList.length,
-            (index) => LogCard(
-                  log: logList[index],
-                )));
+        children: List.generate(logList.length + 1, _buildLog));
+  }
+
+  Widget _buildLog(int index) {
+    if (index == logList.length) {
+      return Container(
+        padding: EdgeInsets.only(top: 10),
+        alignment: Alignment.center,
+        height: showProgress ? 50 : 0,
+        child: CupertinoActivityIndicator(),
+      );
+    }
+    return LogCard(
+      log: logList[index],
+    );
   }
 
   @override

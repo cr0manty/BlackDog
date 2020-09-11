@@ -57,5 +57,6 @@
   "success_log": "Successful scan",
   "scanned_user": "User",
   "scanned_voucher": "Voucher",
-  "unknown": "Unknown"
+  "unknown": "Unknown",
+  "no_logs": "No scans yet"
 }

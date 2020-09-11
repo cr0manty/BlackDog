@@ -97,12 +97,21 @@ class _StaffHomePageState extends State<StaffHomePage> {
           _buildScanQRCode(),
           _buildSection(
             AppLocalizations.of(context).translate('scans'),
-            Column(
-                children: List.generate(
-                    _logs.length,
-                    (index) => LogCard(
-                          log: _logs[index],
-                        ))),
+            _logs.length > 0
+                ? Column(
+                    children: List.generate(
+                        _logs.length,
+                        (index) => LogCard(
+                              log: _logs[index],
+                            )))
+                : Container(
+                    width: ScreenSize.width,
+                    child: Center(
+                        child: Text(
+                      AppLocalizations.of(context).translate('no_logs'),
+                      style: Theme.of(context).textTheme.subtitle1,
+                    )),
+                  ),
             subWidgetText: AppLocalizations.of(context).translate('more'),
             subWidgetAction: () => Navigator.of(context).push(
               CupertinoPageRoute(builder: (context) => LogListPage()),
