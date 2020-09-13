@@ -363,8 +363,11 @@ class Api {
               'phone_number': phone,
             },
             headers: _setHeaders(useToken: false));
-    Map body = json.decode(utf8.decode(response.bodyBytes));
-    return body['phone_number_taken'];
+    if (response.statusCode == 200) {
+      Map body = json.decode(utf8.decode(response.bodyBytes));
+      return body['phone_number_taken'];
+    }
+    return false;
   }
 
   Future loginByFirebaseUserUid(String token) async {

@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:black_dog/utils/localization.dart';
+
 String restaurantConfigToJson(RestaurantConfig data) {
   final str = data.toJson();
   return json.encode(str);
@@ -35,16 +37,17 @@ class RestaurantConfig {
       this.weekendWorkingHours,
       this.shortDescription});
 
-  factory RestaurantConfig.fromJson(Map<String, dynamic> data) => RestaurantConfig(
-      id: data['id'],
-      image: data['image'],
-      branchPhone: data['branch_phone'],
-      branchName: data['branch_name'],
-      weekdayWorkingHours: data['weekday_working_hours'],
-      weekendWorkingHours: data['weekend_working_hours'],
-      address: data['address'],
-      googleMapsIframe: data['google_maps_iframe'],
-      shortDescription: data['short_description']);
+  factory RestaurantConfig.fromJson(Map<String, dynamic> data) =>
+      RestaurantConfig(
+          id: data['id'],
+          image: data['image'],
+          branchPhone: data['branch_phone'],
+          branchName: data['branch_name'],
+          weekdayWorkingHours: data['weekday_working_hours'],
+          weekendWorkingHours: data['weekend_working_hours'],
+          address: data['address'],
+          googleMapsIframe: data['google_maps_iframe'],
+          shortDescription: data['short_description']);
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -57,4 +60,11 @@ class RestaurantConfig {
         'google_maps_iframe': googleMapsIframe,
         'short_description': shortDescription,
       };
+
+  String workTime(context) {
+    return AppLocalizations.of(context).translate('work_time') +
+        ' $weekdayWorkingHours\n' +
+        AppLocalizations.of(context).translate('weekday_working') +
+        ' $weekendWorkingHours';
+  }
 }

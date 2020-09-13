@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:black_dog/models/log.dart';
+import 'package:black_dog/models/restaurant.dart';
 import 'package:black_dog/models/user.dart';
 import 'package:black_dog/models/voucher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,6 +18,7 @@ abstract class SharedPrefs {
   static const _firebaseUserUid = 'FirebaseUserUID';
   static const _activeVouchers = 'ActiveVouchers';
   static const _lastLogs = 'LastLogs';
+  static const _abutUs = 'AboutUs';
 
   static SharedPreferences _prefs;
 
@@ -116,6 +118,11 @@ abstract class SharedPrefs {
     _prefs.setStringList(_lastLogs, _logStrings);
   }
 
+  static void saveAboutUs(Restaurant restaurant) {
+    print('SharedPrefs: saveAboutUs');
+    _prefs.setString(_abutUs, restaurantToJson(restaurant));
+  }
+
   static String getToken() {
     print('SharedPrefs: getToken');
 
@@ -197,5 +204,12 @@ abstract class SharedPrefs {
     });
 
     return logs;
+  }
+
+  static Restaurant getAboutUs() {
+    print('SharedPrefs: getAboutUs');
+
+    String lastLogs = _prefs.getString(_abutUs);
+    return restaurantFromJson(lastLogs);
   }
 }

@@ -58,5 +58,8 @@
   "scanned_user": "User",
   "scanned_voucher": "Voucher",
   "unknown": "Unknown",
-  "no_logs": "No scans yet"
+  "no_logs": "No scans yet",
+  "success_register": "Registration completed successfully",
+  "success_register_content": "Now you can log in using your phone number and password",
+  "show_on_map": "Show on map"
 }

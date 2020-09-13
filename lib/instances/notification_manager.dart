@@ -4,11 +4,16 @@ import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/models/voucher.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
+import 'api.dart';
+
+enum NotificationType { VOUCHER_RECEIVED, VOUCHER_SCANNED, QR_CODE_SCANNED }
+
 class NotificationManager {
   static final NotificationManager instance = NotificationManager._internal();
-  final StreamController<Map> _onMessage = StreamController<Map>.broadcast();
+  final StreamController<NotificationType> _onMessage =
+      StreamController<NotificationType>.broadcast();
 
-  Stream<Map> get onMessage => _onMessage.stream;
+  Stream<NotificationType> get onMessage => _onMessage.stream;
 
   NotificationManager._internal();
 
@@ -19,44 +24,41 @@ class NotificationManager {
     await _fcm.requestNotificationPermissions();
 
     _fcm.onTokenRefresh.listen((token) async {
+      Api.instance.sendFCMToken();
       SharedPrefs.saveFCMToken(token);
       print('FCM Token: $token');
     });
 
     _fcm.configure(
-      onMessage: (Map<String, dynamic> message) async => _onMessageHandler(message),
-      onLaunch: (Map<String, dynamic> message) async {
-        print("onLaunch: $message");
-      },
-      onResume: (Map<String, dynamic> message) async {
-        print("onResume: $message");
-      },
-    );
+        onMessage: _foregroundHandler,
+        onLaunch: _foregroundHandler,
+        onResume: _foregroundHandler);
   }
 
   void _onMessageHandler(Map<String, dynamic> message) {
-      print("onMessage: $message");
+    print("onMessage: $message");
 
-      if (message['data'] != null) {
-        print("Message date type: ${message['data']['code']}");
-        if (message['data']['code'] == 'voucher_received') {
-          Voucher voucher =
-          Voucher.fromStringJson(message['data']['voucher']);
-          _updateVouchers(voucher: voucher);
-          _updateCounter(
-              int.parse(message['data']['updated_counter'] ?? '0'));
-        } else if (message['data']['code'] == 'voucher_scanned') {
-          _updateVouchers(id: int.parse(message['data']['voucher_id']));
-          _updateCounter(
-              int.parse(message['data']['updated_counter'] ?? '0'));
-        }
-        _onMessage.add(message);
+    if (message.containsKey('data')) {
+      print("Message date type: ${message['data']['code']}");
+      if (message['data']['code'] == 'voucher_received') {
+        Voucher voucher = Voucher.fromStringJson(message['data']['voucher']);
+        _updateVouchers(voucher: voucher);
+        _updateCounter(int.parse(message['data']['updated_counter'] ?? '0'));
+        _onMessage.add(NotificationType.VOUCHER_RECEIVED);
+      } else if (message['data']['code'] == 'voucher_scanned') {
+        _updateVouchers(id: int.parse(message['data']['voucher_id']));
+        _updateCounter(int.parse(message['data']['updated_counter'] ?? '0'));
+        _onMessage.add(NotificationType.VOUCHER_SCANNED);
+      } else if (message['data']['code'] == 'qr_code_scanned') {
+        _updateCounter(int.parse(message['data']['updated_counter'] ?? '0'));
+        _onMessage.add(NotificationType.QR_CODE_SCANNED);
       }
+    }
   }
 
-  Future<dynamic> myBackgroundMessageHandler(
-          Map<String, dynamic> message) async =>
-      _onMessageHandler(message);
+  Future _foregroundHandler(Map<String, dynamic> message) async {
+    _onMessageHandler(message);
+  }
 
   void _updateVouchers({Voucher voucher, int id}) {
     List<Voucher> vouchers = SharedPrefs.getActiveVouchers();
@@ -70,7 +72,7 @@ class NotificationManager {
   }
 
   void _updateCounter(int counter) {
-    Voucher currentVoucher = SharedPrefs.getCurrentVoucher();
+    BaseVoucher currentVoucher = SharedPrefs.getCurrentVoucher();
     currentVoucher.purchaseCount = counter;
     SharedPrefs.saveCurrentVoucher(currentVoucher);
   }

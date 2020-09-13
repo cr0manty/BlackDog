@@ -48,6 +48,16 @@ class _SignInPageState extends State<SignInPage> {
     );
   }
 
+  void onFieldSubmitted() {
+    if (_phoneController.text.isEmpty) {
+      FocusScope.of(context).requestFocus(_phoneFocus);
+    } else if (_passwordController.text.isEmpty) {
+      FocusScope.of(context).unfocus();
+    } else {
+      loginClick();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Utils.instance.initScreenSize(MediaQuery.of(context).size);
@@ -113,40 +123,37 @@ class _SignInPageState extends State<SignInPage> {
                                 mainAxisSize: MainAxisSize.max,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
-                                  Container(
-                                      alignment: Alignment.center,
-                                      child: TextInput(
-                                        focusNode: _phoneFocus,
-                                        targetFocus: _passwordFocus,
-                                        controller: _phoneController,
-                                        keyboardType: TextInputType.phone,
-                                        hintText: AppLocalizations.of(context)
-                                            .translate('phone'),
-                                      )),
+                                  TextInput(
+                                    focusNode: _phoneFocus,
+                                    controller: _phoneController,
+                                    alignment: Alignment.center,
+                                    keyboardType: TextInputType.phone,
+                                    onFieldSubmitted: (_) =>
+                                        FocusScope.of(context)
+                                            .requestFocus(_passwordFocus),
+                                    hintText: AppLocalizations.of(context)
+                                        .translate('phone'),
+                                  ),
                                   Utils.instance.showValidateError(fieldsError,
                                       key: 'phone_number'),
-                                  Container(
-                                      alignment: Alignment.center,
-                                      child: TextInput(
-                                        obscureText: _obscureText,
-                                        controller: _passwordController,
-                                        focusNode: _passwordFocus,
-                                        hintText: AppLocalizations.of(context)
-                                            .translate('password'),
-                                        suffixIcon: GestureDetector(
-                                          child: Icon(
-                                              _obscureText
-                                                  ? Icons.remove_red_eye
-                                                  : Icons.visibility_off,
-                                              color: HexColor.darkElement),
-                                          onTap: () {
-                                            setState(() {
-                                              _obscureText = !_obscureText;
-                                            });
-                                          },
-                                        ),
-                                        inputAction: TextInputAction.done,
-                                      )),
+                                  TextInput(
+                                    alignment: Alignment.center,
+                                    obscureText: _obscureText,
+                                    controller: _passwordController,
+                                    focusNode: _passwordFocus,
+                                    hintText: AppLocalizations.of(context)
+                                        .translate('password'),
+                                    onFieldSubmitted: (_) => onFieldSubmitted(),
+                                    suffixIcon: GestureDetector(
+                                        child: Icon(
+                                            _obscureText
+                                                ? Icons.remove_red_eye
+                                                : Icons.visibility_off,
+                                            color: HexColor.darkElement),
+                                        onTap: () => setState(() =>
+                                            _obscureText = !_obscureText)),
+                                    inputAction: TextInputAction.done,
+                                  ),
                                   Utils.instance.showValidateError(fieldsError,
                                       key: 'password', bottomPadding: false),
                                   _forgotPassword()
@@ -215,7 +222,7 @@ class _SignInPageState extends State<SignInPage> {
             CupertinoPageRoute(
                 builder: (context) => Account.instance.user.isStaff
                     ? StaffHomePage()
-                    : HomePage(isInitView: false)),
+                    : HomePage()),
             (route) => false);
       } else {
         response.forEach((key, value) {

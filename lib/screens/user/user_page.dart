@@ -38,17 +38,28 @@ class _UserPageState extends State<UserPage> {
   void initState() {
     _apiChange = Api.instance.apiChange.listen((event) => setState(() {}));
     _onMessage =
-        NotificationManager.instance.onMessage.listen((event) => setState(() {}));
+        NotificationManager.instance.onMessage.listen(onNotificationListener);
     _vouchers = SharedPrefs.getActiveVouchers();
     currentVoucher = SharedPrefs.getCurrentVoucher();
-    _connectionChange = ConnectionsCheck.instance.onChange.listen((event) => setState(() {}));
+    _connectionChange =
+        ConnectionsCheck.instance.onChange.listen((event) => setState(() {}));
     super.initState();
   }
 
-  void updateCounter(int counter) {
-    currentVoucher = SharedPrefs.getCurrentVoucher();
-    currentVoucher.purchaseCount = counter;
-    SharedPrefs.saveCurrentVoucher(currentVoucher);
+  void onNotificationListener(NotificationType event) {
+    switch (event) {
+      case NotificationType.VOUCHER_RECEIVED:
+        _vouchers = SharedPrefs.getActiveVouchers();
+        currentVoucher = SharedPrefs.getCurrentVoucher();
+        break;
+      case NotificationType.VOUCHER_SCANNED:
+        _vouchers = SharedPrefs.getActiveVouchers();
+        break;
+      case NotificationType.QR_CODE_SCANNED:
+        currentVoucher = SharedPrefs.getCurrentVoucher();
+        break;
+    }
+    setState(() {});
   }
 
   Widget _bonusWidget() {

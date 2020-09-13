@@ -1,7 +1,5 @@
 import 'dart:convert';
-
 import 'package:black_dog/instances/api.dart';
-import 'package:black_dog/instances/shared_pref.dart';
 
 Future vouchersFromJsonList(List vouchersList) async {
   List<Voucher> vouchers = [];

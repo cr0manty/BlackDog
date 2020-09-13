@@ -24,6 +24,8 @@ class ProfileSettings extends StatefulWidget {
 class _ProfileSettingsState extends State<ProfileSettings> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
+  final FocusNode _nameFocus = FocusNode();
+  final FocusNode _lastNameFocus = FocusNode();
   final GlobalKey _formKey = GlobalKey<FormState>();
   Map fieldsError = {};
   bool isLoading = false;
@@ -69,6 +71,9 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                     style: Theme.of(context).textTheme.bodyText1)),
             TextInput(
               controller: _nameController,
+              focusNode: _nameFocus,
+              onFieldSubmitted: (_) =>
+                  FocusScope.of(context).requestFocus(_lastNameFocus),
               hintText: AppLocalizations.of(context).translate('first_name'),
               keyboardType: TextInputType.name,
             ),
@@ -80,6 +85,9 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                     style: Theme.of(context).textTheme.bodyText1)),
             TextInput(
               controller: _lastNameController,
+              onFieldSubmitted: (_) =>
+                  FocusScope.of(context).requestFocus(_nameFocus),
+              focusNode: _lastNameFocus,
               hintText: AppLocalizations.of(context).translate('last_name'),
               keyboardType: TextInputType.phone,
             ),

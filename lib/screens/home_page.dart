@@ -5,7 +5,6 @@ import 'package:black_dog/instances/connection_check.dart';
 import 'package:black_dog/models/menu_category.dart';
 import 'package:black_dog/models/news.dart';
 import 'package:black_dog/models/restaurant.dart';
-import 'package:black_dog/models/restaurant_config.dart';
 import 'package:black_dog/screens/content/product_list.dart';
 import 'package:black_dog/screens/user/user_page.dart';
 import 'package:black_dog/utils/hex_color.dart';
@@ -28,10 +27,6 @@ import 'package:black_dog/screens/content/news_detail.dart';
 import 'package:black_dog/screens/content/news_list.dart';
 
 class HomePage extends StatefulWidget {
-  final bool isInitView;
-
-  HomePage({this.isInitView = true});
-
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -40,29 +35,20 @@ class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
   StreamSubscription _apiChange;
   StreamSubscription _connectionChange;
-  int categoryPage = 0;
 
   bool isLoading = false;
   bool isLoadingData = true;
   bool initialLoad = true;
   bool isCalling = false;
+  Restaurant _restaurant;
   Future<List<MenuCategory>> _category;
   Future<List<News>> _news;
 
-  void getMenuCategoryList() async {
-    // List category = await Api.instance.getCategories(page: categoryPage);
-    // setState(() {
-    //   if (_category.length % Api.defaultPerPage == 0) {
-    //     categoryPage++;
-    //     _category.addAll(category);
-    //   }
-    // });
-  }
-
   void initDependencies() async {
-    await Api.instance.getNewsConfig();
-    await Account.instance.refreshUser();
-    await Api.instance.voucherDetails();
+    Api.instance.getNewsConfig();
+    Account.instance.refreshUser();
+    Api.instance.voucherDetails();
+    Api.instance.getAboutUs().then((value) => _restaurant = value);
     setState(() => isLoadingData = false);
   }
 
@@ -71,20 +57,16 @@ class _HomePageState extends State<HomePage> {
       initialLoad = false;
       initDependencies();
     }
-    if (initialLoad) Api.instance.sendFCMToken();
   }
 
   @override
   void initState() {
     _apiChange = Api.instance.apiChange.listen((event) => setState(() {}));
+    _restaurant = SharedPrefs.getAboutUs();
+    _connectionChange =
+        ConnectionsCheck.instance.onChange.listen(onNetworkChange);
 
-    if (!Account.instance.user.isStaff) {
-      _connectionChange =
-          ConnectionsCheck.instance.onChange.listen(onNetworkChange);
-      _scrollController.addListener(_scrollListener);
-    }
-
-    _category = Api.instance.getCategories(page: categoryPage);
+    _category = Api.instance.getCategories(limit: 100);
     _news = Api.instance
         .getNewsList(page: 0, limit: SharedPrefs.getMaxNewsAmount());
     if (!ConnectionsCheck.instance.isOnline) {
@@ -95,51 +77,29 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
-  void _scrollListener() async {
-    // if (_scrollController.position.maxScrollExtent ==
-    //         _scrollController.offset &&
-    //      _category.length % Api.defaultPerPage == 0) {
-    //   getMenuCategoryList();
-    // }
-  }
-
   @override
   Widget build(BuildContext context) {
     Utils.instance.initScreenSize(MediaQuery.of(context).size);
 
     return PageScaffold(
-      inAsyncCall: isLoading,
-      scrollController: _scrollController,
-      alwaysNavigation: false,
-      action: RouteButton(
-          padding: EdgeInsets.only(top: 5),
-          iconColor: HexColor.lightElement,
-          textColor: HexColor.lightElement,
-          iconWidget: Container(
-            margin: EdgeInsets.only(left: 10),
-            child: SvgPicture.asset('assets/images/about_us.svg',
-                color: HexColor.lightElement, height: 25, width: 22),
-          ),
-          iconFirst: false,
-          text: AppLocalizations.of(context).translate('about_us'),
-          onTap: isCalling
-              ? null
-              : () async {
-                  setState(
-                      () => isCalling = ConnectionsCheck.instance.isOnline);
-                  Restaurant _restaurant = await Api.instance.getAboutUs();
-                  List<RestaurantConfig> _restaurantConfigs =
-                      await Api.instance.getRestaurantConfig();
-                  if (_restaurant != null && _restaurantConfigs != null) {
-                    setState(() => isCalling = false);
-                    Navigator.of(context).push(CupertinoPageRoute(
-                        builder: (context) => AboutUsPage(
-                            restaurant: _restaurant,
-                            restaurantConfig: _restaurantConfigs)));
-                  }
-                }),
-      children: _buildUser(),
-    );
+        inAsyncCall: isLoading,
+        scrollController: _scrollController,
+        alwaysNavigation: false,
+        action: RouteButton(
+            padding: EdgeInsets.only(top: 5),
+            iconColor: HexColor.lightElement,
+            textColor: HexColor.lightElement,
+            iconWidget: Container(
+              margin: EdgeInsets.only(left: 10),
+              child: SvgPicture.asset('assets/images/about_us.svg',
+                  color: HexColor.lightElement, height: 25, width: 22),
+            ),
+            iconFirst: false,
+            text: AppLocalizations.of(context).translate('about_us'),
+            onTap: () => Navigator.of(context).push(CupertinoPageRoute(
+                  builder: (context) => AboutUsPage(restaurant: _restaurant),
+                ))),
+        children: _buildUser());
   }
 
   Widget _buildFuture(BuildContext context, AsyncSnapshot snapshot,
@@ -169,8 +129,28 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Widget _buildNews(AsyncSnapshot snapshot) {
+    if (snapshot.connectionState == ConnectionState.done) {
+      int maxNews = SharedPrefs.getMaxNewsAmount();
+
+      return Row(
+          children: List.generate(
+              snapshot.data.length < maxNews ? snapshot.data.length : maxNews,
+              (index) => _buildNewsBlock(snapshot.data[index])));
+    }
+    return null;
+  }
+
+  Widget _buildCategories(AsyncSnapshot snapshot) {
+    if (snapshot.connectionState == ConnectionState.done) {
+      return Column(
+          children: List.generate(snapshot.data.length,
+              (index) => _buildMenu(snapshot.data[index])));
+    }
+    return null;
+  }
+
   List<Widget> _buildUser() {
-    int maxNews = SharedPrefs.getMaxNewsAmount();
     return [
       UserCard(
         topPadding: 10,
@@ -189,16 +169,7 @@ class _HomePageState extends State<HomePage> {
                   scrollDirection: Axis.horizontal,
                   child: FutureBuilder(
                     builder: (context, snapshot) => _buildFuture(
-                        context,
-                        snapshot,
-                        'no_news',
-                        Row(
-                            children: List.generate(
-                                snapshot.data.length < maxNews
-                                    ? snapshot.data.length
-                                    : maxNews,
-                                (index) =>
-                                    _buildNewsBlock(snapshot.data[index])))),
+                        context, snapshot, 'no_news', _buildNews(snapshot)),
                     future: _news,
                     initialData: false,
                   ))),
@@ -212,12 +183,7 @@ class _HomePageState extends State<HomePage> {
           AppLocalizations.of(context).translate('menu'),
           FutureBuilder(
             builder: (context, snapshot) => _buildFuture(
-                context,
-                snapshot,
-                'no_menu',
-                Column(
-                    children: List.generate(snapshot.data.length,
-                        (index) => _buildMenu(snapshot.data[index])))),
+                context, snapshot, 'no_menu', _buildCategories(snapshot)),
             future: _category,
             initialData: false,
           )),
