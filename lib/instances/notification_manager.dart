@@ -24,25 +24,7 @@ class NotificationManager {
     });
 
     _fcm.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print("onMessage: $message");
-
-        if (message['data'] != null) {
-          print("Message date type: ${message['data']['code']}");
-          if (message['data']['code'] == 'voucher_received') {
-            Voucher voucher =
-                Voucher.fromStringJson(message['data']['voucher']);
-            _updateVouchers(voucher: voucher);
-            _updateCounter(
-                int.parse(message['data']['updated_counter'] ?? '0'));
-          } else if (message['data']['code'] == 'voucher_scanned') {
-            _updateVouchers(id: int.parse(message['data']['voucher_id']));
-            _updateCounter(
-                int.parse(message['data']['updated_counter'] ?? '0'));
-          }
-          _onMessage.add(message);
-        }
-      },
+      onMessage: (Map<String, dynamic> message) async => _onMessageHandler(message),
       onLaunch: (Map<String, dynamic> message) async {
         print("onLaunch: $message");
       },
@@ -51,6 +33,30 @@ class NotificationManager {
       },
     );
   }
+
+  void _onMessageHandler(Map<String, dynamic> message) {
+      print("onMessage: $message");
+
+      if (message['data'] != null) {
+        print("Message date type: ${message['data']['code']}");
+        if (message['data']['code'] == 'voucher_received') {
+          Voucher voucher =
+          Voucher.fromStringJson(message['data']['voucher']);
+          _updateVouchers(voucher: voucher);
+          _updateCounter(
+              int.parse(message['data']['updated_counter'] ?? '0'));
+        } else if (message['data']['code'] == 'voucher_scanned') {
+          _updateVouchers(id: int.parse(message['data']['voucher_id']));
+          _updateCounter(
+              int.parse(message['data']['updated_counter'] ?? '0'));
+        }
+        _onMessage.add(message);
+      }
+  }
+
+  Future<dynamic> myBackgroundMessageHandler(
+          Map<String, dynamic> message) async =>
+      _onMessageHandler(message);
 
   void _updateVouchers({Voucher voucher, int id}) {
     List<Voucher> vouchers = SharedPrefs.getActiveVouchers();
