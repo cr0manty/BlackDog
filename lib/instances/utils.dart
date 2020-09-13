@@ -70,6 +70,8 @@ abstract class ScreenSize {
   static double get logoHeight => height * 0.3;
 
   static double get logHeight => 80;
+
+  static double get aboutUsLogoSize => height * 0.3;
 }
 
 class Utils {
@@ -94,6 +96,8 @@ class Utils {
     ScreenSize.height = size.height;
     ScreenSize.width = size.width;
   }
+
+  bool get popUpOnScreen => _showPopUp != null;
 
   String dateFormat(DateTime date) {
     if (date == null) {

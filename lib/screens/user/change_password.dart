@@ -55,10 +55,10 @@ class _ChangePasswordState extends State<ChangePassword> {
                   child: TextInput(
                     controller: _password1Controller,
                     focusNode: _password1Focus,
-                    targetFocus: _password2Focus,
+                    onFieldSubmitted: (_) => FocusScope.of(context).requestFocus(_password2Focus),
                     hintText:
                         AppLocalizations.of(context).translate('new_password'),
-                    inputAction: TextInputAction.done,
+                    inputAction: TextInputAction.next,
                     keyboardType: TextInputType.visiblePassword,
                   )),
               Utils.instance
@@ -68,6 +68,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                   child: TextInput(
                     controller: _password2Controller,
                     focusNode: _password2Focus,
+                    onFieldSubmitted: (_) => _changePassword(),
                     hintText: AppLocalizations.of(context)
                         .translate('confirm_password'),
                     inputAction: TextInputAction.done,

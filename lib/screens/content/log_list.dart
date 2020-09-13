@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/instances/connection_check.dart';
 import 'package:black_dog/models/log.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
@@ -15,6 +18,7 @@ class LogListPage extends StatefulWidget {
 
 class _LogListPageState extends State<LogListPage> {
   final ScrollController _scrollController = ScrollController();
+  StreamSubscription _connectionChange;
   List<Log> logList = [];
   bool showProgress = true;
   int page = 0;
@@ -23,6 +27,8 @@ class _LogListPageState extends State<LogListPage> {
   void initState() {
     _scrollController.addListener(_scrollListener);
     getLogList();
+    _connectionChange =
+        ConnectionsCheck.instance.onChange.listen((_) => getLogList());
     super.initState();
   }
 
@@ -82,6 +88,7 @@ class _LogListPageState extends State<LogListPage> {
   @override
   void dispose() {
     _scrollController?.removeListener(_scrollListener);
+    _connectionChange?.cancel();
     super.dispose();
   }
 }

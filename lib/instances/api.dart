@@ -165,7 +165,8 @@ class Api {
     return body;
   }
 
-  Future getNewsList({int limit = defaultPerPage, int page = 0}) async {
+  Future<List<News>> getNewsList(
+      {int limit = defaultPerPage, int page = 0}) async {
     List<News> newsList = [];
     Response response = await _client.get(
         _setUrl(
@@ -198,7 +199,8 @@ class Api {
     return null;
   }
 
-  Future getCategories({int limit = defaultPerPage, int page = 0}) async {
+  Future<List<MenuCategory>> getCategories(
+      {int limit = defaultPerPage, int page = 0}) async {
     List<MenuCategory> _categories = [];
 
     Response response = await _client.get(
@@ -361,8 +363,11 @@ class Api {
               'phone_number': phone,
             },
             headers: _setHeaders(useToken: false));
-    Map body = json.decode(utf8.decode(response.bodyBytes));
-    return body['phone_number_taken'];
+    if (response.statusCode == 200) {
+      Map body = json.decode(utf8.decode(response.bodyBytes));
+      return body['phone_number_taken'];
+    }
+    return false;
   }
 
   Future loginByFirebaseUserUid(String token) async {

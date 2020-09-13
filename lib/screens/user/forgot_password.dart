@@ -15,8 +15,9 @@ enum PageState { ENTER_PHONE, NEW_PASSWORD }
 
 class ForgotPassword extends StatefulWidget {
   final PageState pageState;
+  final String token;
 
-  ForgotPassword({this.pageState = PageState.ENTER_PHONE});
+  ForgotPassword({this.token, this.pageState = PageState.ENTER_PHONE});
 
   @override
   _ForgotPasswordState createState() => _ForgotPasswordState();
@@ -43,6 +44,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           alignment: Alignment.center,
           child: TextInput(
             controller: _basicController,
+            onFieldSubmitted: (_) => _sendPhoneClick(),
             keyboardType: TextInputType.phone,
             hintText: AppLocalizations.of(context).translate('phone'),
             inputAction: TextInputAction.done,
@@ -87,7 +89,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           child: TextInput(
             controller: _basicController,
             focusNode: _password1Focus,
-            targetFocus: _password2Focus,
+            onFieldSubmitted: (_) =>
+                FocusScope.of(context).requestFocus(_password2Focus),
             keyboardType: TextInputType.visiblePassword,
             hintText: AppLocalizations.of(context).translate('new_password'),
             inputAction: TextInputAction.next,
@@ -99,6 +102,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             focusNode: _password2Focus,
             controller: _basicAdditionController,
             keyboardType: TextInputType.visiblePassword,
+            onFieldSubmitted: (_) => _sendNewPassword(),
             hintText:
                 AppLocalizations.of(context).translate('confirm_password'),
             inputAction: TextInputAction.done,

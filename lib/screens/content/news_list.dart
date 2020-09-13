@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/instances/connection_check.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/news.dart';
 import 'package:black_dog/utils/hex_color.dart';
@@ -18,6 +21,8 @@ class NewsList extends StatefulWidget {
 
 class _NewsListState extends State<NewsList> {
   final ScrollController _scrollController = ScrollController();
+  StreamSubscription _connectionChange;
+
   List<News> newsList = [];
   bool showProgress = true;
   int page = 0;
@@ -26,6 +31,8 @@ class _NewsListState extends State<NewsList> {
   void initState() {
     _scrollController.addListener(_scrollListener);
     getNewsList();
+    _connectionChange =
+        ConnectionsCheck.instance.onChange.listen((_) => getNewsList());
     super.initState();
   }
 
@@ -73,10 +80,12 @@ class _NewsListState extends State<NewsList> {
   Widget _buildNews(int index) {
     if (index == newsList.length) {
       return Container(
-        padding: EdgeInsets.only(top: 10),
+        margin: EdgeInsets.symmetric(vertical: 10),
         alignment: Alignment.center,
         height: showProgress ? 50 : 0,
-        child: CupertinoActivityIndicator(),
+        child: newsList.length % Api.defaultPerPage == 0
+            ? CupertinoActivityIndicator()
+            : Container(),
       );
     }
 
@@ -152,6 +161,7 @@ class _NewsListState extends State<NewsList> {
   @override
   void dispose() {
     _scrollController?.removeListener(_scrollListener);
+    _connectionChange?.cancel();
     super.dispose();
   }
 }

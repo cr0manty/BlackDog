@@ -14,6 +14,9 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
+import '../home_page.dart';
+import '../staff_home.dart';
+
 enum SignUpPageType { MAIN_DATA, ADDITION_DATA }
 
 class SignUpPage extends StatefulWidget {
@@ -61,7 +64,8 @@ class _SignUpPageState extends State<SignUpPage> {
             alignment: Alignment.center,
             child: TextInput(
               focusNode: _phoneFocus,
-              targetFocus: _password1Focus,
+              onFieldSubmitted: (_) =>
+                  FocusScope.of(context).requestFocus(_password1Focus),
               controller: _phoneController,
               keyboardType: TextInputType.phone,
               hintText: AppLocalizations.of(context).translate('phone'),
@@ -71,7 +75,8 @@ class _SignUpPageState extends State<SignUpPage> {
             alignment: Alignment.center,
             child: TextInput(
               focusNode: _password1Focus,
-              targetFocus: _password2Focus,
+              onFieldSubmitted: (_) =>
+                  FocusScope.of(context).requestFocus(_password2Focus),
               obscureText: _obscureText,
               controller: _password1Controller,
               hintText: AppLocalizations.of(context).translate('password'),
@@ -98,12 +103,10 @@ class _SignUpPageState extends State<SignUpPage> {
                         ? Icons.remove_red_eye
                         : Icons.visibility_off,
                     color: HexColor.darkElement),
-                onTap: () {
-                  setState(() {
-                    _obscureTextConfirm = !_obscureTextConfirm;
-                  });
-                },
+                onTap: () =>
+                    setState(() => _obscureTextConfirm = !_obscureTextConfirm),
               ),
+              onFieldSubmitted: (_) => onFieldSubmitted(registerWithPhone),
               validator: (String text) {
                 if (text != _password1Controller.text) {
                   return AppLocalizations.of(context)
@@ -127,7 +130,8 @@ class _SignUpPageState extends State<SignUpPage> {
             alignment: Alignment.center,
             child: TextInput(
               focusNode: _nameFocus,
-              targetFocus: _lastNameFocus,
+              onFieldSubmitted: (_) =>
+                  FocusScope.of(context).requestFocus(_lastNameFocus),
               controller: _nameController,
               keyboardType: TextInputType.name,
               hintText: AppLocalizations.of(context).translate('first_name'),
@@ -137,7 +141,7 @@ class _SignUpPageState extends State<SignUpPage> {
             alignment: Alignment.center,
             child: TextInput(
               focusNode: _lastNameFocus,
-              targetFocus: _phoneFocus,
+              onFieldSubmitted: (_) => _showModalBottomSheet(context),
               controller: _lastNameController,
               keyboardType: TextInputType.name,
               hintText: AppLocalizations.of(context).translate('last_name'),
@@ -170,6 +174,18 @@ class _SignUpPageState extends State<SignUpPage> {
         Utils.instance.showValidateError(fieldsError, key: 'birth_date'),
       ],
     );
+  }
+
+  void onFieldSubmitted(Function function) {
+    if (_phoneController.text.isEmpty) {
+      FocusScope.of(context).requestFocus(_phoneFocus);
+    } else if (_password1Controller.text.isEmpty) {
+      FocusScope.of(context).requestFocus(_password1Focus);
+    } else if (_password2Controller.text.isEmpty) {
+      FocusScope.of(context).unfocus();
+    } else {
+      function();
+    }
   }
 
   @override
@@ -233,11 +249,12 @@ class _SignUpPageState extends State<SignUpPage> {
                                       SizedBox(
                                           width: ScreenSize.width - 64,
                                           child: CupertinoButton(
-                                              onPressed: widget
-                                                          .signUpPageType ==
-                                                      SignUpPageType.MAIN_DATA
-                                                  ? _mainRegistration
-                                                  : _sendAdditionData,
+                                              onPressed:
+                                                  widget.signUpPageType ==
+                                                          SignUpPageType
+                                                              .ADDITION_DATA
+                                                      ? _additionRegister
+                                                      : _mainRegistration,
                                               color: HexColor.lightElement,
                                               child: Text(
                                                 AppLocalizations.of(context)
@@ -304,14 +321,18 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Map<String, String> _sendData() {
-    return {
-      'first_name': _nameController.text,
-      'last_name': _lastNameController.text,
-      'password1': _password1Controller.text,
-      'password2': _password2Controller.text,
-      'phone_number': _phoneController.text,
-      'birth_date': Utils.instance.dateFormat(selectedDate),
-    };
+    return widget.signUpPageType == SignUpPageType.MAIN_DATA
+        ? {
+            'password1': _password1Controller.text,
+            'password2': _password2Controller.text,
+            'phone_number': _phoneController.text,
+          }
+        : {
+            'birth_date': Utils.instance.dateFormat(selectedDate),
+            'first_name': _nameController.text,
+            'last_name': _lastNameController.text,
+            'firebase_uid': SharedPrefs.getUserFirebaseUID()
+          };
   }
 
   Future registerWithPhone() async {
@@ -323,7 +344,6 @@ class _SignUpPageState extends State<SignUpPage> {
         verificationCompleted: (AuthCredential credential) {},
         verificationFailed: (FirebaseAuthException authException) {
           print(authException.message);
-          Navigator.of(context).pop();
           EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
           EasyLoading.showError('');
         },
@@ -383,20 +403,37 @@ class _SignUpPageState extends State<SignUpPage> {
         });
   }
 
-  Future _sendAdditionData() async {
+  Future _additionRegister() async {
     setState(() => isLoading = !isLoading);
-    EasyLoading.showError('');
+    Map response = await Api.instance.updateUser(_sendData());
+    bool result = response.remove('result');
+    if (result && await Account.instance.setUser()) {
+      Navigator.of(context).pushAndRemoveUntil(
+          CupertinoPageRoute(
+              builder: (context) => Account.instance.user.isStaff
+                  ? StaffHomePage()
+                  : HomePage()),
+          (route) => false);
+    } else {
+      response.forEach((key, value) {
+        if (_fieldsList.contains(key)) {
+          fieldsError[key] = value[0];
+        } else {
+          fieldsError['all'] = value[0];
+        }
+      });
+    }
     setState(() => isLoading = !isLoading);
   }
 
-  Future _mainRegistration() async {
+  Future _mainRegistration({Function onEnd}) async {
     FocusScope.of(context).unfocus();
     setState(() => isLoading = !isLoading);
     fieldsError = {};
 
     await Api.instance.register(_sendData()).then((response) async {
       bool result = response.remove('result');
-      if (result && await Account.instance.setUser()) {
+      if (result) {
         registerWithPhone();
       } else {
         response.forEach((key, value) {

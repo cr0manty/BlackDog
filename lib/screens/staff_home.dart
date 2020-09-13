@@ -6,7 +6,6 @@ import 'package:black_dog/models/log.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/instances/utils.dart';
-import 'package:black_dog/widgets/log_card.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:black_dog/widgets/user_card.dart';
@@ -30,7 +29,7 @@ class StaffHomePage extends StatefulWidget {
 class _StaffHomePageState extends State<StaffHomePage> {
   final ScrollController _scrollController = ScrollController();
   StreamSubscription _apiChange;
-  List<Log> _logs = [];
+  Future<List<Log>> _logs;
 
   bool isLoading = false;
   bool isCalling = false;
@@ -45,18 +44,12 @@ class _StaffHomePageState extends State<StaffHomePage> {
   @override
   void initState() {
     _apiChange = Api.instance.apiChange.listen((event) => setState(() {}));
-    Api.instance.sendFCMToken();
-    _logs = SharedPrefs.getLastLogs();
-    Api.instance.getLogs(date: currentDate).then((logs) {
-      SharedPrefs.saveLastLogs(logs);
-      setState(() => _logs = logs);
-    });
+    _logs = Api.instance.getLogs(date: currentDate);
     super.initState();
   }
 
   void _onScanTap() async {
     setState(() => isLoading = !isLoading);
-
     var result = await BarcodeScanner.scan();
     print('Scanned QR Code url: ${result.rawContent}');
 
@@ -65,6 +58,7 @@ class _StaffHomePageState extends State<StaffHomePage> {
       if (scanned['result']) {
         EasyLoading.instance..backgroundColor = Colors.green.withOpacity(0.8);
         EasyLoading.showSuccess('');
+        _logs = Api.instance.getLogs(date: currentDate);
       } else {
         print(scanned);
         EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
@@ -72,6 +66,40 @@ class _StaffHomePageState extends State<StaffHomePage> {
       }
     }
     setState(() => isLoading = !isLoading);
+  }
+
+  Widget _buildFuture(BuildContext context, AsyncSnapshot snapshot) {
+    Widget noMenuData = Container(
+        width: ScreenSize.width,
+        child: Center(
+            child: Text(
+          AppLocalizations.of(context).translate('no_logs'),
+          style: Theme.of(context).textTheme.subtitle1,
+        )));
+
+    switch (snapshot.connectionState) {
+      case ConnectionState.none:
+      case ConnectionState.waiting:
+      case ConnectionState.active:
+        return Container(
+            width: ScreenSize.width,
+            child: Center(child: CupertinoActivityIndicator()));
+      case ConnectionState.done:
+        if (snapshot.hasData && snapshot.data.length > 0) {
+          SharedPrefs.saveLastLogs(snapshot.data);
+          return Container(
+            width: ScreenSize.width,
+            child: Center(
+                child: Text(
+              AppLocalizations.of(context).translate('no_logs'),
+              style: Theme.of(context).textTheme.subtitle1,
+            )),
+          );
+        }
+        return noMenuData;
+      default:
+        return noMenuData;
+    }
   }
 
   @override
@@ -97,21 +125,10 @@ class _StaffHomePageState extends State<StaffHomePage> {
           _buildScanQRCode(),
           _buildSection(
             AppLocalizations.of(context).translate('scans'),
-            _logs.length > 0
-                ? Column(
-                    children: List.generate(
-                        _logs.length,
-                        (index) => LogCard(
-                              log: _logs[index],
-                            )))
-                : Container(
-                    width: ScreenSize.width,
-                    child: Center(
-                        child: Text(
-                      AppLocalizations.of(context).translate('no_logs'),
-                      style: Theme.of(context).textTheme.subtitle1,
-                    )),
-                  ),
+            FutureBuilder(
+                builder: _buildFuture,
+                initialData: SharedPrefs.getLastLogs(),
+                future: _logs),
             subWidgetText: AppLocalizations.of(context).translate('more'),
             subWidgetAction: () => Navigator.of(context).push(
               CupertinoPageRoute(builder: (context) => LogListPage()),
