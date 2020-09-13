@@ -4,16 +4,19 @@ import 'dart:io';
 
 import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/shared_pref.dart';
+import 'package:black_dog/models/log.dart';
 import 'package:black_dog/models/menu_category.dart';
 import 'package:black_dog/models/menu_item.dart';
 import 'package:black_dog/models/news.dart';
 import 'package:black_dog/models/restaurant.dart';
+import 'package:black_dog/models/restaurant_config.dart';
 import 'package:black_dog/models/user.dart';
 import 'package:black_dog/models/voucher.dart';
-import 'package:black_dog/utils/connection_check.dart';
 import 'package:http/http.dart';
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:path_provider/path_provider.dart';
+
+import 'connection_check.dart';
 
 class LogInterceptor implements InterceptorContract {
   void printWrapped(String text) {
@@ -44,8 +47,6 @@ class LogInterceptor implements InterceptorContract {
 class Api {
   static const defaultPerPage = 10;
   static const String _base_url = 'black-dog.redfoxproject.com';
-
-//  static const String _base_url = '10.0.2.2:8000';
 
   Api._internal();
 
@@ -82,7 +83,7 @@ class Api {
   }
 
   Future staffScanQRCode(String url) async {
-    if (!url.startsWith(_base_url)) {
+    if (!url.contains(_base_url)) {
       return {'result': false, 'message': null};
     }
     Response response = await _client.post(url, headers: _setHeaders());
@@ -164,7 +165,8 @@ class Api {
     return body;
   }
 
-  Future getNewsList({int limit = defaultPerPage, int page = 0}) async {
+  Future<List<News>> getNewsList(
+      {int limit = defaultPerPage, int page = 0}) async {
     List<News> newsList = [];
     Response response = await _client.get(
         _setUrl(
@@ -197,7 +199,8 @@ class Api {
     return null;
   }
 
-  Future getCategories({int limit = defaultPerPage, int page = 0}) async {
+  Future<List<MenuCategory>> getCategories(
+      {int limit = defaultPerPage, int page = 0}) async {
     List<MenuCategory> _categories = [];
 
     Response response = await _client.get(
@@ -277,6 +280,23 @@ class Api {
     });
   }
 
+  Future getRestaurantConfig({int limit = defaultPerPage, int page = 0}) async {
+    List<RestaurantConfig> configs = [];
+    Response response = await _client.get(
+        _setUrl(
+          path: '/restaurant/branches',
+          params: {'offset': '${page * limit}', 'limit': '$limit'},
+        ),
+        headers: _setHeaders());
+
+    if (response.statusCode == 200) {
+      Map body = json.decode(utf8.decode(response.bodyBytes));
+      body['results']
+          .forEach((value) => configs.add(RestaurantConfig.fromJson(value)));
+    }
+    return configs;
+  }
+
   Future passwordReset(String email) async {
     return await _client
         .post(_setUrl(path: '/auth/password/reset/', base: true),
@@ -336,12 +356,55 @@ class Api {
         headers: _setHeaders(useJson: true));
   }
 
-  void sendFirebaseUserUID() async {
-    _client.post(_setUrl(path: '', base: true),
-        body: json.encode({
-          'token': SharedPrefs.getUserFirebaseUID(),
+  Future<bool> checkPhoneNumberExist(String phone) async {
+    final response =
+        await _client.post(_setUrl(path: '/user/is-phone-number-taken/'),
+            body: {
+              'phone_number': phone,
+            },
+            headers: _setHeaders(useToken: false));
+    if (response.statusCode == 200) {
+      Map body = json.decode(utf8.decode(response.bodyBytes));
+      return body['phone_number_taken'];
+    }
+    return false;
+  }
+
+  Future loginByFirebaseUserUid(String token) async {
+    return _client
+        .post(_setUrl(path: '/user/get-token-by-firebaseuid/'),
+            body: {
+              'firebase_uid': token,
+            },
+            headers: _setHeaders(useToken: false))
+        .then((response) {
+      bool result = response.statusCode == 200;
+      if (result) {
+        Map body = json.decode(response.body);
+        SharedPrefs.saveToken(body['token']);
+      }
+      return result;
+    }).catchError((error) {
+      print(error);
+      return {'result': false};
+    });
+  }
+
+  Future<List<Log>> getLogs(
+      {String date, int limit = defaultPerPage, int page = 0}) async {
+    final response = await _client.get(
+        _setUrl(path: '/logs/list/', params: {
+          'created': date,
+          'offset': '${page * limit}',
+          'limit': '$limit'
         }),
-        headers: _setHeaders(useJson: true));
+        headers: _setHeaders());
+    Map body = json.decode(utf8.decode(response.bodyBytes));
+    List<Log> logs = [];
+    if (response.statusCode == 200) {
+      body['results'].forEach((data) => logs.add(Log.fromJson(data)));
+    }
+    return logs;
   }
 
   void dispose() {

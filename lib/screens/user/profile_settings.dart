@@ -8,6 +8,7 @@ import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'change_password.dart';
 
@@ -23,6 +24,8 @@ class ProfileSettings extends StatefulWidget {
 class _ProfileSettingsState extends State<ProfileSettings> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
+  final FocusNode _nameFocus = FocusNode();
+  final FocusNode _lastNameFocus = FocusNode();
   final GlobalKey _formKey = GlobalKey<FormState>();
   Map fieldsError = {};
   bool isLoading = false;
@@ -61,25 +64,30 @@ class _ProfileSettingsState extends State<ProfileSettings> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Container(
-              padding: EdgeInsets.only(left: 10, bottom: 5),
-              alignment: Alignment.centerLeft,
+                padding: EdgeInsets.only(left: 10, bottom: 5),
+                alignment: Alignment.centerLeft,
                 child: Text(
                     AppLocalizations.of(context).translate('first_name'),
                     style: Theme.of(context).textTheme.bodyText1)),
             TextInput(
               controller: _nameController,
+              focusNode: _nameFocus,
+              onFieldSubmitted: (_) =>
+                  FocusScope.of(context).requestFocus(_lastNameFocus),
               hintText: AppLocalizations.of(context).translate('first_name'),
               keyboardType: TextInputType.name,
             ),
             Utils.instance.showValidateError(fieldsError, key: 'first_name'),
             Container(
-              padding: EdgeInsets.only(left: 10, bottom: 5),
-              alignment: Alignment.centerLeft,
-                child: Text(
-                    AppLocalizations.of(context).translate('last_name'),
+                padding: EdgeInsets.only(left: 10, bottom: 5),
+                alignment: Alignment.centerLeft,
+                child: Text(AppLocalizations.of(context).translate('last_name'),
                     style: Theme.of(context).textTheme.bodyText1)),
             TextInput(
               controller: _lastNameController,
+              onFieldSubmitted: (_) =>
+                  FocusScope.of(context).requestFocus(_nameFocus),
+              focusNode: _lastNameFocus,
               hintText: AppLocalizations.of(context).translate('last_name'),
               keyboardType: TextInputType.phone,
             ),
@@ -138,7 +146,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     }).catchError((error) {
       print(error);
       setState(() => isLoading = !isLoading);
-      Utils.instance.showErrorPopUp(context);
+      EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
+      EasyLoading.showError('');
     });
   }
 }

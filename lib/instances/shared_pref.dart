@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:black_dog/models/log.dart';
+import 'package:black_dog/models/restaurant.dart';
 import 'package:black_dog/models/user.dart';
 import 'package:black_dog/models/voucher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,6 +17,8 @@ abstract class SharedPrefs {
   static const _currentVoucher = 'CurrentVoucher';
   static const _firebaseUserUid = 'FirebaseUserUID';
   static const _activeVouchers = 'ActiveVouchers';
+  static const _lastLogs = 'LastLogs';
+  static const _abutUs = 'AboutUs';
 
   static SharedPreferences _prefs;
 
@@ -65,6 +69,7 @@ abstract class SharedPrefs {
 
   static void saveUserFirebaseUid(String uid) {
     print('SharedPrefs: saveUserFirebaseUid');
+    print('Frirebase user uid: $uid');
 
     _prefs.setString(
         _firebaseUserUid, (uid != null && uid.isNotEmpty) ? uid : '');
@@ -96,12 +101,26 @@ abstract class SharedPrefs {
   }
 
   static void saveActiveVoucher(List<Voucher> vouchers) {
-    print('SharedPrefs: $saveActiveVoucher');
+    print('SharedPrefs: saveActiveVoucher');
     List<String> _voucherStrings = [];
     vouchers.forEach((Voucher voucher) {
       _voucherStrings.add(voucherToJson(voucher));
     });
     _prefs.setStringList(_activeVouchers, _voucherStrings);
+  }
+
+  static void saveLastLogs(List<Log> logs) {
+    print('SharedPrefs: saveLastLogs');
+    List<String> _logStrings = [];
+    logs.forEach((Log log) {
+      _logStrings.add(logToJson(log));
+    });
+    _prefs.setStringList(_lastLogs, _logStrings);
+  }
+
+  static void saveAboutUs(Restaurant restaurant) {
+    print('SharedPrefs: saveAboutUs');
+    _prefs.setString(_abutUs, restaurantToJson(restaurant));
   }
 
   static String getToken() {
@@ -137,7 +156,7 @@ abstract class SharedPrefs {
   static int getMaxNewsAmount() {
     print('SharedPrefs: getMaxNewsAmount');
 
-    return _prefs.getInt(_maxNewsAmount) ?? 0;
+    return _prefs.getInt(_maxNewsAmount) ?? 5;
   }
 
   static BaseVoucher getCurrentVoucher() {
@@ -163,13 +182,34 @@ abstract class SharedPrefs {
   static List<Voucher> getActiveVouchers() {
     print('SharedPrefs: getActiveVouchers');
     List<Voucher> vouchers = [];
+    List<String> activeVouchers = _prefs.getStringList(_activeVouchers) ?? [];
 
-    _prefs.getStringList(_activeVouchers).forEach((String voucherString) {
+    activeVouchers.forEach((String voucherString) {
       Map jsonData = json.decode(voucherString);
-      Voucher voucher = Voucher.fromJson(jsonData);
-      vouchers.add(voucher);
+      vouchers.add(Voucher.fromJson(jsonData));
     });
 
     return vouchers;
+  }
+
+   static List<Log> getLastLogs() {
+    print('SharedPrefs: getLastLogs');
+    List<Log> logs = [];
+
+    List<String> lastLogs = _prefs.getStringList(_lastLogs) ?? [];
+
+    lastLogs.forEach((String voucherString) {
+      Map jsonData = json.decode(voucherString);
+      logs.add(Log.fromJson(jsonData));
+    });
+
+    return logs;
+  }
+
+  static Restaurant getAboutUs() {
+    print('SharedPrefs: getAboutUs');
+
+    String lastLogs = _prefs.getString(_abutUs);
+    return restaurantFromJson(lastLogs);
   }
 }

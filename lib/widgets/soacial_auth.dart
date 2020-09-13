@@ -1,6 +1,5 @@
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
@@ -33,12 +32,23 @@ class SocialAuth extends StatelessWidget {
               color: HexColor.lightElement,
             ),
           ),
+          SizedBox(width: 10),
+          CupertinoButton(
+            onPressed: _onAppleClick,
+            child: Icon(
+              SFSymbols.logo_apple,
+              size: 30,
+              color: HexColor.lightElement,
+            ),
+          ),
         ]);
   }
 
   void _onGoogleClick() {}
 
   void _onFacebookClick() {}
+
+  void _onAppleClick() {}
 
   @override
   Widget build(BuildContext context) {

@@ -16,6 +16,10 @@
 		<string>ru</string>
 		<string>ua</string>
 	</array>
+	<key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>itms</string>
+    </array>
 	<key>CFBundleName</key>
 	<string>Black Dog</string>
 	<key>CFBundlePackageType</key>

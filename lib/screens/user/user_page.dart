@@ -3,6 +3,7 @@ import 'dart:math' as math;
 
 import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/instances/connection_check.dart';
 import 'package:black_dog/instances/notification_manager.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/instances/utils.dart';
@@ -10,7 +11,6 @@ import 'package:black_dog/models/voucher.dart';
 import 'package:black_dog/screens/user/sign_in.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
-import 'package:black_dog/widgets/bottom_route.dart';
 import 'package:black_dog/widgets/circular_progress_indicator.dart';
 import 'package:black_dog/widgets/edit_button.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
@@ -28,6 +28,7 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
+  StreamSubscription _connectionChange;
   StreamSubscription _apiChange;
   StreamSubscription _onMessage;
   BaseVoucher currentVoucher;
@@ -37,23 +38,26 @@ class _UserPageState extends State<UserPage> {
   void initState() {
     _apiChange = Api.instance.apiChange.listen((event) => setState(() {}));
     _onMessage =
-        NotificationManager.instance.onMessage.listen(onNotificationMessage);
+        NotificationManager.instance.onMessage.listen(onNotificationListener);
     _vouchers = SharedPrefs.getActiveVouchers();
     currentVoucher = SharedPrefs.getCurrentVoucher();
+    _connectionChange =
+        ConnectionsCheck.instance.onChange.listen((event) => setState(() {}));
     super.initState();
   }
 
-  void updateCounter(int counter) {
-    currentVoucher = SharedPrefs.getCurrentVoucher();
-    currentVoucher.purchaseCount = counter;
-    SharedPrefs.saveCurrentVoucher(currentVoucher);
-  }
-
-  void onNotificationMessage(Map message) {
-    if (message['data']['code'] == 'qr_code_scanned') {
-      updateCounter(int.parse(message['data']['updated_counter'] ?? '0'));
-    } else if (message['data']['code'] == 'voucher_received') {
-      updateCounter(int.parse(message['data']['updated_counter'] ?? '0'));
+  void onNotificationListener(NotificationType event) {
+    switch (event) {
+      case NotificationType.VOUCHER_RECEIVED:
+        _vouchers = SharedPrefs.getActiveVouchers();
+        currentVoucher = SharedPrefs.getCurrentVoucher();
+        break;
+      case NotificationType.VOUCHER_SCANNED:
+        _vouchers = SharedPrefs.getActiveVouchers();
+        break;
+      case NotificationType.QR_CODE_SCANNED:
+        currentVoucher = SharedPrefs.getCurrentVoucher();
+        break;
     }
     setState(() {});
   }
@@ -190,12 +194,11 @@ class _UserPageState extends State<UserPage> {
                   ),
                   SizedBox(
                     width: ScreenSize.maxTextWidth,
-                    child: Text(
-                      voucher.discountType,
-                      style: Theme.of(context).textTheme.subtitle1,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
+                    child: Text(voucher.discountType,
+                        style: Theme.of(context).textTheme.subtitle1,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        textAlign: TextAlign.center),
                   ),
                   SizedBox(height: 5),
                   Text(
@@ -229,7 +232,8 @@ class _UserPageState extends State<UserPage> {
         onTap: () {
           SharedPrefs.logout();
           Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-              BottomRoute(page: SignInPage()), (route) => false);
+              CupertinoPageRoute(builder: (context) => SignInPage()),
+              (route) => false);
         },
       ),
       children: <Widget>[
@@ -260,6 +264,7 @@ class _UserPageState extends State<UserPage> {
   void dispose() {
     _apiChange?.cancel();
     _onMessage?.cancel();
+    _connectionChange?.cancel();
     super.dispose();
   }
 }

@@ -14,7 +14,8 @@ class TextInput extends StatefulWidget {
   final Color backgroundColor;
   final Color textColor;
   final FocusNode focusNode;
-  final FocusNode targetFocus;
+  final ValueChanged<String> onFieldSubmitted;
+  final AlignmentGeometry alignment;
 
   TextInput(
       {@required this.hintText,
@@ -28,7 +29,8 @@ class TextInput extends StatefulWidget {
       this.backgroundColor,
       this.textColor,
       this.focusNode,
-      this.targetFocus});
+      this.alignment,
+      this.onFieldSubmitted});
 
   @override
   State<StatefulWidget> createState() => TextInputState();
@@ -45,10 +47,10 @@ class TextInputState extends State<TextInput> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Container(
+      alignment: widget.alignment,
       margin: EdgeInsets.zero,
       color: Colors.transparent,
-      elevation: 0.0,
       child: TextFormField(
         focusNode: widget.focusNode,
         style: Theme.of(context)
@@ -60,15 +62,8 @@ class TextInputState extends State<TextInput> {
         validator: widget.validator,
         obscureText: widget.obscureText ?? false,
         controller: widget.controller,
-        onChanged: (String text) {
-          setState(() {
-            isEmpty = text.isEmpty;
-          });
-          widget.onChanged(text);
-        },
-        onFieldSubmitted: widget.inputAction == TextInputAction.next
-            ?  (_) => FocusScope.of(context).nextFocus()
-            : (_) => FocusScope.of(context).unfocus(),
+        onChanged: (String text) => setState(() => isEmpty = text.isEmpty),
+        onFieldSubmitted: widget.onFieldSubmitted,
         decoration: InputDecoration(
             hintText: widget.hintText,
             focusColor: Colors.transparent,

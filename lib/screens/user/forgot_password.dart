@@ -1,20 +1,23 @@
 import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/widgets/input_field.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-enum PageState { ENTER_PHONE, ENTER_CODE, NEW_PASSWORD }
+enum PageState { ENTER_PHONE, NEW_PASSWORD }
 
 class ForgotPassword extends StatefulWidget {
   final PageState pageState;
-  final Map tokens;
+  final String token;
 
-  ForgotPassword({this.pageState = PageState.ENTER_PHONE, this.tokens});
+  ForgotPassword({this.token, this.pageState = PageState.ENTER_PHONE});
 
   @override
   _ForgotPasswordState createState() => _ForgotPasswordState();
@@ -22,6 +25,7 @@ class ForgotPassword extends StatefulWidget {
 
 class _ForgotPasswordState extends State<ForgotPassword> {
   final TextEditingController _basicController = TextEditingController();
+  final TextEditingController _codeController = TextEditingController();
   final TextEditingController _basicAdditionController =
       TextEditingController();
   final FocusNode _password1Focus = FocusNode();
@@ -29,49 +33,31 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   Map _validationError = {};
   bool isLoading = false;
   static const List<String> _fieldsList = [
-    'phone_number',
-    'code',
     'new_password1',
     'new_password2',
   ];
 
-  List<Widget> _buildBasicField(
-      {String key, VoidCallback onPressed, String hint, bool isPhone = false}) {
+  List<Widget> _buildPhoneRequest() {
     return <Widget>[
-      _helpText(),
       Container(
+          margin: EdgeInsets.only(top: 20),
           alignment: Alignment.center,
           child: TextInput(
             controller: _basicController,
-            keyboardType: isPhone ? TextInputType.phone : TextInputType.text,
-            hintText: AppLocalizations.of(context).translate(hint ?? key),
+            onFieldSubmitted: (_) => _sendPhoneClick(),
+            keyboardType: TextInputType.phone,
+            hintText: AppLocalizations.of(context).translate('phone'),
             inputAction: TextInputAction.done,
           )),
-      Utils.instance.showValidateError(_validationError, key: key),
-      _confirmButton(onPressed: onPressed)
+      Utils.instance.showValidateError(_validationError, key: 'phone'),
+      _confirmButton(onPressed: _sendPhoneClick)
     ];
-  }
-
-  Widget _helpText() {
-    return widget.pageState == PageState.ENTER_CODE
-        ? Container(
-            padding: EdgeInsets.only(top: 10, bottom: 30),
-            child: Text(AppLocalizations.of(context).translate('reset_help'),
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyText2))
-        : Container();
   }
 
   List<Widget> _switchPages() {
     switch (widget.pageState) {
       case PageState.ENTER_PHONE:
-        return _buildBasicField(
-            isPhone: true,
-            key: 'phone',
-            hint: 'phone',
-            onPressed: _sendPhoneClick);
-      case PageState.ENTER_CODE:
-        return _buildBasicField(key: 'code', onPressed: _sendCodeConfirm);
+        return _buildPhoneRequest();
       case PageState.NEW_PASSWORD:
         return _buildNewPassword();
     }
@@ -98,11 +84,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   List<Widget> _buildNewPassword() {
     return <Widget>[
       Container(
+          margin: EdgeInsets.only(top: 20),
           alignment: Alignment.center,
           child: TextInput(
             controller: _basicController,
             focusNode: _password1Focus,
-            targetFocus: _password2Focus,
+            onFieldSubmitted: (_) =>
+                FocusScope.of(context).requestFocus(_password2Focus),
             keyboardType: TextInputType.visiblePassword,
             hintText: AppLocalizations.of(context).translate('new_password'),
             inputAction: TextInputAction.next,
@@ -114,6 +102,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             focusNode: _password2Focus,
             controller: _basicAdditionController,
             keyboardType: TextInputType.visiblePassword,
+            onFieldSubmitted: (_) => _sendNewPassword(),
             hintText:
                 AppLocalizations.of(context).translate('confirm_password'),
             inputAction: TextInputAction.done,
@@ -129,6 +118,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       alwaysNavigation: true,
       inAsyncCall: isLoading,
       shrinkWrap: true,
+      titleMargin: true,
       padding: EdgeInsets.symmetric(horizontal: 16),
       leading: RouteButton(
         defaultIcon: true,
@@ -142,36 +132,169 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     );
   }
 
-  void _sendPhoneClick() async {
-    setState(() => isLoading = !isLoading);
-    await Api.instance.passwordReset(_basicController.text).then((response) {
-      _validationError = {};
-      bool result = response.remove('result');
+  void onSuccessCode(String uid) async {
+    await Api.instance.loginByFirebaseUserUid(uid).then((result) {
       if (result) {
+        SharedPrefs.saveUserFirebaseUid(uid);
+        Navigator.of(context).pop();
         Navigator.of(context).pushReplacement(CupertinoPageRoute(
             builder: (context) => ForgotPassword(
-                  pageState: PageState.ENTER_CODE,
+                  pageState: PageState.NEW_PASSWORD,
                 )));
       } else {
-        response.forEach((key, value) =>
-            _validationError[_fieldsList.contains(key) ? key : 'all'] =
-                value[0]);
-        setState(() => isLoading = !isLoading);
+        Navigator.of(context).pop();
+        setState(() {
+          isLoading = !isLoading;
+          _validationError['phone'] =
+              AppLocalizations.of(context).translate('phone_not_found');
+        });
       }
     }).catchError((error) {
       print(error);
-      setState(() => isLoading = !isLoading);
-      Utils.instance.showErrorPopUp(context, text: error.toString());
+      setState(() {
+        isLoading = !isLoading;
+        _validationError['phone'] =
+            AppLocalizations.of(context).translate('phone_not_found');
+      });
     });
   }
 
-  void _sendCodeConfirm() async {
-    Navigator.of(context).pushReplacement(CupertinoPageRoute(
-        builder: (context) => ForgotPassword(
-              pageState: PageState.NEW_PASSWORD,
-              tokens: {},
-            )));
+  void _firebaseVerifyPhone() async {
+    _codeController.clear();
+    setState(() => isLoading = !isLoading);
+
+    FirebaseAuth.instance.verifyPhoneNumber(
+        phoneNumber: _basicController.text,
+        timeout: Duration(seconds: 60),
+        verificationCompleted: (AuthCredential credential) {},
+        verificationFailed: (FirebaseAuthException authException) {
+          print(authException.message);
+          Navigator.of(context).pop();
+          EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
+          EasyLoading.showError('');
+        },
+        codeSent: (String verificationId, [int forceResendingToken]) {
+          showCupertinoDialog(
+              context: context,
+              builder: (context) => CupertinoAlertDialog(
+                    title: Text(
+                        AppLocalizations.of(context).translate('enter_code'),
+                        style: Theme.of(context).textTheme.headline1),
+                    content: Container(
+                        margin: EdgeInsets.only(top: 10),
+                        child: CupertinoTextField(
+                          style: Theme.of(context).textTheme.subtitle2,
+                          controller: _codeController,
+                        )),
+                    actions: [
+                      CupertinoDialogAction(
+                        child: Text(
+                            AppLocalizations.of(context).translate('done')),
+                        onPressed: () async {
+                          AuthCredential credential =
+                              PhoneAuthProvider.credential(
+                                  verificationId: verificationId,
+                                  smsCode: _codeController.text.trim());
+                          UserCredential result = await FirebaseAuth.instance
+                              .signInWithCredential(credential)
+                              .catchError((error) {
+                            Navigator.of(context).pop();
+                            EasyLoading.instance
+                              ..backgroundColor = Colors.red.withOpacity(0.8);
+                            EasyLoading.showError('');
+                          });
+                          if (result != null && result.user != null) {
+                            onSuccessCode(result.user.uid);
+                          }
+                        },
+                      ),
+                      CupertinoDialogAction(
+                        isDestructiveAction: true,
+                        child: Text(
+                            AppLocalizations.of(context).translate('cancel')),
+                        onPressed: Navigator.of(context).pop,
+                      )
+                    ],
+                  ));
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          Navigator.of(context).pop();
+          verificationId = verificationId;
+          print('Time out: $verificationId');
+          EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
+          EasyLoading.showError('');
+        });
   }
 
-  void _sendNewPassword() async {}
+  void _sendPhoneClick() async {
+    FocusScope.of(context).unfocus();
+    setState(() => isLoading = !isLoading);
+    bool exist =
+        await Api.instance.checkPhoneNumberExist(_basicController.text); //
+    if (exist) {
+      _firebaseVerifyPhone();
+    } else {
+      setState(() {
+        isLoading = !isLoading;
+        _validationError['phone'] =
+            AppLocalizations.of(context).translate('phone_not_found');
+      });
+    }
+  }
+
+  Future showSuccessPopUp() {
+    setState(() => isLoading = false);
+
+    return showCupertinoDialog(
+        context: context,
+        builder: (context) => CupertinoAlertDialog(
+              title: Text(
+                  AppLocalizations.of(context)
+                      .translate('success_password_change'),
+                  style: Theme.of(context).textTheme.headline1),
+              content: Text(
+                  AppLocalizations.of(context)
+                      .translate('success_password_change_help'),
+                  style: Theme.of(context).textTheme.bodyText2),
+              actions: [
+                CupertinoDialogAction(
+                  child: Text(AppLocalizations.of(context).translate('done')),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            )).then((value) => Navigator.of(context).pop());
+  }
+
+  void _sendNewPassword() async {
+    FocusScope.of(context).requestFocus(FocusNode());
+    setState(() => isLoading = !isLoading);
+
+    _validationError = {};
+    await Api.instance.changePassword({
+      'new_password1': _basicController.text,
+      'new_password2': _basicAdditionController.text
+    }).then((response) async {
+      bool result = response.remove('result');
+      if (!result) {
+        response.forEach((key, value) {
+          if (_fieldsList.contains(key)) {
+            _validationError[key] = value[0];
+          } else {
+            _validationError['all'] = value[0];
+          }
+        });
+      } else {
+        showSuccessPopUp();
+      }
+      setState(() => isLoading = !isLoading);
+      return;
+    }).catchError((error) {
+      setState(() => isLoading = !isLoading);
+      print(error);
+      EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
+      EasyLoading.showError('');
+    });
+  }
 }

@@ -1,7 +1,9 @@
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/menu_item.dart';
 import 'package:black_dog/utils/hex_color.dart';
+import 'package:black_dog/utils/image_view.dart';
 import 'package:black_dog/utils/localization.dart';
+import 'package:black_dog/utils/scroll_glow.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,29 +21,55 @@ class ProductDetail extends StatefulWidget {
 
 class _ProductDetailState extends State<ProductDetail>
     with TickerProviderStateMixin {
+  AnimationController animationController;
   MenuItemVariation selectedVariation;
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  Animation animation;
+  int selectedVariationIndex = 0;
 
   Widget _buildVariation(int index) {
     MenuItemVariation variation = widget.product.variations[index];
     return GestureDetector(
-      onTap: () => setState(() => selectedVariation = variation),
-      child: Container(
-          height: 50,
-          width: 100,
-          padding: EdgeInsets.all(10),
-          margin: EdgeInsets.symmetric(horizontal: 10),
-          decoration: BoxDecoration(
-              color: HexColor.cardBackground.withOpacity(0.6),
-              borderRadius: BorderRadius.circular(10)),
-          child: Center(
-              child: Text(variation.name,
-                  style: Theme.of(context).textTheme.caption))),
+        onTap: () async {
+          if (selectedVariation != variation) {
+            animationController.reverse().then((value) {
+              setState(() {
+                selectedVariation = variation;
+                selectedVariationIndex = index;
+              });
+              animationController.forward();
+            });
+          }
+        },
+        child: selectedVariationIndex != index
+            ? _buildSizeElement(index)
+            : FadeTransition(
+                opacity: animationController
+                    .drive(CurveTween(curve: Curves.easeOut)),
+                child: _buildSizeElement(index)));
+  }
+
+  Widget _buildSizeElement(int index) {
+    return Container(
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+        margin: EdgeInsets.symmetric(horizontal: 10),
+        decoration: BoxDecoration(
+            color: selectedVariationIndex != index
+                ? HexColor.cardBackground.withOpacity(0.6)
+                : HexColor.semiElement.withOpacity(0.4),
+            borderRadius: BorderRadius.circular(10)),
+        child: Center(
+            child: Text(widget.product.variations[index].name,
+                style: Theme.of(context).textTheme.headline1)));
+  }
+
+  @override
+  void initState() {
+    animationController = AnimationController(
+      duration: Duration(milliseconds: 250),
+      vsync: this,
     );
+    animationController.forward();
+    super.initState();
   }
 
   @override
@@ -67,12 +95,7 @@ class _ProductDetailState extends State<ProductDetail>
               ),
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: widget.product.image != null
-                      ? FadeInImage.assetNetwork(
-                          placeholder: Utils.loadImage,
-                          image: widget.product.image,
-                          fit: BoxFit.cover)
-                      : Image.asset(Utils.defaultImage, fit: BoxFit.cover))),
+                  child: ImageView(widget.product.image))),
         ),
         Container(
             margin: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
@@ -86,14 +109,18 @@ class _ProductDetailState extends State<ProductDetail>
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                           style: Theme.of(context).textTheme.caption)),
-                  SizedBox(
-                      width: ScreenSize.maxTextWidth,
-                      child: Text(
-                          widget.product.priceWithCurrency(context,
-                              actualPrice: selectedVariation?.price),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          style: Theme.of(context).textTheme.subtitle1)),
+                  FadeTransition(
+                      opacity: animationController
+                          .drive(CurveTween(curve: Curves.easeOut)),
+                      child: Container(
+                          width: ScreenSize.maxTextWidth,
+                          child: Text(
+                              widget.product.priceWithCurrency(context,
+                                  actualPrice: selectedVariation?.price),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              textAlign: TextAlign.right,
+                              style: Theme.of(context).textTheme.subtitle1))),
                 ])),
         widget.product.variations.length != 0
             ? Column(
@@ -101,25 +128,26 @@ class _ProductDetailState extends State<ProductDetail>
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    margin: EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      AppLocalizations.of(context).translate('size'),
-                      style: Theme.of(context).textTheme.subtitle1,
-                      textAlign: TextAlign.start,
-                    ),
-                  ),
-                  SizedBox(height: 10),
                   SizedBox(
-                    height: 50,
-                    child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: widget.product.variations.length,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) =>
-                            _buildVariation(index)),
-                  )
+                      height: 50,
+                      width: ScreenSize.width,
+                      child: ScrollConfiguration(
+                          behavior: ScrollGlow(),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                minWidth: MediaQuery.of(context).size.width,
+                              ),
+                              child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: List.generate(
+                                      widget.product.variations.length,
+                                      (index) => _buildVariation(index))),
+                            ),
+                          )))
                 ],
               )
             : Container(),
@@ -138,10 +166,5 @@ class _ProductDetailState extends State<ProductDetail>
         SizedBox(height: 10)
       ],
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 }

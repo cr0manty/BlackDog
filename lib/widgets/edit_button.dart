@@ -18,9 +18,8 @@ class EditButton extends StatelessWidget {
       child: Container(
         width: 31,
         height: 31,
-        decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: HexColor.lightElement),
+        decoration:
+            BoxDecoration(shape: BoxShape.circle, color: HexColor.lightElement),
         child: Icon(
           SFSymbols.pencil,
           size: 25,

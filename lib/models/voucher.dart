@@ -1,7 +1,5 @@
 import 'dart:convert';
-
 import 'package:black_dog/instances/api.dart';
-import 'package:black_dog/instances/shared_pref.dart';
 
 Future vouchersFromJsonList(List vouchersList) async {
   List<Voucher> vouchers = [];
@@ -124,12 +122,10 @@ class Voucher extends BaseVoucher {
         'qr_code_local': qrCodeLocal
       };
 
-  int _doubleStringToInt(String text) => int.parse(amount.split('.')[0]);
-
   String get discountType {
     if (discount == 'percentage') {
-      return '-${_doubleStringToInt(amount)}%';
-    } else if (discount == 'free_item') {
+      return '-$amount%';
+    } else if (discount == 'fixed' || discount == "free_item") {
       return title;
     }
     return '';

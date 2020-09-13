@@ -1,23 +1,23 @@
 import 'dart:async';
 
-import 'package:barcode_scan/platform_wrapper.dart';
 import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/instances/connection_check.dart';
+import 'package:black_dog/models/menu_category.dart';
+import 'package:black_dog/models/news.dart';
 import 'package:black_dog/models/restaurant.dart';
 import 'package:black_dog/screens/content/product_list.dart';
 import 'package:black_dog/screens/user/user_page.dart';
-import 'package:black_dog/utils/connection_check.dart';
 import 'package:black_dog/utils/hex_color.dart';
+import 'package:black_dog/utils/image_view.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/utils/scroll_glow.dart';
 import 'package:black_dog/instances/utils.dart';
-import 'package:black_dog/widgets/bottom_route.dart';
 import 'package:black_dog/widgets/edit_button.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:black_dog/widgets/user_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:black_dog/instances/account.dart';
@@ -25,13 +25,8 @@ import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/screens/content/about_us.dart';
 import 'package:black_dog/screens/content/news_detail.dart';
 import 'package:black_dog/screens/content/news_list.dart';
-import 'package:black_dog/screens/user/sign_in.dart';
 
 class HomePage extends StatefulWidget {
-  final bool isInitView;
-
-  HomePage({this.isInitView = true});
-
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -40,39 +35,20 @@ class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
   StreamSubscription _apiChange;
   StreamSubscription _connectionChange;
-  Restaurant _restaurant;
-  int categoryPage = 0;
 
   bool isLoading = false;
   bool isLoadingData = true;
   bool initialLoad = true;
-  List _news = [];
-  List _category = [];
-
-  void getNewsList() async {
-    List news = await Api.instance
-        .getNewsList(page: 0, limit: SharedPrefs.getMaxNewsAmount());
-    setState(() {
-      _news.addAll(news);
-    });
-  }
-
-  void getMenuCategoryList() async {
-    List category = await Api.instance.getCategories(page: categoryPage);
-    setState(() {
-      if (_category.length % Api.defaultPerPage == 0) {
-        categoryPage++;
-        _category.addAll(category);
-      }
-    });
-  }
+  bool isCalling = false;
+  Restaurant _restaurant;
+  Future<List<MenuCategory>> _category;
+  Future<List<News>> _news;
 
   void initDependencies() async {
-    _restaurant = await Api.instance.getAboutUs();
-    await Api.instance.getNewsConfig();
-    await Account.instance.refreshUser();
-    await Api.instance.voucherDetails();
-    Api.instance.sendFCMToken();
+    Api.instance.getNewsConfig();
+    Account.instance.refreshUser();
+    Api.instance.voucherDetails();
+    Api.instance.getAboutUs().then((value) => _restaurant = value);
     setState(() => isLoadingData = false);
   }
 
@@ -80,28 +56,19 @@ class _HomePageState extends State<HomePage> {
     if (isOnline && initialLoad) {
       initialLoad = false;
       initDependencies();
-
-      if (_news.length == 0) {
-        getNewsList();
-      }
-      if (_category.length == 0) {
-        getMenuCategoryList();
-      }
     }
   }
 
   @override
   void initState() {
     _apiChange = Api.instance.apiChange.listen((event) => setState(() {}));
-
-    if (!ConnectionsCheck.instance.isOnline) {
-      setState(() => isLoadingData = false);
-    }
-
+    _restaurant = SharedPrefs.getAboutUs();
     _connectionChange =
         ConnectionsCheck.instance.onChange.listen(onNetworkChange);
-    _scrollController.addListener(_scrollListener);
 
+    _category = Api.instance.getCategories(limit: 100);
+    _news = Api.instance
+        .getNewsList(page: 0, limit: SharedPrefs.getMaxNewsAmount());
     if (!ConnectionsCheck.instance.isOnline) {
       setState(() => isLoadingData = false);
     } else {
@@ -110,110 +77,80 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
-  void _scrollListener() async {
-    if (_scrollController.position.maxScrollExtent ==
-            _scrollController.offset &&
-        _category.length % Api.defaultPerPage == 0) {
-      getMenuCategoryList();
-    }
-  }
-
-  void _onScanTap() async {
-    if (Account.instance.state == AccountState.STAFF) {
-      setState(() => isLoading = !isLoading);
-
-      var result = await BarcodeScanner.scan();
-      print('Scanned QR Code url: ${result.rawContent}');
-
-      if (result.rawContent.isNotEmpty) {
-        Map scanned = await Api.instance.staffScanQRCode(result.rawContent);
-        if (scanned['result']) {
-          Utils.instance.showSuccessPopUp(context, text: scanned['message']);
-        } else {
-          print(scanned);
-          Utils.instance.showErrorPopUp(context);
-        }
-      }
-      setState(() => isLoading = !isLoading);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     Utils.instance.initScreenSize(MediaQuery.of(context).size);
 
     return PageScaffold(
-      inAsyncCall: isLoading,
-      scrollController: _scrollController,
-      alwaysNavigation: Account.instance.state == AccountState.STAFF,
-      action: Account.instance.state != AccountState.STAFF
-          ? RouteButton(
-              padding: EdgeInsets.only(top: 5),
-              iconColor: HexColor.lightElement,
-              textColor: HexColor.lightElement,
-              iconWidget: Container(
-                margin: EdgeInsets.only(left: 10),
-                child: SvgPicture.asset('assets/images/about_us.svg',
-                    color: HexColor.lightElement, height: 25, width: 22),
-              ),
-              iconFirst: false,
-              text: AppLocalizations.of(context).translate('about_us'),
-              onTap: () {
-                if (_restaurant != null) {
-                  Navigator.of(context).push(CupertinoPageRoute(
-                      builder: (context) => AboutUsPage(_restaurant)));
-                }
-              })
-          : RouteButton(
-              text: AppLocalizations.of(context).translate('logout'),
-              color: HexColor.lightElement,
-              onTap: () {
-                SharedPrefs.logout();
-                Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-                    BottomRoute(page: SignInPage()), (route) => false);
-              },
+        inAsyncCall: isLoading,
+        scrollController: _scrollController,
+        alwaysNavigation: false,
+        action: RouteButton(
+            padding: EdgeInsets.only(top: 5),
+            iconColor: HexColor.lightElement,
+            textColor: HexColor.lightElement,
+            iconWidget: Container(
+              margin: EdgeInsets.only(left: 10),
+              child: SvgPicture.asset('assets/images/about_us.svg',
+                  color: HexColor.lightElement, height: 25, width: 22),
             ),
-      children: Account.instance.state == AccountState.STAFF
-          ? _buildStaff()
-          : _buildUser(),
-    );
+            iconFirst: false,
+            text: AppLocalizations.of(context).translate('about_us'),
+            onTap: () => Navigator.of(context).push(CupertinoPageRoute(
+                  builder: (context) => AboutUsPage(restaurant: _restaurant),
+                ))),
+        children: _buildUser());
   }
 
-  Widget _buildScanQRCode() {
-    return CupertinoButton(
-        onPressed: _onScanTap,
-        padding: EdgeInsets.symmetric(vertical: 20),
-        minSize: 0,
-        child: Container(
-          margin: EdgeInsets.symmetric(horizontal: ScreenSize.qrCodeMargin),
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: HexColor.cardBackground,
-          ),
-          height: ScreenSize.scanQRCodeSize,
-          child: Container(
-            alignment: FractionalOffset.center,
-            transform: Matrix4.translationValues(0, -5, 0),
-            child: Icon(
-              SFSymbols.camera_viewfinder,
-              size: ScreenSize.scanQRCodeIconSize,
-              color: HexColor.lightElement,
-            ),
-          ),
-        ));
+  Widget _buildFuture(BuildContext context, AsyncSnapshot snapshot,
+      String stringKey, Widget child) {
+    Widget noMenuData = Container(
+        width: ScreenSize.width,
+        child: Center(
+            child: Text(
+          AppLocalizations.of(context).translate(stringKey),
+          style: Theme.of(context).textTheme.subtitle1,
+        )));
+
+    switch (snapshot.connectionState) {
+      case ConnectionState.none:
+      case ConnectionState.waiting:
+      case ConnectionState.active:
+        return Container(
+            width: ScreenSize.width,
+            child: Center(child: CupertinoActivityIndicator()));
+      case ConnectionState.done:
+        if (snapshot.hasData && snapshot.data.length > 0) {
+          return child;
+        }
+        return noMenuData;
+      default:
+        return noMenuData;
+    }
   }
 
-  List<Widget> _buildStaff() {
-    return <Widget>[
-      UserCard(onPressed: null, username: Account.instance.name),
-      SizedBox(height: ScreenSize.scanQRCodeIndent),
-      _buildScanQRCode()
-    ];
+  Widget _buildNews(AsyncSnapshot snapshot) {
+    if (snapshot.connectionState == ConnectionState.done) {
+      int maxNews = SharedPrefs.getMaxNewsAmount();
+
+      return Row(
+          children: List.generate(
+              snapshot.data.length < maxNews ? snapshot.data.length : maxNews,
+              (index) => _buildNewsBlock(snapshot.data[index])));
+    }
+    return null;
+  }
+
+  Widget _buildCategories(AsyncSnapshot snapshot) {
+    if (snapshot.connectionState == ConnectionState.done) {
+      return Column(
+          children: List.generate(snapshot.data.length,
+              (index) => _buildMenu(snapshot.data[index])));
+    }
+    return null;
   }
 
   List<Widget> _buildUser() {
-    int maxNews = SharedPrefs.getMaxNewsAmount();
     return [
       UserCard(
         topPadding: 10,
@@ -224,66 +161,42 @@ class _HomePageState extends State<HomePage> {
         additionWidget: BonusCard(),
       ),
       SizedBox(height: ScreenSize.sectionIndent - 20),
-      SharedPrefs.getShowNews()
-          ? _buildSection(
-              AppLocalizations.of(context).translate('news'),
-              ScrollConfiguration(
-                  behavior: ScrollGlow(),
-                  child: ScrollConfiguration(
-                      behavior: ScrollGlow(),
-                      child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: _news.length > 0
-                              ? Row(
-                                  children: List.generate(
-                                      _news.length > maxNews
-                                          ? maxNews + 2
-                                          : _news.length + 2,
-                                      _buildNewsBlock))
-                              : Container(
-                                  width: ScreenSize.width,
-                                  child: Center(
-                                      child: isLoadingData
-                                          ? CupertinoActivityIndicator()
-                                          : Text(
-                                              AppLocalizations.of(context)
-                                                  .translate('no_news'),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .subtitle1,
-                                            )),
-                                )))),
-              subWidgetText: AppLocalizations.of(context).translate('more'),
-              subWidgetAction: () => Navigator.of(context).push(
+      _buildSection(
+          AppLocalizations.of(context).translate('news'),
+          ScrollConfiguration(
+              behavior: ScrollGlow(),
+              child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: FutureBuilder(
+                    builder: (context, snapshot) => _buildFuture(
+                        context, snapshot, 'no_news', _buildNews(snapshot)),
+                    future: _news,
+                    initialData: false,
+                  ))),
+          subWidgetText: AppLocalizations.of(context).translate('more'),
+          subWidgetAction: () => Navigator.of(context).push(
                 CupertinoPageRoute(builder: (context) => NewsList()),
               ),
-            )
-          : Container(),
+          enabled: SharedPrefs.getShowNews()),
       SizedBox(height: ScreenSize.sectionIndent / 1.5),
       _buildSection(
           AppLocalizations.of(context).translate('menu'),
-          _category.length > 0
-              ? Column(
-                  children: List.generate(_category.length, _buildMenu),
-                )
-              : Container(
-                  width: ScreenSize.width,
-                  child: Center(
-                      child: isLoadingData
-                          ? CupertinoActivityIndicator()
-                          : Text(
-                              AppLocalizations.of(context).translate('no_menu'),
-                              style: Theme.of(context).textTheme.subtitle1,
-                            )),
-                )),
-      Container(
-        height: 20,
-      )
+          FutureBuilder(
+            builder: (context, snapshot) => _buildFuture(
+                context, snapshot, 'no_menu', _buildCategories(snapshot)),
+            future: _category,
+            initialData: false,
+          )),
+      Container(height: 20)
     ];
   }
 
   Widget _buildSection(String label, Widget _child,
-      {String subWidgetText, Function subWidgetAction}) {
+      {String subWidgetText, Function subWidgetAction, bool enabled = true}) {
+    if (!enabled) {
+      return Container();
+    }
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -324,11 +237,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildNewsBlock(int index) {
-    if (index == 0 || index >= 6 || index > _news.length)
-      return Container(width: 6);
-
-    final news = _news[index - 1];
+  Widget _buildNewsBlock(News news) {
     return GestureDetector(
       onTap: () => Navigator.of(context).push(CupertinoPageRoute(
           builder: (BuildContext context) =>
@@ -359,18 +268,14 @@ class _HomePageState extends State<HomePage> {
                 width: ScreenSize.newsImageWidth,
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
-                    child: FadeInImage.assetNetwork(
-                        placeholder: Utils.loadImage,
-                        image: news.previewImage,
-                        fit: BoxFit.cover)))
+                    child: ImageView(news.previewImage)))
           ],
         ),
       ),
     );
   }
 
-  Widget _buildMenu(int index) {
-    final category = _category[index];
+  Widget _buildMenu(MenuCategory category) {
     return GestureDetector(
         onTap: () => Navigator.of(context).push(CupertinoPageRoute(
             builder: (context) =>
@@ -391,12 +296,8 @@ class _HomePageState extends State<HomePage> {
                   height: ScreenSize.menuBlockHeight,
                   width: ScreenSize.width - 32,
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: FadeInImage.assetNetwork(
-                        placeholder: Utils.loadImage,
-                        image: category.image,
-                        fit: BoxFit.cover),
-                  ),
+                      borderRadius: BorderRadius.circular(10),
+                      child: ImageView(category.image)),
                 ),
                 Container(
                   decoration: BoxDecoration(
@@ -426,9 +327,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
-    _connectionChange?.cancel();
     _apiChange?.cancel();
-    ConnectionsCheck.instance.dispose();
+    _connectionChange?.cancel();
     super.dispose();
   }
 }

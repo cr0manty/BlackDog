@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:black_dog/utils/image_view.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 abstract class ScreenSize {
   static double height;
@@ -45,7 +47,7 @@ abstract class ScreenSize {
 
   static double get menuItemSize => height * 0.1;
 
-  static double get menuItemPhotoSize => height * 0.45;
+  static double get menuItemPhotoSize => height * 0.4;
 
   static double get newsItemPhotoSize => height * 0.35;
 
@@ -58,6 +60,18 @@ abstract class ScreenSize {
   static double get mainTextWidth => width * 0.65;
 
   static double get maxTextWidth => width * 0.45;
+
+  static double get logMaxTextWidth => width * 0.5;
+
+  static double get aboutUsCurrentHeight => height * 0.5;
+
+  static double get logoWidth => width * 0.55;
+
+  static double get logoHeight => height * 0.3;
+
+  static double get logHeight => 80;
+
+  static double get aboutUsLogoSize => height * 0.3;
 }
 
 class Utils {
@@ -78,49 +92,12 @@ class Utils {
 
   static String get bonusIcon => 'assets/images/coffee.svg';
 
-  void showSuccessPopUp(BuildContext context, {String text}) {
-    if (_showPopUp != null) {
-      return;
-    }
-    _showPopUp = showCupertinoDialog(
-      context: context,
-      builder: (context) {
-        return CupertinoAlertDialog(
-          content: Text(
-            text ?? AppLocalizations.of(context).translate('success'),
-            style: Theme.of(context).textTheme.subtitle2,
-          ),
-          actions: <Widget>[
-            CupertinoDialogAction(
-                child: Text('OK'), onPressed: () => Navigator.pop(context))
-          ],
-        );
-      },
-    ).then((_) => _showPopUp = null);
-  }
-
-  void showErrorPopUp(BuildContext context, {String text}) {
-    _showPopUp = showCupertinoDialog(
-      context: context,
-      builder: (context) {
-        return CupertinoAlertDialog(
-          content: Text(
-            text ?? AppLocalizations.of(context).translate('error'),
-            style: Theme.of(context).textTheme.subtitle2,
-          ),
-          actions: <Widget>[
-            CupertinoDialogAction(
-                child: Text('OK'), onPressed: () => Navigator.pop(context))
-          ],
-        );
-      },
-    ).then((_) => _showPopUp = null);
-  }
-
   void initScreenSize(Size size) {
     ScreenSize.height = size.height;
     ScreenSize.width = size.width;
   }
+
+  bool get popUpOnScreen => _showPopUp != null;
 
   String dateFormat(DateTime date) {
     if (date == null) {
@@ -158,7 +135,7 @@ class Utils {
               top: 10,
               left: 10,
               bottom: bottomPadding ? ScreenSize.elementIndentHeight : 0),
-          child: Text(fieldsError['all'],
+          child: Text(fieldsError['all'] ?? '',
               style: TextStyle(
                 color: Colors.red.withOpacity(0.9),
                 fontSize: 12,
@@ -172,7 +149,7 @@ class Utils {
       {@required String codeUrl,
       String textKey = 'scan_qr',
       bool isLocal = true}) async {
-    Image codeImage;
+    Widget codeImage;
     if (isLocal) {
       File qrCode = File(codeUrl);
 
@@ -181,11 +158,11 @@ class Utils {
             height: ScreenSize.qrCodeHeight, width: ScreenSize.width);
       }
     } else {
-      codeImage = Image.network(codeUrl);
-      await precacheImage(codeImage.image, context);
+      codeImage = ImageView(codeUrl);
     }
     if (codeImage == null) {
-      showErrorPopUp(context);
+      EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
+      EasyLoading.showError('');
     } else {
       if (_showPopUp != null) {
         return;

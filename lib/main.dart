@@ -1,18 +1,19 @@
-import 'dart:io';
-
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/screens/home_page.dart';
+import 'package:black_dog/screens/staff_home.dart';
 import 'package:black_dog/screens/user//sign_in.dart';
-import 'package:black_dog/utils/connection_check.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'instances/account.dart';
 import 'instances/api.dart';
+import 'instances/connection_check.dart';
 import 'instances/notification_manager.dart';
 import 'instances/shared_pref.dart';
 
@@ -26,8 +27,9 @@ void main() async {
   ConnectionsCheck.instance.initialise();
   await NotificationManager.instance.configure();
 
-  Crashlytics.instance.enableInDevMode = true;
+  // Crashlytics.instance.enableInDevMode = true;
   FlutterError.onError = Crashlytics.instance.recordFlutterError;
+  Firebase.initializeApp();
 
   runApp(BlackDogApp());
 }
@@ -49,7 +51,20 @@ class _BlackDogAppState extends State<BlackDogApp> {
   @override
   void initState() {
     Account.instance.initialize();
+    configurePopUp();
     super.initState();
+  }
+
+  void configurePopUp() {
+    EasyLoading.instance
+      ..loadingStyle = EasyLoadingStyle.custom
+      ..displayDuration = const Duration(seconds: 1)
+      ..progressColor = Colors.white
+      ..indicatorSize = 50
+      ..radius = 10.0
+      ..indicatorColor = Colors.white
+      ..textColor = Colors.white
+      ..backgroundColor = Colors.red.withOpacity(0.8);
   }
 
   @override
@@ -120,16 +135,33 @@ class _BlackDogAppState extends State<BlackDogApp> {
                   fontFamily: 'Century-Gothic',
                   fontSize: 15,
                   color: HexColor.semiElement))),
-      home: Account.instance.state == AccountState.GUEST
-          ? SignInPage()
-          : HomePage(),
+      builder: (BuildContext context, Widget child) {
+        return FlutterEasyLoading(
+          child: child,
+        );
+      },
+      home: switchPages(),
     );
+  }
+
+  Widget switchPages() {
+    switch (Account.instance.state) {
+      case AccountState.GUEST:
+        return SignInPage();
+      case AccountState.STAFF:
+        return StaffHomePage();
+      case AccountState.USER:
+        return HomePage();
+      default:
+        return Container();
+    }
   }
 
   @override
   void dispose() {
     Api.instance.dispose();
     NotificationManager.instance.dispose();
+    ConnectionsCheck.instance.dispose();
     super.dispose();
   }
 }

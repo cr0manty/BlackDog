@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/instances/connection_check.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/menu_item.dart';
 import 'package:black_dog/screens/content/product_detail.dart';
+import 'package:black_dog/utils/image_view.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
@@ -20,6 +24,8 @@ class ProductList extends StatefulWidget {
 
 class _ProductListState extends State<ProductList> {
   final ScrollController _scrollController = ScrollController();
+  StreamSubscription _connectionChange;
+
   List<MenuItem> _menu = [];
   bool showProgress = true;
   int page = 0;
@@ -45,6 +51,8 @@ class _ProductListState extends State<ProductList> {
   void initState() {
     _getMenu();
     _scrollController.addListener(_scrollListener);
+    _connectionChange =
+        ConnectionsCheck.instance.onChange.listen((_) => _getMenu());
     super.initState();
   }
 
@@ -74,10 +82,12 @@ class _ProductListState extends State<ProductList> {
   Widget _buildProduct(int index) {
     if (index == _menu.length) {
       return Container(
-        padding: EdgeInsets.only(top: 20),
+        margin: EdgeInsets.symmetric(vertical: 10),
         alignment: Alignment.center,
         height: showProgress ? 50 : 0,
-        child: Center(child: CupertinoActivityIndicator()),
+        child: _menu.length % Api.defaultPerPage == 0
+            ? CupertinoActivityIndicator()
+            : Container(),
       );
     }
 
@@ -96,12 +106,7 @@ class _ProductListState extends State<ProductList> {
               height: ScreenSize.menuItemSize,
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: menu.image != null
-                      ? FadeInImage.assetNetwork(
-                          placeholder: Utils.loadImage,
-                          image: menu.image,
-                          fit: BoxFit.cover)
-                      : Image.asset(Utils.defaultImage, fit: BoxFit.cover)),
+                  child: ImageView(menu.image)),
             ),
             Container(
               margin: EdgeInsets.only(left: 20),
@@ -135,5 +140,12 @@ class _ProductListState extends State<ProductList> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _scrollController?.removeListener(_scrollListener);
+    _connectionChange?.cancel();
+    super.dispose();
   }
 }
