@@ -279,7 +279,6 @@ class Api {
   }
 
   Future getRestaurantConfig({int limit = defaultPerPage, int page = 0}) async {
-    List<RestaurantConfig> configs = [];
     Response response = await _client.get(
         _setUrl(
           path: '/restaurant/branches',
@@ -289,10 +288,11 @@ class Api {
 
     if (response.statusCode == 200) {
       Map body = json.decode(utf8.decode(response.bodyBytes));
+          List<RestaurantConfig> configs = [];
       body['results']
           .forEach((value) => configs.add(RestaurantConfig.fromJson(value)));
+      SharedPrefs.saveAboutUsList(configs);
     }
-    return configs;
   }
 
   Future passwordReset(String email) async {

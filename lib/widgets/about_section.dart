@@ -9,7 +9,6 @@ class AboutSection extends StatefulWidget {
   final bool call;
   final bool email;
   final bool web;
-  final bool copy;
   final String text;
   final IconData icon;
   final double horizontalPadding;
@@ -18,7 +17,6 @@ class AboutSection extends StatefulWidget {
 
   AboutSection(this.text, this.icon,
       {this.color,
-      this.copy = false,
       this.email = false,
       this.web = false,
       this.call = false,
@@ -38,18 +36,6 @@ class _AboutSectionState extends State<AboutSection> {
     } else {
       print('Could not launch $url');
     }
-  }
-
-  void copyText(String text) {
-    Clipboard.setData(ClipboardData(text: text));
-
-    SnackBar snackBar = SnackBar(
-      content: Text(AppLocalizations.of(context).translate('clipboard_copy'),
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.subtitle2),
-      backgroundColor: Colors.black.withOpacity(0.9),
-    );
-    key.currentState.showSnackBar(snackBar);
   }
 
   @override
@@ -76,11 +62,13 @@ class _AboutSectionState extends State<AboutSection> {
                   ? () async => launchUrl(
                       (widget.call ? "tel:" : widget.email ? 'mailto:' : '') +
                           widget.text)
-                  : widget.copy ? () => copyText(widget.text) : null,
-              onLongPress: () => copyText(widget.text),
+                  : null,
               child: Container(
                   margin: EdgeInsets.symmetric(horizontal: 15),
                   child: Text(widget.text,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.start,
                       style: Theme.of(context).textTheme.subtitle2.copyWith(
                           decoration: widget.call || widget.email || widget.web
                               ? TextDecoration.underline
