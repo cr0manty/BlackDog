@@ -15,6 +15,7 @@ import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/widgets/edit_button.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
+import 'package:black_dog/widgets/section.dart';
 import 'package:black_dog/widgets/user_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +25,8 @@ import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/screens/content/about_us.dart';
 import 'package:black_dog/screens/content/news_detail.dart';
-import 'package:black_dog/screens/content/news_list.dart';
+
+import 'content/news_list.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -37,25 +39,65 @@ class _HomePageState extends State<HomePage> {
   StreamSubscription _connectionChange;
 
   bool isLoading = false;
-  bool isLoadingData = true;
+  bool isLoadingNews = true;
+  bool isLoadingMenu = true;
   bool initialLoad = true;
   bool isCalling = false;
+  int categoryPage = 0;
   Restaurant _restaurant;
-  Future<List<MenuCategory>> _category;
-  Future<List<News>> _news;
+  List _news = [];
+  List _category = [];
+  int maxNews;
+
+  void getNewsList() async {
+    List news = await Api.instance.getNewsList(page: 0, limit: maxNews);
+    setState(() {
+      _news.addAll(news);
+      isLoadingNews = false;
+    });
+  }
+
+  void getMenuCategoryList() async {
+    List category = await Api.instance.getCategories(page: categoryPage);
+    setState(() {
+      if (_category.length % Api.defaultPerPage == 0) {
+        categoryPage++;
+        _category.addAll(category);
+      }
+    });
+  }
 
   void initDependencies() async {
-    Api.instance.getNewsConfig();
-    Account.instance.refreshUser();
-    Api.instance.voucherDetails();
-    Api.instance.getAboutUs().then((value) => _restaurant = value);
-    setState(() => isLoadingData = false);
+    Api.instance
+        .getNewsConfig()
+        .then((value) => maxNews = SharedPrefs.getMaxNewsAmount());
+    await Account.instance.refreshUser();
+    await Api.instance.voucherDetails();
+    Api.instance
+        .getAboutUs()
+        .then((_) => setState(() => _restaurant = SharedPrefs.getAboutUs()));
+    setState(() {});
   }
 
   void onNetworkChange(isOnline) {
     if (isOnline && initialLoad) {
       initialLoad = false;
       initDependencies();
+
+      if (_news.length == 0) {
+        getNewsList();
+      }
+      if (_category.length == 0) {
+        getMenuCategoryList();
+      }
+    }
+  }
+
+  void _scrollListener() async {
+    if (_scrollController.position.maxScrollExtent ==
+            _scrollController.offset &&
+        _category.length % Api.defaultPerPage == 0) {
+      getMenuCategoryList();
     }
   }
 
@@ -65,12 +107,14 @@ class _HomePageState extends State<HomePage> {
     _restaurant = SharedPrefs.getAboutUs();
     _connectionChange =
         ConnectionsCheck.instance.onChange.listen(onNetworkChange);
+    _scrollController.addListener(_scrollListener);
+    maxNews = SharedPrefs.getMaxNewsAmount();
 
-    _category = Api.instance.getCategories(limit: 100);
-    _news = Api.instance
-        .getNewsList(page: 0, limit: SharedPrefs.getMaxNewsAmount());
     if (!ConnectionsCheck.instance.isOnline) {
-      setState(() => isLoadingData = false);
+      setState(() {
+        isLoadingNews = false;
+        isLoadingMenu = false;
+      });
     } else {
       onNetworkChange(true);
     }
@@ -102,54 +146,6 @@ class _HomePageState extends State<HomePage> {
         children: _buildUser());
   }
 
-  Widget _buildFuture(BuildContext context, AsyncSnapshot snapshot,
-      String stringKey, Widget child) {
-    Widget noMenuData = Container(
-        width: ScreenSize.width,
-        child: Center(
-            child: Text(
-          AppLocalizations.of(context).translate(stringKey),
-          style: Theme.of(context).textTheme.subtitle1,
-        )));
-
-    switch (snapshot.connectionState) {
-      case ConnectionState.none:
-      case ConnectionState.waiting:
-      case ConnectionState.active:
-        return Container(
-            width: ScreenSize.width,
-            child: Center(child: CupertinoActivityIndicator()));
-      case ConnectionState.done:
-        if (snapshot.hasData && snapshot.data.length > 0) {
-          return child;
-        }
-        return noMenuData;
-      default:
-        return noMenuData;
-    }
-  }
-
-  Widget _buildNews(AsyncSnapshot snapshot) {
-    if (snapshot.connectionState == ConnectionState.done) {
-      int maxNews = SharedPrefs.getMaxNewsAmount();
-
-      return Row(
-          children: List.generate(
-              snapshot.data.length < maxNews ? snapshot.data.length : maxNews,
-              (index) => _buildNewsBlock(snapshot.data[index])));
-    }
-    return null;
-  }
-
-  Widget _buildCategories(AsyncSnapshot snapshot) {
-    if (snapshot.connectionState == ConnectionState.done) {
-      return Column(
-          children: List.generate(snapshot.data.length,
-              (index) => _buildMenu(snapshot.data[index])));
-    }
-    return null;
-  }
-
   List<Widget> _buildUser() {
     return [
       UserCard(
@@ -161,83 +157,60 @@ class _HomePageState extends State<HomePage> {
         additionWidget: BonusCard(),
       ),
       SizedBox(height: ScreenSize.sectionIndent - 20),
-      _buildSection(
-          AppLocalizations.of(context).translate('news'),
-          ScrollConfiguration(
-              behavior: ScrollGlow(),
-              child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: FutureBuilder(
-                    builder: (context, snapshot) => _buildFuture(
-                        context, snapshot, 'no_news', _buildNews(snapshot)),
-                    future: _news,
-                    initialData: false,
-                  ))),
-          subWidgetText: AppLocalizations.of(context).translate('more'),
-          subWidgetAction: () => Navigator.of(context).push(
-                CupertinoPageRoute(builder: (context) => NewsList()),
-              ),
-          enabled: SharedPrefs.getShowNews()),
+      PageSection(
+        label: AppLocalizations.of(context).translate('news'),
+        child: ScrollConfiguration(
+            behavior: ScrollGlow(),
+            child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: _news.length > 0
+                    ? Row(
+                        children: List.generate(
+                            _news.length < maxNews
+                                ? _news.length + 2
+                                : maxNews + 2,
+                            _buildNewsBlock))
+                    : Container(
+                        width: ScreenSize.width,
+                        child: Center(
+                            child: isLoadingNews
+                                ? CupertinoActivityIndicator()
+                                : Text(
+                                    AppLocalizations.of(context)
+                                        .translate('no_news'),
+                                    style:
+                                        Theme.of(context).textTheme.subtitle1,
+                                  ))))),
+        enabled: SharedPrefs.getShowNews(),
+        subWidgetText: AppLocalizations.of(context).translate('more'),
+        subWidgetAction: () => Navigator.of(context).push(
+          CupertinoPageRoute(builder: (context) => NewsList()),
+        ),
+      ),
       SizedBox(height: ScreenSize.sectionIndent / 1.5),
-      _buildSection(
-          AppLocalizations.of(context).translate('menu'),
-          FutureBuilder(
-            builder: (context, snapshot) => _buildFuture(
-                context, snapshot, 'no_menu', _buildCategories(snapshot)),
-            future: _category,
-            initialData: false,
-          )),
+      PageSection(
+          label: AppLocalizations.of(context).translate('menu'),
+          child: _category.length > 0
+              ? Column(children: List.generate(_category.length, _buildMenu))
+              : Container(
+                  width: ScreenSize.width,
+                  child: Center(
+                      child: isLoadingMenu
+                          ? CupertinoActivityIndicator()
+                          : Text(
+                              AppLocalizations.of(context).translate('no_menu'),
+                              style: Theme.of(context).textTheme.subtitle1,
+                            )),
+                )),
       Container(height: 20)
     ];
   }
 
-  Widget _buildSection(String label, Widget _child,
-      {String subWidgetText, Function subWidgetAction, bool enabled = true}) {
-    if (!enabled) {
-      return Container();
-    }
+  Widget _buildNewsBlock(int index) {
+    if (index == 0 || index >= maxNews + 2 || index > _news.length)
+      return Container(width: 6);
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 26),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              CupertinoButton(
-                onPressed: null,
-                minSize: 0,
-                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 7),
-                child: Text(
-                  label,
-                  style: Theme.of(context).textTheme.caption,
-                ),
-              ),
-              subWidgetText != null
-                  ? CupertinoButton(
-                      onPressed: subWidgetAction,
-                      minSize: 0,
-                      padding:
-                          EdgeInsets.symmetric(vertical: 16, horizontal: 7),
-                      child: Text(
-                        subWidgetText,
-                        style: Theme.of(context).textTheme.subtitle1,
-                      ),
-                    )
-                  : Container(),
-            ],
-          ),
-        ),
-        SizedBox(height: ScreenSize.labelIndent),
-        _child
-      ],
-    );
-  }
-
-  Widget _buildNewsBlock(News news) {
+    final News news = _news[index - 1];
     return GestureDetector(
       onTap: () => Navigator.of(context).push(CupertinoPageRoute(
           builder: (BuildContext context) =>
@@ -264,6 +237,10 @@ class _HomePageState extends State<HomePage> {
             ),
             SizedBox(height: 10),
             Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: HexColor.semiElement.withOpacity(0.3),
+                ),
                 height: ScreenSize.newsImageHeight,
                 width: ScreenSize.newsImageWidth,
                 child: ClipRRect(
@@ -275,7 +252,9 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildMenu(MenuCategory category) {
+  Widget _buildMenu(int index) {
+    final MenuCategory category = _category[index];
+
     return GestureDetector(
         onTap: () => Navigator.of(context).push(CupertinoPageRoute(
             builder: (context) =>
@@ -283,7 +262,7 @@ class _HomePageState extends State<HomePage> {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: HexColor.lightElement,
+            color: HexColor.semiElement.withOpacity(0.3),
           ),
           margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           height: ScreenSize.menuBlockHeight,

@@ -148,6 +148,10 @@ class _NewsListState extends State<NewsList> {
             Container(
               width: ScreenSize.newsListImageSize,
               height: ScreenSize.newsListImageSize,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: HexColor.semiElement.withOpacity(0.3),
+              ),
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: ImageView(news.previewImage)),

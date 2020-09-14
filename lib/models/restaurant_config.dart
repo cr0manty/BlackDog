@@ -21,10 +21,11 @@ class RestaurantConfig {
   String branchPhone;
   String branchName;
   String address;
-  String googleMapsIframe;
   String shortDescription;
   String weekdayWorkingHours;
   String weekendWorkingHours;
+  double lon;
+  double lat;
 
   RestaurantConfig(
       {this.id,
@@ -32,7 +33,8 @@ class RestaurantConfig {
       this.branchPhone,
       this.branchName,
       this.address,
-      this.googleMapsIframe,
+      this.lat,
+      this.lon,
       this.weekdayWorkingHours,
       this.weekendWorkingHours,
       this.shortDescription});
@@ -46,7 +48,8 @@ class RestaurantConfig {
           weekdayWorkingHours: data['weekday_working_hours'],
           weekendWorkingHours: data['weekend_working_hours'],
           address: data['address'],
-          googleMapsIframe: data['google_maps_iframe'],
+          lon: data['lon'],
+          lat: data['lat'],
           shortDescription: data['short_description']);
 
   Map<String, dynamic> toJson() => {
@@ -57,11 +60,22 @@ class RestaurantConfig {
         'weekday_working_hours': weekdayWorkingHours,
         'weekend_working_hours': weekendWorkingHours,
         'address': address,
-        'google_maps_iframe': googleMapsIframe,
+        'lat': lat,
+        'lon': lon,
         'short_description': shortDescription,
       };
 
-  String workTime(context) {
+  String weekdayWorkingTime(context) {
+    return AppLocalizations.of(context).translate('work_time') +
+        '\n$weekdayWorkingHours';
+  }
+
+  String weekendWorkingTime(context) {
+    return AppLocalizations.of(context).translate('weekday_working') +
+        '\n$weekendWorkingHours';
+  }
+
+  String workingTime(context) {
     return AppLocalizations.of(context).translate('work_time') +
         ' $weekdayWorkingHours\n' +
         AppLocalizations.of(context).translate('weekday_working') +

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:black_dog/models/log.dart';
 import 'package:black_dog/models/restaurant.dart';
+import 'package:black_dog/models/restaurant_config.dart';
 import 'package:black_dog/models/user.dart';
 import 'package:black_dog/models/voucher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,6 +20,8 @@ abstract class SharedPrefs {
   static const _activeVouchers = 'ActiveVouchers';
   static const _lastLogs = 'LastLogs';
   static const _abutUs = 'AboutUs';
+  static const _abutUsList = 'AboutUsList';
+  static const _currentLocation = 'CurrentLocation';
 
   static SharedPreferences _prefs;
 
@@ -118,6 +121,15 @@ abstract class SharedPrefs {
     _prefs.setStringList(_lastLogs, _logStrings);
   }
 
+  static void saveAboutUsList(List<RestaurantConfig> configs) {
+    print('SharedPrefs: saveAboutUsList');
+    List<String> _configStrings = [];
+    configs.forEach((RestaurantConfig config) {
+      _configStrings.add(restaurantConfigToJson(config));
+    });
+    _prefs.setStringList(_abutUsList, _configStrings);
+  }
+
   static void saveAboutUs(Restaurant restaurant) {
     print('SharedPrefs: saveAboutUs');
     _prefs.setString(_abutUs, restaurantToJson(restaurant));
@@ -192,7 +204,7 @@ abstract class SharedPrefs {
     return vouchers;
   }
 
-   static List<Log> getLastLogs() {
+  static List<Log> getLastLogs() {
     print('SharedPrefs: getLastLogs');
     List<Log> logs = [];
 
@@ -204,6 +216,20 @@ abstract class SharedPrefs {
     });
 
     return logs;
+  }
+
+  static List<RestaurantConfig> getAboutUsList() {
+    print('SharedPrefs: getLastLogs');
+    List<RestaurantConfig> configs = [];
+
+    List<String> configsList = _prefs.getStringList(_abutUsList) ?? [];
+
+    configsList.forEach((String voucherString) {
+      Map jsonData = json.decode(voucherString);
+      configs.add(RestaurantConfig.fromJson(jsonData));
+    });
+
+    return configs;
   }
 
   static Restaurant getAboutUs() {

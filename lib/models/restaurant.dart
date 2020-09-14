@@ -22,7 +22,6 @@ class Restaurant {
   String facebook;
   String logo;
   String location;
-  String workTime;
 
   Restaurant(
       {this.name,
@@ -32,7 +31,6 @@ class Restaurant {
       this.logo,
       this.phone,
       this.location,
-      this.workTime,
       this.website});
 
   factory Restaurant.fromJson(Map<String, dynamic> data) => Restaurant(
@@ -42,7 +40,6 @@ class Restaurant {
       instagramLink: data['instagram_link'],
       logo: data['logo'],
       phone: data['phone'],
-      workTime: data['work_time'],
       location: data['location'],
       website: data['website']);
 
@@ -53,7 +50,6 @@ class Restaurant {
         'facebook': facebook,
         'instagram_link': instagramLink,
         'logo': logo,
-        'work_time': workTime,
         'location': location,
         'website': website,
       };

@@ -1,6 +1,5 @@
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/restaurant.dart';
-import 'package:black_dog/models/restaurant_config.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/image_view.dart';
 import 'package:black_dog/utils/localization.dart';
@@ -11,7 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 
-import 'about_us_list.dart';
+import 'about_us_map.dart';
 
 class AboutUsPage extends StatefulWidget {
   final Restaurant restaurant;
@@ -24,16 +23,6 @@ class AboutUsPage extends StatefulWidget {
 
 class _AboutUsPageState extends State<AboutUsPage> {
   final GlobalKey<ScaffoldState> key = GlobalKey<ScaffoldState>();
-
-  String workTime(RestaurantConfig config) {
-    if (config?.weekdayWorkingHours == null ||
-        config?.weekendWorkingHours == null) {
-      return null;
-    }
-    return '${config?.weekdayWorkingHours ?? ''}\n' +
-        AppLocalizations.of(context).translate('weekday_working') +
-        '${config?.weekendWorkingHours ?? ''}';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +45,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
                 height: ScreenSize.aboutUsLogoSize,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Colors.grey,
+                  color: HexColor.semiElement.withOpacity(0.3),
                 ),
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
@@ -65,8 +54,8 @@ class _AboutUsPageState extends State<AboutUsPage> {
             margin: EdgeInsets.symmetric(horizontal: 32, vertical: 20),
             width: ScreenSize.width - 64,
             child: CupertinoButton(
-                onPressed: () => Navigator.of(context).push(CupertinoPageRoute(
-                    builder: (context) => AboutUsListPage())),
+                onPressed: () => Navigator.of(context).push(
+                    CupertinoPageRoute(builder: (context) => AboutUsMapPage())),
                 color: HexColor.lightElement,
                 child: Text(
                   AppLocalizations.of(context).translate('show_on_map'),
@@ -84,8 +73,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
             style: Theme.of(context).textTheme.headline1,
           ),
         ),
-        AboutSection(widget.restaurant.webUrl, SFSymbols.globe,
-            web: true),
+        AboutSection(widget.restaurant.webUrl, SFSymbols.globe, web: true),
         AboutSection(widget.restaurant.instagramLink, SFSymbols.logo_instagram,
             web: true),
         AboutSection(widget.restaurant.facebook, SFSymbols.logo_facebook,
