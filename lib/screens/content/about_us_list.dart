@@ -23,17 +23,19 @@ class _AboutUsListPageState extends State<AboutUsListPage> {
   final ScrollController _scrollController = ScrollController();
   StreamSubscription _connectionChange;
   List<RestaurantConfig> _restaurants = [];
-  bool showProgress = true;
   int page = 0;
+  bool showProgress;
 
   @override
   void initState() {
     _scrollController.addListener(_scrollListener);
-    getConfigList();
+    if (ConnectionsCheck.instance.isOnline) {
+      getConfigList();
+    }
+    showProgress = ConnectionsCheck.instance.isOnline;
 
     _connectionChange =
         ConnectionsCheck.instance.onChange.listen((_) => getConfigList());
-
     super.initState();
   }
 
@@ -56,6 +58,33 @@ class _AboutUsListPageState extends State<AboutUsListPage> {
     }
   }
 
+  List<Widget> _buildChildren() {
+    List<Widget> children = <Widget>[
+      Container(
+          height: ScreenSize.newsItemPhotoSize,
+          margin: EdgeInsets.only(bottom: 10),
+          child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.asset(Utils.defaultImage, fit: BoxFit.cover)))
+    ];
+    if (!ConnectionsCheck.instance.isOnline && _restaurants.length == 0) {
+      children.add(
+        Container(
+            margin: EdgeInsets.symmetric(vertical: 16),
+            alignment: Alignment.center,
+            child: Text(AppLocalizations.of(context).translate('no_connection'),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText1
+                    .copyWith(color: HexColor.semiElement))),
+      );
+      return children;
+    }
+    return children +
+        List.generate(
+            _restaurants.length + 1, (index) => _buildRestaurants(index));
+  }
+
   @override
   Widget build(BuildContext context) {
     return PageScaffold(
@@ -75,17 +104,7 @@ class _AboutUsListPageState extends State<AboutUsListPage> {
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
         ),
-        children: [
-              Container(
-                  height: ScreenSize.newsItemPhotoSize,
-                  margin: EdgeInsets.only(bottom: 10),
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child:
-                          Image.asset(Utils.defaultImage, fit: BoxFit.cover)))
-            ] +
-            List.generate(
-                _restaurants.length + 1, (index) => _buildRestaurants(index)));
+        children: _buildChildren());
   }
 
   Widget _buildRestaurants(int index) {
@@ -94,7 +113,7 @@ class _AboutUsListPageState extends State<AboutUsListPage> {
         margin: EdgeInsets.symmetric(vertical: 10),
         alignment: Alignment.center,
         height: showProgress ? 50 : 0,
-        child: _restaurants.length % Api.defaultPerPage == 0
+        child: _restaurants.length % Api.defaultPerPage == 0 && showProgress
             ? CupertinoActivityIndicator()
             : Container(),
       );

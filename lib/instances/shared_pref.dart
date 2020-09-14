@@ -192,7 +192,7 @@ abstract class SharedPrefs {
     return vouchers;
   }
 
-   static List<Log> getLastLogs() {
+  static List<Log> getLastLogs() {
     print('SharedPrefs: getLastLogs');
     List<Log> logs = [];
 

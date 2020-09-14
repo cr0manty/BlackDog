@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 
 import 'about_us_list.dart';
+import 'about_us_map.dart';
 
 class AboutUsPage extends StatefulWidget {
   final Restaurant restaurant;
@@ -66,7 +67,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
             width: ScreenSize.width - 64,
             child: CupertinoButton(
                 onPressed: () => Navigator.of(context).push(CupertinoPageRoute(
-                    builder: (context) => AboutUsListPage())),
+                    builder: (context) => AboutUsMapPage())),
                 color: HexColor.lightElement,
                 child: Text(
                   AppLocalizations.of(context).translate('show_on_map'),

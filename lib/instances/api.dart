@@ -265,18 +265,16 @@ class Api {
   }
 
   Future getAboutUs() async {
-    return await _client
+    await _client
         .get(_setUrl(path: '/restaurant/config'), headers: _setHeaders())
         .then((response) {
       if (response.statusCode == 200) {
         Map body = json.decode(utf8.decode(response.bodyBytes));
         Restaurant restaurant = Restaurant.fromJson(body);
-        return restaurant;
+        SharedPrefs.saveAboutUs(restaurant);
       }
-      return null;
     }).catchError((e) {
       print(e);
-      return null;
     });
   }
 
