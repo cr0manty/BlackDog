@@ -47,10 +47,11 @@ class _HomePageState extends State<HomePage> {
   Restaurant _restaurant;
   List _news = [];
   List _category = [];
+  int maxNews;
 
   void getNewsList() async {
     List news = await Api.instance
-        .getNewsList(page: 0, limit: SharedPrefs.getMaxNewsAmount());
+        .getNewsList(page: 0, limit: maxNews);
     setState(() {
       _news.addAll(news);
       isLoadingNews = false;
@@ -68,7 +69,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void initDependencies() async {
-    Api.instance.getNewsConfig();
+    Api.instance.getNewsConfig().then((value) => maxNews = SharedPrefs.getMaxNewsAmount());
     await Account.instance.refreshUser();
     await Api.instance.voucherDetails();
     Api.instance.getAboutUs().then((_) => setState(() => _restaurant = SharedPrefs.getAboutUs()));
@@ -104,6 +105,7 @@ class _HomePageState extends State<HomePage> {
     _connectionChange =
         ConnectionsCheck.instance.onChange.listen(onNetworkChange);
     _scrollController.addListener(_scrollListener);
+    maxNews = SharedPrefs.getMaxNewsAmount();
 
     if (!ConnectionsCheck.instance.isOnline) {
       setState(() {
@@ -142,8 +144,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   List<Widget> _buildUser() {
-    int maxNews = SharedPrefs.getMaxNewsAmount();
-
     return [
       UserCard(
         topPadding: 10,
@@ -204,9 +204,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildNewsBlock(int index) {
-    int maxNews = SharedPrefs.getMaxNewsAmount() + 2;
-
-    if (index == 0 || index >= maxNews || index > _news.length)
+    if (index == 0 || index >= maxNews + 2 || index > _news.length)
       return Container(width: 6);
 
     final News news = _news[index - 1];
