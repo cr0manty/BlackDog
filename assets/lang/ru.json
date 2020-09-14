@@ -59,8 +59,6 @@
   "scanned_voucher": "Купон",
   "unknown": "Неизвестно",
   "no_logs": "У вас еще нет сканов",
-  "success_register": "Регистрация прошла успешно",
-  "success_register_content": "Теперь вы можете войти в использую номер и пароль",
   "show_on_map": "Показать на карте",
   "no_connection": "Нет интернет соедения"
 }

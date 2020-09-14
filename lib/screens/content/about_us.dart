@@ -45,7 +45,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
                 height: ScreenSize.aboutUsLogoSize,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Colors.grey,
+                  color: HexColor.semiElement.withOpacity(0.3),
                 ),
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),

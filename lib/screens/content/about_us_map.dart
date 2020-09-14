@@ -52,31 +52,32 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
                   call: true, horizontalPadding: 0)
             ],
           ),
-        )).then((value) => setState(() => popUpOnScreen = null));
+        ));
   }
 
   void _addMarkers() {
     _restaurants.forEach((config) {
+      LatLng position;
       if (config.lat == null || config.lon == null) {
-        return;
+        // return; // TODO remove initPosition
+        position = _initPosition;
+      } else {
+        position = LatLng(config.lat, config.lon);
       }
       final MarkerId markerId = MarkerId('${config.id}');
 
       setState(() {
         markers[markerId] = Marker(
           markerId: markerId,
-          position: LatLng(config.lat, config.lat),
+          position: position,
           onTap: () => _showModal(config),
         );
       });
     });
   }
 
-  CameraPosition _initCamera = CameraPosition(
-    target: LatLng(Account.instance.position.longitude,
-        Account.instance.position.latitude),
-    zoom: 12,
-  );
+  LatLng get _initPosition => LatLng(
+      Account.instance.position.longitude, Account.instance.position.latitude);
 
   @override
   void initState() {
@@ -96,31 +97,29 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
     Api.instance.getRestaurantConfig(limit: 100).then((value) {
       _restaurants = SharedPrefs.getAboutUsList();
       _addMarkers();
-      _addTest();
     });
-  }
-
-  void _addTest() {
-    if (_restaurants.length > 0) {
-      setState(() {
-        _restaurants[0].lat = 50.0300067;
-        _restaurants[0].lon = 36.2793358;
-      });
-    }
-
-    _addMarkers();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: GestureDetector(
-        onTap: popUpOnScreen != null ? Navigator.of(context).pop : null,
+        onTap: () {
+          if (popUpOnScreen != null) {
+            setState(() {
+              popUpOnScreen = null;
+            });
+            Navigator.of(context).pop();
+          }
+        },
         child: Stack(
           children: [
             GoogleMap(
                 mapType: MapType.normal,
-                initialCameraPosition: _initCamera,
+                initialCameraPosition: CameraPosition(
+                  target: _initPosition,
+                  zoom: 12,
+                ),
                 onMapCreated: (GoogleMapController controller) {
                   _controller.complete(controller);
                 },

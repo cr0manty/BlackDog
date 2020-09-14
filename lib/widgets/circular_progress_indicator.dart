@@ -1,14 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
-/// Circular Progress indicator made of a series of steps.
-/// It can contain a child [Widget] inside.
-///
-/// Developed and published by Sandro Maglione
-/// https://www.sandromaglione.com
-///
-/// Check out the official tutorial on
-/// https://www.sandromaglione.com/blog
 class CircularStepProgressIndicator extends StatelessWidget {
   /// Defines if steps grow from
   /// clockwise [CircularDirection.clockwise] or
@@ -117,8 +109,6 @@ class CircularStepProgressIndicator extends StatelessWidget {
   /// Angle in radiants which represents the size of the arc used to display the indicator.
   /// It allows you to draw a semi-circle instead of a full 360° (math.pi * 2) circle.
   final double arcSize;
-
-  // TODO: final bool isRadial;
 
   CircularStepProgressIndicator({
     @required this.totalSteps,

@@ -5,6 +5,7 @@ import 'package:black_dog/instances/connection_check.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/menu_item.dart';
 import 'package:black_dog/screens/content/product_detail.dart';
+import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/image_view.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
@@ -104,6 +105,10 @@ class _ProductListState extends State<ProductList> {
             Container(
               width: ScreenSize.menuItemSize,
               height: ScreenSize.menuItemSize,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: HexColor.semiElement.withOpacity(0.3),
+              ),
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: ImageView(menu.image)),

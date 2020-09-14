@@ -50,8 +50,7 @@ class _HomePageState extends State<HomePage> {
   int maxNews;
 
   void getNewsList() async {
-    List news = await Api.instance
-        .getNewsList(page: 0, limit: maxNews);
+    List news = await Api.instance.getNewsList(page: 0, limit: maxNews);
     setState(() {
       _news.addAll(news);
       isLoadingNews = false;
@@ -69,10 +68,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   void initDependencies() async {
-    Api.instance.getNewsConfig().then((value) => maxNews = SharedPrefs.getMaxNewsAmount());
+    Api.instance
+        .getNewsConfig()
+        .then((value) => maxNews = SharedPrefs.getMaxNewsAmount());
     await Account.instance.refreshUser();
     await Api.instance.voucherDetails();
-    Api.instance.getAboutUs().then((_) => setState(() => _restaurant = SharedPrefs.getAboutUs()));
+    Api.instance
+        .getAboutUs()
+        .then((_) => setState(() => _restaurant = SharedPrefs.getAboutUs()));
     setState(() {});
   }
 
@@ -234,6 +237,10 @@ class _HomePageState extends State<HomePage> {
             ),
             SizedBox(height: 10),
             Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: HexColor.semiElement.withOpacity(0.3),
+                ),
                 height: ScreenSize.newsImageHeight,
                 width: ScreenSize.newsImageWidth,
                 child: ClipRRect(
@@ -255,7 +262,7 @@ class _HomePageState extends State<HomePage> {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: HexColor.lightElement,
+            color: HexColor.semiElement.withOpacity(0.3),
           ),
           margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           height: ScreenSize.menuBlockHeight,
