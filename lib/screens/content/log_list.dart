@@ -60,7 +60,7 @@ class _LogListPageState extends State<LogListPage> {
           defaultIcon: true,
           text: AppLocalizations.of(context).translate('home'),
           color: HexColor.lightElement,
-          onTap: Navigator.of(context).pop,
+          onTap: () => Navigator.of(context).pop(),
         ),
         title: Text(
           AppLocalizations.of(context).translate('scans'),

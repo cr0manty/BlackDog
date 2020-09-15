@@ -33,7 +33,7 @@ class _ChangePasswordState extends State<ChangePassword> {
         defaultIcon: true,
         text: AppLocalizations.of(context).translate('editing'),
         color: HexColor.lightElement,
-        onTap: Navigator.of(context).pop,
+        onTap: () => Navigator.of(context).pop(),
       ),
       action: RouteButton(
         text: AppLocalizations.of(context).translate('save'),

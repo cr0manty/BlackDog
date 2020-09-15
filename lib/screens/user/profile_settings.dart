@@ -49,7 +49,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
         text: AppLocalizations.of(context)
             .translate(widget.fromHome ? 'home' : 'profile'),
         color: HexColor.lightElement,
-        onTap: Navigator.of(context).pop,
+        onTap: () => Navigator.of(context).pop(),
       ),
       action: RouteButton(
         text: AppLocalizations.of(context).translate('save'),

@@ -124,7 +124,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         defaultIcon: true,
         text: AppLocalizations.of(context).translate('sign_in'),
         color: HexColor.lightElement,
-        onTap: Navigator.of(context).pop,
+        onTap: () => Navigator.of(context).pop(),
       ),
       title: Text(AppLocalizations.of(context).translate('restore_password'),
           style: Theme.of(context).textTheme.caption),
@@ -212,7 +212,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         isDestructiveAction: true,
                         child: Text(
                             AppLocalizations.of(context).translate('cancel')),
-                        onPressed: Navigator.of(context).pop,
+                        onPressed: () => Navigator.of(context).pop(),
                       )
                     ],
                   ));

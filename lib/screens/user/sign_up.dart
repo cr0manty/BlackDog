@@ -274,7 +274,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                                             .darkElement),
                                               ))),
                                       CupertinoButton(
-                                        onPressed: Navigator.of(context).pop,
+                                        onPressed: () => Navigator.of(context).pop(),
                                         child: Text(
                                           AppLocalizations.of(context)
                                               .translate(

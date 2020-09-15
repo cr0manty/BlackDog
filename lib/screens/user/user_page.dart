@@ -224,7 +224,7 @@ class _UserPageState extends State<UserPage> {
         defaultIcon: true,
         text: AppLocalizations.of(context).translate('home'),
         color: HexColor.lightElement,
-        onTap: Navigator.of(context).pop,
+        onTap: () => Navigator.of(context).pop(),
       ),
       action: RouteButton(
         text: AppLocalizations.of(context).translate('logout'),

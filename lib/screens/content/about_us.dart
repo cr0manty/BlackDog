@@ -34,7 +34,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
         defaultIcon: true,
         text: AppLocalizations.of(context).translate('home'),
         color: HexColor.lightElement,
-        onTap: Navigator.of(context).pop,
+        onTap: () => Navigator.of(context).pop(),
       ),
       title: Text(AppLocalizations.of(context).translate('about_us'),
           style: Theme.of(context).textTheme.caption),

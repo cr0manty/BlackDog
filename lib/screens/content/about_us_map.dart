@@ -132,7 +132,7 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
                   color: HexColor.darkElement,
                   textColor: HexColor.lightElement,
                   iconColor: HexColor.lightElement,
-                  onTap: Navigator.of(context).pop,
+                  onTap: () => Navigator.of(context).pop(),
                 )),
           ],
         ),

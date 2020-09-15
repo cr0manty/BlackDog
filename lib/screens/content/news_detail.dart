@@ -50,7 +50,7 @@ class _NewsDetailState extends State<NewsDetail> {
         text: AppLocalizations.of(context)
             .translate(widget.fromHome ? 'home' : 'news'),
         color: HexColor.lightElement,
-        onTap: Navigator.of(context).pop,
+        onTap: () => Navigator.of(context).pop(),
       ),
       children: <Widget>[
         news?.images?.length != null && news.images.length > 0
