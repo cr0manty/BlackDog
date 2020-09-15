@@ -70,7 +70,8 @@ class _AboutUsPageState extends State<AboutUsPage> {
           padding: EdgeInsets.only(left: 16, right: 16, bottom: 10),
           child: Text(
             widget.restaurant.name,
-            style: Theme.of(context).textTheme.headline1,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.caption,
           ),
         ),
         AboutSection(widget.restaurant.webUrl, SFSymbols.globe, web: true),
