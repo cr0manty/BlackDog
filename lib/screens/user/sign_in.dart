@@ -211,8 +211,11 @@ class _SignInPageState extends State<SignInPage> {
 
   Future loginClick() async {
     FocusScope.of(context).requestFocus(FocusNode());
-    setState(() => isLoading = !isLoading);
-    fieldsError = {};
+    setState(() {
+      isLoading = !isLoading;
+      fieldsError = {};
+    });
+
     await Api.instance
         .login(_phoneController.text, _passwordController.text)
         .then((response) async {

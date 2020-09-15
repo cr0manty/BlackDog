@@ -55,7 +55,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                   child: TextInput(
                     controller: _password1Controller,
                     focusNode: _password1Focus,
-                    onFieldSubmitted: (_) => FocusScope.of(context).requestFocus(_password2Focus),
+                    onFieldSubmitted: (_) =>
+                        FocusScope.of(context).requestFocus(_password2Focus),
                     hintText:
                         AppLocalizations.of(context).translate('new_password'),
                     inputAction: TextInputAction.next,
@@ -91,8 +92,10 @@ class _ChangePasswordState extends State<ChangePassword> {
   }
 
   Future _changePassword() async {
-    setState(() => isLoading = !isLoading);
-    fieldsError = {};
+    setState(() {
+      isLoading = !isLoading;
+      fieldsError = {};
+    });
 
     await Api.instance.changePassword(_sendData()).then((response) {
       bool result = response.remove('result');

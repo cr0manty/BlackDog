@@ -61,7 +61,11 @@ class _HomePageState extends State<HomePage> {
     if (isOnline && initialLoad) {
       initialLoad = false;
       initDependencies();
+      _category = Api.instance.getCategories(limit: 100);
+    _news = Api.instance
+        .getNewsList(page: 0, limit: SharedPrefs.getMaxNewsAmount());
     }
+
     setState(() {});
   }
 
@@ -72,9 +76,6 @@ class _HomePageState extends State<HomePage> {
     _connectionChange =
         ConnectionsCheck.instance.onChange.listen(onNetworkChange);
 
-    _category = Api.instance.getCategories(limit: 100);
-    _news = Api.instance
-        .getNewsList(page: 0, limit: SharedPrefs.getMaxNewsAmount());
     if (!ConnectionsCheck.instance.isOnline) {
       setState(() => isLoadingData = false);
     } else {

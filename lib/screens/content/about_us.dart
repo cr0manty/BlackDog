@@ -70,7 +70,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
           padding: EdgeInsets.only(left: 16, right: 16, bottom: 10),
           child: Text(
             widget.restaurant.name,
-            textAlign: TextAlign.center,
+            textAlign: TextAlign.center, overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.caption,
           ),
         ),

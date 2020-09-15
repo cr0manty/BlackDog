@@ -35,6 +35,15 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
               style: Theme.of(context).textTheme.headline1),
           content: Column(
             children: [
+              Container(
+                margin: EdgeInsets.only(top: 8),
+                child: AboutSection(
+                  config.address,
+                  SFSymbols.placemark_fill,
+                  horizontalPadding: 0,
+                  color: HexColor.errorLog,
+                ),
+              ),
               AboutSection(
                 config.weekdayWorkingTime(context),
                 SFSymbols.clock_fill,
@@ -43,12 +52,6 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
               AboutSection(
                   config.weekendWorkingTime(context), SFSymbols.clock_fill,
                   horizontalPadding: 0),
-              AboutSection(
-                config.address,
-                SFSymbols.placemark_fill,
-                horizontalPadding: 0,
-                color: HexColor.errorLog,
-              ),
               AboutSection(config.branchPhone, SFSymbols.phone_fill,
                   call: true, horizontalPadding: 0)
             ],
