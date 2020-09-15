@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 
 class AboutUsMapPage extends StatefulWidget {
   @override
@@ -52,6 +53,14 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
                   call: true, horizontalPadding: 0)
             ],
           ),
+          actions: [
+            CupertinoDialogAction(
+              child: Text(AppLocalizations.of(context).translate('open_map')),
+              onPressed: ()  {
+                MapsLauncher.launchCoordinates(config.lat, config.lon);
+              },
+            ),
+          ],
         ));
   }
 
@@ -80,7 +89,9 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
 
   @override
   void initState() {
-    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: HexColor.darkElement.withOpacity(0.2),
+        statusBarBrightness: Brightness.dark));
     _restaurants = SharedPrefs.getAboutUsList();
     _addMarkers();
 
@@ -143,7 +154,9 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
   @override
   void dispose() {
     _connectionChange?.cancel();
-    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarBrightness: Brightness.light));
     super.dispose();
   }
 }

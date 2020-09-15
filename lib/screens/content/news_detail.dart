@@ -63,6 +63,7 @@ class _NewsDetailState extends State<NewsDetail> {
                   height: ScreenSize.newsItemPhotoSize,
                   viewportFraction: 1,
                   enlargeCenterPage: true,
+                  enableInfiniteScroll: false,
                   autoPlay: true,
                 ))
             : Container(
