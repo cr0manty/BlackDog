@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/instances/connection_check.dart';
 import 'package:black_dog/instances/shared_pref.dart';
@@ -11,6 +10,7 @@ import 'package:black_dog/widgets/about_section.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -76,11 +76,11 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
     });
   }
 
-  LatLng get _initPosition => LatLng(
-      Account.instance.position.longitude, Account.instance.position.latitude);
+  LatLng get _initPosition => LatLng(49.989128, 36.230987);
 
   @override
   void initState() {
+    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     _restaurants = SharedPrefs.getAboutUsList();
     _addMarkers();
 
@@ -143,6 +143,7 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
   @override
   void dispose() {
     _connectionChange?.cancel();
+    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     super.dispose();
   }
 }

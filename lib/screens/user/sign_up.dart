@@ -86,7 +86,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     color: HexColor.darkElement),
                 onTap: () => setState(() => _obscureText = !_obscureText),
               ),
-              inputAction: TextInputAction.done,
+              inputAction: TextInputAction.next,
             )),
         Utils.instance.showValidateError(fieldsError, key: 'password1'),
         Container(

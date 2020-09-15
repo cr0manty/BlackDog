@@ -30,12 +30,12 @@ class NotificationManager {
     });
 
     _fcm.configure(
-        onMessage: _foregroundHandler,
-        onLaunch: _foregroundHandler,
-        onResume: _foregroundHandler);
+        onMessage: _onMessageHandler,
+        onLaunch: _onMessageHandler,
+        onResume: _onMessageHandler);
   }
 
-  void _onMessageHandler(Map<String, dynamic> message) {
+  Future _onMessageHandler(Map<String, dynamic> message) async {
     print("onMessage: $message");
 
     if (message.containsKey('data')) {
@@ -54,10 +54,6 @@ class NotificationManager {
         _onMessage.add(NotificationType.QR_CODE_SCANNED);
       }
     }
-  }
-
-  Future _foregroundHandler(Map<String, dynamic> message) async {
-    _onMessageHandler(message);
   }
 
   void _updateVouchers({Voucher voucher, int id}) {

@@ -89,7 +89,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                   FocusScope.of(context).requestFocus(_nameFocus),
               focusNode: _lastNameFocus,
               hintText: AppLocalizations.of(context).translate('last_name'),
-              keyboardType: TextInputType.phone,
+              keyboardType: TextInputType.text,
             ),
             Utils.instance.showValidateError(fieldsError, key: 'last_name'),
             Container(
@@ -131,6 +131,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     await Api.instance.updateUser(_sendData()).then((response) {
       bool result = response.remove('result');
       if (result) {
+        EasyLoading.instance..backgroundColor = Colors.green.withOpacity(0.8);
+        EasyLoading.showSuccess('');
         Navigator.of(context).pop();
       } else {
         response.forEach((key, value) {

@@ -70,11 +70,12 @@ class _StaffHomePageState extends State<StaffHomePage> {
   }
 
   Widget _buildFuture(BuildContext context, AsyncSnapshot snapshot) {
-    Widget noMenuData = Container(
+    Widget noData = Container(
         width: ScreenSize.width,
         child: Center(
             child: Text(
           AppLocalizations.of(context).translate('no_logs'),
+          textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.subtitle1,
         )));
 
@@ -97,9 +98,9 @@ class _StaffHomePageState extends State<StaffHomePage> {
             )),
           );
         }
-        return noMenuData;
+        return noData;
       default:
-        return noMenuData;
+        return noData;
     }
   }
 
