@@ -62,8 +62,8 @@ class _HomePageState extends State<HomePage> {
       initialLoad = false;
       initDependencies();
       _category = Api.instance.getCategories(limit: 100);
-    _news = Api.instance
-        .getNewsList(page: 0, limit: SharedPrefs.getMaxNewsAmount());
+      _news = Api.instance
+          .getNewsList(page: 0, limit: SharedPrefs.getMaxNewsAmount());
     }
 
     setState(() {});
@@ -111,7 +111,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildFuture(BuildContext context, AsyncSnapshot snapshot,
       String stringKey, Widget child) {
-    Widget noMenuData = Container(
+    Widget noData = Container(
         width: ScreenSize.width,
         child: Center(
             child: Text(
@@ -121,6 +121,7 @@ class _HomePageState extends State<HomePage> {
 
     switch (snapshot.connectionState) {
       case ConnectionState.none:
+        return noData;
       case ConnectionState.waiting:
       case ConnectionState.active:
         return Container(
@@ -130,9 +131,9 @@ class _HomePageState extends State<HomePage> {
         if (snapshot.hasData && !snapshot.hasError) {
           return child;
         }
-        return noMenuData;
+        return noData;
       default:
-        return noMenuData;
+        return noData;
     }
   }
 

@@ -81,6 +81,7 @@ class _StaffHomePageState extends State<StaffHomePage> {
 
     switch (snapshot.connectionState) {
       case ConnectionState.none:
+        return noData;
       case ConnectionState.waiting:
       case ConnectionState.active:
         return Container(
