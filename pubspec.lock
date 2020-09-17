@@ -201,7 +201,7 @@ packages:
       name: flutter_easyloading
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.4"
+    version: "1.2.0"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
@@ -294,13 +294,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.2"
-  maps_launcher:
-    dependency: "direct main"
-    description:
-      name: maps_launcher
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.2.2+1"
   matcher:
     dependency: transitive
     description:
@@ -488,6 +481,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.9.5"
+  step_progress_indicator:
+    dependency: "direct main"
+    description:
+      name: step_progress_indicator
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.4+7"
   stream_channel:
     dependency: transitive
     description:

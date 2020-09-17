@@ -6,14 +6,15 @@ import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/models/restaurant_config.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
+import 'package:black_dog/utils/map_launch.dart';
 import 'package:black_dog/widgets/about_section.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:maps_launcher/maps_launcher.dart';
 
 class AboutUsMapPage extends StatefulWidget {
   @override
@@ -59,8 +60,16 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
           actions: [
             CupertinoDialogAction(
               child: Text(AppLocalizations.of(context).translate('open_map')),
-              onPressed: ()  {
-                MapsLauncher.launchCoordinates(config.lat, config.lon);
+              onPressed: () {
+                try {
+                  MapUtils.openMap(config.lat, config.lon);
+                } catch (e) {
+                  print(e);
+                  Navigator.of(context).pop();
+                  EasyLoading.instance
+                    ..backgroundColor = Colors.red.withOpacity(0.8);
+                  EasyLoading.showError('');
+                }
               },
             ),
           ],
@@ -69,13 +78,10 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
 
   void _addMarkers() {
     _restaurants.forEach((config) {
-      LatLng position;
       if (config.lat == null || config.lon == null) {
-        // return; // TODO remove initPosition
-        position = _initPosition;
-      } else {
-        position = LatLng(config.lat, config.lon);
+        return;
       }
+      LatLng position = LatLng(config.lat, config.lon);
       final MarkerId markerId = MarkerId('${config.id}');
 
       setState(() {
