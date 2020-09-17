@@ -94,7 +94,7 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
   void initState() {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: HexColor.darkElement.withOpacity(0.2),
-        statusBarBrightness: Brightness.dark));
+        statusBarBrightness: Brightness.light));
     _restaurants = SharedPrefs.getAboutUsList();
     _addMarkers();
 
@@ -159,7 +159,7 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
     _connectionChange?.cancel();
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarBrightness: Brightness.light));
+        statusBarBrightness: Brightness.dark));
     super.dispose();
   }
 }

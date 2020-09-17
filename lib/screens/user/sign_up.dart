@@ -96,7 +96,7 @@ class _SignUpPageState extends State<SignUpPage> {
               controller: _password2Controller,
               focusNode: _password2Focus,
               hintText:
-              AppLocalizations.of(context).translate('confirm_password'),
+                  AppLocalizations.of(context).translate('confirm_password'),
               suffixIcon: GestureDetector(
                 child: Icon(
                     _obscureTextConfirm
@@ -199,17 +199,15 @@ class _SignUpPageState extends State<SignUpPage> {
               width: ScreenSize.width,
               decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage(Utils.backgroundImage),
-                    fit: BoxFit.fill,
-                  )),
+                image: AssetImage(Utils.backgroundImage),
+                fit: BoxFit.fill,
+              )),
             )),
         ModalProgressHUD(
             progressIndicator: CupertinoActivityIndicator(),
             inAsyncCall: isLoading,
             child: GestureDetector(
-              onTap: FocusScope
-                  .of(context)
-                  .unfocus,
+              onTap: FocusScope.of(context).unfocus,
               child: Container(
                   height: ScreenSize.height,
                   width: ScreenSize.width,
@@ -221,81 +219,75 @@ class _SignUpPageState extends State<SignUpPage> {
                         child: SingleChildScrollView(
                             child: Column(
                                 mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                 mainAxisSize: MainAxisSize.max,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Container(
-                                    alignment: Alignment.topCenter,
-                                    padding: EdgeInsets.only(
-                                        top: ScreenSize.mainMarginTop,
-                                        bottom: ScreenSize.sectionIndent * 2),
-                                    child: Text(
-                                      AppLocalizations.of(context)
-                                          .translate('register'),
-                                      style: Theme
-                                          .of(context)
-                                          .textTheme
-                                          .caption,
-                                    ),
-                                  ),
-                                  widget.signUpPageType ==
+                              Container(
+                                alignment: Alignment.topCenter,
+                                padding: EdgeInsets.only(
+                                    top: ScreenSize.mainMarginTop,
+                                    bottom: ScreenSize.sectionIndent * 2),
+                                child: Text(
+                                  AppLocalizations.of(context)
+                                      .translate('register'),
+                                  style: Theme.of(context).textTheme.caption,
+                                ),
+                              ),
+                              widget.signUpPageType ==
                                       SignUpPageType.ADDITION_DATA
-                                      ? _buildAddition()
-                                      : _buildFields(),
-                                  // widget.signUpPageType == SignUpPageType.MAIN_DATA
-                                  //     ? SocialAuth(textKey: 'sign_up_with')
-                                  //     : Container(), // todo: after release
-                                  Container(
-                                      alignment: Alignment.bottomCenter,
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 20),
-                                      child: Column(
-                                        children: <Widget>[
-                                          SizedBox(
-                                              width: ScreenSize.width - 64,
-                                              child: CupertinoButton(
-                                                  onPressed:
+                                  ? _buildAddition()
+                                  : _buildFields(),
+                              // widget.signUpPageType == SignUpPageType.MAIN_DATA
+                              //     ? SocialAuth(textKey: 'sign_up_with')
+                              //     : Container(), // todo: after release
+                              Container(
+                                  alignment: Alignment.bottomCenter,
+                                  padding: EdgeInsets.symmetric(vertical: 20),
+                                  child: Column(
+                                    children: <Widget>[
+                                      SizedBox(
+                                          width: ScreenSize.width - 64,
+                                          child: CupertinoButton(
+                                              onPressed:
                                                   widget.signUpPageType ==
-                                                      SignUpPageType
-                                                          .ADDITION_DATA
+                                                          SignUpPageType
+                                                              .ADDITION_DATA
                                                       ? _additionRegister
                                                       : _mainRegistration,
-                                                  color: HexColor.lightElement,
-                                                  child: Text(
-                                                    AppLocalizations.of(context)
-                                                        .translate(
+                                              color: HexColor.lightElement,
+                                              child: Text(
+                                                AppLocalizations.of(context)
+                                                    .translate(
                                                         widget.signUpPageType ==
-                                                            SignUpPageType
-                                                                .MAIN_DATA
+                                                                SignUpPageType
+                                                                    .MAIN_DATA
                                                             ? 'continue'
                                                             : 'register'),
-                                                    overflow: TextOverflow.fade,
-                                                    maxLines: 1,
-                                                    style: Theme
-                                                        .of(context)
-                                                        .textTheme
-                                                        .headline1
-                                                        .copyWith(
+                                                overflow: TextOverflow.fade,
+                                                maxLines: 1,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline1
+                                                    .copyWith(
                                                         color: HexColor
                                                             .darkElement),
-                                                  ))),
-                                          CupertinoButton(
-                                            onPressed: () =>
-                                                Navigator.of(context).pop(),
-                                            child: Text(
-                                              AppLocalizations.of(context)
-                                                  .translate(
+                                              ))),
+                                      CupertinoButton(
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(),
+                                        child: Text(
+                                          AppLocalizations.of(context)
+                                              .translate(
                                                   'already_have_account'),
-                                              style: Theme
-                                                  .of(context)
-                                                  .textTheme
-                                                  .bodyText2,
-                                            ),
-                                          ),
-                                        ],
-                                      ))
-                                ])),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyText2,
+                                        ),
+                                      ),
+                                    ],
+                                  ))
+                            ])),
                       ))),
             )),
       ]),
@@ -310,19 +302,12 @@ class _SignUpPageState extends State<SignUpPage> {
         context: context,
         builder: (BuildContext context) {
           return Container(
-              height: MediaQuery
-                  .of(context)
-                  .copyWith()
-                  .size
-                  .height / 3,
+              height: MediaQuery.of(context).copyWith().size.height / 3,
               child: CupertinoTheme(
                   data: CupertinoThemeData(
                     textTheme: CupertinoTextThemeData(
                       dateTimePickerTextStyle:
-                      Theme
-                          .of(context)
-                          .textTheme
-                          .subtitle1,
+                          Theme.of(context).textTheme.subtitle1,
                     ),
                   ),
                   child: CupertinoDatePicker(
@@ -339,21 +324,21 @@ class _SignUpPageState extends State<SignUpPage> {
   Map<String, String> _sendData() {
     return widget.signUpPageType == SignUpPageType.MAIN_DATA
         ? {
-      'password1': _password1Controller.text,
-      'password2': _password2Controller.text,
-      'phone_number': _phoneController.text,
-    }
+            'password1': _password1Controller.text,
+            'password2': _password2Controller.text,
+            'phone_number': _phoneController.text,
+          }
         : {
-      'birth_date': Utils.instance.dateFormat(selectedDate),
-      'first_name': _nameController.text,
-      'last_name': _lastNameController.text,
-      'firebase_uid': SharedPrefs.getUserFirebaseUID()
-    };
+            'birth_date': Utils.instance.dateFormat(selectedDate),
+            'first_name': _nameController.text,
+            'last_name': _lastNameController.text,
+            'firebase_uid': SharedPrefs.getUserFirebaseUID()
+          };
   }
 
   Future registerWithPhone() async {
     _codeController.clear();
-     setState(() {
+    setState(() {
       fieldsError = {};
     });
 
@@ -369,21 +354,14 @@ class _SignUpPageState extends State<SignUpPage> {
         codeSent: (String verificationId, [int forceResendingToken]) {
           showCupertinoDialog(
               context: context,
-              builder: (context) =>
-                  CupertinoAlertDialog(
+              builder: (context) => CupertinoAlertDialog(
                     title: Text(
                         AppLocalizations.of(context).translate('enter_code'),
-                        style: Theme
-                            .of(context)
-                            .textTheme
-                            .headline1),
+                        style: Theme.of(context).textTheme.headline1),
                     content: Container(
                       margin: EdgeInsets.only(top: 10),
                       child: CupertinoTextField(
-                        style: Theme
-                            .of(context)
-                            .textTheme
-                            .subtitle2,
+                        style: Theme.of(context).textTheme.subtitle2,
                         controller: _codeController,
                       ),
                     ),
@@ -393,9 +371,9 @@ class _SignUpPageState extends State<SignUpPage> {
                             AppLocalizations.of(context).translate('done')),
                         onPressed: () async {
                           AuthCredential credential =
-                          PhoneAuthProvider.credential(
-                              verificationId: verificationId,
-                              smsCode: _codeController.text.trim());
+                              PhoneAuthProvider.credential(
+                                  verificationId: verificationId,
+                                  smsCode: _codeController.text.trim());
                           UserCredential result = await FirebaseAuth.instance
                               .signInWithCredential(credential);
                           if (result != null && result.user != null) {
@@ -404,11 +382,10 @@ class _SignUpPageState extends State<SignUpPage> {
                             SharedPrefs.saveUserFirebaseUid(result.user.uid);
                             Navigator.of(context)
                                 .pushReplacement(CupertinoPageRoute(
-                                builder: (context) =>
-                                    SignUpPage(
-                                      signUpPageType:
-                                      SignUpPageType.ADDITION_DATA,
-                                    )));
+                                    builder: (context) => SignUpPage(
+                                          signUpPageType:
+                                              SignUpPageType.ADDITION_DATA,
+                                        )));
                           }
                         },
                       ),
@@ -441,10 +418,8 @@ class _SignUpPageState extends State<SignUpPage> {
       Navigator.of(context).pushAndRemoveUntil(
           CupertinoPageRoute(
               builder: (context) =>
-              Account.instance.user.isStaff
-                  ? StaffHomePage()
-                  : HomePage()),
-              (route) => false);
+                  Account.instance.user.isStaff ? StaffHomePage() : HomePage()),
+          (route) => false);
     } else {
       response.forEach((key, value) {
         if (_fieldsList.contains(key)) {
@@ -459,7 +434,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Future _mainRegistration({Function onEnd}) async {
     FocusScope.of(context).unfocus();
-     setState(() {
+    setState(() {
       isLoading = !isLoading;
       fieldsError = {};
     });
