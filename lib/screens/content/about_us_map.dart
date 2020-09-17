@@ -1,16 +1,18 @@
 import 'dart:async';
 
-import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/instances/connection_check.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/models/restaurant_config.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
+import 'package:black_dog/utils/map_launch.dart';
 import 'package:black_dog/widgets/about_section.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -34,6 +36,15 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
               style: Theme.of(context).textTheme.headline1),
           content: Column(
             children: [
+              Container(
+                margin: EdgeInsets.only(top: 8),
+                child: AboutSection(
+                  config.address,
+                  SFSymbols.placemark_fill,
+                  horizontalPadding: 0,
+                  color: HexColor.errorLog,
+                ),
+              ),
               AboutSection(
                 config.weekdayWorkingTime(context),
                 SFSymbols.clock_fill,
@@ -42,28 +53,35 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
               AboutSection(
                   config.weekendWorkingTime(context), SFSymbols.clock_fill,
                   horizontalPadding: 0),
-              AboutSection(
-                config.address,
-                SFSymbols.placemark_fill,
-                horizontalPadding: 0,
-                color: HexColor.errorLog,
-              ),
               AboutSection(config.branchPhone, SFSymbols.phone_fill,
                   call: true, horizontalPadding: 0)
             ],
           ),
+          actions: [
+            CupertinoDialogAction(
+              child: Text(AppLocalizations.of(context).translate('open_map')),
+              onPressed: () {
+                try {
+                  MapUtils.openMap(config.lat, config.lon);
+                } catch (e) {
+                  print(e);
+                  Navigator.of(context).pop();
+                  EasyLoading.instance
+                    ..backgroundColor = Colors.red.withOpacity(0.8);
+                  EasyLoading.showError('');
+                }
+              },
+            ),
+          ],
         ));
   }
 
   void _addMarkers() {
     _restaurants.forEach((config) {
-      LatLng position;
       if (config.lat == null || config.lon == null) {
-        // return; // TODO remove initPosition
-        position = _initPosition;
-      } else {
-        position = LatLng(config.lat, config.lon);
+        return;
       }
+      LatLng position = LatLng(config.lat, config.lon);
       final MarkerId markerId = MarkerId('${config.id}');
 
       setState(() {
@@ -76,11 +94,13 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
     });
   }
 
-  LatLng get _initPosition => LatLng(
-      Account.instance.position.longitude, Account.instance.position.latitude);
+  LatLng get _initPosition => LatLng(49.989128, 36.230987);
 
   @override
   void initState() {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: HexColor.darkElement.withOpacity(0.2),
+        statusBarBrightness: Brightness.light));
     _restaurants = SharedPrefs.getAboutUsList();
     _addMarkers();
 
@@ -132,7 +152,7 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
                   color: HexColor.darkElement,
                   textColor: HexColor.lightElement,
                   iconColor: HexColor.lightElement,
-                  onTap: Navigator.of(context).pop,
+                  onTap: () => Navigator.of(context).pop(),
                 )),
           ],
         ),
@@ -143,6 +163,9 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
   @override
   void dispose() {
     _connectionChange?.cancel();
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarBrightness: Brightness.dark));
     super.dispose();
   }
 }

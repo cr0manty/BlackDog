@@ -24,8 +24,8 @@ class RestaurantConfig {
   String shortDescription;
   String weekdayWorkingHours;
   String weekendWorkingHours;
-  double lon;
-  double lat;
+  String longitude;
+  String latitude;
 
   RestaurantConfig(
       {this.id,
@@ -33,8 +33,8 @@ class RestaurantConfig {
       this.branchPhone,
       this.branchName,
       this.address,
-      this.lat,
-      this.lon,
+      this.latitude,
+      this.longitude,
       this.weekdayWorkingHours,
       this.weekendWorkingHours,
       this.shortDescription});
@@ -48,8 +48,8 @@ class RestaurantConfig {
           weekdayWorkingHours: data['weekday_working_hours'],
           weekendWorkingHours: data['weekend_working_hours'],
           address: data['address'],
-          lon: data['lon'],
-          lat: data['lat'],
+          longitude: data['lon'],
+          latitude: data['lat'],
           shortDescription: data['short_description']);
 
   Map<String, dynamic> toJson() => {
@@ -60,10 +60,13 @@ class RestaurantConfig {
         'weekday_working_hours': weekdayWorkingHours,
         'weekend_working_hours': weekendWorkingHours,
         'address': address,
-        'lat': lat,
-        'lon': lon,
+        'lat': latitude,
+        'lon': longitude,
         'short_description': shortDescription,
       };
+
+  double get lat => latitude != null ? double.parse(latitude) : null;
+  double get lon => longitude != null ? double.parse(longitude) : null;
 
   String weekdayWorkingTime(context) {
     return AppLocalizations.of(context).translate('work_time') +

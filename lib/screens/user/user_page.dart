@@ -11,7 +11,6 @@ import 'package:black_dog/models/voucher.dart';
 import 'package:black_dog/screens/user/sign_in.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
-import 'package:black_dog/widgets/circular_progress_indicator.dart';
 import 'package:black_dog/widgets/edit_button.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
@@ -21,6 +20,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 class UserPage extends StatefulWidget {
   @override
@@ -58,6 +58,8 @@ class _UserPageState extends State<UserPage> {
       case NotificationType.QR_CODE_SCANNED:
         currentVoucher = SharedPrefs.getCurrentVoucher();
         break;
+      default:
+        break;
     }
     setState(() {});
   }
@@ -74,6 +76,7 @@ class _UserPageState extends State<UserPage> {
       height: 150,
       startingAngle: -math.pi * 2 / 2.7,
       arcSize: math.pi * 2 / 3 * 2.23,
+      roundedCap: (_, __) => true,
       child: Center(
           child: Stack(
         children: [
@@ -224,7 +227,7 @@ class _UserPageState extends State<UserPage> {
         defaultIcon: true,
         text: AppLocalizations.of(context).translate('home'),
         color: HexColor.lightElement,
-        onTap: Navigator.of(context).pop,
+        onTap: () => Navigator.of(context).pop(),
       ),
       action: RouteButton(
         text: AppLocalizations.of(context).translate('logout'),

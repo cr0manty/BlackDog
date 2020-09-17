@@ -30,13 +30,27 @@ class NotificationManager {
     });
 
     _fcm.configure(
-        onMessage: _foregroundHandler,
-        onLaunch: _foregroundHandler,
-        onResume: _foregroundHandler);
+        onMessage: _foregroundMessageHandler,
+        onLaunch: _foregroundMessageHandler,
+        onResume: _foregroundMessageHandler,
+        onBackgroundMessage: _backgroundMessageHandler);
   }
 
-  void _onMessageHandler(Map<String, dynamic> message) {
+  static Future _backgroundMessageHandler(Map<String, dynamic> message) async {
+    _messageHandler(message);
+  }
+
+  Future _foregroundMessageHandler(Map<String, dynamic> message) async {
+    NotificationType notificationType = await _messageHandler(message);
+    _onMessage.add(notificationType);
+  }
+
+  static Future _messageHandler(Map<String, dynamic> message) async {
     print("onMessage: $message");
+
+    if (SharedPrefs.getInstance() == null) {
+      await SharedPrefs.initialize();
+    }
 
     if (message.containsKey('data')) {
       print("Message date type: ${message['data']['code']}");
@@ -44,23 +58,19 @@ class NotificationManager {
         Voucher voucher = Voucher.fromStringJson(message['data']['voucher']);
         _updateVouchers(voucher: voucher);
         _updateCounter(int.parse(message['data']['updated_counter'] ?? '0'));
-        _onMessage.add(NotificationType.VOUCHER_RECEIVED);
+        return NotificationType.VOUCHER_RECEIVED;
       } else if (message['data']['code'] == 'voucher_scanned') {
         _updateVouchers(id: int.parse(message['data']['voucher_id']));
         _updateCounter(int.parse(message['data']['updated_counter'] ?? '0'));
-        _onMessage.add(NotificationType.VOUCHER_SCANNED);
+        return NotificationType.VOUCHER_SCANNED;
       } else if (message['data']['code'] == 'qr_code_scanned') {
         _updateCounter(int.parse(message['data']['updated_counter'] ?? '0'));
-        _onMessage.add(NotificationType.QR_CODE_SCANNED);
+        return NotificationType.QR_CODE_SCANNED;
       }
     }
   }
 
-  Future _foregroundHandler(Map<String, dynamic> message) async {
-    _onMessageHandler(message);
-  }
-
-  void _updateVouchers({Voucher voucher, int id}) {
+  static void _updateVouchers({Voucher voucher, int id}) {
     List<Voucher> vouchers = SharedPrefs.getActiveVouchers();
 
     if (id != null) {
@@ -71,7 +81,7 @@ class NotificationManager {
     SharedPrefs.saveActiveVoucher(vouchers);
   }
 
-  void _updateCounter(int counter) {
+  static void _updateCounter(int counter) {
     BaseVoucher currentVoucher = SharedPrefs.getCurrentVoucher();
     currentVoucher.purchaseCount = counter;
     SharedPrefs.saveCurrentVoucher(currentVoucher);

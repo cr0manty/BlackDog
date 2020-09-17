@@ -68,7 +68,7 @@ class _ProductListState extends State<ProductList> {
         defaultIcon: true,
         text: AppLocalizations.of(context).translate('home'),
         color: Colors.white,
-        onTap: Navigator.of(context).pop,
+        onTap: () => Navigator.of(context).pop(),
       ),
       title: Text(
         widget.title,

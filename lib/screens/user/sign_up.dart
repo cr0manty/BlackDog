@@ -86,7 +86,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     color: HexColor.darkElement),
                 onTap: () => setState(() => _obscureText = !_obscureText),
               ),
-              inputAction: TextInputAction.done,
+              inputAction: TextInputAction.next,
             )),
         Utils.instance.showValidateError(fieldsError, key: 'password1'),
         Container(
@@ -274,7 +274,8 @@ class _SignUpPageState extends State<SignUpPage> {
                                                             .darkElement),
                                               ))),
                                       CupertinoButton(
-                                        onPressed: Navigator.of(context).pop,
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(),
                                         child: Text(
                                           AppLocalizations.of(context)
                                               .translate(
@@ -337,6 +338,9 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Future registerWithPhone() async {
     _codeController.clear();
+    setState(() {
+      fieldsError = {};
+    });
 
     FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: _phoneController.text,
@@ -404,15 +408,17 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Future _additionRegister() async {
-    setState(() => isLoading = !isLoading);
+    setState(() {
+      isLoading = !isLoading;
+      fieldsError = {};
+    });
     Map response = await Api.instance.updateUser(_sendData());
     bool result = response.remove('result');
     if (result && await Account.instance.setUser()) {
       Navigator.of(context).pushAndRemoveUntil(
           CupertinoPageRoute(
-              builder: (context) => Account.instance.user.isStaff
-                  ? StaffHomePage()
-                  : HomePage()),
+              builder: (context) =>
+                  Account.instance.user.isStaff ? StaffHomePage() : HomePage()),
           (route) => false);
     } else {
       response.forEach((key, value) {
@@ -428,8 +434,10 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Future _mainRegistration({Function onEnd}) async {
     FocusScope.of(context).unfocus();
-    setState(() => isLoading = !isLoading);
-    fieldsError = {};
+    setState(() {
+      isLoading = !isLoading;
+      fieldsError = {};
+    });
 
     await Api.instance.register(_sendData()).then((response) async {
       bool result = response.remove('result');

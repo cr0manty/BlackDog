@@ -82,7 +82,7 @@ class _ProductDetailState extends State<ProductDetail>
         defaultIcon: true,
         text: AppLocalizations.of(context).translate('back'),
         color: HexColor.lightElement,
-        onTap: Navigator.of(context).pop,
+        onTap: () => Navigator.of(context).pop(),
       ),
       children: <Widget>[
         Center(

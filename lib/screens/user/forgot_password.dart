@@ -124,7 +124,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         defaultIcon: true,
         text: AppLocalizations.of(context).translate('sign_in'),
         color: HexColor.lightElement,
-        onTap: Navigator.of(context).pop,
+        onTap: () => Navigator.of(context).pop(),
       ),
       title: Text(AppLocalizations.of(context).translate('restore_password'),
           style: Theme.of(context).textTheme.caption),
@@ -161,7 +161,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   void _firebaseVerifyPhone() async {
     _codeController.clear();
-    setState(() => isLoading = !isLoading);
+    setState(() {
+      isLoading = !isLoading;
+      _validationError = {};
+    });
 
     FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: _basicController.text,
@@ -212,7 +215,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         isDestructiveAction: true,
                         child: Text(
                             AppLocalizations.of(context).translate('cancel')),
-                        onPressed: Navigator.of(context).pop,
+                        onPressed: () => Navigator.of(context).pop(),
                       )
                     ],
                   ));
@@ -228,7 +231,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   void _sendPhoneClick() async {
     FocusScope.of(context).unfocus();
-    setState(() => isLoading = !isLoading);
+    _codeController.clear();
+    setState(() {
+      isLoading = !isLoading;
+      _validationError = {};
+    });
+
     bool exist =
         await Api.instance.checkPhoneNumberExist(_basicController.text); //
     if (exist) {
@@ -269,7 +277,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   void _sendNewPassword() async {
     FocusScope.of(context).requestFocus(FocusNode());
-    setState(() => isLoading = !isLoading);
+    _codeController.clear();
+    setState(() {
+      isLoading = !isLoading;
+      _validationError = {};
+    });
 
     _validationError = {};
     await Api.instance.changePassword({

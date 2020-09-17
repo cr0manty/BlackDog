@@ -60,7 +60,7 @@ class _LogListPageState extends State<LogListPage> {
           defaultIcon: true,
           text: AppLocalizations.of(context).translate('home'),
           color: HexColor.lightElement,
-          onTap: Navigator.of(context).pop,
+          onTap: () => Navigator.of(context).pop(),
         ),
         title: Text(
           AppLocalizations.of(context).translate('scans'),
@@ -77,7 +77,9 @@ class _LogListPageState extends State<LogListPage> {
         padding: EdgeInsets.only(top: 10),
         alignment: Alignment.center,
         height: showProgress ? 50 : 0,
-        child: CupertinoActivityIndicator(),
+        child: logList.length % Api.defaultPerPage == 0
+            ? CupertinoActivityIndicator()
+            : Container(),
       );
     }
     return LogCard(

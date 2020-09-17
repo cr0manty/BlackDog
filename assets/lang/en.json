@@ -58,7 +58,8 @@
   "scanned_user": "User",
   "scanned_voucher": "Voucher",
   "unknown": "Unknown",
-  "no_logs": "No scans yet",
+  "no_logs": "No scans for today",
   "show_on_map": "Show on map",
-  "no_connection": "No internet connection"
+  "no_connection": "No internet connection",
+  "open_map": "Open map"
 }

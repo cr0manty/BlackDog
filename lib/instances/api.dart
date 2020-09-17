@@ -287,10 +287,9 @@ class Api {
         headers: _setHeaders());
 
     if (response.statusCode == 200) {
-      Map body = json.decode(utf8.decode(response.bodyBytes));
-          List<RestaurantConfig> configs = [];
-      body['results']
-          .forEach((value) => configs.add(RestaurantConfig.fromJson(value)));
+      List body = json.decode(utf8.decode(response.bodyBytes));
+      List<RestaurantConfig> configs = [];
+      body.forEach((value) => configs.add(RestaurantConfig.fromJson(value)));
       SharedPrefs.saveAboutUsList(configs);
     }
   }
