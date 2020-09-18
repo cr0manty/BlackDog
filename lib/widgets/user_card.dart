@@ -24,7 +24,7 @@ class UserCard extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
-        margin: EdgeInsets.only(top: topPadding, left: 16, right: 8, bottom: 8),
+        margin: EdgeInsets.only(top: topPadding, left: 16, right: 16, bottom: 8),
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),

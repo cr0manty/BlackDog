@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/models/voucher.dart';
@@ -33,7 +34,7 @@ class NotificationManager {
         onMessage: _foregroundMessageHandler,
         onLaunch: _foregroundMessageHandler,
         onResume: _foregroundMessageHandler,
-        onBackgroundMessage: _backgroundMessageHandler);
+        onBackgroundMessage: Platform.isIOS ? null : _backgroundMessageHandler);
   }
 
   static Future _backgroundMessageHandler(Map<String, dynamic> message) async {

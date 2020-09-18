@@ -144,7 +144,7 @@ class _HomePageState extends State<HomePage> {
       return Row(
           children: List.generate(
               snapshot.data.length < maxNews ? snapshot.data.length : maxNews,
-              (index) => _buildNewsBlock(snapshot.data[index])));
+              (index) => _buildNewsBlock(snapshot.data, index)));
     }
     return null;
   }
@@ -199,13 +199,14 @@ class _HomePageState extends State<HomePage> {
     ];
   }
 
-  Widget _buildNewsBlock(News news) {
+  Widget _buildNewsBlock(List<News> newsList, int index) {
+    final News news = newsList[index];
     return GestureDetector(
       onTap: () => Navigator.of(context).push(CupertinoPageRoute(
           builder: (BuildContext context) =>
               NewsDetail(news: news, fromHome: true))),
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 10),
+        margin: EdgeInsets.only(left: index == 0 ? 16 : 8, right: index == newsList.length - 1? 16 : 8),
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
