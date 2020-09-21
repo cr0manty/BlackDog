@@ -8,7 +8,7 @@ class MapUtils {
     if (await canLaunch(googleUrl)) {
       await launch(googleUrl);
     } else if (await canLaunch(appleUrl)) {
-      await launch(googleUrl);
+      await launch(appleUrl);
     } else {
       throw 'Could not open the map.';
     }

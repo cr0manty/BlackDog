@@ -36,7 +36,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
         color: HexColor.lightElement,
         onTap: () => Navigator.of(context).pop(),
       ),
-      title: Text(AppLocalizations.of(context).translate('about_us'),
+      title: Text(widget.restaurant.name,
           style: Theme.of(context).textTheme.caption),
       children: <Widget>[
         Center(
@@ -51,7 +51,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
                     borderRadius: BorderRadius.circular(10),
                     child: ImageView(widget.restaurant.logo)))),
         Container(
-            margin: EdgeInsets.symmetric(horizontal: 32, vertical: 20),
+            margin: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
             width: ScreenSize.width - 64,
             child: CupertinoButton(
                 onPressed: () => Navigator.of(context).push(
@@ -66,21 +66,12 @@ class _AboutUsPageState extends State<AboutUsPage> {
                       .headline1
                       .copyWith(color: HexColor.darkElement),
                 ))),
-        Container(
-          padding: EdgeInsets.only(left: 16, right: 16, bottom: 10),
-          child: Text(
-            widget.restaurant.name,
-            textAlign: TextAlign.center, overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.caption,
-          ),
-        ),
-        AboutSection(widget.restaurant.webUrl, SFSymbols.globe, web: true),
         AboutSection(widget.restaurant.instagramLink, SFSymbols.logo_instagram,
-            web: true),
+            web: true, maxLines: 1,),
         AboutSection(widget.restaurant.facebook, SFSymbols.logo_facebook,
-            web: true),
+            web: true, maxLines: 1),
         AboutSection(widget.restaurant.email, SFSymbols.envelope_fill,
-            email: true),
+            email: true, maxLines: 1,),
       ],
     );
   }

@@ -21,7 +21,7 @@ abstract class SharedPrefs {
   static const _lastLogs = 'LastLogs';
   static const _abutUs = 'AboutUs';
   static const _abutUsList = 'AboutUsList';
-  static const _currentLocation = 'CurrentLocation';
+  static const _fcmSend = 'FCMTokenSend';
 
   static SharedPreferences _prefs;
 
@@ -55,6 +55,12 @@ abstract class SharedPrefs {
 
     _prefs.setString(
         _fcmToken, (token != null && token.isNotEmpty) ? token : '');
+  }
+
+  static void saveFCMTokenSend(bool send) {
+    print('SharedPrefs: saveFCMTokenSend');
+
+    _prefs.setBool(_fcmSend, send);
   }
 
   static void saveUser(User user) {
@@ -145,6 +151,12 @@ abstract class SharedPrefs {
     print('SharedPrefs: getFCMToken');
 
     return _prefs.getString(_fcmToken);
+  }
+
+  static bool getFCMTokenSend() {
+    print('SharedPrefs: getFCMTokenSend');
+
+    return _prefs.getBool(_fcmSend) ?? false;
   }
 
   static String getQRCode() {

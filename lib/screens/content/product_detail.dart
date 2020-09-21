@@ -66,7 +66,6 @@ class _ProductDetailState extends State<ProductDetail>
   void initState() {
     animationController = AnimationController(
       duration: Duration(milliseconds: 250),
-      vsync: this,
     );
     animationController.forward();
     super.initState();
@@ -147,23 +146,25 @@ class _ProductDetailState extends State<ProductDetail>
                                       widget.product.variations.length,
                                       (index) => _buildVariation(index))),
                             ),
-                          )))
+                          ))),
+                  SizedBox(
+                    height: 16,
+                  )
                 ],
               )
             : Container(),
         widget.product.description != null
             ? Container(
-                margin: EdgeInsets.symmetric(vertical: 25, horizontal: 16),
+                margin: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
                 child: Text(
                     AppLocalizations.of(context).translate('description'),
                     style: Theme.of(context).textTheme.subtitle1))
             : Container(),
         Container(
-          margin: EdgeInsets.symmetric(horizontal: 16),
+          margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           child: Text(widget.product.description ?? '',
               style: Theme.of(context).textTheme.subtitle2),
         ),
-        SizedBox(height: 10)
       ],
     );
   }
