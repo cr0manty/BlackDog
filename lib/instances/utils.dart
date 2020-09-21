@@ -72,7 +72,10 @@ abstract class ScreenSize {
   static double get logHeight => 80;
 
   static double get aboutUsLogoSize => height * 0.3;
+
   static double get maxAboutSectionTextWidth => width * 0.70;
+
+  static double get modalMaxTextWidth => width * 0.35;
 }
 
 class Utils {

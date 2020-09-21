@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/instances/connection_check.dart';
 import 'package:black_dog/instances/shared_pref.dart';
+import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/restaurant_config.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
@@ -41,6 +42,7 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
                 child: AboutSection(
                   config.address,
                   SFSymbols.placemark_fill,
+                  itemWidth: ScreenSize.modalMaxTextWidth,
                   horizontalPadding: 0,
                   color: HexColor.errorLog,
                 ),
@@ -48,13 +50,17 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
               AboutSection(
                 config.weekdayWorkingTime(context),
                 SFSymbols.clock_fill,
+                itemWidth: ScreenSize.modalMaxTextWidth,
                 horizontalPadding: 0,
               ),
               AboutSection(
                   config.weekendWorkingTime(context), SFSymbols.clock_fill,
+                  itemWidth: ScreenSize.modalMaxTextWidth,
                   horizontalPadding: 0),
               AboutSection(config.branchPhone, SFSymbols.phone_fill,
-                  call: true, horizontalPadding: 0)
+                  itemWidth: ScreenSize.modalMaxTextWidth,
+                  call: true,
+                  horizontalPadding: 0)
             ],
           ),
           actions: [
@@ -99,7 +105,7 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
   @override
   void initState() {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: HexColor.darkElement.withOpacity(0.2),
+        statusBarColor: HexColor.darkElement.withOpacity(0.4),
         statusBarBrightness: Brightness.light));
     _restaurants = SharedPrefs.getAboutUsList();
     _addMarkers();

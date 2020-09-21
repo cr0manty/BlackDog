@@ -16,13 +16,15 @@ class AboutSection extends StatefulWidget {
   final double verticalPadding;
   final Color color;
   final int maxLines;
+  final double itemWidth;
 
   AboutSection(this.text, this.icon,
       {this.color,
       this.email = false,
       this.web = false,
       this.call = false,
-        this.maxLines = 3,
+      this.maxLines = 3,
+      this.itemWidth,
       this.horizontalPadding = 26,
       this.verticalPadding = 7});
 
@@ -67,7 +69,7 @@ class _AboutSectionState extends State<AboutSection> {
                           widget.text)
                   : null,
               child: Container(
-                width: ScreenSize.maxAboutSectionTextWidth,
+                  width: widget.itemWidth ?? ScreenSize.maxAboutSectionTextWidth,
                   margin: EdgeInsets.symmetric(horizontal: 15),
                   child: Text(widget.text,
                       maxLines: widget.maxLines,
