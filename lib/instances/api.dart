@@ -344,13 +344,17 @@ class Api {
   }
 
   void sendFCMToken() async {
-    _client.post(_setUrl(path: '/register-notify-token/', base: true),
-        body: json.encode({
-          'registration_id': SharedPrefs.getFCMToken(),
-          'type':
-              Platform.isIOS ? 'ios' : (Platform.isAndroid ? 'android' : 'web')
-        }),
-        headers: _setHeaders(useJson: true));
+    Response response =
+        await _client.post(_setUrl(path: '/register-notify-token/', base: true),
+            body: json.encode({
+              'registration_id': SharedPrefs.getFCMToken(),
+              'type': Platform.isIOS
+                  ? 'ios'
+                  : (Platform.isAndroid ? 'android' : 'web')
+            }),
+            headers: _setHeaders(useJson: true));
+
+    SharedPrefs.saveFCMTokenSend(response.statusCode == 200);
   }
 
   Future<bool> checkPhoneNumberExist(String phone) async {

@@ -65,8 +65,14 @@ class _HomePageState extends State<HomePage> {
       _news = Api.instance
           .getNewsList(page: 0, limit: SharedPrefs.getMaxNewsAmount());
     }
-
+    sendFCMToken();
     setState(() {});
+  }
+
+  void sendFCMToken() {
+    if (!SharedPrefs.getFCMTokenSend()) {
+      Api.instance.sendFCMToken();
+    }
   }
 
   @override
