@@ -1,7 +1,7 @@
 name: black_dog
 description: A Flutter project for black dog coffe.
 
-version: 1.0.4+4
+version: 1.0.5+5
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
