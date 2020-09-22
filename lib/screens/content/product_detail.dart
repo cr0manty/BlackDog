@@ -66,6 +66,7 @@ class _ProductDetailState extends State<ProductDetail>
   void initState() {
     animationController = AnimationController(
       duration: Duration(milliseconds: 250),
+      vsync: this
     );
     animationController.forward();
     super.initState();

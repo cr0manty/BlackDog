@@ -68,7 +68,7 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
               child: Text(AppLocalizations.of(context).translate('open_map')),
               onPressed: () {
                 try {
-                  MapUtils.openMap(config.lat, config.lon);
+                  MapUtils.openMap(config.lat, config.lon, config.branchName);
                 } catch (e) {
                   print(e);
                   Navigator.of(context).pop();
