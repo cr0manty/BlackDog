@@ -89,9 +89,7 @@ class _ProductListState extends State<ProductList> {
         margin: EdgeInsets.symmetric(vertical: needMargin ? 10 : 0),
         alignment: Alignment.center,
         height: showProgress && needMargin ? 50 : 0,
-        child: needMargin
-            ? CupertinoActivityIndicator()
-            : Container(),
+        child: needMargin ? CupertinoActivityIndicator() : Container(),
       );
     }
 

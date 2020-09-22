@@ -100,27 +100,24 @@ class _ProductDetailState extends State<ProductDetail>
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   SizedBox(
                       width: ScreenSize.mainTextWidth,
                       child: Text(
-                          widget.product.capitalizeTitle +
-                              'asdasdasdasdasdasdasdad',
+                          widget.product.capitalizeTitle,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 3,
                           style: Theme.of(context).textTheme.caption)),
                   FadeTransition(
-                    opacity: animationController
-                        .drive(CurveTween(curve: Curves.easeOut)),
-                    child: Container(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                            widget.product.priceWithCurrency(context,
-                                actualPrice: selectedVariation?.price),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            style: Theme.of(context).textTheme.subtitle1)),
-                  ),
+                      opacity: animationController
+                          .drive(CurveTween(curve: Curves.easeOut)),
+                      child: Text(
+                          widget.product.priceWithCurrency(context,
+                              actualPrice: selectedVariation?.price),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          style: Theme.of(context).textTheme.subtitle1)),
                 ])),
         widget.product.variations.length != 0
             ? Column(
@@ -154,7 +151,8 @@ class _ProductDetailState extends State<ProductDetail>
                 ],
               )
             : Container(),
-        widget.product.description != null && widget.product.description.isNotEmpty
+        widget.product.description != null &&
+                widget.product.description.isNotEmpty
             ? Container(
                 margin: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
                 child: Text(
