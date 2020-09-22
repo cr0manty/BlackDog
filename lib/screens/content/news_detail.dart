@@ -78,13 +78,10 @@ class _NewsDetailState extends State<NewsDetail> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
-                  SizedBox(
-                    width: ScreenSize.maxTextWidth,
+                  Flexible(
                     child: Text(
                       widget.news.capitalizeTitle,
                       style: Theme.of(context).textTheme.caption,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
                     ),
                   ),
                 ])),

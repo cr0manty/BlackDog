@@ -29,9 +29,9 @@ abstract class ScreenSize {
 
   static double get labelIndent => width * 0.005;
 
-  static double get newsImageHeight => height * 0.18;
+  static double get newsImageHeight => height * 0.19;
 
-  static double get newsImageWidth => width * 0.34;
+  static double get newsImageWidth => width * 0.4;
 
   static double get newsSmallBlockWidth => width * 0.3;
 
@@ -76,6 +76,10 @@ abstract class ScreenSize {
   static double get maxAboutSectionTextWidth => width * 0.70;
 
   static double get modalMaxTextWidth => width * 0.35;
+
+  static double get homePageNewsHeight => height * 0.34;
+
+  static double get homePageNewsWidth => width * 0.45;
 }
 
 class Utils {

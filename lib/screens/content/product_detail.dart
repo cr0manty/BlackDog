@@ -64,10 +64,8 @@ class _ProductDetailState extends State<ProductDetail>
 
   @override
   void initState() {
-    animationController = AnimationController(
-      duration: Duration(milliseconds: 250),
-      vsync: this
-    );
+    animationController =
+        AnimationController(duration: Duration(milliseconds: 250), vsync: this);
     animationController.forward();
     super.initState();
   }
@@ -104,23 +102,25 @@ class _ProductDetailState extends State<ProductDetail>
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
                   SizedBox(
-                      width: ScreenSize.maxTextWidth,
-                      child: Text(widget.product.capitalizeTitle,
+                      width: ScreenSize.mainTextWidth,
+                      child: Text(
+                          widget.product.capitalizeTitle +
+                              'asdasdasdasdasdasdasdad',
                           overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
+                          maxLines: 3,
                           style: Theme.of(context).textTheme.caption)),
                   FadeTransition(
-                      opacity: animationController
-                          .drive(CurveTween(curve: Curves.easeOut)),
-                      child: Container(
-                          width: ScreenSize.maxTextWidth,
-                          child: Text(
-                              widget.product.priceWithCurrency(context,
-                                  actualPrice: selectedVariation?.price),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              textAlign: TextAlign.right,
-                              style: Theme.of(context).textTheme.subtitle1))),
+                    opacity: animationController
+                        .drive(CurveTween(curve: Curves.easeOut)),
+                    child: Container(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                            widget.product.priceWithCurrency(context,
+                                actualPrice: selectedVariation?.price),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: Theme.of(context).textTheme.subtitle1)),
+                  ),
                 ])),
         widget.product.variations.length != 0
             ? Column(
@@ -154,7 +154,7 @@ class _ProductDetailState extends State<ProductDetail>
                 ],
               )
             : Container(),
-        widget.product.description != null
+        widget.product.description != null && widget.product.description.isNotEmpty
             ? Container(
                 margin: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
                 child: Text(
