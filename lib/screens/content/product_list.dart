@@ -73,6 +73,7 @@ class _ProductListState extends State<ProductList> {
       title: Text(
         widget.title,
         style: Theme.of(context).textTheme.caption,
+        textAlign: TextAlign.center,
         overflow: TextOverflow.ellipsis,
         maxLines: 1,
       ),
@@ -80,15 +81,15 @@ class _ProductListState extends State<ProductList> {
     );
   }
 
+  bool get needMargin => _menu.length % Api.defaultPerPage == 0;
+
   Widget _buildProduct(int index) {
     if (index == _menu.length) {
       return Container(
-        margin: EdgeInsets.symmetric(vertical: 10),
+        margin: EdgeInsets.symmetric(vertical: needMargin ? 10 : 0),
         alignment: Alignment.center,
-        height: showProgress ? 50 : 0,
-        child: _menu.length % Api.defaultPerPage == 0
-            ? CupertinoActivityIndicator()
-            : Container(),
+        height: showProgress && needMargin ? 50 : 0,
+        child: needMargin ? CupertinoActivityIndicator() : Container(),
       );
     }
 

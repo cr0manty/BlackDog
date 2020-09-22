@@ -77,13 +77,15 @@ class _NewsListState extends State<NewsList> {
             List.generate(newsList.length + 1, (index) => _buildNews(index)));
   }
 
+  bool get needMargin => newsList.length % Api.defaultPerPage == 0;
+
   Widget _buildNews(int index) {
     if (index == newsList.length) {
       return Container(
-        margin: EdgeInsets.symmetric(vertical: 10),
+        margin: EdgeInsets.symmetric(vertical: needMargin ? 10 : 0),
         alignment: Alignment.center,
-        height: showProgress ? 50 : 0,
-        child: newsList.length % Api.defaultPerPage == 0
+        height: showProgress && needMargin ? 50 : 0,
+        child: needMargin
             ? CupertinoActivityIndicator()
             : Container(),
       );

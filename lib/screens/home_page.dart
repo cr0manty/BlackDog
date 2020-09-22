@@ -212,6 +212,8 @@ class _HomePageState extends State<HomePage> {
           builder: (BuildContext context) =>
               NewsDetail(news: news, fromHome: true))),
       child: Container(
+        height: ScreenSize.homePageNewsHeight,
+        width: ScreenSize.homePageNewsWidth,
         margin: EdgeInsets.only(left: index == 0 ? 16 : 8, right: index == newsList.length - 1? 16 : 8),
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
@@ -223,12 +225,16 @@ class _HomePageState extends State<HomePage> {
             Text(
               news.capitalizeTitle,
               style: Theme.of(context).textTheme.headline1,
+              maxLines: 1,
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
             ),
             SizedBox(height: 10),
             Text(
               news.shortDescription ?? '',
               maxLines: 2,
               style: Theme.of(context).textTheme.subtitle2,
+              textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
             ),
             SizedBox(height: 10),
@@ -291,6 +297,7 @@ class _HomePageState extends State<HomePage> {
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     alignment: Alignment.centerLeft,
                     child: Text(category.capitalizeTitle,
+                        maxLines: 2,
                         style: Theme.of(context).textTheme.caption))
               ],
             ),
