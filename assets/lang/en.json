@@ -61,5 +61,9 @@
   "no_logs": "No scans for today",
   "show_on_map": "Show on map",
   "no_connection": "No internet connection",
-  "open_map": "Open map"
+  "open_map": "Open map",
+  "exit": "Exit",
+  "exit_text": "Do you really want to log out?",
+  "error_scan": "An error occurred while scanning",
+  "success_scan": "QR code scanned successfully"
 }

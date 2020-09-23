@@ -65,7 +65,10 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
           ),
           actions: [
             CupertinoDialogAction(
-              child: Text(AppLocalizations.of(context).translate('open_map')),
+              child: Text(AppLocalizations.of(context).translate('open_map'),
+                  style: Utils.instance
+                      .getTextStyle('subtitle2')
+                      .copyWith(color: CupertinoColors.activeBlue)),
               onPressed: () {
                 try {
                   MapUtils.openMap(config.lat, config.lon, config.branchName);

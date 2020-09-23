@@ -141,6 +141,51 @@ class Utils {
     return '${date.day}/${date.month}/${date.year}';
   }
 
+  void logoutAsk(BuildContext context, VoidCallback onConfirm) {
+    _showPopUp = showCupertinoDialog(
+        context: context,
+        builder: (context) => CupertinoAlertDialog(
+              title: Text(AppLocalizations.of(context).translate('exit'),
+                  style: Utils.instance.getTextStyle('headline1')),
+              content: Text(AppLocalizations.of(context).translate('exit_text'),
+                  style: Utils.instance.getTextStyle('subtitle2')),
+              actions: [
+                CupertinoDialogAction(
+                    child: Text(AppLocalizations.of(context).translate('exit'),
+                        style: Utils.instance
+                            .getTextStyle('subtitle2')
+                            .copyWith(color: CupertinoColors.activeBlue)),
+                    onPressed: onConfirm),
+                CupertinoDialogAction(
+                  isDestructiveAction: true,
+                  child: Text(AppLocalizations.of(context).translate('cancel'),
+                      style: Utils.instance
+                          .getTextStyle('subtitle2')
+                          .copyWith(color: HexColor.errorLog)),
+                  onPressed: () => Navigator.of(context).pop(),
+                )
+              ],
+            )).then((value) => _showPopUp = null);
+  }
+
+  void infoDialog(BuildContext context, String content) {
+    _showPopUp = showCupertinoDialog(
+        context: context,
+        builder: (context) => CupertinoAlertDialog(
+              content: Text(content,
+                  style: Utils.instance.getTextStyle('subtitle2')),
+              actions: [
+                CupertinoDialogAction(
+                  child: Text('OK',
+                      style: Utils.instance
+                          .getTextStyle('subtitle2')
+                          .copyWith(color: CupertinoColors.activeBlue)),
+                  onPressed: () => Navigator.of(context).pop(),
+                )
+              ],
+            )).then((value) => _showPopUp = null);
+  }
+
   Widget showValidateError(Map fieldsError,
       {String key, bool bottomPadding = true}) {
     if (fieldsError.containsKey(key)) {
@@ -176,12 +221,12 @@ class Utils {
   void showQRCodeModal(BuildContext context,
       {@required String codeUrl,
       String textKey = 'scan_qr',
-      bool isLocal = true}) async {
+      bool isLocal = true}) {
     Widget codeImage;
     if (isLocal) {
       File qrCode = File(codeUrl);
 
-      if (await qrCode.exists()) {
+      if (qrCode.existsSync()) {
         codeImage = Image.file(qrCode,
             height: ScreenSize.qrCodeHeight, width: ScreenSize.width);
       }

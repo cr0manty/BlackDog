@@ -339,9 +339,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Future registerWithPhone() async {
     _codeController.clear();
-    setState(() {
-      fieldsError = {};
-    });
+    setState(() => fieldsError = {});
 
     FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: _phoneController.text,
@@ -369,31 +367,40 @@ class _SignUpPageState extends State<SignUpPage> {
                     actions: [
                       CupertinoDialogAction(
                         child: Text(
-                            AppLocalizations.of(context).translate('done')),
-                        onPressed: () async {
+                            AppLocalizations.of(context).translate('done'),
+                            style: Utils.instance
+                                .getTextStyle('subtitle2')
+                                .copyWith(color: CupertinoColors.activeBlue)),
+                        onPressed: () {
                           AuthCredential credential =
                               PhoneAuthProvider.credential(
                                   verificationId: verificationId,
                                   smsCode: _codeController.text.trim());
-                          UserCredential result = await FirebaseAuth.instance
-                              .signInWithCredential(credential);
-                          if (result != null && result.user != null) {
-                            Api.instance
-                                .updateUser({'firebase_uid': result.user.uid});
-                            SharedPrefs.saveUserFirebaseUid(result.user.uid);
-                            Navigator.of(context)
-                                .pushReplacement(CupertinoPageRoute(
-                                    builder: (context) => SignUpPage(
-                                          signUpPageType:
-                                              SignUpPageType.ADDITION_DATA,
-                                        )));
-                          }
+                          FirebaseAuth.instance
+                              .signInWithCredential(credential)
+                              .then((result) {
+                            if (result != null && result.user != null) {
+                              Api.instance.updateUser(
+                                  {'firebase_uid': result.user.uid});
+                              SharedPrefs.saveUserFirebaseUid(result.user.uid);
+                              Navigator.of(context)
+                                  .pushReplacement(CupertinoPageRoute(
+                                      builder: (context) => SignUpPage(
+                                            signUpPageType:
+                                                SignUpPageType.ADDITION_DATA,
+                                          )));
+                            }
+                            return null;
+                          });
                         },
                       ),
                       CupertinoDialogAction(
                         isDestructiveAction: true,
                         child: Text(
-                            AppLocalizations.of(context).translate('cancel')),
+                            AppLocalizations.of(context).translate('cancel'),
+                            style: Utils.instance
+                                .getTextStyle('subtitle2')
+                                .copyWith(color: HexColor.errorLog)),
                         onPressed: () {
                           setState(() => isLoading = false);
                           Navigator.of(context).pop();

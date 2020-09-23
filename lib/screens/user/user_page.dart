@@ -231,13 +231,14 @@ class _UserPageState extends State<UserPage> {
       action: RouteButton(
         text: AppLocalizations.of(context).translate('logout'),
         color: HexColor.lightElement,
-        onTap: () {
-          SharedPrefs.logout();
-          Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-              CupertinoPageRoute(builder: (context) => SignInPage()),
-              (route) => false);
-        },
-      ),
+        onTap: () => Utils.instance.logoutAsk(context, () {
+                    SharedPrefs.logout();
+                    Navigator.of(context, rootNavigator: true)
+                        .pushAndRemoveUntil(
+                            CupertinoPageRoute(
+                                builder: (context) => SignInPage()),
+                            (route) => false);
+                  })),
       children: <Widget>[
         UserCard(
           onPressed: null,

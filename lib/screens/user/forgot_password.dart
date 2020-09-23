@@ -191,29 +191,34 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     actions: [
                       CupertinoDialogAction(
                         child: Text(
-                            AppLocalizations.of(context).translate('done')),
+                            AppLocalizations.of(context).translate('done'),
+                            style: Utils.instance
+                                .getTextStyle('subtitle2')
+                                .copyWith(color: CupertinoColors.activeBlue)),
                         onPressed: () async {
                           AuthCredential credential =
                               PhoneAuthProvider.credential(
                                   verificationId: verificationId,
                                   smsCode: _codeController.text.trim());
-                          UserCredential result = await FirebaseAuth.instance
+                          FirebaseAuth.instance
                               .signInWithCredential(credential)
-                              .catchError((error) {
+                              .then((result) {
+                            if (result != null && result.user != null) {
+                              onSuccessCode(result.user.uid);
+                            }
+                          }).catchError((error) {
                             Navigator.of(context).pop();
                             EasyLoading.instance
                               ..backgroundColor = Colors.red.withOpacity(0.8);
                             EasyLoading.showError('');
                           });
-                          if (result != null && result.user != null) {
-                            onSuccessCode(result.user.uid);
-                          }
                         },
                       ),
                       CupertinoDialogAction(
                         isDestructiveAction: true,
                         child: Text(
-                            AppLocalizations.of(context).translate('cancel')),
+                            AppLocalizations.of(context).translate('cancel'),
+                            style: Utils.instance.getTextStyle('subtitle2')),
                         onPressed: () => Navigator.of(context).pop(),
                       )
                     ],
@@ -265,7 +270,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   style: Utils.instance.getTextStyle('bodyText2')),
               actions: [
                 CupertinoDialogAction(
-                  child: Text(AppLocalizations.of(context).translate('done')),
+                  child: Text(AppLocalizations.of(context).translate('done'),
+                      style: Utils.instance
+                          .getTextStyle('subtitle2')
+                          .copyWith(color: CupertinoColors.activeBlue)),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
