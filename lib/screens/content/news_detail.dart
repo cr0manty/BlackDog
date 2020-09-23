@@ -81,7 +81,7 @@ class _NewsDetailState extends State<NewsDetail> {
                   Flexible(
                     child: Text(
                       widget.news.capitalizeTitle,
-                      style: Theme.of(context).textTheme.caption,
+                      style: Utils.instance.getTextStyle('caption'),
                     ),
                   ),
                 ])),
@@ -94,7 +94,7 @@ class _NewsDetailState extends State<NewsDetail> {
         Container(
           margin: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
           child: Text(widget.news.body ?? '',
-              style: Theme.of(context).textTheme.subtitle2),
+              style: Utils.instance.getTextStyle('subtitle2')),
         )
       ],
     );

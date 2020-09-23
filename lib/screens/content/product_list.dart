@@ -72,7 +72,7 @@ class _ProductListState extends State<ProductList> {
       ),
       title: Text(
         widget.title,
-        style: Theme.of(context).textTheme.caption,
+        style: Utils.instance.getTextStyle('caption'),
         textAlign: TextAlign.center,
         overflow: TextOverflow.ellipsis,
         maxLines: 1,
@@ -125,7 +125,7 @@ class _ProductListState extends State<ProductList> {
                     width: ScreenSize.mainTextWidth,
                     child: Text(
                       menu.capitalizeTitle,
-                      style: Theme.of(context).textTheme.headline1,
+                      style: Utils.instance.getTextStyle('headline1'),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                     ),
@@ -135,7 +135,7 @@ class _ProductListState extends State<ProductList> {
                       width: ScreenSize.mainTextWidth,
                       child: Text(
                         menu.priceWithCurrency(context) ?? '',
-                        style: Theme.of(context).textTheme.subtitle1,
+                        style: Utils.instance.getTextStyle('subtitle1'),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 5,
                       ))

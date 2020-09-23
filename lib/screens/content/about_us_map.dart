@@ -34,7 +34,7 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
         context: context,
         child: CupertinoAlertDialog(
           title: Text(config.branchName,
-              style: Theme.of(context).textTheme.headline1),
+              style: Utils.instance.getTextStyle('headline1')),
           content: Column(
             children: [
               Container(

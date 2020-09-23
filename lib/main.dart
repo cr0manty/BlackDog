@@ -102,39 +102,11 @@ class _BlackDogAppState extends State<BlackDogApp> {
         return currentLocale;
       },
       theme: ThemeData(
-          textSelectionColor: Colors.grey.withOpacity(0.5),
-          textSelectionHandleColor: Colors.grey,
-          brightness: Brightness.dark,
-          scaffoldBackgroundColor: HexColor.backgroundColor,
-          textTheme: TextTheme(
-              caption: TextStyle(
-                  fontFamily: 'Lemon-Milk',
-                  fontSize: 20,
-                  color: HexColor.lightElement),
-              headline1: TextStyle(
-                  fontFamily: 'Lemon-Milk',
-                  fontSize: 15,
-                  color: HexColor.lightElement),
-              headline2: TextStyle(
-                  fontFamily: 'Lemon-Milk',
-                  fontSize: 15,
-                  color: HexColor.darkElement),
-              subtitle1: TextStyle(
-                  fontFamily: 'Century-Gothic',
-                  fontSize: 20,
-                  color: HexColor.lightElement),
-              subtitle2: TextStyle(
-                  fontFamily: 'Century-Gothic',
-                  fontSize: 15,
-                  color: HexColor.lightElement),
-              bodyText1: TextStyle(
-                  fontFamily: 'Century-Gothic',
-                  fontSize: 20,
-                  color: HexColor.semiElement),
-              bodyText2: TextStyle(
-                  fontFamily: 'Century-Gothic',
-                  fontSize: 15,
-                  color: HexColor.semiElement))),
+        textSelectionColor: Colors.grey.withOpacity(0.5),
+        textSelectionHandleColor: Colors.grey,
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: HexColor.backgroundColor,
+      ),
       builder: (BuildContext context, Widget child) {
         return FlutterEasyLoading(
           child: child,

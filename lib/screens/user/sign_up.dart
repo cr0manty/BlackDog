@@ -163,7 +163,8 @@ class _SignUpPageState extends State<SignUpPage> {
                     Text(
                       Utils.instance.showDateFormat(selectedDate) ??
                           AppLocalizations.of(context).translate('birth_date'),
-                      style: TextStyle(color: Colors.black, fontSize: 18),
+                      style: TextStyle(
+                          color: Colors.black, fontSize: TextSize.large),
                     ),
                     Icon(
                       SFSymbols.calendar,
@@ -231,7 +232,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                 child: Text(
                                   AppLocalizations.of(context)
                                       .translate('register'),
-                                  style: Theme.of(context).textTheme.caption,
+                                  style: Utils.instance.getTextStyle('caption'),
                                 ),
                               ),
                               widget.signUpPageType ==
@@ -266,9 +267,9 @@ class _SignUpPageState extends State<SignUpPage> {
                                                             : 'register'),
                                                 overflow: TextOverflow.fade,
                                                 maxLines: 1,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headline1
+                                                textAlign: TextAlign.center,
+                                                style: Utils.instance
+                                                    .getTextStyle('headline1')
                                                     .copyWith(
                                                         color: HexColor
                                                             .darkElement),
@@ -280,9 +281,9 @@ class _SignUpPageState extends State<SignUpPage> {
                                           AppLocalizations.of(context)
                                               .translate(
                                                   'already_have_account'),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyText2,
+                                          textAlign: TextAlign.center,
+                                          style: Utils.instance
+                                              .getTextStyle('bodyText2'),
                                         ),
                                       ),
                                     ],
@@ -307,7 +308,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   data: CupertinoThemeData(
                     textTheme: CupertinoTextThemeData(
                       dateTimePickerTextStyle:
-                          Theme.of(context).textTheme.subtitle1,
+                          Utils.instance.getTextStyle('subtitle1'),
                     ),
                   ),
                   child: CupertinoDatePicker(
@@ -357,11 +358,11 @@ class _SignUpPageState extends State<SignUpPage> {
               builder: (context) => CupertinoAlertDialog(
                     title: Text(
                         AppLocalizations.of(context).translate('enter_code'),
-                        style: Theme.of(context).textTheme.headline1),
+                        style: Utils.instance.getTextStyle('headline1')),
                     content: Container(
                       margin: EdgeInsets.only(top: 10),
                       child: CupertinoTextField(
-                        style: Theme.of(context).textTheme.subtitle2,
+                        style: Utils.instance.getTextStyle('subtitle2'),
                         controller: _codeController,
                       ),
                     ),

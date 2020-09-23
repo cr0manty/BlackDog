@@ -89,7 +89,7 @@ class _UserPageState extends State<UserPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(currentVoucher.name,
-                    style: Theme.of(context).textTheme.headline1),
+                    style: Utils.instance.getTextStyle('headline1')),
                 Container(height: 8),
                 SvgPicture.asset(Utils.bonusIcon,
                     color: HexColor.lightElement, height: 37, width: 37),
@@ -102,16 +102,13 @@ class _UserPageState extends State<UserPage> {
               text: TextSpan(children: [
                 TextSpan(
                     text: '${currentVoucher.purchaseCount}',
-                    style: Theme.of(context)
-                        .textTheme
-                        .subtitle1
-                        .copyWith(fontSize: 30)),
+                    style: Utils.instance
+                        .getTextStyle('subtitle1')
+                        .copyWith(fontSize: TextSize.extra)),
                 TextSpan(
                     text: '/${currentVoucher.purchaseToBonus}',
-                    style: Theme.of(context)
-                        .textTheme
-                        .subtitle1
-                        .copyWith(fontSize: 25, color: HexColor.semiElement)),
+                    style: Utils.instance.getTextStyle('subtitle1').copyWith(
+                        fontSize: TextSize.extra, color: HexColor.semiElement)),
               ]),
             ),
           )
@@ -136,7 +133,7 @@ class _UserPageState extends State<UserPage> {
               children: [
                 Text(AppLocalizations.of(context).translate('help_bonus'),
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.subtitle2),
+                    style: Utils.instance.getTextStyle('subtitle2')),
                 Container(
                   height: 10,
                 ),
@@ -193,12 +190,13 @@ class _UserPageState extends State<UserPage> {
                 children: [
                   Text(
                     AppLocalizations.of(context).translate('current_voucher'),
-                    style: Theme.of(context).textTheme.subtitle1,
+                    textAlign: TextAlign.center,
+                    style: Utils.instance.getTextStyle('subtitle1'),
                   ),
                   SizedBox(
                     width: ScreenSize.maxTextWidth,
                     child: Text(voucher.discountType,
-                        style: Theme.of(context).textTheme.subtitle1,
+                        style: Utils.instance.getTextStyle('subtitle1'),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                         textAlign: TextAlign.center),
@@ -206,7 +204,8 @@ class _UserPageState extends State<UserPage> {
                   SizedBox(height: 5),
                   Text(
                     AppLocalizations.of(context).translate('click_to_open'),
-                    style: Theme.of(context).textTheme.subtitle2,
+                    style: Utils.instance.getTextStyle('subtitle2'),
+                    textAlign: TextAlign.center,
                   )
                 ],
               ),

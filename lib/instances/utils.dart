@@ -1,11 +1,18 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/image_view.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+
+abstract class TextSize {
+  static double small;
+  static double large;
+  static double extra;
+}
 
 abstract class ScreenSize {
   static double height;
@@ -29,7 +36,7 @@ abstract class ScreenSize {
 
   static double get labelIndent => width * 0.005;
 
-  static double get newsImageHeight => height * 0.19;
+  static double get newsImageHeight => height * 0.3 - 100;
 
   static double get newsImageWidth => width * 0.4;
 
@@ -77,9 +84,9 @@ abstract class ScreenSize {
 
   static double get modalMaxTextWidth => width * 0.35;
 
-  static double get homePageNewsHeight => height * 0.34;
+  static double get homePageNewsHeight => height * 0.3;
 
-  static double get homePageNewsWidth => width * 0.45;
+  static double get homePageNewsWidth => width * 0.4;
 }
 
 class Utils {
@@ -100,9 +107,22 @@ class Utils {
 
   static String get bonusIcon => 'assets/images/coffee.svg';
 
-  void initScreenSize(Size size) {
-    ScreenSize.height = size.height;
-    ScreenSize.width = size.width;
+  void initScreenSize(MediaQueryData query) {
+    ScreenSize.height = query.size.height;
+    ScreenSize.width = query.size.width;
+    initTextSize(query);
+  }
+
+  void initTextSize(MediaQueryData query) {
+    TextSize.small = 15;
+    TextSize.large = 20;
+    TextSize.extra = 30;
+
+    if (query.textScaleFactor > 1) {
+      TextSize.small /= query.textScaleFactor;
+      TextSize.large /= query.textScaleFactor;
+      TextSize.extra /= query.textScaleFactor;
+    }
   }
 
   bool get popUpOnScreen => _showPopUp != null;
@@ -180,12 +200,57 @@ class Utils {
           useRootNavigator: false,
           builder: (context) => CupertinoAlertDialog(
                 title: Text(AppLocalizations.of(context).translate(textKey),
-                    style: Theme.of(context).textTheme.headline1),
+                    style: Utils.instance.getTextStyle('headline1')),
                 content: Container(
                   padding: EdgeInsets.only(top: 20),
                   child: codeImage,
                 ),
               )).then((_) => _showPopUp = null);
+    }
+  }
+
+  TextStyle getTextStyle(String name) {
+    switch (name) {
+      case 'caption':
+        return TextStyle(
+            fontFamily: 'Lemon-Milk',
+            fontSize: TextSize.large,
+            color: HexColor.lightElement);
+      case 'headline1':
+        return TextStyle(
+            fontFamily: 'Lemon-Milk',
+            fontSize: TextSize.small,
+            color: HexColor.lightElement);
+      case 'headline2':
+        return TextStyle(
+            fontFamily: 'Lemon-Milk',
+            fontSize: TextSize.small,
+            color: HexColor.darkElement);
+      case 'subtitle1':
+        return TextStyle(
+            fontFamily: 'Century-Gothic',
+            fontSize: TextSize.large,
+            color: HexColor.lightElement);
+      case 'subtitle2':
+        return TextStyle(
+            fontFamily: 'Century-Gothic',
+            fontSize: TextSize.small,
+            color: HexColor.lightElement);
+      case 'bodyText1':
+        return TextStyle(
+            fontFamily: 'Century-Gothic',
+            fontSize: TextSize.large,
+            color: HexColor.semiElement);
+      case 'bodyText2':
+        return TextStyle(
+            fontFamily: 'Century-Gothic',
+            fontSize: TextSize.small,
+            color: HexColor.semiElement);
+      default:
+        return TextStyle(
+            fontFamily: 'Century-Gothic',
+            fontSize: TextSize.small,
+            color: HexColor.semiElement);
     }
   }
 }

@@ -43,7 +43,7 @@ class _SignInPageState extends State<SignInPage> {
           },
           child: Text(
             AppLocalizations.of(context).translate('forgot_password'),
-            style: Theme.of(context).textTheme.bodyText2,
+            style: Utils.instance.getTextStyle('bodyText2'),
           )),
     );
   }
@@ -60,7 +60,7 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
-    Utils.instance.initScreenSize(MediaQuery.of(context).size);
+    Utils.instance.initScreenSize(MediaQuery.of(context));
 
     return Scaffold(
         body: Stack(
@@ -106,8 +106,8 @@ class _SignInPageState extends State<SignInPage> {
                                     child: Text(
                                       AppLocalizations.of(context)
                                           .translate('sign_in'),
-                                      style:
-                                          Theme.of(context).textTheme.caption,
+                                      style: Utils.instance
+                                          .getTextStyle('caption'),
                                     ),
                                   ),
                                 ],
@@ -174,9 +174,9 @@ class _SignInPageState extends State<SignInPage> {
                                             child: Text(
                                                 AppLocalizations.of(context)
                                                     .translate('sign_in'),
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .caption
+                                                textAlign: TextAlign.center,
+                                                style: Utils.instance
+                                                    .getTextStyle('caption')
                                                     .copyWith(
                                                         color: HexColor
                                                             .darkElement))),
@@ -193,9 +193,9 @@ class _SignInPageState extends State<SignInPage> {
                                           child: Text(
                                               AppLocalizations.of(context)
                                                   .translate('no_account'),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText2)),
+                                              textAlign: TextAlign.center,
+                                              style: Utils.instance
+                                                  .getTextStyle('bodyText2'))),
                                     ],
                                   )),
                             ],

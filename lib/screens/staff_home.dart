@@ -76,7 +76,7 @@ class _StaffHomePageState extends State<StaffHomePage> {
             child: Text(
           AppLocalizations.of(context).translate('no_logs'),
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.subtitle1,
+          style: Utils.instance.getTextStyle('subtitle1'),
         )));
 
     switch (snapshot.connectionState) {
@@ -95,7 +95,7 @@ class _StaffHomePageState extends State<StaffHomePage> {
             child: Center(
                 child: Text(
               AppLocalizations.of(context).translate('no_logs'),
-              style: Theme.of(context).textTheme.subtitle1,
+              style: Utils.instance.getTextStyle('subtitle1'),
             )),
           );
         }
@@ -107,7 +107,7 @@ class _StaffHomePageState extends State<StaffHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    Utils.instance.initScreenSize(MediaQuery.of(context).size);
+    Utils.instance.initScreenSize(MediaQuery.of(context));
 
     return PageScaffold(
         inAsyncCall: isLoading,

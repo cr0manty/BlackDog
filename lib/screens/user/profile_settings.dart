@@ -68,7 +68,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 alignment: Alignment.centerLeft,
                 child: Text(
                     AppLocalizations.of(context).translate('first_name'),
-                    style: Theme.of(context).textTheme.bodyText1)),
+                    style: Utils.instance.getTextStyle('bodyText1'))),
             TextInput(
               controller: _nameController,
               focusNode: _nameFocus,
@@ -82,7 +82,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 padding: EdgeInsets.only(left: 10, bottom: 5),
                 alignment: Alignment.centerLeft,
                 child: Text(AppLocalizations.of(context).translate('last_name'),
-                    style: Theme.of(context).textTheme.bodyText1)),
+                    style: Utils.instance.getTextStyle('bodyText1'))),
             TextInput(
               controller: _lastNameController,
               onFieldSubmitted: (_) =>
@@ -105,9 +105,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                     child: Text(
                         AppLocalizations.of(context)
                             .translate('change_password'),
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline2
+                        style: Utils.instance
+                            .getTextStyle('headline2')
                             .copyWith(color: HexColor.darkElement))),
               ),
             ),

@@ -73,9 +73,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           color: HexColor.lightElement,
           child: Text(
             AppLocalizations.of(context).translate(textKey),
-            style: Theme.of(context)
-                .textTheme
-                .caption
+            style: Utils.instance
+                .getTextStyle('caption')
                 .copyWith(color: HexColor.darkElement),
           )),
     );
@@ -127,7 +126,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         onTap: () => Navigator.of(context).pop(),
       ),
       title: Text(AppLocalizations.of(context).translate('restore_password'),
-          style: Theme.of(context).textTheme.caption),
+          style: Utils.instance.getTextStyle('caption')),
       children: _switchPages(),
     );
   }
@@ -182,11 +181,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               builder: (context) => CupertinoAlertDialog(
                     title: Text(
                         AppLocalizations.of(context).translate('enter_code'),
-                        style: Theme.of(context).textTheme.headline1),
+                        style: Utils.instance.getTextStyle('headline1')),
                     content: Container(
                         margin: EdgeInsets.only(top: 10),
                         child: CupertinoTextField(
-                          style: Theme.of(context).textTheme.subtitle2,
+                          style: Utils.instance.getTextStyle('subtitle2'),
                           controller: _codeController,
                         )),
                     actions: [
@@ -259,11 +258,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               title: Text(
                   AppLocalizations.of(context)
                       .translate('success_password_change'),
-                  style: Theme.of(context).textTheme.headline1),
+                  style: Utils.instance.getTextStyle('headline1')),
               content: Text(
                   AppLocalizations.of(context)
                       .translate('success_password_change_help'),
-                  style: Theme.of(context).textTheme.bodyText2),
+                  style: Utils.instance.getTextStyle('bodyText2')),
               actions: [
                 CupertinoDialogAction(
                   child: Text(AppLocalizations.of(context).translate('done')),

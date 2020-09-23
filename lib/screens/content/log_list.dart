@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/instances/connection_check.dart';
+import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/log.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
@@ -64,7 +65,7 @@ class _LogListPageState extends State<LogListPage> {
         ),
         title: Text(
           AppLocalizations.of(context).translate('scans'),
-          style: Theme.of(context).textTheme.caption,
+          style: Utils.instance.getTextStyle('caption'),
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
         ),

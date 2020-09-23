@@ -1,3 +1,4 @@
+import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -53,9 +54,8 @@ class TextInputState extends State<TextInput> {
       color: Colors.transparent,
       child: TextFormField(
         focusNode: widget.focusNode,
-        style: Theme.of(context)
-            .textTheme
-            .subtitle1
+        style: Utils.instance
+            .getTextStyle('subtitle1')
             .copyWith(color: widget.textColor ?? HexColor.darkElement),
         keyboardType: widget.keyboardType,
         textInputAction: widget.inputAction ?? TextInputAction.next,
@@ -69,9 +69,8 @@ class TextInputState extends State<TextInput> {
             focusColor: Colors.transparent,
             filled: true,
             suffixIcon: widget.suffixIcon,
-            hintStyle: Theme.of(context)
-                .textTheme
-                .subtitle1
+            hintStyle: Utils.instance
+                .getTextStyle('subtitle1')
                 .copyWith(color: widget.textColor ?? HexColor.inputHintColor),
             fillColor: widget.backgroundColor ?? HexColor.lightElement,
             border: UnderlineInputBorder(

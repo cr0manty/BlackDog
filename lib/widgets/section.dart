@@ -9,17 +9,16 @@ class PageSection extends StatelessWidget {
   final Function subWidgetAction;
   final bool enabled;
 
-  PageSection({
-    @required this.child,
-    @required this.label,
-    this.subWidgetAction,
-    this.subWidgetText,
-    this.enabled = true
-  });
+  PageSection(
+      {@required this.child,
+      @required this.label,
+      this.subWidgetAction,
+      this.subWidgetText,
+      this.enabled = true});
 
   @override
   Widget build(BuildContext context) {
-    if(!enabled) {
+    if (!enabled) {
       return Container();
     }
 
@@ -39,7 +38,7 @@ class PageSection extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 8, horizontal: 7),
                 child: Text(
                   label,
-                  style: Theme.of(context).textTheme.caption,
+                  style: Utils.instance.getTextStyle('caption'),
                 ),
               ),
               subWidgetText != null
@@ -50,7 +49,7 @@ class PageSection extends StatelessWidget {
                           EdgeInsets.symmetric(vertical: 16, horizontal: 7),
                       child: Text(
                         subWidgetText,
-                        style: Theme.of(context).textTheme.subtitle1,
+                        style: Utils.instance.getTextStyle('subtitle1'),
                       ),
                     )
                   : Container(),

@@ -11,20 +11,20 @@ class UserCard extends StatelessWidget {
   final Widget trailing;
   final double topPadding;
 
-  UserCard({
-    @required this.username,
-    @required this.onPressed,
-    this.additionWidget,
-    this.trailing,
-    this.topPadding = 0
-  });
+  UserCard(
+      {@required this.username,
+      @required this.onPressed,
+      this.additionWidget,
+      this.trailing,
+      this.topPadding = 0});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
-        margin: EdgeInsets.only(top: topPadding, left: 16, right: 16, bottom: 8),
+        margin:
+            EdgeInsets.only(top: topPadding, left: 16, right: 16, bottom: 8),
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
@@ -40,7 +40,7 @@ class UserCard extends StatelessWidget {
                   width: ScreenSize.mainTextWidth,
                   child: Text(
                     username,
-                    style: Theme.of(context).textTheme.subtitle1,
+                    style: Utils.instance.getTextStyle('subtitle1'),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -63,8 +63,8 @@ class BonusCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTap: () => Utils.instance.showQRCodeModal(context,
-            codeUrl: SharedPrefs.getQRCode()),
+        onTap: () => Utils.instance
+            .showQRCodeModal(context, codeUrl: SharedPrefs.getQRCode()),
         child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(9),

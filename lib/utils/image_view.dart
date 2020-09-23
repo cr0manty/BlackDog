@@ -13,13 +13,13 @@ class ImageView extends StatelessWidget {
         ? Image.network(url ?? '',
             fit: BoxFit.cover,
             errorBuilder: (context, o, s) =>
-                Image.asset(Utils.loadImage, fit: BoxFit.cover),
+                Image.asset(Utils.loadImage, fit: BoxFit.fill),
             loadingBuilder: (context, innerWidget, event) =>
                 event != null
                     ? Container(
                         color: HexColor.semiElement.withOpacity(0.3),
                         child: Center(child: CupertinoActivityIndicator()))
                     : innerWidget)
-        : Image.asset(Utils.loadImage, fit: BoxFit.cover);
+        : Image.asset(Utils.loadImage, fit: BoxFit.fill);
   }
 }

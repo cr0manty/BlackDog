@@ -1,3 +1,4 @@
+import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -62,7 +63,7 @@ class SocialAuth extends StatelessWidget {
         children: [
           Text(
             AppLocalizations.of(context).translate(textKey),
-            style: Theme.of(context).textTheme.bodyText2,
+            style: Utils.instance.getTextStyle('bodyText2'),
             textAlign: TextAlign.center,
           ),
           _buildButtons()

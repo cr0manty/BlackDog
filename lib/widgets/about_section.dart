@@ -1,9 +1,7 @@
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/hex_color.dart';
-import 'package:black_dog/utils/localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutSection extends StatefulWidget {
@@ -64,18 +62,22 @@ class _AboutSectionState extends State<AboutSection> {
           ),
           GestureDetector(
               onTap: widget.call || widget.email || widget.web
-                  ? () async => launchUrl(
-                      (widget.call ? "tel:" : widget.email ? 'mailto:' : '') +
-                          widget.text)
+                  ? () async => launchUrl((widget.call
+                          ? "tel:"
+                          : widget.email
+                              ? 'mailto:'
+                              : '') +
+                      widget.text)
                   : null,
               child: Container(
-                  width: widget.itemWidth ?? ScreenSize.maxAboutSectionTextWidth,
+                  width:
+                      widget.itemWidth ?? ScreenSize.maxAboutSectionTextWidth,
                   margin: EdgeInsets.symmetric(horizontal: 15),
                   child: Text(widget.text,
                       maxLines: widget.maxLines,
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.start,
-                      style: Theme.of(context).textTheme.subtitle2.copyWith(
+                      style: Utils.instance.getTextStyle('subtitle2').copyWith(
                           decoration: widget.call || widget.email || widget.web
                               ? TextDecoration.underline
                               : TextDecoration.none))))
