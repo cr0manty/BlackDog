@@ -32,7 +32,6 @@ dependencies:
   google_maps_flutter: ^0.5.33
   step_progress_indicator: ^0.2.4+7
   map_launcher: ^0.12.2
-  pull_to_refresh: ^1.6.2
 
 
   flutter_localizations:
