@@ -145,8 +145,6 @@ class Utils {
     _showPopUp = showCupertinoDialog(
         context: context,
         builder: (context) => CupertinoAlertDialog(
-              title: Text(AppLocalizations.of(context).translate('exit'),
-                  style: Utils.instance.getTextStyle('headline1')),
               content: Text(AppLocalizations.of(context).translate('exit_text'),
                   style: Utils.instance.getTextStyle('subtitle2')),
               actions: [
@@ -154,14 +152,14 @@ class Utils {
                     child: Text(AppLocalizations.of(context).translate('exit'),
                         style: Utils.instance
                             .getTextStyle('subtitle2')
-                            .copyWith(color: CupertinoColors.activeBlue)),
+                            .copyWith(color: HexColor.errorLog)),
                     onPressed: onConfirm),
                 CupertinoDialogAction(
                   isDestructiveAction: true,
                   child: Text(AppLocalizations.of(context).translate('cancel'),
                       style: Utils.instance
                           .getTextStyle('subtitle2')
-                          .copyWith(color: HexColor.errorLog)),
+                          .copyWith(color: CupertinoColors.activeBlue)),
                   onPressed: () => Navigator.of(context).pop(),
                 )
               ],
