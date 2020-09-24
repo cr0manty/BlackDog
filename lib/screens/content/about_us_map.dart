@@ -13,7 +13,6 @@ import 'package:black_dog/widgets/route_button.dart';
 import 'package:black_dog/widgets/status_bar_color.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -144,7 +143,6 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
                   _controller.complete(controller);
                 },
                 markers: Set<Marker>.of(markers.values)),
-            StatusBarColor(),
             Positioned(
                 top: MediaQuery.of(context).padding.top,
                 child: RouteButton(
@@ -155,6 +153,7 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
                   iconColor: HexColor.lightElement,
                   onTap: () => Navigator.of(context).pop(),
                 )),
+            StatusBarColor(),
           ],
         ),
       ),
@@ -164,9 +163,6 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
   @override
   void dispose() {
     _connectionChange?.cancel();
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarBrightness: Brightness.dark));
     super.dispose();
   }
 }

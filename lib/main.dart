@@ -25,7 +25,7 @@ void main() async {
   }
 
   ConnectionsCheck.instance.initialise();
-  await NotificationManager.instance.configure();
+  NotificationManager.instance.configure();
 
   // Crashlytics.instance.enableInDevMode = true;
   FlutterError.onError = Crashlytics.instance.recordFlutterError;
@@ -42,8 +42,7 @@ class BlackDogApp extends StatefulWidget {
 class _BlackDogAppState extends State<BlackDogApp> {
   void initWithContext(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarBrightness: Brightness.light));
+        statusBarColor: Colors.transparent));
     precacheImage(AssetImage(Utils.loadImage), context);
     precacheImage(AssetImage(Utils.bannerImage), context);
     precacheImage(AssetImage(Utils.logo), context);

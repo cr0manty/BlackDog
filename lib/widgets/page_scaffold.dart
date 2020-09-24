@@ -88,7 +88,6 @@ class PageScaffold extends StatelessWidget {
                     fit: BoxFit.fill,
                   )),
                 )),
-            StatusBarColor(enabled: !alwaysNavigation),
             ModalProgressHUD(
                 progressIndicator: CupertinoActivityIndicator(),
                 inAsyncCall: inAsyncCall,
@@ -128,6 +127,7 @@ class PageScaffold extends StatelessWidget {
                               ),
                       )),
                 )),
+                        StatusBarColor(enabled: !alwaysNavigation),
           ],
         ));
   }
