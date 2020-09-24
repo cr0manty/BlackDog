@@ -217,7 +217,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         isDestructiveAction: true,
                         child: Text(
                             AppLocalizations.of(context).translate('cancel'),
-                            style: Utils.instance.getTextStyle('subtitle2')),
+                            style: Utils.instance
+                                .getTextStyle('subtitle2')
+                                .copyWith(color: HexColor.errorLog)),
                         onPressed: () => Navigator.of(context).pop(),
                       )
                     ],
