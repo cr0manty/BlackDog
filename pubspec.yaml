@@ -22,16 +22,16 @@ dependencies:
   carousel_slider: ^2.2.1
   intl: ^0.16.1
   url_launcher: ^5.5.0
-  flutter_svg: ^0.19.0
   firebase_crashlytics: ^0.1.4+1
   dotted_border: ^1.0.6
   firebase_messaging: ^7.0.0
   firebase_auth: ^0.18.0+1
   firebase_core: ^0.5.0
-  flutter_easyloading: ^1.2.1
+  flutter_easyloading: ^1.3.0
   google_maps_flutter: ^0.5.33
   step_progress_indicator: ^0.2.4+7
   map_launcher: ^0.12.2
+  cached_network_image: ^2.3.2+1
 
 
   flutter_localizations:
@@ -61,4 +61,8 @@ flutter:
     - family: Lemon-Milk
       fonts:
         - asset: assets/fonts/lemon_milk.ttf
+
+    - family:  BlackDogIcons
+      fonts:
+        - asset: assets/fonts/BlackDogIcons.ttf
 

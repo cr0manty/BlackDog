@@ -24,9 +24,7 @@ class _NewsDetailState extends State<NewsDetail> {
 
   Future _getNews() async {
     News getNews = await Api.instance.getNews(widget.news.id);
-    setState(() {
-      news = getNews;
-    });
+    setState(() => news = getNews);
   }
 
   @override
@@ -53,24 +51,19 @@ class _NewsDetailState extends State<NewsDetail> {
         onTap: () => Navigator.of(context).pop(),
       ),
       children: <Widget>[
-        news?.images?.length != null && news.images.length > 0
-            ? CarouselSlider.builder(
-                itemBuilder: (context, index) => Container(
+        CarouselSlider.builder(
+            itemBuilder: (context, index) =>
+                Container(
                     width: ScreenSize.width - 32,
                     child: _clipImage(ImageView(news.images[index]))),
-                itemCount: news?.images?.length ?? 0,
-                options: CarouselOptions(
-                  height: ScreenSize.newsItemPhotoSize,
-                  viewportFraction: 1,
-                  enlargeCenterPage: true,
-                  enableInfiniteScroll: false,
-                  autoPlay: true,
-                ))
-            : Container(
-                margin: EdgeInsets.symmetric(horizontal: 16),
-                height: ScreenSize.newsItemPhotoSize,
-                child: _clipImage(
-                    Image.asset(Utils.defaultImage, fit: BoxFit.cover))),
+            itemCount: news?.images?.length ?? 0,
+            options: CarouselOptions(
+              height: ScreenSize.newsItemPhotoSize,
+              viewportFraction: 1,
+              enlargeCenterPage: true,
+              enableInfiniteScroll: false,
+              autoPlay: true,
+            )),
         Container(
             margin: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
             alignment: Alignment.center,

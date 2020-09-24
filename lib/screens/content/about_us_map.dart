@@ -10,6 +10,7 @@ import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/utils/map_launch.dart';
 import 'package:black_dog/widgets/about_section.dart';
 import 'package:black_dog/widgets/route_button.dart';
+import 'package:black_dog/widgets/status_bar_color.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -45,6 +46,18 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
                   itemWidth: ScreenSize.modalMaxTextWidth,
                   horizontalPadding: 0,
                   color: HexColor.errorLog,
+                  onTap: () {
+                    try {
+                      MapUtils.openMap(
+                          config.lat, config.lon, config.branchName);
+                    } catch (e) {
+                      print(e);
+                      Navigator.of(context).pop();
+                      EasyLoading.instance
+                        ..backgroundColor = Colors.red.withOpacity(0.8);
+                      EasyLoading.showError('');
+                    }
+                  },
                 ),
               ),
               AboutSection(
@@ -63,25 +76,6 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
                   horizontalPadding: 0)
             ],
           ),
-          actions: [
-            CupertinoDialogAction(
-              child: Text(AppLocalizations.of(context).translate('open_map'),
-                  style: Utils.instance
-                      .getTextStyle('subtitle2')
-                      .copyWith(color: CupertinoColors.activeBlue)),
-              onPressed: () {
-                try {
-                  MapUtils.openMap(config.lat, config.lon, config.branchName);
-                } catch (e) {
-                  print(e);
-                  Navigator.of(context).pop();
-                  EasyLoading.instance
-                    ..backgroundColor = Colors.red.withOpacity(0.8);
-                  EasyLoading.showError('');
-                }
-              },
-            ),
-          ],
         ));
   }
 
@@ -107,9 +101,6 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
 
   @override
   void initState() {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: HexColor.darkElement.withOpacity(0.4),
-        statusBarBrightness: Brightness.light));
     _restaurants = SharedPrefs.getAboutUsList();
     _addMarkers();
 
@@ -153,6 +144,7 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
                   _controller.complete(controller);
                 },
                 markers: Set<Marker>.of(markers.values)),
+            StatusBarColor(),
             Positioned(
                 top: MediaQuery.of(context).padding.top,
                 child: RouteButton(

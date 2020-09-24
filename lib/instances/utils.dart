@@ -36,7 +36,7 @@ abstract class ScreenSize {
 
   static double get labelIndent => width * 0.005;
 
-  static double get newsImageHeight => height * 0.3 - 100;
+  static double get newsImageHeight => height * 0.35 - 100;
 
   static double get newsImageWidth => width * 0.4;
 
@@ -84,9 +84,9 @@ abstract class ScreenSize {
 
   static double get modalMaxTextWidth => width * 0.35;
 
-  static double get homePageNewsHeight => height * 0.3;
+  static double get homePageNewsHeight => height * 0.35;
 
-  static double get homePageNewsWidth => width * 0.4;
+  static double get homePageNewsWidth => width * 0.45;
 }
 
 class Utils {
@@ -97,15 +97,12 @@ class Utils {
 
   static String get loadImage => 'assets/images/card_background.png';
 
-  static String get defaultImage => 'assets/images/card_background.png';
-
   static String get bannerImage => 'assets/images/banner.png';
 
   static String get backgroundImage => 'assets/images/background.png';
 
   static String get logo => 'assets/images/logo.png';
 
-  static String get bonusIcon => 'assets/images/coffee.svg';
 
   void initScreenSize(MediaQueryData query) {
     ScreenSize.height = query.size.height;

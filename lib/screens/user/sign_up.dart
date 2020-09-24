@@ -371,27 +371,31 @@ class _SignUpPageState extends State<SignUpPage> {
                             style: Utils.instance
                                 .getTextStyle('subtitle2')
                                 .copyWith(color: CupertinoColors.activeBlue)),
-                        onPressed: () {
+                        onPressed: () async {
                           AuthCredential credential =
                               PhoneAuthProvider.credential(
                                   verificationId: verificationId,
                                   smsCode: _codeController.text.trim());
-                          FirebaseAuth.instance
+                          final result = await FirebaseAuth.instance
                               .signInWithCredential(credential)
-                              .then((result) {
-                            if (result != null && result.user != null) {
-                              Api.instance.updateUser(
-                                  {'firebase_uid': result.user.uid});
-                              SharedPrefs.saveUserFirebaseUid(result.user.uid);
-                              Navigator.of(context)
-                                  .pushReplacement(CupertinoPageRoute(
-                                      builder: (context) => SignUpPage(
-                                            signUpPageType:
-                                                SignUpPageType.ADDITION_DATA,
-                                          )));
-                            }
-                            return null;
+                              .catchError((error) {
+                            Navigator.of(context).pop();
+                            EasyLoading.instance
+                              ..backgroundColor = Colors.red.withOpacity(0.8);
+                            EasyLoading.showError('');
                           });
+                          if (result != null && result.user != null) {
+                            Api.instance
+                                .updateUser({'firebase_uid': result.user.uid});
+                            SharedPrefs.saveUserFirebaseUid(result.user.uid);
+                            Navigator.of(context)
+                                .pushReplacement(CupertinoPageRoute(
+                                    builder: (context) => SignUpPage(
+                                          signUpPageType:
+                                              SignUpPageType.ADDITION_DATA,
+                                        )));
+                          }
+                          return null;
                         },
                       ),
                       CupertinoDialogAction(

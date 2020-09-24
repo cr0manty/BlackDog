@@ -41,7 +41,9 @@ class BlackDogApp extends StatefulWidget {
 
 class _BlackDogAppState extends State<BlackDogApp> {
   void initWithContext(BuildContext context) {
-    precacheImage(AssetImage(Utils.defaultImage), context);
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarBrightness: Brightness.light));
     precacheImage(AssetImage(Utils.loadImage), context);
     precacheImage(AssetImage(Utils.bannerImage), context);
     precacheImage(AssetImage(Utils.logo), context);
@@ -105,7 +107,7 @@ class _BlackDogAppState extends State<BlackDogApp> {
         textSelectionColor: Colors.grey.withOpacity(0.5),
         textSelectionHandleColor: Colors.grey,
         brightness: Brightness.dark,
-        scaffoldBackgroundColor: HexColor.backgroundColor,
+        scaffoldBackgroundColor: Color.fromRGBO(40, 39, 41, 1),
       ),
       builder: (BuildContext context, Widget child) {
         return FlutterEasyLoading(

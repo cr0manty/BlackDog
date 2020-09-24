@@ -36,16 +36,16 @@ class UserCard extends StatelessWidget {
             children: <Widget>[
               Container(
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                child: SizedBox(
                   width: ScreenSize.mainTextWidth,
+                  alignment: Alignment.centerLeft,
                   child: Text(
                     username,
                     style: Utils.instance.getTextStyle('subtitle1'),
+                    textAlign: TextAlign.center,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-              ),
               trailing ?? Container()
             ],
           ),

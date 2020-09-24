@@ -9,6 +9,7 @@ import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/voucher.dart';
 import 'package:black_dog/screens/user/sign_in.dart';
+import 'package:black_dog/utils/black_dog_icons_icons.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/widgets/edit_button.dart';
@@ -19,7 +20,6 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 class UserPage extends StatefulWidget {
@@ -91,8 +91,8 @@ class _UserPageState extends State<UserPage> {
                 Text(currentVoucher.name,
                     style: Utils.instance.getTextStyle('headline1')),
                 Container(height: 8),
-                SvgPicture.asset(Utils.bonusIcon,
-                    color: HexColor.lightElement, height: 37, width: 37),
+                Icon(BlackDogIcons.coffee,
+                    color: HexColor.lightElement, size: 37),
               ],
             ),
           ),

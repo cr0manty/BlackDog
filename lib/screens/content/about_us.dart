@@ -51,7 +51,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
                     borderRadius: BorderRadius.circular(10),
                     child: ImageView(widget.restaurant.logo)))),
         Container(
-            margin: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+            margin: EdgeInsets.symmetric(horizontal: 32, vertical: 32),
             width: ScreenSize.width - 64,
             child: CupertinoButton(
                 onPressed: () => Navigator.of(context).push(

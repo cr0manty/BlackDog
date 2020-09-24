@@ -200,18 +200,17 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               PhoneAuthProvider.credential(
                                   verificationId: verificationId,
                                   smsCode: _codeController.text.trim());
-                          FirebaseAuth.instance
+                          final result = await FirebaseAuth.instance
                               .signInWithCredential(credential)
-                              .then((result) {
-                            if (result != null && result.user != null) {
-                              onSuccessCode(result.user.uid);
-                            }
-                          }).catchError((error) {
+                              .catchError((error) {
                             Navigator.of(context).pop();
                             EasyLoading.instance
                               ..backgroundColor = Colors.red.withOpacity(0.8);
                             EasyLoading.showError('');
                           });
+                          if (result != null && result.user != null) {
+                            onSuccessCode(result.user.uid);
+                          }
                         },
                       ),
                       CupertinoDialogAction(
