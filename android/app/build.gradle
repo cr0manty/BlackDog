@@ -69,6 +69,7 @@ android {
             storePassword buildStorePass
             keyAlias "black_dog"
             keyPassword buildKeyPass
+            v2SigningEnabled true
         }
     }
 

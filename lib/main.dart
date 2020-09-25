@@ -25,7 +25,7 @@ void main() async {
   }
 
   ConnectionsCheck.instance.initialise();
-  NotificationManager.instance.configure();
+  await NotificationManager.instance.configure();
 
   // Crashlytics.instance.enableInDevMode = true;
   FlutterError.onError = Crashlytics.instance.recordFlutterError;
