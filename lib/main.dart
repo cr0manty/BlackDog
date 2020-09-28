@@ -2,7 +2,6 @@ import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/screens/home_page.dart';
 import 'package:black_dog/screens/staff_home.dart';
 import 'package:black_dog/screens/user//sign_in.dart';
-import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -40,7 +39,7 @@ class BlackDogApp extends StatefulWidget {
 }
 
 class _BlackDogAppState extends State<BlackDogApp> {
-  void initWithContext(BuildContext context) {
+  void initWithContext(BuildContext context) async {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Colors.transparent));
     precacheImage(AssetImage(Utils.loadImage), context);

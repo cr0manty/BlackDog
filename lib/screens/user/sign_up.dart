@@ -351,6 +351,7 @@ class _SignUpPageState extends State<SignUpPage> {
           EasyLoading.showError('');
         },
         codeSent: (String verificationId, [int forceResendingToken]) {
+          setState(() => isLoading = !isLoading);
           showCupertinoDialog(
               context: context,
               builder: (context) => CupertinoAlertDialog(
@@ -447,7 +448,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Future _mainRegistration({Function onEnd}) async {
     FocusScope.of(context).unfocus();
     setState(() {
-      isLoading = !isLoading;
+      isLoading = true;
       fieldsError = {};
     });
 
@@ -464,11 +465,11 @@ class _SignUpPageState extends State<SignUpPage> {
           }
         });
       }
-      setState(() => isLoading = !isLoading);
+      setState(() => isLoading = false);
       return;
     }).catchError((error) {
       print(error);
-      setState(() => isLoading = !isLoading);
+      setState(() => isLoading = false);
       EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
       EasyLoading.showError('');
     });

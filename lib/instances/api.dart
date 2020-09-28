@@ -139,8 +139,7 @@ class Api {
         String path = await saveQRCode(body['qr_code']);
         SharedPrefs.saveQRCode(path);
 
-        List vouchers = await vouchersFromJsonList(body['vouchers'] ?? []);
-        SharedPrefs.saveActiveVoucher(vouchers);
+        vouchersFromJsonList(body['vouchers'] ?? []);
       }
 
       Account.instance.initialize();

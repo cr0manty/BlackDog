@@ -161,7 +161,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   void _firebaseVerifyPhone() async {
     _codeController.clear();
     setState(() {
-      isLoading = !isLoading;
       _validationError = {};
     });
 
@@ -176,6 +175,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           EasyLoading.showError('');
         },
         codeSent: (String verificationId, [int forceResendingToken]) {
+          setState(() => isLoading = false);
           showCupertinoDialog(
               context: context,
               builder: (context) => CupertinoAlertDialog(
