@@ -25,7 +25,8 @@ class LogInterceptor implements InterceptorContract {
   }
 
   String prettyJson(String jsonString) {
-    return JsonEncoder.withIndent('  ').convert(json.decode(utf8.decode(jsonString.runes.toList())));
+    return JsonEncoder.withIndent('  ')
+        .convert(json.decode(utf8.decode(jsonString.runes.toList())));
   }
 
   @override
@@ -61,13 +62,14 @@ class Api {
 
   Stream<bool> get apiChange => _apiChange.stream;
 
-  Map<String, String> _setHeaders({bool useToken = true, useJson = false}) {
+  Map<String, String> _setHeaders(
+      {String token, bool useToken = true, useJson = false}) {
     Map<String, String> headers = {
       'Accept-Language': SharedPrefs.getLanguageCode()
     };
 
     if (useToken) {
-      headers['Authorization'] = 'Token ${SharedPrefs.getToken()}';
+      headers['Authorization'] = 'Token ${token ?? SharedPrefs.getToken()}';
     }
 
     if (useJson) {
@@ -116,12 +118,7 @@ class Api {
         headers: _setHeaders(useJson: true, useToken: false));
 
     Map body = json.decode(utf8.decode(response.bodyBytes)) as Map;
-    if (response.statusCode == 201) {
-      SharedPrefs.saveToken(body['key']);
-      _apiChange.add(true);
-      return {'result': true};
-    }
-    body['result'] = false;
+    body['result'] = response.statusCode == 201;
     _apiChange.add(true);
     return body;
   }
@@ -148,11 +145,11 @@ class Api {
     }
   }
 
-  Future updateUser(Map content) async {
+  Future updateUser(Map content, {String token}) async {
     Response response = await _client.patch(
         _setUrl(path: '/auth/user/', base: true),
         body: json.encode(content),
-        headers: _setHeaders(useJson: true));
+        headers: _setHeaders(useJson: true, token: token));
 
     Map body = json.decode(utf8.decode(response.bodyBytes)) as Map;
     if (response.statusCode == 200) {

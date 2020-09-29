@@ -48,15 +48,15 @@ class _NewsDetailState extends State<NewsDetail> {
         text: AppLocalizations.of(context)
             .translate(widget.fromHome ? 'home' : 'news'),
         color: HexColor.lightElement,
-        onTap: () => Navigator.of(context).pop(),
+        onTap: Navigator.of(context).pop,
       ),
       children: <Widget>[
         CarouselSlider.builder(
             itemBuilder: (context, index) =>
                 Container(
                     width: ScreenSize.width - 32,
-                    child: _clipImage(ImageView(news.images[index]))),
-            itemCount: news?.images?.length ?? 0,
+                    child: _clipImage(ImageView(news.listImages[index]))),
+            itemCount: news?.listImages?.length ?? 0,
             options: CarouselOptions(
               height: ScreenSize.newsItemPhotoSize,
               viewportFraction: 1,

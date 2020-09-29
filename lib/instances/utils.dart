@@ -150,7 +150,10 @@ class Utils {
                         style: Utils.instance
                             .getTextStyle('subtitle2')
                             .copyWith(color: HexColor.errorLog)),
-                    onPressed: onConfirm),
+                    onPressed: () {
+                      onConfirm();
+                      _showPopUp = null;
+                    }),
                 CupertinoDialogAction(
                   isDestructiveAction: true,
                   child: Text(AppLocalizations.of(context).translate('cancel'),
@@ -175,7 +178,10 @@ class Utils {
                       style: Utils.instance
                           .getTextStyle('subtitle2')
                           .copyWith(color: CupertinoColors.activeBlue)),
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed: () {
+                    _showPopUp = null;
+                    Navigator.of(context).pop();
+                  },
                 )
               ],
             )).then((value) => _showPopUp = null);

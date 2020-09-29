@@ -1,6 +1,7 @@
 import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/instances/shared_pref.dart';
+import 'package:black_dog/screens/user/sign_in.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/utils/scroll_glow.dart';
 import 'package:black_dog/instances/utils.dart';
@@ -21,8 +22,9 @@ enum SignUpPageType { MAIN_DATA, ADDITION_DATA }
 
 class SignUpPage extends StatefulWidget {
   final SignUpPageType signUpPageType;
+  final String token;
 
-  SignUpPage({this.signUpPageType = SignUpPageType.MAIN_DATA});
+  SignUpPage({this.token, this.signUpPageType = SignUpPageType.MAIN_DATA});
 
   @override
   _SignUpPageState createState() => _SignUpPageState();
@@ -163,8 +165,10 @@ class _SignUpPageState extends State<SignUpPage> {
                     Text(
                       Utils.instance.showDateFormat(selectedDate) ??
                           AppLocalizations.of(context).translate('birth_date'),
-                      style: TextStyle(
-                          color: Colors.black, fontSize: TextSize.large),
+                      style: Utils.instance.getTextStyle('bodyText1').copyWith(
+                          color: selectedDate != null
+                              ? HexColor.darkElement
+                              : HexColor.inputHintColor),
                     ),
                     Icon(
                       SFSymbols.calendar,
@@ -275,8 +279,13 @@ class _SignUpPageState extends State<SignUpPage> {
                                                             .darkElement),
                                               ))),
                                       CupertinoButton(
-                                        onPressed: () =>
-                                            Navigator.of(context).pop(),
+                                        onPressed: () => Navigator.of(context,
+                                                rootNavigator: true)
+                                            .pushAndRemoveUntil(
+                                                CupertinoPageRoute(
+                                                    builder: (context) =>
+                                                        SignInPage()),
+                                                (route) => false),
                                         child: Text(
                                           AppLocalizations.of(context)
                                               .translate(
@@ -337,7 +346,7 @@ class _SignUpPageState extends State<SignUpPage> {
           };
   }
 
-  Future registerWithPhone() async {
+  Future registerWithPhone(String token) async {
     _codeController.clear();
     setState(() => fieldsError = {});
 
@@ -386,12 +395,11 @@ class _SignUpPageState extends State<SignUpPage> {
                             EasyLoading.showError('');
                           });
                           if (result != null && result.user != null) {
-                            Api.instance
-                                .updateUser({'firebase_uid': result.user.uid});
                             SharedPrefs.saveUserFirebaseUid(result.user.uid);
                             Navigator.of(context)
                                 .pushReplacement(CupertinoPageRoute(
                                     builder: (context) => SignUpPage(
+                                          token: token,
                                           signUpPageType:
                                               SignUpPageType.ADDITION_DATA,
                                         )));
@@ -425,14 +433,25 @@ class _SignUpPageState extends State<SignUpPage> {
       isLoading = !isLoading;
       fieldsError = {};
     });
-    Map response = await Api.instance.updateUser(_sendData());
+    Map response =
+        await Api.instance.updateUser(_sendData(), token: widget.token);
     bool result = response.remove('result');
-    if (result && await Account.instance.setUser()) {
-      Navigator.of(context).pushAndRemoveUntil(
-          CupertinoPageRoute(
-              builder: (context) =>
-                  Account.instance.user.isStaff ? StaffHomePage() : HomePage()),
-          (route) => false);
+
+    if (result) {
+      SharedPrefs.saveToken(widget.token);
+      if (await Account.instance.setUser()) {
+        Navigator.of(context).pushAndRemoveUntil(
+            CupertinoPageRoute(
+                builder: (context) => Account.instance.user.isStaff
+                    ? StaffHomePage()
+                    : HomePage()),
+            (route) => false);
+      } else {
+        SharedPrefs.logout();
+        setState(() => isLoading = false);
+        EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
+        EasyLoading.showError('');
+      }
     } else {
       response.forEach((key, value) {
         if (_fieldsList.contains(key)) {
@@ -455,7 +474,7 @@ class _SignUpPageState extends State<SignUpPage> {
     await Api.instance.register(_sendData()).then((response) async {
       bool result = response.remove('result');
       if (result) {
-        registerWithPhone();
+        registerWithPhone(response['key']);
       } else {
         response.forEach((key, value) {
           if (_fieldsList.contains(key)) {
