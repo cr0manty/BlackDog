@@ -14,13 +14,11 @@ import 'package:black_dog/widgets/user_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
-
 import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/screens/user/sign_in.dart';
 import 'package:intl/intl.dart';
-
-import 'content/log_list.dart';
+import 'package:black_dog/screens/content/log_list.dart';
 
 class StaffHomePage extends StatefulWidget {
   @override
