@@ -6,13 +6,13 @@ import 'package:black_dog/models/log.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/instances/utils.dart';
+import 'package:black_dog/widgets/log_card.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:black_dog/widgets/section.dart';
 import 'package:black_dog/widgets/user_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 
 import 'package:black_dog/instances/account.dart';
@@ -95,16 +95,9 @@ class _StaffHomePageState extends State<StaffHomePage> {
             child: Center(child: CupertinoActivityIndicator()));
       case ConnectionState.done:
         if (snapshot.hasData && snapshot.data.length > 0) {
-          SharedPrefs.saveLastLogs(snapshot.data);
-          return Container(
-            width: ScreenSize.width,
-            child: Center(
-                child: Text(
-              AppLocalizations.of(context).translate('no_logs'),
-              style: Utils.instance.getTextStyle('subtitle1'),
-              textAlign: TextAlign.center,
-            )),
-          );
+          return Column(
+              children: List.generate(snapshot.data.length,
+                  (index) => LogCard(log: snapshot.data[index])));
         }
         return noData;
       default:
@@ -136,7 +129,6 @@ class _StaffHomePageState extends State<StaffHomePage> {
             label: AppLocalizations.of(context).translate('scans'),
             child: FutureBuilder(
                 builder: _buildFuture,
-                initialData: SharedPrefs.getLastLogs(),
                 future: _logs),
             subWidgetText: AppLocalizations.of(context).translate('more'),
             subWidgetAction: () => Navigator.of(context).push(

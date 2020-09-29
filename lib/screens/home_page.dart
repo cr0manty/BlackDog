@@ -185,7 +185,6 @@ class _HomePageState extends State<HomePage> {
                     builder: (context, snapshot) => _buildFuture(
                         context, snapshot, 'no_news', _buildNews(snapshot)),
                     future: _news,
-                    initialData: [],
                   ))),
           subWidgetText: AppLocalizations.of(context).translate('more'),
           subWidgetAction: () => Navigator.of(context).push(
@@ -199,7 +198,6 @@ class _HomePageState extends State<HomePage> {
             builder: (context, snapshot) => _buildFuture(
                 context, snapshot, 'no_menu', _buildCategories(snapshot)),
             future: _category,
-            initialData: [],
           )),
       Container(height: 20)
     ];

@@ -1,10 +1,10 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/screens/home_page.dart';
 import 'package:black_dog/screens/staff_home.dart';
 import 'package:black_dog/screens/user//sign_in.dart';
 import 'package:black_dog/utils/localization.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -25,10 +25,7 @@ void main() async {
 
   ConnectionsCheck.instance.initialise();
   await NotificationManager.instance.configure();
-
-  // Crashlytics.instance.enableInDevMode = true;
-  FlutterError.onError = Crashlytics.instance.recordFlutterError;
-  Firebase.initializeApp();
+  await Firebase.initializeApp();
 
   runApp(BlackDogApp());
 }
