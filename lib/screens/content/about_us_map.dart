@@ -10,9 +10,9 @@ import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/utils/map_launch.dart';
 import 'package:black_dog/widgets/about_section.dart';
 import 'package:black_dog/widgets/route_button.dart';
+import 'package:black_dog/widgets/status_bar_color.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -34,7 +34,7 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
         context: context,
         child: CupertinoAlertDialog(
           title: Text(config.branchName,
-              style: Theme.of(context).textTheme.headline1),
+              style: Utils.instance.getTextStyle('headline1')),
           content: Column(
             children: [
               Container(
@@ -45,6 +45,18 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
                   itemWidth: ScreenSize.modalMaxTextWidth,
                   horizontalPadding: 0,
                   color: HexColor.errorLog,
+                  onTap: () {
+                    try {
+                      MapUtils.openMap(
+                          config.lat, config.lon, config.branchName);
+                    } catch (e) {
+                      print(e);
+                      Navigator.of(context).pop();
+                      EasyLoading.instance
+                        ..backgroundColor = Colors.red.withOpacity(0.8);
+                      EasyLoading.showError('');
+                    }
+                  },
                 ),
               ),
               AboutSection(
@@ -63,22 +75,6 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
                   horizontalPadding: 0)
             ],
           ),
-          actions: [
-            CupertinoDialogAction(
-              child: Text(AppLocalizations.of(context).translate('open_map')),
-              onPressed: () {
-                try {
-                  MapUtils.openMap(config.lat, config.lon, config.branchName);
-                } catch (e) {
-                  print(e);
-                  Navigator.of(context).pop();
-                  EasyLoading.instance
-                    ..backgroundColor = Colors.red.withOpacity(0.8);
-                  EasyLoading.showError('');
-                }
-              },
-            ),
-          ],
         ));
   }
 
@@ -104,9 +100,6 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
 
   @override
   void initState() {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: HexColor.darkElement.withOpacity(0.4),
-        statusBarBrightness: Brightness.light));
     _restaurants = SharedPrefs.getAboutUsList();
     _addMarkers();
 
@@ -160,6 +153,7 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
                   iconColor: HexColor.lightElement,
                   onTap: () => Navigator.of(context).pop(),
                 )),
+            StatusBarColor(),
           ],
         ),
       ),
@@ -169,9 +163,6 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
   @override
   void dispose() {
     _connectionChange?.cancel();
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarBrightness: Brightness.dark));
     super.dispose();
   }
 }

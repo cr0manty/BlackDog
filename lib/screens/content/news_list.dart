@@ -69,7 +69,7 @@ class _NewsListState extends State<NewsList> {
         ),
         title: Text(
           AppLocalizations.of(context).translate('news'),
-          style: Theme.of(context).textTheme.caption,
+          style: Utils.instance.getTextStyle('caption'),
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
         ),
@@ -85,9 +85,7 @@ class _NewsListState extends State<NewsList> {
         margin: EdgeInsets.symmetric(vertical: needMargin ? 10 : 0),
         alignment: Alignment.center,
         height: showProgress && needMargin ? 50 : 0,
-        child: needMargin
-            ? CupertinoActivityIndicator()
-            : Container(),
+        child: needMargin ? CupertinoActivityIndicator() : Container(),
       );
     }
 
@@ -117,7 +115,7 @@ class _NewsListState extends State<NewsList> {
                       news.capitalizeTitle,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
-                      style: Theme.of(context).textTheme.headline1,
+                      style: Utils.instance.getTextStyle('headline1'),
                     ),
                   ),
                   Container(
@@ -126,7 +124,7 @@ class _NewsListState extends State<NewsList> {
                     width: ScreenSize.mainTextWidth,
                     child: Text(
                       news.shortDescription ?? '',
-                      style: Theme.of(context).textTheme.subtitle2,
+                      style: Utils.instance.getTextStyle('subtitle2'),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                     ),
@@ -138,7 +136,7 @@ class _NewsListState extends State<NewsList> {
                           margin: EdgeInsets.only(top: 10),
                           child: Text(
                             news.created,
-                            style: Theme.of(context).textTheme.bodyText2,
+                            style: Utils.instance.getTextStyle('bodyText2'),
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
                           ),

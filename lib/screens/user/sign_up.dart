@@ -163,7 +163,8 @@ class _SignUpPageState extends State<SignUpPage> {
                     Text(
                       Utils.instance.showDateFormat(selectedDate) ??
                           AppLocalizations.of(context).translate('birth_date'),
-                      style: TextStyle(color: Colors.black, fontSize: 18),
+                      style: TextStyle(
+                          color: Colors.black, fontSize: TextSize.large),
                     ),
                     Icon(
                       SFSymbols.calendar,
@@ -231,7 +232,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                 child: Text(
                                   AppLocalizations.of(context)
                                       .translate('register'),
-                                  style: Theme.of(context).textTheme.caption,
+                                  style: Utils.instance.getTextStyle('caption'),
                                 ),
                               ),
                               widget.signUpPageType ==
@@ -266,9 +267,9 @@ class _SignUpPageState extends State<SignUpPage> {
                                                             : 'register'),
                                                 overflow: TextOverflow.fade,
                                                 maxLines: 1,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headline1
+                                                textAlign: TextAlign.center,
+                                                style: Utils.instance
+                                                    .getTextStyle('headline1')
                                                     .copyWith(
                                                         color: HexColor
                                                             .darkElement),
@@ -280,9 +281,9 @@ class _SignUpPageState extends State<SignUpPage> {
                                           AppLocalizations.of(context)
                                               .translate(
                                                   'already_have_account'),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyText2,
+                                          textAlign: TextAlign.center,
+                                          style: Utils.instance
+                                              .getTextStyle('bodyText2'),
                                         ),
                                       ),
                                     ],
@@ -307,7 +308,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   data: CupertinoThemeData(
                     textTheme: CupertinoTextThemeData(
                       dateTimePickerTextStyle:
-                          Theme.of(context).textTheme.subtitle1,
+                          Utils.instance.getTextStyle('subtitle1'),
                     ),
                   ),
                   child: CupertinoDatePicker(
@@ -338,9 +339,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Future registerWithPhone() async {
     _codeController.clear();
-    setState(() {
-      fieldsError = {};
-    });
+    setState(() => fieldsError = {});
 
     FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: _phoneController.text,
@@ -352,30 +351,40 @@ class _SignUpPageState extends State<SignUpPage> {
           EasyLoading.showError('');
         },
         codeSent: (String verificationId, [int forceResendingToken]) {
+          setState(() => isLoading = !isLoading);
           showCupertinoDialog(
               context: context,
               builder: (context) => CupertinoAlertDialog(
                     title: Text(
                         AppLocalizations.of(context).translate('enter_code'),
-                        style: Theme.of(context).textTheme.headline1),
+                        style: Utils.instance.getTextStyle('headline1')),
                     content: Container(
                       margin: EdgeInsets.only(top: 10),
                       child: CupertinoTextField(
-                        style: Theme.of(context).textTheme.subtitle2,
+                        style: Utils.instance.getTextStyle('subtitle2'),
                         controller: _codeController,
                       ),
                     ),
                     actions: [
                       CupertinoDialogAction(
                         child: Text(
-                            AppLocalizations.of(context).translate('done')),
+                            AppLocalizations.of(context).translate('done'),
+                            style: Utils.instance
+                                .getTextStyle('subtitle2')
+                                .copyWith(color: CupertinoColors.activeBlue)),
                         onPressed: () async {
                           AuthCredential credential =
                               PhoneAuthProvider.credential(
                                   verificationId: verificationId,
                                   smsCode: _codeController.text.trim());
-                          UserCredential result = await FirebaseAuth.instance
-                              .signInWithCredential(credential);
+                          final result = await FirebaseAuth.instance
+                              .signInWithCredential(credential)
+                              .catchError((error) {
+                            Navigator.of(context).pop();
+                            EasyLoading.instance
+                              ..backgroundColor = Colors.red.withOpacity(0.8);
+                            EasyLoading.showError('');
+                          });
                           if (result != null && result.user != null) {
                             Api.instance
                                 .updateUser({'firebase_uid': result.user.uid});
@@ -387,12 +396,16 @@ class _SignUpPageState extends State<SignUpPage> {
                                               SignUpPageType.ADDITION_DATA,
                                         )));
                           }
+                          return null;
                         },
                       ),
                       CupertinoDialogAction(
                         isDestructiveAction: true,
                         child: Text(
-                            AppLocalizations.of(context).translate('cancel')),
+                            AppLocalizations.of(context).translate('cancel'),
+                            style: Utils.instance
+                                .getTextStyle('subtitle2')
+                                .copyWith(color: HexColor.errorLog)),
                         onPressed: () {
                           setState(() => isLoading = false);
                           Navigator.of(context).pop();
@@ -435,7 +448,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Future _mainRegistration({Function onEnd}) async {
     FocusScope.of(context).unfocus();
     setState(() {
-      isLoading = !isLoading;
+      isLoading = true;
       fieldsError = {};
     });
 
@@ -452,11 +465,11 @@ class _SignUpPageState extends State<SignUpPage> {
           }
         });
       }
-      setState(() => isLoading = !isLoading);
+      setState(() => isLoading = false);
       return;
     }).catchError((error) {
       print(error);
-      setState(() => isLoading = !isLoading);
+      setState(() => isLoading = false);
       EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
       EasyLoading.showError('');
     });

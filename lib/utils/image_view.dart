@@ -1,5 +1,6 @@
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/hex_color.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 
 class ImageView extends StatelessWidget {
@@ -9,17 +10,18 @@ class ImageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return url != null
-        ? Image.network(url ?? '',
-            fit: BoxFit.cover,
-            errorBuilder: (context, o, s) =>
-                Image.asset(Utils.loadImage, fit: BoxFit.cover),
-            loadingBuilder: (context, innerWidget, event) =>
-                event != null
-                    ? Container(
-                        color: HexColor.semiElement.withOpacity(0.3),
-                        child: Center(child: CupertinoActivityIndicator()))
-                    : innerWidget)
-        : Image.asset(Utils.loadImage, fit: BoxFit.cover);
+    return CachedNetworkImage(
+            imageUrl: url,
+            imageBuilder: (context, imageProvider) => Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: imageProvider, fit: BoxFit.cover),
+                  ),
+                ),
+            errorWidget: (context, url, error) =>
+                Image.asset(Utils.loadImage, fit: BoxFit.fill),
+            placeholder: (context, url) => Container(
+                color: HexColor.semiElement.withOpacity(0.3),
+                child: Center(child: CupertinoActivityIndicator())));
   }
 }

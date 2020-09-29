@@ -1,5 +1,6 @@
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/scroll_glow.dart';
+import 'package:black_dog/widgets/status_bar_color.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -33,19 +34,19 @@ class PageScaffold extends StatelessWidget {
       this.titleMargin = true})
       : assert(child != null || children != null);
 
-  Widget _appBar() {
+  Widget _appBar(BuildContext context) {
     return Container(
       color:
           alwaysNavigation ? Colors.black.withOpacity(0.4) : Colors.transparent,
-      child: SafeArea(
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            leading ?? Container(),
-            action ?? Container(),
-          ],
-        ),
+      padding: EdgeInsets.only(
+          top: alwaysNavigation ? MediaQuery.of(context).padding.top : 0),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          leading ?? Container(),
+          action ?? Container(),
+        ],
       ),
     );
   }
@@ -53,7 +54,7 @@ class PageScaffold extends StatelessWidget {
   Widget _titleWidget() {
     if (title != null) {
       return Container(
-        alignment: Alignment.center,
+        alignment: Alignment.topCenter,
         padding: EdgeInsets.only(top: 0, bottom: 15),
         width: ScreenSize.mainTextWidth,
         child: title,
@@ -102,7 +103,7 @@ class PageScaffold extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.max,
                                 children: <Widget>[
-                                  _appBar(),
+                                  _appBar(context),
                                   Expanded(
                                       child: Container(
                                           padding: padding ?? EdgeInsets.zero,
@@ -121,11 +122,12 @@ class PageScaffold extends StatelessWidget {
                                   controller: scrollController,
                                   shrinkWrap: shrinkWrap,
                                   children: _buildBodyChildren(
-                                      [_appBar(), _titleWidget()]),
+                                      [_appBar(context), _titleWidget()]),
                                 ),
                               ),
                       )),
                 )),
+                        StatusBarColor(enabled: !alwaysNavigation),
           ],
         ));
   }

@@ -73,9 +73,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           color: HexColor.lightElement,
           child: Text(
             AppLocalizations.of(context).translate(textKey),
-            style: Theme.of(context)
-                .textTheme
-                .caption
+            style: Utils.instance
+                .getTextStyle('caption')
                 .copyWith(color: HexColor.darkElement),
           )),
     );
@@ -127,7 +126,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         onTap: () => Navigator.of(context).pop(),
       ),
       title: Text(AppLocalizations.of(context).translate('restore_password'),
-          style: Theme.of(context).textTheme.caption),
+          style: Utils.instance.getTextStyle('caption')),
       children: _switchPages(),
     );
   }
@@ -162,7 +161,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   void _firebaseVerifyPhone() async {
     _codeController.clear();
     setState(() {
-      isLoading = !isLoading;
       _validationError = {};
     });
 
@@ -177,28 +175,32 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           EasyLoading.showError('');
         },
         codeSent: (String verificationId, [int forceResendingToken]) {
+          setState(() => isLoading = false);
           showCupertinoDialog(
               context: context,
               builder: (context) => CupertinoAlertDialog(
                     title: Text(
                         AppLocalizations.of(context).translate('enter_code'),
-                        style: Theme.of(context).textTheme.headline1),
+                        style: Utils.instance.getTextStyle('headline1')),
                     content: Container(
                         margin: EdgeInsets.only(top: 10),
                         child: CupertinoTextField(
-                          style: Theme.of(context).textTheme.subtitle2,
+                          style: Utils.instance.getTextStyle('subtitle2'),
                           controller: _codeController,
                         )),
                     actions: [
                       CupertinoDialogAction(
                         child: Text(
-                            AppLocalizations.of(context).translate('done')),
+                            AppLocalizations.of(context).translate('done'),
+                            style: Utils.instance
+                                .getTextStyle('subtitle2')
+                                .copyWith(color: CupertinoColors.activeBlue)),
                         onPressed: () async {
                           AuthCredential credential =
                               PhoneAuthProvider.credential(
                                   verificationId: verificationId,
                                   smsCode: _codeController.text.trim());
-                          UserCredential result = await FirebaseAuth.instance
+                          final result = await FirebaseAuth.instance
                               .signInWithCredential(credential)
                               .catchError((error) {
                             Navigator.of(context).pop();
@@ -214,7 +216,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       CupertinoDialogAction(
                         isDestructiveAction: true,
                         child: Text(
-                            AppLocalizations.of(context).translate('cancel')),
+                            AppLocalizations.of(context).translate('cancel'),
+                            style: Utils.instance
+                                .getTextStyle('subtitle2')
+                                .copyWith(color: HexColor.errorLog)),
                         onPressed: () => Navigator.of(context).pop(),
                       )
                     ],
@@ -259,14 +264,17 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               title: Text(
                   AppLocalizations.of(context)
                       .translate('success_password_change'),
-                  style: Theme.of(context).textTheme.headline1),
+                  style: Utils.instance.getTextStyle('headline1')),
               content: Text(
                   AppLocalizations.of(context)
                       .translate('success_password_change_help'),
-                  style: Theme.of(context).textTheme.bodyText2),
+                  style: Utils.instance.getTextStyle('bodyText2')),
               actions: [
                 CupertinoDialogAction(
-                  child: Text(AppLocalizations.of(context).translate('done')),
+                  child: Text(AppLocalizations.of(context).translate('done'),
+                      style: Utils.instance
+                          .getTextStyle('subtitle2')
+                          .copyWith(color: CupertinoColors.activeBlue)),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },

@@ -77,7 +77,7 @@ class Log {
       AppLocalizations.of(context)
           .translate(status ? 'success_log' : 'error_log');
 
-  Color get color => status ? HexColor.successLog : HexColor.errorLog;
+  Color get color => status ? HexColor('#3C852E') : HexColor.errorLog;
 
   String scanType(BuildContext context) =>
       AppLocalizations.of(context).translate(errorMessage != null

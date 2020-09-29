@@ -1,7 +1,7 @@
 name: black_dog
 description: A Flutter project for black dog coffe.
 
-version: 1.0.5+5
+version: 1.0.6+6
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -12,26 +12,27 @@ dependencies:
 
   cupertino_icons: ^1.0.0
   http: ^0.12.2
-  shared_preferences: ^0.5.10
+  shared_preferences: ^0.5.12
   barcode_scan: ^3.0.1
-  connectivity: ^0.4.9+2
+  connectivity: ^0.4.9+3
   modal_progress_hud: ^0.1.3
   http_interceptor: ^0.3.2
   flutter_sfsymbols: ^1.0.0
-  path_provider: ^1.6.16
+  path_provider: ^1.6.18
   carousel_slider: ^2.2.1
   intl: ^0.16.1
   url_launcher: ^5.5.0
-  flutter_svg: ^0.19.0
   firebase_crashlytics: ^0.1.4+1
   dotted_border: ^1.0.6
   firebase_messaging: ^7.0.0
   firebase_auth: ^0.18.0+1
   firebase_core: ^0.5.0
-  flutter_easyloading: ^1.2.1
-  google_maps_flutter: ^0.5.32
+  flutter_easyloading: ^1.3.0
+  google_maps_flutter: ^0.5.33
   step_progress_indicator: ^0.2.4+7
   map_launcher: ^0.12.2
+  cached_network_image: ^2.3.2+1
+
 
   flutter_localizations:
     sdk: flutter
@@ -60,4 +61,8 @@ flutter:
     - family: Lemon-Milk
       fonts:
         - asset: assets/fonts/lemon_milk.ttf
+
+    - family:  BlackDogIcons
+      fonts:
+        - asset: assets/fonts/BlackDogIcons.ttf
 

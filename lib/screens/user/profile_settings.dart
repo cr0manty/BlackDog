@@ -54,7 +54,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       action: RouteButton(
         text: AppLocalizations.of(context).translate('save'),
         color: HexColor.lightElement,
-        onTap: _saveNewUser,
+        onTap: _saveChanges,
       ),
       child: Form(
         key: _formKey,
@@ -68,29 +68,28 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 alignment: Alignment.centerLeft,
                 child: Text(
                     AppLocalizations.of(context).translate('first_name'),
-                    style: Theme.of(context).textTheme.bodyText1)),
+                    style: Utils.instance.getTextStyle('bodyText1'))),
             TextInput(
-              controller: _nameController,
-              focusNode: _nameFocus,
-              onFieldSubmitted: (_) =>
-                  FocusScope.of(context).requestFocus(_lastNameFocus),
-              hintText: AppLocalizations.of(context).translate('first_name'),
-              keyboardType: TextInputType.name,
-            ),
+                controller: _nameController,
+                focusNode: _nameFocus,
+                onFieldSubmitted: (_) =>
+                    FocusScope.of(context).requestFocus(_lastNameFocus),
+                hintText: AppLocalizations.of(context).translate('first_name'),
+                keyboardType: TextInputType.name,
+                inputAction: TextInputAction.next),
             Utils.instance.showValidateError(fieldsError, key: 'first_name'),
             Container(
                 padding: EdgeInsets.only(left: 10, bottom: 5),
                 alignment: Alignment.centerLeft,
                 child: Text(AppLocalizations.of(context).translate('last_name'),
-                    style: Theme.of(context).textTheme.bodyText1)),
+                    style: Utils.instance.getTextStyle('bodyText1'))),
             TextInput(
-              controller: _lastNameController,
-              onFieldSubmitted: (_) =>
-                  FocusScope.of(context).requestFocus(_nameFocus),
-              focusNode: _lastNameFocus,
-              hintText: AppLocalizations.of(context).translate('last_name'),
-              keyboardType: TextInputType.text,
-            ),
+                controller: _lastNameController,
+                onFieldSubmitted: (_) => _saveChanges(),
+                focusNode: _lastNameFocus,
+                hintText: AppLocalizations.of(context).translate('last_name'),
+                keyboardType: TextInputType.text,
+                inputAction: TextInputAction.done),
             Utils.instance.showValidateError(fieldsError, key: 'last_name'),
             Container(
               alignment: Alignment.bottomCenter,
@@ -105,9 +104,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                     child: Text(
                         AppLocalizations.of(context)
                             .translate('change_password'),
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline2
+                        style: Utils.instance
+                            .getTextStyle('headline2')
                             .copyWith(color: HexColor.darkElement))),
               ),
             ),
@@ -124,7 +122,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     };
   }
 
-  Future _saveNewUser() async {
+  Future _saveChanges() async {
     setState(() => isLoading = !isLoading);
     fieldsError = {};
 

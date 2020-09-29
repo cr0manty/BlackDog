@@ -7,6 +7,7 @@ import 'package:black_dog/models/news.dart';
 import 'package:black_dog/models/restaurant.dart';
 import 'package:black_dog/screens/content/product_list.dart';
 import 'package:black_dog/screens/user/user_page.dart';
+import 'package:black_dog/utils/black_dog_icons_icons.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/image_view.dart';
 import 'package:black_dog/utils/localization.dart';
@@ -19,7 +20,6 @@ import 'package:black_dog/widgets/section.dart';
 import 'package:black_dog/widgets/user_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
 import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/shared_pref.dart';
@@ -92,7 +92,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    Utils.instance.initScreenSize(MediaQuery.of(context).size);
+    Utils.instance.initScreenSize(MediaQuery.of(context));
 
     return PageScaffold(
         inAsyncCall: isLoading,
@@ -104,8 +104,8 @@ class _HomePageState extends State<HomePage> {
             textColor: HexColor.lightElement,
             iconWidget: Container(
               margin: EdgeInsets.only(left: 10),
-              child: SvgPicture.asset('assets/images/about_us.svg',
-                  color: HexColor.lightElement, height: 25, width: 22),
+              child: Icon(BlackDogIcons.about_us,
+                  color: HexColor.lightElement, size: 27),
             ),
             iconFirst: false,
             text: AppLocalizations.of(context).translate('about_us'),
@@ -122,7 +122,7 @@ class _HomePageState extends State<HomePage> {
         child: Center(
             child: Text(
           AppLocalizations.of(context).translate(stringKey),
-          style: Theme.of(context).textTheme.subtitle1,
+          style: Utils.instance.getTextStyle('subtitle1'),
         )));
 
     switch (snapshot.connectionState) {
@@ -214,7 +214,9 @@ class _HomePageState extends State<HomePage> {
       child: Container(
         height: ScreenSize.homePageNewsHeight,
         width: ScreenSize.homePageNewsWidth,
-        margin: EdgeInsets.only(left: index == 0 ? 16 : 8, right: index == newsList.length - 1? 16 : 8),
+        margin: EdgeInsets.only(
+            left: index == 0 ? 16 : 8,
+            right: index == newsList.length - 1 ? 16 : 8),
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
@@ -224,20 +226,20 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             Text(
               news.capitalizeTitle,
-              style: Theme.of(context).textTheme.headline1,
+              style: Utils.instance.getTextStyle('headline1'),
               maxLines: 1,
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 5),
             Text(
               news.shortDescription ?? '',
               maxLines: 2,
-              style: Theme.of(context).textTheme.subtitle2,
+              style: Utils.instance.getTextStyle('subtitle2'),
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
             ),
-            SizedBox(height: 10),
+            Expanded(child: SizedBox()),
             Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
@@ -246,8 +248,9 @@ class _HomePageState extends State<HomePage> {
                 height: ScreenSize.newsImageHeight,
                 width: ScreenSize.newsImageWidth,
                 child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: ImageView(news.previewImage)))
+                      borderRadius: BorderRadius.circular(10),
+                      child:  ImageView(news.previewImage),
+                ))
           ],
         ),
       ),
@@ -280,7 +283,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Container(
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(9),
                       gradient: LinearGradient(
                           colors: [
                             Colors.black.withOpacity(0.2),
@@ -298,7 +301,7 @@ class _HomePageState extends State<HomePage> {
                     alignment: Alignment.centerLeft,
                     child: Text(category.capitalizeTitle,
                         maxLines: 2,
-                        style: Theme.of(context).textTheme.caption))
+                        style: Utils.instance.getTextStyle('caption')))
               ],
             ),
           ),

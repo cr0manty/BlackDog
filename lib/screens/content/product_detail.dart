@@ -59,7 +59,7 @@ class _ProductDetailState extends State<ProductDetail>
             borderRadius: BorderRadius.circular(10)),
         child: Center(
             child: Text(widget.product.variations[index].name,
-                style: Theme.of(context).textTheme.headline1)));
+                style: Utils.instance.getTextStyle('headline1'))));
   }
 
   @override
@@ -104,11 +104,10 @@ class _ProductDetailState extends State<ProductDetail>
                 children: <Widget>[
                   SizedBox(
                       width: ScreenSize.mainTextWidth,
-                      child: Text(
-                          widget.product.capitalizeTitle,
+                      child: Text(widget.product.capitalizeTitle,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 3,
-                          style: Theme.of(context).textTheme.caption)),
+                          style: Utils.instance.getTextStyle('caption'))),
                   FadeTransition(
                       opacity: animationController
                           .drive(CurveTween(curve: Curves.easeOut)),
@@ -117,7 +116,7 @@ class _ProductDetailState extends State<ProductDetail>
                               actualPrice: selectedVariation?.price),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
-                          style: Theme.of(context).textTheme.subtitle1)),
+                          style: Utils.instance.getTextStyle('subtitle1'))),
                 ])),
         widget.product.variations.length != 0
             ? Column(
@@ -157,12 +156,12 @@ class _ProductDetailState extends State<ProductDetail>
                 margin: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
                 child: Text(
                     AppLocalizations.of(context).translate('description'),
-                    style: Theme.of(context).textTheme.subtitle1))
+                    style: Utils.instance.getTextStyle('subtitle1')))
             : Container(),
         Container(
           margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           child: Text(widget.product.description ?? '',
-              style: Theme.of(context).textTheme.subtitle2),
+              style: Utils.instance.getTextStyle('subtitle2')),
         ),
       ],
     );

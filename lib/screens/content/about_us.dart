@@ -37,7 +37,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
         onTap: () => Navigator.of(context).pop(),
       ),
       title: Text(widget.restaurant.name,
-          style: Theme.of(context).textTheme.caption),
+          style: Utils.instance.getTextStyle('caption')),
       children: <Widget>[
         Center(
             child: Container(
@@ -51,7 +51,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
                     borderRadius: BorderRadius.circular(10),
                     child: ImageView(widget.restaurant.logo)))),
         Container(
-            margin: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+            margin: EdgeInsets.symmetric(horizontal: 32, vertical: 32),
             width: ScreenSize.width - 64,
             child: CupertinoButton(
                 onPressed: () => Navigator.of(context).push(
@@ -61,17 +61,24 @@ class _AboutUsPageState extends State<AboutUsPage> {
                   AppLocalizations.of(context).translate('show_on_map'),
                   overflow: TextOverflow.fade,
                   maxLines: 1,
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline1
+                  style: Utils.instance
+                      .getTextStyle('headline1')
                       .copyWith(color: HexColor.darkElement),
                 ))),
-        AboutSection(widget.restaurant.instagramLink, SFSymbols.logo_instagram,
-            web: true, maxLines: 1,),
+        AboutSection(
+          widget.restaurant.instagramLink,
+          SFSymbols.logo_instagram,
+          web: true,
+          maxLines: 1,
+        ),
         AboutSection(widget.restaurant.facebook, SFSymbols.logo_facebook,
             web: true, maxLines: 1),
-        AboutSection(widget.restaurant.email, SFSymbols.envelope_fill,
-            email: true, maxLines: 1,),
+        AboutSection(
+          widget.restaurant.email,
+          SFSymbols.envelope_fill,
+          email: true,
+          maxLines: 1,
+        ),
       ],
     );
   }

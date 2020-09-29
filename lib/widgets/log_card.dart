@@ -31,12 +31,12 @@ class LogCard extends StatelessWidget {
               Text(
                 (log.user?.phone ?? log.user?.firstName) ??
                     AppLocalizations.of(context).translate('unknown'),
-                style: Theme.of(context).textTheme.subtitle2,
+                style: Utils.instance.getTextStyle('subtitle2'),
                 maxLines: 1,
               ),
               Text(
                 log.scanType(context),
-                style: Theme.of(context).textTheme.subtitle2,
+                style: Utils.instance.getTextStyle('subtitle2'),
                 maxLines: 1,
               )
             ],
@@ -51,16 +51,14 @@ class LogCard extends StatelessWidget {
                 child: Text(
                   log.message(context),
                   overflow: TextOverflow.visible,
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle2
+                  style: Utils.instance.getTextStyle('subtitle2')
                       .copyWith(color: log.color),
                   maxLines: 1,
                 ),
               ),
               Text(
                 log.created ?? '',
-                style: Theme.of(context).textTheme.bodyText2,
+                style: Utils.instance.getTextStyle('bodyText2'),
                 maxLines: 1,
               )
             ],

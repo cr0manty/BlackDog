@@ -46,3 +46,8 @@ app.*.map.json
 # Firebase
 google-services.json
 GoogleService-Info.plist
+
+# Config Files
+key_black_dog.jks
+Config.swift
+

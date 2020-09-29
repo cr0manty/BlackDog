@@ -1,0 +1,8 @@
+sdk.dir=C:\\Users\\Cr0manty\\AppData\\Local\\Android\\Sdk
+flutter.sdk=E:\\src\\flutter
+flutter.buildMode=debug
+flutter.versionName=1.0.6
+flutter.versionCode=6
+api.googleMapsApiKey=GOOGLE_MAPS_API_KEY
+build.storePass=StorePass
+build.keyPass=KeyPass

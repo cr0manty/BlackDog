@@ -20,12 +20,12 @@ import 'connection_check.dart';
 
 class LogInterceptor implements InterceptorContract {
   void printWrapped(String text) {
-    final pattern = new RegExp('.{1,800}');
+    final pattern = RegExp('.{1,800}');
     pattern.allMatches(text).forEach((match) => print(match.group(0)));
   }
 
   String prettyJson(String jsonString) {
-    return JsonEncoder.withIndent('  ').convert(json.decode(jsonString));
+    return JsonEncoder.withIndent('  ').convert(json.decode(utf8.decode(jsonString.runes.toList())));
   }
 
   @override
@@ -139,8 +139,7 @@ class Api {
         String path = await saveQRCode(body['qr_code']);
         SharedPrefs.saveQRCode(path);
 
-        List vouchers = await vouchersFromJsonList(body['vouchers'] ?? []);
-        SharedPrefs.saveActiveVoucher(vouchers);
+        vouchersFromJsonList(body['vouchers'] ?? []);
       }
 
       Account.instance.initialize();

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/instances/shared_pref.dart';
 
 Future vouchersFromJsonList(List vouchersList) async {
   List<Voucher> vouchers = [];
@@ -8,7 +9,7 @@ Future vouchersFromJsonList(List vouchersList) async {
     await voucher.saveQrCode();
     vouchers.add(voucher);
   }));
-  return vouchers;
+  SharedPrefs.saveActiveVoucher(vouchers);
 }
 
 BaseVoucher baseVoucherFromJson(String str) {

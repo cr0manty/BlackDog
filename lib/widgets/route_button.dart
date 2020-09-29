@@ -1,3 +1,4 @@
+import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -47,9 +48,8 @@ class RouteButton extends StatelessWidget {
       text != null
           ? Text(
               text,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyText2
+              style: Utils.instance
+                  .getTextStyle('bodyText2')
                   .copyWith(color: textColor ?? HexColor.darkElement),
             )
           : Container()
@@ -61,9 +61,8 @@ class RouteButton extends StatelessWidget {
       text != null
           ? Text(
               text,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyText2
+              style: Utils.instance
+                  .getTextStyle('bodyText2')
                   .copyWith(color: textColor ?? HexColor.darkElement),
             )
           : Container(),
@@ -86,6 +85,7 @@ class RouteButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoButton(
       onPressed: onTap,
+      minSize: 0,
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),

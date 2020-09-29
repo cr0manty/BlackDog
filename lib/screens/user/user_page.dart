@@ -9,6 +9,7 @@ import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/voucher.dart';
 import 'package:black_dog/screens/user/sign_in.dart';
+import 'package:black_dog/utils/black_dog_icons_icons.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/widgets/edit_button.dart';
@@ -19,7 +20,6 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 class UserPage extends StatefulWidget {
@@ -89,10 +89,10 @@ class _UserPageState extends State<UserPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(currentVoucher.name,
-                    style: Theme.of(context).textTheme.headline1),
+                    style: Utils.instance.getTextStyle('headline1')),
                 Container(height: 8),
-                SvgPicture.asset(Utils.bonusIcon,
-                    color: HexColor.lightElement, height: 37, width: 37),
+                Icon(BlackDogIcons.coffee,
+                    color: HexColor.lightElement, size: 37),
               ],
             ),
           ),
@@ -102,16 +102,13 @@ class _UserPageState extends State<UserPage> {
               text: TextSpan(children: [
                 TextSpan(
                     text: '${currentVoucher.purchaseCount}',
-                    style: Theme.of(context)
-                        .textTheme
-                        .subtitle1
-                        .copyWith(fontSize: 30)),
+                    style: Utils.instance
+                        .getTextStyle('subtitle1')
+                        .copyWith(fontSize: TextSize.extra)),
                 TextSpan(
                     text: '/${currentVoucher.purchaseToBonus}',
-                    style: Theme.of(context)
-                        .textTheme
-                        .subtitle1
-                        .copyWith(fontSize: 25, color: HexColor.semiElement)),
+                    style: Utils.instance.getTextStyle('subtitle1').copyWith(
+                        fontSize: TextSize.extra, color: HexColor.semiElement)),
               ]),
             ),
           )
@@ -136,7 +133,7 @@ class _UserPageState extends State<UserPage> {
               children: [
                 Text(AppLocalizations.of(context).translate('help_bonus'),
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.subtitle2),
+                    style: Utils.instance.getTextStyle('subtitle2')),
                 Container(
                   height: 10,
                 ),
@@ -193,12 +190,13 @@ class _UserPageState extends State<UserPage> {
                 children: [
                   Text(
                     AppLocalizations.of(context).translate('current_voucher'),
-                    style: Theme.of(context).textTheme.subtitle1,
+                    textAlign: TextAlign.center,
+                    style: Utils.instance.getTextStyle('subtitle1'),
                   ),
                   SizedBox(
                     width: ScreenSize.maxTextWidth,
                     child: Text(voucher.discountType,
-                        style: Theme.of(context).textTheme.subtitle1,
+                        style: Utils.instance.getTextStyle('subtitle1'),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                         textAlign: TextAlign.center),
@@ -206,7 +204,8 @@ class _UserPageState extends State<UserPage> {
                   SizedBox(height: 5),
                   Text(
                     AppLocalizations.of(context).translate('click_to_open'),
-                    style: Theme.of(context).textTheme.subtitle2,
+                    style: Utils.instance.getTextStyle('subtitle2'),
+                    textAlign: TextAlign.center,
                   )
                 ],
               ),
@@ -232,13 +231,14 @@ class _UserPageState extends State<UserPage> {
       action: RouteButton(
         text: AppLocalizations.of(context).translate('logout'),
         color: HexColor.lightElement,
-        onTap: () {
-          SharedPrefs.logout();
-          Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-              CupertinoPageRoute(builder: (context) => SignInPage()),
-              (route) => false);
-        },
-      ),
+        onTap: () => Utils.instance.logoutAsk(context, () {
+                    SharedPrefs.logout();
+                    Navigator.of(context, rootNavigator: true)
+                        .pushAndRemoveUntil(
+                            CupertinoPageRoute(
+                                builder: (context) => SignInPage()),
+                            (route) => false);
+                  })),
       children: <Widget>[
         UserCard(
           onPressed: null,

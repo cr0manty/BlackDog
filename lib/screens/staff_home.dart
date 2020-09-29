@@ -37,7 +37,6 @@ class _StaffHomePageState extends State<StaffHomePage> {
 
   void initDependencies() async {
     Account.instance.refreshUser().then((value) => setState(() {}));
-    setState(() {});
   }
 
   String get currentDate => DateFormat('M/d/y').format(DateTime.now());
@@ -57,13 +56,20 @@ class _StaffHomePageState extends State<StaffHomePage> {
     if (result.rawContent.isNotEmpty) {
       Map scanned = await Api.instance.staffScanQRCode(result.rawContent);
       if (scanned['result']) {
-        EasyLoading.instance..backgroundColor = Colors.green.withOpacity(0.8);
-        EasyLoading.showSuccess('');
-        _logs = Api.instance.getLogs(date: currentDate);
+        Utils.instance.infoDialog(
+            context,
+            scanned['message'] ??
+                AppLocalizations.of(context).translate('success_scan'));
+        _logs = Api.instance.getLogs(date: currentDate).then((value) {
+          setState(() {});
+          return null;
+        });
       } else {
         print(scanned);
-        EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
-        EasyLoading.showError('');
+        Utils.instance.infoDialog(
+            context,
+            scanned['message'] ??
+                AppLocalizations.of(context).translate('error_scan'));
       }
     }
     setState(() => isLoading = !isLoading);
@@ -76,7 +82,7 @@ class _StaffHomePageState extends State<StaffHomePage> {
             child: Text(
           AppLocalizations.of(context).translate('no_logs'),
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.subtitle1,
+          style: Utils.instance.getTextStyle('subtitle1'),
         )));
 
     switch (snapshot.connectionState) {
@@ -95,7 +101,8 @@ class _StaffHomePageState extends State<StaffHomePage> {
             child: Center(
                 child: Text(
               AppLocalizations.of(context).translate('no_logs'),
-              style: Theme.of(context).textTheme.subtitle1,
+              style: Utils.instance.getTextStyle('subtitle1'),
+              textAlign: TextAlign.center,
             )),
           );
         }
@@ -107,22 +114,21 @@ class _StaffHomePageState extends State<StaffHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    Utils.instance.initScreenSize(MediaQuery.of(context).size);
+    Utils.instance.initScreenSize(MediaQuery.of(context));
 
     return PageScaffold(
         inAsyncCall: isLoading,
         scrollController: _scrollController,
         alwaysNavigation: true,
         action: RouteButton(
-          text: AppLocalizations.of(context).translate('logout'),
-          color: HexColor.lightElement,
-          onTap: () {
-            SharedPrefs.logout();
-            Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-                CupertinoPageRoute(builder: (context) => SignInPage()),
-                (route) => false);
-          },
-        ),
+            text: AppLocalizations.of(context).translate('logout'),
+            color: HexColor.lightElement,
+            onTap: () => Utils.instance.logoutAsk(context, () {
+                  SharedPrefs.logout();
+                  Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+                      CupertinoPageRoute(builder: (context) => SignInPage()),
+                      (route) => false);
+                })),
         children: <Widget>[
           UserCard(onPressed: null, username: Account.instance.name),
           _buildScanQRCode(),
