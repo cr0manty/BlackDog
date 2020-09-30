@@ -132,9 +132,9 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
     ];
 
     List<TextSpan> addition = [
-      TextSpan(text: '${AppLocalizations.of(context).translate('title')} '),
+      TextSpan(text: ' ${AppLocalizations.of(context).translate('title')} '),
       TextSpan(
-          text: '${AppLocalizations.of(context).translate('terms')} ',
+          text: AppLocalizations.of(context).translate('terms'),
           style: Utils.instance.getTextStyle('bodyText2').copyWith(
               color: CupertinoColors.activeGreen,
               decoration: TextDecoration.underline))
