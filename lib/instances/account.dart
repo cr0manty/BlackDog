@@ -29,13 +29,19 @@ class Account {
   }
 
   Future<bool> setUser() async {
-    _user = await Api.instance.getUser();
-    state = _user.isStaff ? AccountState.STAFF : AccountState.USER;
+    User user = await Api.instance.getUser();
+    if (user != null) {
+      _user = user;
+      state = _user.isStaff ? AccountState.STAFF : AccountState.USER;
+    }
     return _user != null;
   }
 
   Future refreshUser() async {
-    _user = await Api.instance.getUser();
-    SharedPrefs.saveUser(_user);
+    User user = await Api.instance.getUser();
+    if (user != null) {
+      _user = user;
+      SharedPrefs.saveUser(_user);
+    }
   }
 }

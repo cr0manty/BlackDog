@@ -143,6 +143,8 @@ class Api {
       _apiChange.add(true);
       return user;
     }
+    _apiChange.add(false);
+    SharedPrefs.logout();
   }
 
   Future updateUser(Map content, {String token}) async {
