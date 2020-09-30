@@ -2,6 +2,7 @@ import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/screens/staff_home.dart';
 import 'package:black_dog/screens/user/sign_up.dart';
+import 'package:black_dog/screens/user/sign_up_confirm.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/utils/scroll_glow.dart';
 import 'package:black_dog/instances/utils.dart';
@@ -188,7 +189,7 @@ class _SignInPageState extends State<SignInPage> {
                                             Navigator.of(context).push(
                                                 CupertinoPageRoute(
                                                     builder: (context) =>
-                                                        SignUpPage()));
+                                                        SignUpConfirmPage()));
                                           },
                                           child: Text(
                                               AppLocalizations.of(context)

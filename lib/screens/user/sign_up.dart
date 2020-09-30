@@ -2,12 +2,12 @@ import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/screens/user/sign_in.dart';
+import 'package:black_dog/screens/user/sign_up_confirm.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/utils/scroll_glow.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/widgets/input_field.dart';
-import 'package:black_dog/widgets/soacial_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -18,28 +18,17 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import '../home_page.dart';
 import '../staff_home.dart';
 
-enum SignUpPageType { MAIN_DATA, ADDITION_DATA }
-
 class SignUpPage extends StatefulWidget {
-  final SignUpPageType signUpPageType;
-  final String token;
-
-  SignUpPage({this.token, this.signUpPageType = SignUpPageType.MAIN_DATA});
-
   @override
   _SignUpPageState createState() => _SignUpPageState();
 }
 
 class _SignUpPageState extends State<SignUpPage> {
   DateTime selectedDate;
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _codeController = TextEditingController();
   final TextEditingController _password1Controller = TextEditingController();
   final TextEditingController _password2Controller = TextEditingController();
-  final FocusNode _nameFocus = FocusNode();
-  final FocusNode _lastNameFocus = FocusNode();
   final FocusNode _phoneFocus = FocusNode();
   final FocusNode _password1Focus = FocusNode();
   final FocusNode _password2Focus = FocusNode();
@@ -47,10 +36,7 @@ class _SignUpPageState extends State<SignUpPage> {
   static const List<String> _fieldsList = [
     'password1',
     'password2',
-    'first_name',
-    'last_name',
     'phone_number',
-    'birth_date'
   ];
   Map fieldsError = {};
   bool _obscureText = true;
@@ -123,64 +109,6 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  Widget _buildAddition() {
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Container(
-            alignment: Alignment.center,
-            child: TextInput(
-              focusNode: _nameFocus,
-              onFieldSubmitted: (_) =>
-                  FocusScope.of(context).requestFocus(_lastNameFocus),
-              controller: _nameController,
-              keyboardType: TextInputType.name,
-              hintText: AppLocalizations.of(context).translate('first_name'),
-            )),
-        Utils.instance.showValidateError(fieldsError, key: 'first_name'),
-        Container(
-            alignment: Alignment.center,
-            child: TextInput(
-              focusNode: _lastNameFocus,
-              onFieldSubmitted: (_) => _showModalBottomSheet(context),
-              controller: _lastNameController,
-              keyboardType: TextInputType.name,
-              hintText: AppLocalizations.of(context).translate('last_name'),
-            )),
-        Utils.instance.showValidateError(fieldsError, key: 'last_name'),
-        GestureDetector(
-            onTap: () => _showModalBottomSheet(context),
-            child: Container(
-                height: 50,
-                width: ScreenSize.width - 32,
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: HexColor.lightElement),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(
-                      Utils.instance.showDateFormat(selectedDate) ??
-                          AppLocalizations.of(context).translate('birth_date'),
-                      style: Utils.instance.getTextStyle('bodyText1').copyWith(
-                          color: selectedDate != null
-                              ? HexColor.darkElement
-                              : HexColor.inputHintColor),
-                    ),
-                    Icon(
-                      SFSymbols.calendar,
-                      color: Colors.black,
-                    )
-                  ],
-                ))),
-        Utils.instance.showValidateError(fieldsError, key: 'birth_date'),
-      ],
-    );
-  }
-
   void onFieldSubmitted(Function function) {
     if (_phoneController.text.isEmpty) {
       FocusScope.of(context).requestFocus(_phoneFocus);
@@ -239,10 +167,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                   style: Utils.instance.getTextStyle('caption'),
                                 ),
                               ),
-                              widget.signUpPageType ==
-                                      SignUpPageType.ADDITION_DATA
-                                  ? _buildAddition()
-                                  : _buildFields(),
+                              _buildFields(),
                               // widget.signUpPageType == SignUpPageType.MAIN_DATA
                               //     ? SocialAuth(textKey: 'sign_up_with')
                               //     : Container(), // todo: after release
@@ -254,21 +179,11 @@ class _SignUpPageState extends State<SignUpPage> {
                                       SizedBox(
                                           width: ScreenSize.width - 64,
                                           child: CupertinoButton(
-                                              onPressed:
-                                                  widget.signUpPageType ==
-                                                          SignUpPageType
-                                                              .ADDITION_DATA
-                                                      ? _additionRegister
-                                                      : _mainRegistration,
+                                              onPressed: _mainRegistration,
                                               color: HexColor.lightElement,
                                               child: Text(
                                                 AppLocalizations.of(context)
-                                                    .translate(
-                                                        widget.signUpPageType ==
-                                                                SignUpPageType
-                                                                    .MAIN_DATA
-                                                            ? 'continue'
-                                                            : 'register'),
+                                                    .translate('register'),
                                                 overflow: TextOverflow.fade,
                                                 maxLines: 1,
                                                 textAlign: TextAlign.center,
@@ -304,46 +219,12 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  void _showModalBottomSheet(context) {
-    FocusScope.of(context).requestFocus(FocusNode());
-    DateTime today = DateTime.now();
-
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-              height: MediaQuery.of(context).copyWith().size.height / 3,
-              child: CupertinoTheme(
-                  data: CupertinoThemeData(
-                    textTheme: CupertinoTextThemeData(
-                      dateTimePickerTextStyle:
-                          Utils.instance.getTextStyle('subtitle1'),
-                    ),
-                  ),
-                  child: CupertinoDatePicker(
-                    initialDateTime: today,
-                    onDateTimeChanged: (DateTime newDate) =>
-                        setState(() => selectedDate = newDate),
-                    minimumYear: today.year - 200,
-                    maximumYear: today.year + 2,
-                    mode: CupertinoDatePickerMode.date,
-                  )));
-        });
-  }
-
   Map<String, String> _sendData() {
-    return widget.signUpPageType == SignUpPageType.MAIN_DATA
-        ? {
-            'password1': _password1Controller.text,
-            'password2': _password2Controller.text,
-            'phone_number': _phoneController.text,
-          }
-        : {
-            'birth_date': Utils.instance.dateFormat(selectedDate),
-            'first_name': _nameController.text,
-            'last_name': _lastNameController.text,
-            'firebase_uid': SharedPrefs.getUserFirebaseUID()
-          };
+    return {
+      'password1': _password1Controller.text,
+      'password2': _password2Controller.text,
+      'phone_number': _phoneController.text,
+    };
   }
 
   Future registerWithPhone(String token) async {
@@ -398,10 +279,8 @@ class _SignUpPageState extends State<SignUpPage> {
                             SharedPrefs.saveUserFirebaseUid(result.user.uid);
                             Navigator.of(context)
                                 .pushReplacement(CupertinoPageRoute(
-                                    builder: (context) => SignUpPage(
+                                    builder: (context) => SignUpConfirmPage(
                                           token: token,
-                                          signUpPageType:
-                                              SignUpPageType.ADDITION_DATA,
                                         )));
                           }
                           return null;
@@ -426,42 +305,6 @@ class _SignUpPageState extends State<SignUpPage> {
           verificationId = verificationId;
           print('Time out: $verificationId');
         });
-  }
-
-  Future _additionRegister() async {
-    setState(() {
-      isLoading = !isLoading;
-      fieldsError = {};
-    });
-    Map response =
-        await Api.instance.updateUser(_sendData(), token: widget.token);
-    bool result = response.remove('result');
-
-    if (result) {
-      SharedPrefs.saveToken(widget.token);
-      if (await Account.instance.setUser()) {
-        Navigator.of(context).pushAndRemoveUntil(
-            CupertinoPageRoute(
-                builder: (context) => Account.instance.user.isStaff
-                    ? StaffHomePage()
-                    : HomePage()),
-            (route) => false);
-      } else {
-        SharedPrefs.logout();
-        setState(() => isLoading = false);
-        EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
-        EasyLoading.showError('');
-      }
-    } else {
-      response.forEach((key, value) {
-        if (_fieldsList.contains(key)) {
-          fieldsError[key] = value[0];
-        } else {
-          fieldsError['all'] = value[0];
-        }
-      });
-    }
-    setState(() => isLoading = !isLoading);
   }
 
   Future _mainRegistration({Function onEnd}) async {

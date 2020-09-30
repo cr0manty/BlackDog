@@ -5,6 +5,7 @@ import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/image_view.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -103,7 +104,6 @@ class Utils {
 
   static String get logo => 'assets/images/logo.png';
 
-
   void initScreenSize(MediaQueryData query) {
     ScreenSize.height = query.size.height;
     ScreenSize.width = query.size.width;
@@ -197,11 +197,7 @@ class Utils {
               left: 10,
               bottom: bottomPadding ? ScreenSize.elementIndentHeight : 0),
           child: Text(fieldsError[key],
-              style: TextStyle(
-                color: Colors.red.withOpacity(0.9),
-                fontSize: 12,
-                fontFamily: 'Century-Gothic',
-              )));
+              style: Utils.instance.getTextStyle('error')));
     } else if (fieldsError.containsKey('all')) {
       return Container(
           alignment: Alignment.centerLeft,
@@ -210,11 +206,7 @@ class Utils {
               left: 10,
               bottom: bottomPadding ? ScreenSize.elementIndentHeight : 0),
           child: Text(fieldsError['all'] ?? '',
-              style: TextStyle(
-                color: Colors.red.withOpacity(0.9),
-                fontSize: 12,
-                fontFamily: 'Century-Gothic',
-              )));
+              style: Utils.instance.getTextStyle('error')));
     }
     return SizedBox(height: bottomPadding ? ScreenSize.elementIndentHeight : 0);
   }
@@ -255,6 +247,26 @@ class Utils {
     }
   }
 
+  void showTermPolicy(
+      BuildContext context, Future func, String textKey, String key) {
+    func.then((value) {
+      if (value['result']) {
+        _showPopUp = showDialog(
+            context: context,
+            useRootNavigator: false,
+            builder: (context) => CupertinoAlertDialog(
+                  title: Text(AppLocalizations.of(context).translate(textKey),
+                      style: Utils.instance.getTextStyle('headline1')),
+                  content: Text(value[key],
+                      style: Utils.instance.getTextStyle('subtitle2')),
+                )).then((_) => _showPopUp = null);
+      } else {
+        EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
+        EasyLoading.showError('');
+      }
+    });
+  }
+
   TextStyle getTextStyle(String name) {
     switch (name) {
       case 'caption':
@@ -292,6 +304,12 @@ class Utils {
             fontFamily: 'Century-Gothic',
             fontSize: TextSize.small,
             color: HexColor.semiElement);
+      case 'error':
+        return TextStyle(
+          color: Colors.red.withOpacity(0.9),
+          fontSize: 12,
+          fontFamily: 'Century-Gothic',
+        );
       default:
         return TextStyle(
             fontFamily: 'Century-Gothic',
