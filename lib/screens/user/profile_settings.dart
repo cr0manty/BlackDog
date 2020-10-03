@@ -7,7 +7,6 @@ import 'package:black_dog/widgets/input_field.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'change_password.dart';
@@ -129,7 +128,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     await Api.instance.updateUser(_sendData()).then((response) {
       bool result = response.remove('result');
       if (result) {
-        EasyLoading.instance..backgroundColor = Colors.green.withOpacity(0.8);
+        EasyLoading.instance..backgroundColor = HexColor.successGreen.withOpacity(0.8);
         EasyLoading.showSuccess('');
         Navigator.of(context).pop();
       } else {
@@ -146,7 +145,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     }).catchError((error) {
       print(error);
       setState(() => isLoading = !isLoading);
-      EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
+      EasyLoading.instance..backgroundColor = HexColor.errorRed;
       EasyLoading.showError('');
     });
   }

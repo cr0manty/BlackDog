@@ -10,7 +10,6 @@ import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 import 'news_detail.dart';
 
@@ -96,7 +95,7 @@ class _NewsListState extends State<NewsList> {
                 news: news,
               ))),
       child: Container(
-        color: Colors.transparent,
+        color: HexColor.transparent,
         margin: EdgeInsets.symmetric(vertical: 15),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

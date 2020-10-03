@@ -2,7 +2,7 @@ import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/log.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 class LogCard extends StatelessWidget {
   final Log log;

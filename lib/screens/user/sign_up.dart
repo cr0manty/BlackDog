@@ -1,4 +1,3 @@
-import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/screens/user/sign_in.dart';
@@ -12,11 +11,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
-import '../home_page.dart';
-import '../staff_home.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -237,7 +233,7 @@ class _SignUpPageState extends State<SignUpPage> {
         verificationCompleted: (AuthCredential credential) {},
         verificationFailed: (FirebaseAuthException authException) {
           print(authException.message);
-          EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
+          EasyLoading.instance..backgroundColor = HexColor.errorRed;
           EasyLoading.showError('');
         },
         codeSent: (String verificationId, [int forceResendingToken]) {
@@ -272,7 +268,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               .catchError((error) {
                             Navigator.of(context).pop();
                             EasyLoading.instance
-                              ..backgroundColor = Colors.red.withOpacity(0.8);
+                              ..backgroundColor = HexColor.errorRed;
                             EasyLoading.showError('');
                           });
                           if (result != null && result.user != null) {
@@ -292,7 +288,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             AppLocalizations.of(context).translate('cancel'),
                             style: Utils.instance
                                 .getTextStyle('subtitle2')
-                                .copyWith(color: HexColor.errorLog)),
+                                .copyWith(color: HexColor.errorRed)),
                         onPressed: () {
                           setState(() => isLoading = false);
                           Navigator.of(context).pop();
@@ -332,7 +328,7 @@ class _SignUpPageState extends State<SignUpPage> {
     }).catchError((error) {
       print(error);
       setState(() => isLoading = false);
-      EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
+      EasyLoading.instance..backgroundColor = HexColor.errorRed;
       EasyLoading.showError('');
     });
   }

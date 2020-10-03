@@ -8,7 +8,6 @@ import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 enum PageState { ENTER_PHONE, NEW_PASSWORD }
@@ -171,7 +170,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         verificationFailed: (FirebaseAuthException authException) {
           print(authException.message);
           Navigator.of(context).pop();
-          EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
+          EasyLoading.instance
+            ..backgroundColor = HexColor.errorRed;
           EasyLoading.showError('');
         },
         codeSent: (String verificationId, [int forceResendingToken]) {
@@ -205,7 +205,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               .catchError((error) {
                             Navigator.of(context).pop();
                             EasyLoading.instance
-                              ..backgroundColor = Colors.red.withOpacity(0.8);
+                              ..backgroundColor =
+                                  HexColor.errorRed;
                             EasyLoading.showError('');
                           });
                           if (result != null && result.user != null) {
@@ -219,7 +220,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                             AppLocalizations.of(context).translate('cancel'),
                             style: Utils.instance
                                 .getTextStyle('subtitle2')
-                                .copyWith(color: HexColor.errorLog)),
+                                .copyWith(color: HexColor.errorRed)),
                         onPressed: () => Navigator.of(context).pop(),
                       )
                     ],
@@ -229,7 +230,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           Navigator.of(context).pop();
           verificationId = verificationId;
           print('Time out: $verificationId');
-          EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
+          EasyLoading.instance
+            ..backgroundColor = HexColor.errorRed;
           EasyLoading.showError('');
         });
   }
@@ -313,7 +315,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     }).catchError((error) {
       setState(() => isLoading = !isLoading);
       print(error);
-      EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
+      EasyLoading.instance..backgroundColor = HexColor.errorRed;
       EasyLoading.showError('');
     });
   }

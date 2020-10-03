@@ -1,12 +1,11 @@
 import 'package:black_dog/instances/utils.dart';
+import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/scroll_glow.dart';
 import 'package:black_dog/widgets/status_bar_color.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class PageScaffold extends StatelessWidget {
-  final GlobalKey<ScaffoldState> scaffoldKey;
   final ScrollController scrollController;
   final Widget action;
   final Widget leading;
@@ -21,7 +20,6 @@ class PageScaffold extends StatelessWidget {
 
   PageScaffold(
       {this.scrollController,
-      this.scaffoldKey,
       this.child,
       this.children,
       this.action,
@@ -37,7 +35,7 @@ class PageScaffold extends StatelessWidget {
   Widget _appBar(BuildContext context) {
     return Container(
       color:
-          alwaysNavigation ? Colors.black.withOpacity(0.4) : Colors.transparent,
+          alwaysNavigation ? HexColor.black.withOpacity(0.4) : HexColor.transparent,
       padding: EdgeInsets.only(
           top: alwaysNavigation ? MediaQuery.of(context).padding.top : 0),
       child: Row(
@@ -73,9 +71,8 @@ class PageScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        key: scaffoldKey,
-        body: Stack(
+    return CupertinoPageScaffold(
+        child: Stack(
           children: [
             Positioned(
                 top: 0.0,

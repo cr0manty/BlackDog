@@ -44,7 +44,7 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
                   SFSymbols.placemark_fill,
                   itemWidth: ScreenSize.modalMaxTextWidth,
                   horizontalPadding: 0,
-                  color: HexColor.errorLog,
+                  color: HexColor.errorRed,
                   onTap: () {
                     try {
                       MapUtils.openMap(

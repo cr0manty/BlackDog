@@ -7,7 +7,6 @@ import 'package:black_dog/widgets/about_section.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 
 import 'about_us_map.dart';
@@ -22,12 +21,10 @@ class AboutUsPage extends StatefulWidget {
 }
 
 class _AboutUsPageState extends State<AboutUsPage> {
-  final GlobalKey<ScaffoldState> key = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return PageScaffold(
-      scaffoldKey: key,
       shrinkWrap: true,
       alwaysNavigation: true,
       leading: RouteButton(

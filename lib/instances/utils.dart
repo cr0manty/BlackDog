@@ -6,7 +6,6 @@ import 'package:black_dog/utils/image_view.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 abstract class TextSize {
@@ -149,7 +148,7 @@ class Utils {
                     child: Text(AppLocalizations.of(context).translate('exit'),
                         style: Utils.instance
                             .getTextStyle('subtitle2')
-                            .copyWith(color: HexColor.errorLog)),
+                            .copyWith(color: HexColor.errorRed)),
                     onPressed: () {
                       onConfirm();
                       _showPopUp = null;
@@ -227,13 +226,13 @@ class Utils {
       codeImage = ImageView(codeUrl);
     }
     if (codeImage == null) {
-      EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
+      EasyLoading.instance..backgroundColor = HexColor('#ff0000').withOpacity(0.8);
       EasyLoading.showError('');
     } else {
       if (_showPopUp != null) {
         return;
       }
-      _showPopUp = showDialog(
+      _showPopUp = showCupertinoDialog(
           context: context,
           useRootNavigator: false,
           builder: (context) => CupertinoAlertDialog(
@@ -251,7 +250,7 @@ class Utils {
       BuildContext context, Future func, String textKey, String key) {
     func.then((value) {
       if (value['result']) {
-        _showPopUp = showDialog(
+        _showPopUp = showCupertinoDialog(
             context: context,
             useRootNavigator: false,
             builder: (context) => CupertinoAlertDialog(
@@ -261,7 +260,7 @@ class Utils {
                       style: Utils.instance.getTextStyle('subtitle2')),
                 )).then((_) => _showPopUp = null);
       } else {
-        EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
+        EasyLoading.instance..backgroundColor = HexColor('#ff0000').withOpacity(0.8);
         EasyLoading.showError('');
       }
     });
@@ -306,7 +305,7 @@ class Utils {
             color: HexColor.semiElement);
       case 'error':
         return TextStyle(
-          color: Colors.red.withOpacity(0.9),
+          color: HexColor('#ff0000').withOpacity(0.9),
           fontSize: 12,
           fontFamily: 'Century-Gothic',
         );

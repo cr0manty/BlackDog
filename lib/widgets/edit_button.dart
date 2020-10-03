@@ -1,7 +1,6 @@
 import 'package:black_dog/screens/user/profile_settings.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 
 class EditButton extends StatelessWidget {

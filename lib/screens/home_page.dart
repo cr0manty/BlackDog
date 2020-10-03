@@ -7,7 +7,7 @@ import 'package:black_dog/models/news.dart';
 import 'package:black_dog/models/restaurant.dart';
 import 'package:black_dog/screens/content/product_list.dart';
 import 'package:black_dog/screens/user/user_page.dart';
-import 'package:black_dog/utils/black_dog_icons_icons.dart';
+import 'package:black_dog/utils/black_dog_icons.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/image_view.dart';
 import 'package:black_dog/utils/localization.dart';
@@ -19,7 +19,6 @@ import 'package:black_dog/widgets/route_button.dart';
 import 'package:black_dog/widgets/section.dart';
 import 'package:black_dog/widgets/user_card.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/shared_pref.dart';
@@ -284,8 +283,8 @@ class _HomePageState extends State<HomePage> {
                       borderRadius: BorderRadius.circular(9),
                       gradient: LinearGradient(
                           colors: [
-                            Colors.black.withOpacity(0.2),
-                            Colors.black.withOpacity(0.8),
+                            HexColor('#000000').withOpacity(0.2),
+                            HexColor('#000000').withOpacity(0.8),
                           ],
                           stops: [
                             0.2,

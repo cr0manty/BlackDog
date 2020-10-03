@@ -1,7 +1,6 @@
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 
 class RouteButton extends StatelessWidget {
@@ -38,7 +37,7 @@ class RouteButton extends StatelessWidget {
           ? Icon(
               icon ?? SFSymbols.chevron_left,
               size: 20,
-              color: iconColor ?? Colors.black,
+              color: iconColor ?? HexColor.black,
             )
           : Container(
               height: 17,
@@ -89,7 +88,7 @@ class RouteButton extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          color: color ?? Colors.transparent,
+          color: color ?? HexColor.transparent,
         ),
         padding: padding ?? EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         child: Row(

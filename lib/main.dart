@@ -1,11 +1,11 @@
+import 'package:black_dog/utils/hex_color.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/screens/home_page.dart';
 import 'package:black_dog/screens/staff_home.dart';
 import 'package:black_dog/screens/user//sign_in.dart';
 import 'package:black_dog/utils/localization.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -38,7 +38,7 @@ class BlackDogApp extends StatefulWidget {
 class _BlackDogAppState extends State<BlackDogApp> {
   void initWithContext(BuildContext context) async {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent));
+        statusBarColor: HexColor.transparent));
     precacheImage(AssetImage(Utils.loadImage), context);
     precacheImage(AssetImage(Utils.bannerImage), context);
     precacheImage(AssetImage(Utils.logo), context);
@@ -56,19 +56,19 @@ class _BlackDogAppState extends State<BlackDogApp> {
     EasyLoading.instance
       ..loadingStyle = EasyLoadingStyle.custom
       ..displayDuration = const Duration(seconds: 1)
-      ..progressColor = Colors.white
+      ..progressColor = CupertinoColors.white
       ..indicatorSize = 50
       ..radius = 10.0
-      ..indicatorColor = Colors.white
-      ..textColor = Colors.white
-      ..backgroundColor = Colors.red.withOpacity(0.8);
+      ..indicatorColor = CupertinoColors.white
+      ..textColor = CupertinoColors.white
+      ..backgroundColor = HexColor.errorRed;
   }
 
   @override
   Widget build(BuildContext context) {
     initWithContext(context);
 
-    return MaterialApp(
+    return CupertinoApp(
       debugShowCheckedModeBanner: false,
       supportedLocales: [
         Locale('en', 'US'),
@@ -98,9 +98,9 @@ class _BlackDogAppState extends State<BlackDogApp> {
         SharedPrefs.saveLanguageCode(currentLocale.languageCode);
         return currentLocale;
       },
-      theme: ThemeData(
-        textSelectionColor: Colors.grey.withOpacity(0.5),
-        textSelectionHandleColor: Colors.grey,
+      theme: CupertinoThemeData(
+        // textSelectionColor: CupertinoColors.systemGrey.withOpacity(0.5),
+        // textSelectionHandleColor: CupertinoColors.systemGrey,
         brightness: Brightness.dark,
         scaffoldBackgroundColor: Color.fromRGBO(40, 39, 41, 1),
       ),

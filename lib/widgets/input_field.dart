@@ -1,6 +1,5 @@
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/hex_color.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class TextInput extends StatefulWidget {
@@ -51,7 +50,7 @@ class TextInputState extends State<TextInput> {
     return Container(
       alignment: widget.alignment,
       margin: EdgeInsets.zero,
-      color: Colors.transparent,
+      color: HexColor.transparent,
       child: TextFormField(
         focusNode: widget.focusNode,
         style: Utils.instance
