@@ -45,6 +45,8 @@
 	<true/>
 	<key>FirebaseScreenReportingEnabled</key>
 	<true/>
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>itms</string>
