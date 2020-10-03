@@ -55,6 +55,11 @@
 	<string>Camera permission is required for scan QR code by staff.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app needs location to view the location of stores for the Google Maps plugin.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
