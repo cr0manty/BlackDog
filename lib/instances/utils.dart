@@ -30,11 +30,13 @@ class Utils {
   }
 
   void initTextSize(MediaQueryData query) {
+    TextSize.extraSmall = 12;
     TextSize.small = 15;
     TextSize.large = 20;
     TextSize.extra = 30;
 
     if (query.textScaleFactor > 1) {
+      TextSize.extraSmall /= query.textScaleFactor;
       TextSize.small /= query.textScaleFactor;
       TextSize.large /= query.textScaleFactor;
       TextSize.extra /= query.textScaleFactor;

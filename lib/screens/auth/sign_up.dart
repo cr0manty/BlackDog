@@ -65,8 +65,8 @@ class _SignUpPageState extends State<SignUpPage> {
               suffixIcon: GestureDetector(
                 child: Icon(
                     _obscureText
-                        ? CupertinoIcons.eye_solid
-                        : CupertinoIcons.eye_solid,
+                        ? CupertinoIcons.eye_fill
+                        : CupertinoIcons.eye_slash_fill,
                     color: HexColor.darkElement),
                 onTap: () => setState(() => _obscureText = !_obscureText),
               ),
@@ -85,8 +85,8 @@ class _SignUpPageState extends State<SignUpPage> {
               suffixIcon: GestureDetector(
                 child: Icon(
                     _obscureTextConfirm
-                        ? CupertinoIcons.eye_solid
-                        : CupertinoIcons.eye_solid,
+                        ? CupertinoIcons.eye_fill
+                        : CupertinoIcons.eye_slash_fill,
                     color: HexColor.darkElement),
                 onTap: () =>
                     setState(() => _obscureTextConfirm = !_obscureTextConfirm),

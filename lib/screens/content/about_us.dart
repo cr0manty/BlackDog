@@ -56,13 +56,19 @@ class _AboutUsPageState extends State<AboutUsPage> {
                     Api.instance.termsAndPrivacy(),
                     'terms',
                     'terms_and_conditions'),
-                child: Text(AppLocalizations.of(context).translate('terms'),
-                    style: Utils.instance
-                        .getTextStyle('subtitle2')
-                        .copyWith(decoration: TextDecoration.underline))),
+                child: Text(
+                  AppLocalizations.of(context).translate('terms'),
+                  style: Utils.instance.getTextStyle('subtitle2').copyWith(
+                      decoration: TextDecoration.underline,
+                      fontSize: TextSize.extraSmall),
+                  overflow: TextOverflow.clip,
+                )),
             Text(
               ' ${AppLocalizations.of(context).translate('and')} ',
-              style: Utils.instance.getTextStyle('subtitle2'),
+              style: Utils.instance
+                  .getTextStyle('subtitle2')
+                  .copyWith(fontSize: TextSize.extraSmall),
+              overflow: TextOverflow.clip,
             ),
             CupertinoButton(
                 padding: EdgeInsets.zero,
@@ -71,10 +77,13 @@ class _AboutUsPageState extends State<AboutUsPage> {
                     Api.instance.termsAndPrivacy(methodName: 'privacy-policy'),
                     'privacy',
                     'privacy_policy'),
-                child: Text(AppLocalizations.of(context).translate('privacy'),
-                    style: Utils.instance
-                        .getTextStyle('subtitle2')
-                        .copyWith(decoration: TextDecoration.underline))),
+                child: Text(
+                  AppLocalizations.of(context).translate('privacy'),
+                  style: Utils.instance.getTextStyle('subtitle2').copyWith(
+                      decoration: TextDecoration.underline,
+                      fontSize: TextSize.extraSmall),
+                  overflow: TextOverflow.clip,
+                )),
           ],
         ),
       ),

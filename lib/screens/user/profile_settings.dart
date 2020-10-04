@@ -44,18 +44,34 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       padding: EdgeInsets.symmetric(horizontal: 16),
       alwaysNavigation: true,
       inAsyncCall: isLoading,
-          leading: RouteButton(
-            defaultIcon: true,
-            text: AppLocalizations.of(context)
-                .translate(widget.fromHome ? 'home' : 'profile'),
-            color: HexColor.lightElement,
-            onTap: () => Navigator.of(context).pop(),
-          ),
-          action: RouteButton(
-            text: AppLocalizations.of(context).translate('save'),
-            color: HexColor.lightElement,
-            onTap: _saveChanges,
-          ),
+      leading: RouteButton(
+        defaultIcon: true,
+        text: AppLocalizations.of(context)
+            .translate(widget.fromHome ? 'home' : 'profile'),
+        color: HexColor.lightElement,
+        onTap: () => Navigator.of(context).pop(),
+      ),
+      action: RouteButton(
+        text: AppLocalizations.of(context).translate('save'),
+        color: HexColor.lightElement,
+        onTap: _saveChanges,
+      ),
+      bottomWidget: Container(
+          alignment: Alignment.bottomCenter,
+          margin: EdgeInsets.only(top: 20, bottom: 40),
+          child: SizedBox(
+            width: ScreenSize.width - 64,
+            child: CupertinoButton(
+                onPressed: () => Navigator.of(context, rootNavigator: true)
+                    .push(CupertinoPageRoute(
+                        builder: (context) => ChangePassword())),
+                color: HexColor.lightElement,
+                child: Text(
+                    AppLocalizations.of(context).translate('change_password'),
+                    style: Utils.instance
+                        .getTextStyle('headline2')
+                        .copyWith(color: HexColor.darkElement))),
+          )),
       child: Form(
         key: _formKey,
         child: Column(
@@ -77,7 +93,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 hintText: AppLocalizations.of(context).translate('first_name'),
                 keyboardType: TextInputType.name,
                 inputAction: TextInputAction.next),
-            Utils.instance.showValidateError(context, fieldsError, key: 'first_name'),
+            Utils.instance
+                .showValidateError(context, fieldsError, key: 'first_name'),
             Container(
                 padding: EdgeInsets.only(left: 10, bottom: 5),
                 alignment: Alignment.centerLeft,
@@ -90,25 +107,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 hintText: AppLocalizations.of(context).translate('last_name'),
                 keyboardType: TextInputType.text,
                 inputAction: TextInputAction.done),
-            Utils.instance.showValidateError(context, fieldsError, key: 'last_name'),
-            Container(
-              alignment: Alignment.bottomCenter,
-              margin: EdgeInsets.only(top: 20),
-              child: SizedBox(
-                width: ScreenSize.width - 64,
-                child: CupertinoButton(
-                    onPressed: () => Navigator.of(context, rootNavigator: true)
-                        .push(CupertinoPageRoute(
-                            builder: (context) => ChangePassword())),
-                    color: HexColor.lightElement,
-                    child: Text(
-                        AppLocalizations.of(context)
-                            .translate('change_password'),
-                        style: Utils.instance
-                            .getTextStyle('headline2')
-                            .copyWith(color: HexColor.darkElement))),
-              ),
-            ),
+            Utils.instance
+                .showValidateError(context, fieldsError, key: 'last_name')
           ],
         ),
       ),

@@ -1,4 +1,5 @@
 abstract class TextSize {
+  static double extraSmall;
   static double small;
   static double large;
   static double extra;
