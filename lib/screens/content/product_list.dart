@@ -8,6 +8,8 @@ import 'package:black_dog/screens/content/product_detail.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/image_view.dart';
 import 'package:black_dog/utils/localization.dart';
+import 'package:black_dog/utils/sizes.dart';
+import 'package:black_dog/widgets/app_bar.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -63,12 +65,13 @@ class _ProductListState extends State<ProductList> {
       alwaysNavigation: true,
       shrinkWrap: true,
       padding: EdgeInsets.symmetric(horizontal: 16),
+    navigationBar: NavigationBar(
       leading: RouteButton(
         defaultIcon: true,
         text: AppLocalizations.of(context).translate('home'),
         color: CupertinoColors.white,
         onTap: () => Navigator.of(context).pop(),
-      ),
+      )),
       title: Text(
         widget.title,
         style: Utils.instance.getTextStyle('caption'),

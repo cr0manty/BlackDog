@@ -3,6 +3,7 @@ import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
+import 'package:black_dog/widgets/app_bar.dart';
 import 'package:black_dog/widgets/input_field.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
@@ -118,12 +119,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       shrinkWrap: true,
       titleMargin: true,
       padding: EdgeInsets.symmetric(horizontal: 16),
-      leading: RouteButton(
+      navigationBar: NavigationBar(
+          leading: RouteButton(
         defaultIcon: true,
         text: AppLocalizations.of(context).translate('sign_in'),
         color: HexColor.lightElement,
         onTap: () => Navigator.of(context).pop(),
-      ),
+      )),
       title: Text(AppLocalizations.of(context).translate('restore_password'),
           style: Utils.instance.getTextStyle('caption')),
       children: _switchPages(),
@@ -170,8 +172,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         verificationFailed: (FirebaseAuthException authException) {
           print(authException.message);
           Navigator.of(context).pop();
-          EasyLoading.instance
-            ..backgroundColor = HexColor.errorRed;
+          EasyLoading.instance..backgroundColor = HexColor.errorRed;
           EasyLoading.showError('');
         },
         codeSent: (String verificationId, [int forceResendingToken]) {
@@ -205,8 +206,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               .catchError((error) {
                             Navigator.of(context).pop();
                             EasyLoading.instance
-                              ..backgroundColor =
-                                  HexColor.errorRed;
+                              ..backgroundColor = HexColor.errorRed;
                             EasyLoading.showError('');
                           });
                           if (result != null && result.user != null) {
@@ -230,8 +230,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           Navigator.of(context).pop();
           verificationId = verificationId;
           print('Time out: $verificationId');
-          EasyLoading.instance
-            ..backgroundColor = HexColor.errorRed;
+          EasyLoading.instance..backgroundColor = HexColor.errorRed;
           EasyLoading.showError('');
         });
   }

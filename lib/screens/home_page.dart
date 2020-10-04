@@ -4,22 +4,21 @@ import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/instances/connection_check.dart';
 import 'package:black_dog/models/menu_category.dart';
 import 'package:black_dog/models/news.dart';
-import 'package:black_dog/models/restaurant.dart';
 import 'package:black_dog/screens/content/product_list.dart';
 import 'package:black_dog/screens/user/user_page.dart';
 import 'package:black_dog/utils/black_dog_icons.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/image_view.dart';
 import 'package:black_dog/utils/localization.dart';
-import 'package:black_dog/utils/scroll_glow.dart';
 import 'package:black_dog/instances/utils.dart';
+import 'package:black_dog/utils/sizes.dart';
+import 'package:black_dog/widgets/app_bar.dart';
 import 'package:black_dog/widgets/edit_button.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:black_dog/widgets/section.dart';
 import 'package:black_dog/widgets/user_card.dart';
 import 'package:flutter/cupertino.dart';
-
 import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/screens/content/about_us.dart';
@@ -38,21 +37,17 @@ class _HomePageState extends State<HomePage> {
   StreamSubscription _connectionChange;
 
   bool isLoading = false;
-  bool isLoadingData = true;
   bool initialLoad = true;
   bool isCalling = false;
   int categoryPage = 0;
-  Restaurant _restaurant;
   Future<List<News>> _news;
   Future<List<MenuCategory>> _category;
 
   void initDependencies() async {
-    Api.instance.getNewsConfig().then((value) => setState(() {}));
-    await Account.instance.refreshUser();
-    await Api.instance.voucherDetails();
-    Api.instance
-        .getAboutUs()
-        .then((_) => setState(() => _restaurant = SharedPrefs.getAboutUs()));
+    Api.instance.getNewsConfig();
+    Account.instance.refreshUser();
+    Api.instance.voucherDetails();
+    Api.instance.getAboutUs();
     setState(() {});
   }
 
@@ -77,13 +72,10 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     _apiChange = Api.instance.apiChange.listen((event) => setState(() {}));
-    _restaurant = SharedPrefs.getAboutUs();
     _connectionChange =
         ConnectionsCheck.instance.onChange.listen(onNetworkChange);
 
-    if (!ConnectionsCheck.instance.isOnline) {
-      setState(() => isLoadingData = false);
-    } else {
+    if (ConnectionsCheck.instance.isOnline) {
       onNetworkChange(true);
     }
     super.initState();
@@ -97,20 +89,6 @@ class _HomePageState extends State<HomePage> {
         inAsyncCall: isLoading,
         scrollController: _scrollController,
         alwaysNavigation: false,
-        action: RouteButton(
-            padding: EdgeInsets.only(top: 5),
-            iconColor: HexColor.lightElement,
-            textColor: HexColor.lightElement,
-            iconWidget: Container(
-              margin: EdgeInsets.only(left: 10),
-              child: Icon(BlackDogIcons.about_us,
-                  color: HexColor.lightElement, size: 27),
-            ),
-            iconFirst: false,
-            text: AppLocalizations.of(context).translate('about_us'),
-            onTap: () => Navigator.of(context).push(CupertinoPageRoute(
-                  builder: (context) => AboutUsPage(restaurant: _restaurant),
-                ))),
         children: _buildUser());
   }
 
@@ -165,6 +143,22 @@ class _HomePageState extends State<HomePage> {
 
   List<Widget> _buildUser() {
     return [
+      NavigationBar(
+          alwaysNavigation: false,
+          action: RouteButton(
+              padding: EdgeInsets.only(top: 5),
+              iconColor: HexColor.lightElement,
+              textColor: HexColor.lightElement,
+              iconWidget: Container(
+                margin: EdgeInsets.only(left: 10),
+                child: Icon(BlackDogIcons.about_us,
+                    color: HexColor.lightElement, size: 27),
+              ),
+              iconFirst: false,
+              text: AppLocalizations.of(context).translate('about_us'),
+              onTap: () => Navigator.of(context).push(CupertinoPageRoute(
+                    builder: (context) => AboutUsPage(),
+                  )))),
       UserCard(
         topPadding: 10,
         onPressed: () => Navigator.of(context, rootNavigator: true).push(
@@ -176,15 +170,13 @@ class _HomePageState extends State<HomePage> {
       SizedBox(height: ScreenSize.sectionIndent - 20),
       PageSection(
           label: AppLocalizations.of(context).translate('news'),
-          child: ScrollConfiguration(
-              behavior: ScrollGlow(),
-              child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: FutureBuilder(
-                    builder: (context, snapshot) => _buildFuture(
-                        context, snapshot, 'no_news', _buildNews(snapshot)),
-                    future: _news,
-                  ))),
+          child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: FutureBuilder(
+                builder: (context, snapshot) => _buildFuture(
+                    context, snapshot, 'no_news', _buildNews(snapshot)),
+                future: _news,
+              )),
           subWidgetText: AppLocalizations.of(context).translate('more'),
           subWidgetAction: () => Navigator.of(context).push(
                 CupertinoPageRoute(builder: (context) => NewsList()),
@@ -233,7 +225,6 @@ class _HomePageState extends State<HomePage> {
               news.shortDescription ?? '',
               maxLines: 2,
               style: Utils.instance.getTextStyle('subtitle2'),
-              textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
             ),
             Expanded(child: SizedBox()),
@@ -245,8 +236,8 @@ class _HomePageState extends State<HomePage> {
                 height: ScreenSize.newsImageHeight,
                 width: ScreenSize.newsImageWidth,
                 child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child:  ImageView(news.previewImage),
+                  borderRadius: BorderRadius.circular(10),
+                  child: ImageView(news.previewImage),
                 ))
           ],
         ),

@@ -1,9 +1,9 @@
+import 'package:black_dog/screens/auth/sign_in.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/screens/home_page.dart';
 import 'package:black_dog/screens/staff_home.dart';
-import 'package:black_dog/screens/user//sign_in.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -24,7 +24,7 @@ void main() async {
   }
 
   ConnectionsCheck.instance.initialise();
-  await NotificationManager.instance.configure();
+  NotificationManager.instance.configure();
   await Firebase.initializeApp();
 
   runApp(BlackDogApp());
@@ -48,6 +48,7 @@ class _BlackDogAppState extends State<BlackDogApp> {
   @override
   void initState() {
     Account.instance.initialize();
+    NotificationManager.instance.requestPermission();
     configurePopUp();
     super.initState();
   }
@@ -99,8 +100,6 @@ class _BlackDogAppState extends State<BlackDogApp> {
         return currentLocale;
       },
       theme: CupertinoThemeData(
-        // textSelectionColor: CupertinoColors.systemGrey.withOpacity(0.5),
-        // textSelectionHandleColor: CupertinoColors.systemGrey,
         brightness: Brightness.dark,
         scaffoldBackgroundColor: Color.fromRGBO(40, 39, 41, 1),
       ),

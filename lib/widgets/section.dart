@@ -1,4 +1,5 @@
 import 'package:black_dog/instances/utils.dart';
+import 'package:black_dog/utils/sizes.dart';
 import 'package:flutter/cupertino.dart';
 
 class PageSection extends StatelessWidget {

@@ -8,10 +8,12 @@ import 'package:black_dog/instances/notification_manager.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/voucher.dart';
-import 'package:black_dog/screens/user/sign_in.dart';
+import 'package:black_dog/screens/auth/sign_in.dart';
 import 'package:black_dog/utils/black_dog_icons.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
+import 'package:black_dog/utils/sizes.dart';
+import 'package:black_dog/widgets/app_bar.dart';
 import 'package:black_dog/widgets/edit_button.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
@@ -145,10 +147,8 @@ class _UserPageState extends State<UserPage> {
                             3,
                             (index) => Container(
                                 margin: EdgeInsets.all(8),
-                                child: Icon(
-                                  SFSymbols.star_fill,
-                                  size: 13,
-                                )))))
+                                child: Icon(SFSymbols.star_fill,
+                                    size: 13, color: HexColor.lightElement)))))
               ],
             ),
           ),
@@ -221,23 +221,24 @@ class _UserPageState extends State<UserPage> {
       shrinkWrap: true,
       alwaysNavigation: true,
       titleMargin: false,
-      leading: RouteButton(
-        defaultIcon: true,
-        text: AppLocalizations.of(context).translate('home'),
-        color: HexColor.lightElement,
-        onTap: () => Navigator.of(context).pop(),
-      ),
-      action: RouteButton(
-        text: AppLocalizations.of(context).translate('logout'),
-        color: HexColor.lightElement,
-        onTap: () => Utils.instance.logoutAsk(context, () {
+      navigationBar: NavigationBar(
+          leading: RouteButton(
+            defaultIcon: true,
+            text: AppLocalizations.of(context).translate('home'),
+            color: HexColor.lightElement,
+            onTap: () => Navigator.of(context).pop(),
+          ),
+          action: RouteButton(
+              text: AppLocalizations.of(context).translate('logout'),
+              color: HexColor.lightElement,
+              onTap: () => Utils.instance.logoutAsk(context, () {
                     SharedPrefs.logout();
                     Navigator.of(context, rootNavigator: true)
                         .pushAndRemoveUntil(
                             CupertinoPageRoute(
                                 builder: (context) => SignInPage()),
                             (route) => false);
-                  })),
+                  }))),
       children: <Widget>[
         UserCard(
           onPressed: null,

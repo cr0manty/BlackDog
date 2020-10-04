@@ -3,6 +3,8 @@ import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/hex_color.dart';
+import 'package:black_dog/utils/sizes.dart';
+import 'package:black_dog/widgets/app_bar.dart';
 import 'package:black_dog/widgets/input_field.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
@@ -43,18 +45,19 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       padding: EdgeInsets.symmetric(horizontal: 16),
       alwaysNavigation: true,
       inAsyncCall: isLoading,
-      leading: RouteButton(
-        defaultIcon: true,
-        text: AppLocalizations.of(context)
-            .translate(widget.fromHome ? 'home' : 'profile'),
-        color: HexColor.lightElement,
-        onTap: () => Navigator.of(context).pop(),
-      ),
-      action: RouteButton(
-        text: AppLocalizations.of(context).translate('save'),
-        color: HexColor.lightElement,
-        onTap: _saveChanges,
-      ),
+      navigationBar: NavigationBar(
+          leading: RouteButton(
+            defaultIcon: true,
+            text: AppLocalizations.of(context)
+                .translate(widget.fromHome ? 'home' : 'profile'),
+            color: HexColor.lightElement,
+            onTap: () => Navigator.of(context).pop(),
+          ),
+          action: RouteButton(
+            text: AppLocalizations.of(context).translate('save'),
+            color: HexColor.lightElement,
+            onTap: _saveChanges,
+          )),
       child: Form(
         key: _formKey,
         child: Column(
@@ -128,7 +131,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     await Api.instance.updateUser(_sendData()).then((response) {
       bool result = response.remove('result');
       if (result) {
-        EasyLoading.instance..backgroundColor = HexColor.successGreen.withOpacity(0.8);
+        EasyLoading.instance
+          ..backgroundColor = HexColor.successGreen.withOpacity(0.8);
         EasyLoading.showSuccess('');
         Navigator.of(context).pop();
       } else {

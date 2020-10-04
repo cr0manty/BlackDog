@@ -8,11 +8,11 @@ import 'package:black_dog/models/restaurant_config.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/utils/map_launch.dart';
+import 'package:black_dog/utils/sizes.dart';
 import 'package:black_dog/widgets/about_section.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:black_dog/widgets/status_bar_color.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -30,9 +30,9 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
   Future popUpOnScreen;
 
   void _showModal(RestaurantConfig config) {
-    popUpOnScreen = showDialog(
+    popUpOnScreen = showCupertinoDialog(
         context: context,
-        child: CupertinoAlertDialog(
+        builder: (context) =>  CupertinoAlertDialog(
           title: Text(config.branchName,
               style: Utils.instance.getTextStyle('headline1')),
           content: Column(
@@ -53,7 +53,7 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
                       print(e);
                       Navigator.of(context).pop();
                       EasyLoading.instance
-                        ..backgroundColor = Colors.red.withOpacity(0.8);
+                        ..backgroundColor = HexColor.errorRed;
                       EasyLoading.showError('');
                     }
                   },
@@ -121,8 +121,8 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: GestureDetector(
+    return CupertinoPageScaffold(
+      child: GestureDetector(
         onTap: () {
           if (popUpOnScreen != null) {
             setState(() {

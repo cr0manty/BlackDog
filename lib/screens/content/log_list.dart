@@ -6,6 +6,7 @@ import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/log.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
+import 'package:black_dog/widgets/app_bar.dart';
 import 'package:black_dog/widgets/log_card.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
@@ -56,12 +57,13 @@ class _LogListPageState extends State<LogListPage> {
         shrinkWrap: true,
         scrollController: _scrollController,
         alwaysNavigation: true,
-        leading: RouteButton(
+        navigationBar: NavigationBar(
+            leading: RouteButton(
           defaultIcon: true,
           text: AppLocalizations.of(context).translate('home'),
           color: HexColor.lightElement,
           onTap: () => Navigator.of(context).pop(),
-        ),
+        )),
         title: Text(
           AppLocalizations.of(context).translate('scans'),
           style: Utils.instance.getTextStyle('caption'),

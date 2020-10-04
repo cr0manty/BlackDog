@@ -4,10 +4,13 @@ import 'package:black_dog/models/news.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/image_view.dart';
 import 'package:black_dog/utils/localization.dart';
+import 'package:black_dog/utils/sizes.dart';
+import 'package:black_dog/widgets/app_bar.dart';
+import 'package:black_dog/widgets/divider.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 class NewsDetail extends StatefulWidget {
   final News news;
@@ -43,19 +46,19 @@ class _NewsDetailState extends State<NewsDetail> {
     return PageScaffold(
       alwaysNavigation: true,
       shrinkWrap: true,
-      leading: RouteButton(
+      navigationBar: NavigationBar(
+          leading: RouteButton(
         defaultIcon: true,
         text: AppLocalizations.of(context)
             .translate(widget.fromHome ? 'home' : 'news'),
         color: HexColor.lightElement,
         onTap: Navigator.of(context).pop,
-      ),
+      )),
       children: <Widget>[
         CarouselSlider.builder(
-            itemBuilder: (context, index) =>
-                Container(
-                    width: ScreenSize.width - 32,
-                    child: _clipImage(ImageView(news.listImages[index]))),
+            itemBuilder: (context, index) => Container(
+                width: ScreenSize.width - 32,
+                child: _clipImage(ImageView(news.listImages[index]))),
             itemCount: news?.listImages?.length ?? 0,
             options: CarouselOptions(
               height: ScreenSize.newsItemPhotoSize,
@@ -78,10 +81,7 @@ class _NewsDetailState extends State<NewsDetail> {
                     ),
                   ),
                 ])),
-        Container(
-          child: Divider(
-            color: HexColor.semiElement,
-          ),
+        CupertinoDivider(
           margin: EdgeInsets.symmetric(horizontal: 16),
         ),
         Container(

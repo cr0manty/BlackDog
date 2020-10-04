@@ -3,10 +3,11 @@ import 'package:black_dog/models/menu_item.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/image_view.dart';
 import 'package:black_dog/utils/localization.dart';
-import 'package:black_dog/utils/scroll_glow.dart';
+import 'package:black_dog/utils/sizes.dart';
+import 'package:black_dog/widgets/app_bar.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 
 class ProductDetail extends StatefulWidget {
@@ -75,12 +76,13 @@ class _ProductDetailState extends State<ProductDetail>
       shrinkWrap: true,
       alwaysNavigation: true,
       titleMargin: false,
-      leading: RouteButton(
+      navigationBar: NavigationBar(
+          leading: RouteButton(
         defaultIcon: true,
         text: AppLocalizations.of(context).translate('back'),
         color: HexColor.lightElement,
         onTap: () => Navigator.of(context).pop(),
-      ),
+      )),
       children: <Widget>[
         Center(
           child: Container(
@@ -88,7 +90,7 @@ class _ProductDetailState extends State<ProductDetail>
               height: ScreenSize.menuItemPhotoSize,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: Colors.grey,
+                color: HexColor.semiElement,
               ),
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
@@ -126,9 +128,7 @@ class _ProductDetailState extends State<ProductDetail>
                   SizedBox(
                       height: 50,
                       width: ScreenSize.width,
-                      child: ScrollConfiguration(
-                          behavior: ScrollGlow(),
-                          child: SingleChildScrollView(
+                      child:  SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: ConstrainedBox(
                               constraints: BoxConstraints(
@@ -142,7 +142,7 @@ class _ProductDetailState extends State<ProductDetail>
                                       widget.product.variations.length,
                                       (index) => _buildVariation(index))),
                             ),
-                          ))),
+                          )),
                   SizedBox(
                     height: 16,
                   )
