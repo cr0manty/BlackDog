@@ -3,7 +3,6 @@ import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
-import 'package:black_dog/widgets/app_bar.dart';
 import 'package:black_dog/widgets/input_field.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
@@ -117,15 +116,14 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       alwaysNavigation: true,
       inAsyncCall: isLoading,
       shrinkWrap: true,
-      titleMargin: true,
+      titleMargin: 0,
       padding: EdgeInsets.symmetric(horizontal: 16),
-      navigationBar: NavigationBar(
           leading: RouteButton(
         defaultIcon: true,
         text: AppLocalizations.of(context).translate('sign_in'),
         color: HexColor.lightElement,
         onTap: () => Navigator.of(context).pop(),
-      )),
+      ),
       title: Text(AppLocalizations.of(context).translate('restore_password'),
           style: Utils.instance.getTextStyle('caption')),
       children: _switchPages(),

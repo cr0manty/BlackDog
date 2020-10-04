@@ -2,7 +2,6 @@ import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/hex_color.dart';
-import 'package:black_dog/widgets/app_bar.dart';
 import 'package:black_dog/widgets/input_field.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
@@ -29,18 +28,17 @@ class _ChangePasswordState extends State<ChangePassword> {
       alwaysNavigation: true,
       shrinkWrap: true,
       inAsyncCall: isLoading,
-      navigationBar: NavigationBar(
-          leading: RouteButton(
-            defaultIcon: true,
-            text: AppLocalizations.of(context).translate('editing'),
-            color: HexColor.lightElement,
-            onTap: () => Navigator.of(context).pop(),
-          ),
-          action: RouteButton(
-            text: AppLocalizations.of(context).translate('save'),
-            color: HexColor.lightElement,
-            onTap: _changePassword,
-          )),
+      leading: RouteButton(
+        defaultIcon: true,
+        text: AppLocalizations.of(context).translate('editing'),
+        color: HexColor.lightElement,
+        onTap: () => Navigator.of(context).pop(),
+      ),
+      action: RouteButton(
+        text: AppLocalizations.of(context).translate('save'),
+        color: HexColor.lightElement,
+        onTap: _changePassword,
+      ),
       child: Form(
         key: _formKey,
         child: Container(

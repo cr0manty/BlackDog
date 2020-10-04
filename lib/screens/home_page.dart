@@ -31,42 +31,31 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>with SingleTickerProviderStateMixin {
   final ScrollController _scrollController = ScrollController();
   StreamSubscription _apiChange;
   StreamSubscription _connectionChange;
 
   bool isLoading = false;
-  bool initialLoad = true;
-  bool isCalling = false;
-  int categoryPage = 0;
+  bool updateNetworkItems = true;
   Future<List<News>> _news;
   Future<List<MenuCategory>> _category;
 
   void initDependencies() async {
     Api.instance.getNewsConfig();
     Account.instance.refreshUser();
-    Api.instance.voucherDetails();
-    Api.instance.getAboutUs();
     setState(() {});
   }
 
   void onNetworkChange(isOnline) {
-    if (isOnline && initialLoad) {
-      initialLoad = false;
+    if (isOnline && updateNetworkItems) {
+      updateNetworkItems = false;
       initDependencies();
       _category = Api.instance.getCategories(limit: 100);
       _news = Api.instance
           .getNewsList(page: 0, limit: SharedPrefs.getMaxNewsAmount());
     }
-    sendFCMToken();
     setState(() {});
-  }
-
-  void sendFCMToken() {
-    if (!SharedPrefs.getFCMTokenSend()) {
-      Api.instance.sendFCMToken();
-    }
   }
 
   @override
@@ -89,7 +78,61 @@ class _HomePageState extends State<HomePage> {
         inAsyncCall: isLoading,
         scrollController: _scrollController,
         alwaysNavigation: false,
-        children: _buildUser());
+        onRefresh: () async {
+          updateNetworkItems = true;
+          onNetworkChange(ConnectionsCheck.instance.isOnline);
+        },
+        children: <Widget>[
+          NavigationBar(
+              alwaysNavigation: false,
+              action: RouteButton(
+                  padding: EdgeInsets.only(top: 5),
+                  iconColor: HexColor.lightElement,
+                  textColor: HexColor.lightElement,
+                  iconWidget: Container(
+                    margin: EdgeInsets.only(left: 10),
+                    child: Icon(BlackDogIcons.about_us,
+                        color: HexColor.lightElement, size: 27),
+                  ),
+                  iconFirst: false,
+                  text: AppLocalizations.of(context).translate('about_us'),
+                  onTap: () => Navigator.of(context).push(CupertinoPageRoute(
+                        builder: (context) => AboutUsPage(),
+                      )))),
+          UserCard(
+            topPadding: 10,
+            onPressed: () => Navigator.of(context, rootNavigator: true).push(
+                CupertinoPageRoute(
+                    builder: (BuildContext context) => UserPage())),
+            username: Account.instance.name,
+            trailing: EditButton(fromHome: true),
+            additionWidget: BonusCard(),
+          ),
+          SizedBox(height: ScreenSize.sectionIndent - 20),
+          PageSection(
+              label: AppLocalizations.of(context).translate('news'),
+              child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: FutureBuilder(
+                    builder: (context, snapshot) => _buildFuture(
+                        context, snapshot, 'no_news', _buildNews(snapshot)),
+                    future: _news,
+                  )),
+              subWidgetText: AppLocalizations.of(context).translate('more'),
+              subWidgetAction: () => Navigator.of(context).push(
+                    CupertinoPageRoute(builder: (context) => NewsList()),
+                  ),
+              enabled: SharedPrefs.getShowNews()),
+          SizedBox(height: ScreenSize.sectionIndent / 1.5),
+          PageSection(
+              label: AppLocalizations.of(context).translate('menu'),
+              child: FutureBuilder(
+                builder: (context, snapshot) => _buildFuture(
+                    context, snapshot, 'no_menu', _buildCategories(snapshot)),
+                future: _category,
+              )),
+          Container(height: 20)
+        ]);
   }
 
   Widget _buildFuture(BuildContext context, AsyncSnapshot snapshot,
@@ -129,7 +172,7 @@ class _HomePageState extends State<HomePage> {
               snapshot.data.length < maxNews ? snapshot.data.length : maxNews,
               (index) => _buildNewsBlock(snapshot.data, index)));
     }
-    return null;
+    return Container();
   }
 
   Widget _buildCategories(AsyncSnapshot snapshot) {
@@ -138,60 +181,7 @@ class _HomePageState extends State<HomePage> {
           children: List.generate(snapshot.data.length,
               (index) => _buildMenu(snapshot.data[index])));
     }
-    return null;
-  }
-
-  List<Widget> _buildUser() {
-    return [
-      NavigationBar(
-          alwaysNavigation: false,
-          action: RouteButton(
-              padding: EdgeInsets.only(top: 5),
-              iconColor: HexColor.lightElement,
-              textColor: HexColor.lightElement,
-              iconWidget: Container(
-                margin: EdgeInsets.only(left: 10),
-                child: Icon(BlackDogIcons.about_us,
-                    color: HexColor.lightElement, size: 27),
-              ),
-              iconFirst: false,
-              text: AppLocalizations.of(context).translate('about_us'),
-              onTap: () => Navigator.of(context).push(CupertinoPageRoute(
-                    builder: (context) => AboutUsPage(),
-                  )))),
-      UserCard(
-        topPadding: 10,
-        onPressed: () => Navigator.of(context, rootNavigator: true).push(
-            CupertinoPageRoute(builder: (BuildContext context) => UserPage())),
-        username: Account.instance.name,
-        trailing: EditButton(fromHome: true),
-        additionWidget: BonusCard(),
-      ),
-      SizedBox(height: ScreenSize.sectionIndent - 20),
-      PageSection(
-          label: AppLocalizations.of(context).translate('news'),
-          child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: FutureBuilder(
-                builder: (context, snapshot) => _buildFuture(
-                    context, snapshot, 'no_news', _buildNews(snapshot)),
-                future: _news,
-              )),
-          subWidgetText: AppLocalizations.of(context).translate('more'),
-          subWidgetAction: () => Navigator.of(context).push(
-                CupertinoPageRoute(builder: (context) => NewsList()),
-              ),
-          enabled: SharedPrefs.getShowNews()),
-      SizedBox(height: ScreenSize.sectionIndent / 1.5),
-      PageSection(
-          label: AppLocalizations.of(context).translate('menu'),
-          child: FutureBuilder(
-            builder: (context, snapshot) => _buildFuture(
-                context, snapshot, 'no_menu', _buildCategories(snapshot)),
-            future: _category,
-          )),
-      Container(height: 20)
-    ];
+    return Container();
   }
 
   Widget _buildNewsBlock(List<News> newsList, int index) {

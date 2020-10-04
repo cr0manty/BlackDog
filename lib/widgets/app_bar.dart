@@ -1,13 +1,13 @@
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:flutter/cupertino.dart';
 
-class NavigationBar extends StatelessWidget
-    with ObstructingPreferredSizeWidget {
+class NavigationBar extends StatelessWidget {
   final Widget leading;
   final Widget action;
   final bool alwaysNavigation;
 
-  NavigationBar({this.alwaysNavigation = true, this.action, this.leading});
+  NavigationBar(
+      {Key key, this.alwaysNavigation = true, this.action, this.leading});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,8 @@ class NavigationBar extends StatelessWidget
       color: alwaysNavigation
           ? HexColor.black.withOpacity(0.6)
           : HexColor.transparent,
-      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+      padding: EdgeInsets.only(
+          top: alwaysNavigation ? MediaQuery.of(context).padding.top : 10),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -27,11 +28,4 @@ class NavigationBar extends StatelessWidget
     );
   }
 
-  @override
-  Size get preferredSize => Size.fromHeight(alwaysNavigation ? 50 : 0);
-
-  @override
-  bool shouldFullyObstruct(BuildContext context) {
-    return false;
-  }
 }

@@ -142,8 +142,8 @@ class _SignInPageState extends State<SignInPage> {
                                 suffixIcon: GestureDetector(
                                     child: Icon(
                                         _obscureText
-                                            ? CupertinoIcons.eye_fill
-                                            : CupertinoIcons.eye_slash_fill,
+                                            ? CupertinoIcons.eye_solid
+                                            : CupertinoIcons.eye_solid,
                                         color: HexColor.darkElement),
                                     onTap: () => setState(
                                         () => _obscureText = !_obscureText)),

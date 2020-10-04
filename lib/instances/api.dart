@@ -303,7 +303,7 @@ class Api {
     return body;
   }
 
-  Future voucherDetails() async {
+  Future<BaseVoucher> voucherDetails() async {
     Response response = await _client.get(
         _setUrl(path: '/user/user-voucher-details'),
         headers: _setHeaders());
@@ -312,10 +312,13 @@ class Api {
     if (response.statusCode == 200) {
       BaseVoucher voucher = BaseVoucher.fromJson(body);
       SharedPrefs.saveCurrentVoucher(voucher);
+      return voucher;
     }
+    return null;
   }
 
   void sendFCMToken() async {
+    bool tokenSaved = SharedPrefs.getFCMTokenSend();
     Response response =
         await _client.post(_setUrl(path: '/register-notify-token/', base: true),
             body: json.encode({
@@ -325,8 +328,7 @@ class Api {
                   : (Platform.isAndroid ? 'android' : 'web')
             }),
             headers: _setHeaders(useJson: true));
-
-    SharedPrefs.saveFCMTokenSend(response.statusCode == 200);
+    SharedPrefs.saveFCMTokenSend(tokenSaved || response.statusCode == 200);
   }
 
   Future<bool> checkPhoneNumberExist(String phone) async {

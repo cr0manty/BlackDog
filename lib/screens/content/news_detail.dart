@@ -5,7 +5,6 @@ import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/image_view.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/utils/sizes.dart';
-import 'package:black_dog/widgets/app_bar.dart';
 import 'package:black_dog/widgets/divider.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
@@ -46,14 +45,13 @@ class _NewsDetailState extends State<NewsDetail> {
     return PageScaffold(
       alwaysNavigation: true,
       shrinkWrap: true,
-      navigationBar: NavigationBar(
-          leading: RouteButton(
+      leading: RouteButton(
         defaultIcon: true,
         text: AppLocalizations.of(context)
             .translate(widget.fromHome ? 'home' : 'news'),
         color: HexColor.lightElement,
         onTap: Navigator.of(context).pop,
-      )),
+      ),
       children: <Widget>[
         CarouselSlider.builder(
             itemBuilder: (context, index) => Container(

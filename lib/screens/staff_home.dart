@@ -7,7 +7,6 @@ import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/sizes.dart';
-import 'package:black_dog/widgets/app_bar.dart';
 import 'package:black_dog/widgets/log_card.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
@@ -112,18 +111,15 @@ class _StaffHomePageState extends State<StaffHomePage> {
         inAsyncCall: isLoading,
         scrollController: _scrollController,
         alwaysNavigation: true,
-        navigationBar: NavigationBar(
-            action: RouteButton(
-                text: AppLocalizations.of(context).translate('logout'),
-                color: HexColor.lightElement,
-                onTap: () => Utils.instance.logoutAsk(context, () {
-                      SharedPrefs.logout();
-                      Navigator.of(context, rootNavigator: true)
-                          .pushAndRemoveUntil(
-                              CupertinoPageRoute(
-                                  builder: (context) => SignInPage()),
-                              (route) => false);
-                    }))),
+        action: RouteButton(
+            text: AppLocalizations.of(context).translate('logout'),
+            color: HexColor.lightElement,
+            onTap: () => Utils.instance.logoutAsk(context, () {
+                  SharedPrefs.logout();
+                  Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+                      CupertinoPageRoute(builder: (context) => SignInPage()),
+                      (route) => false);
+                })),
         children: <Widget>[
           UserCard(onPressed: null, username: Account.instance.name),
           _buildScanQRCode(),

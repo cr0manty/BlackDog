@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/instances/connection_check.dart';
 import 'package:black_dog/instances/utils.dart';
@@ -8,7 +7,6 @@ import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/image_view.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/utils/sizes.dart';
-import 'package:black_dog/widgets/app_bar.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -62,13 +60,12 @@ class _NewsListState extends State<NewsList> {
         scrollController: _scrollController,
         padding: EdgeInsets.symmetric(horizontal: 16),
         alwaysNavigation: true,
-        navigationBar: NavigationBar(
             leading: RouteButton(
           defaultIcon: true,
           text: AppLocalizations.of(context).translate('home'),
           color: HexColor.lightElement,
           onTap: () => Navigator.of(context).pop(),
-        )),
+        ),
         title: Text(
           AppLocalizations.of(context).translate('news'),
           style: Utils.instance.getTextStyle('caption'),
