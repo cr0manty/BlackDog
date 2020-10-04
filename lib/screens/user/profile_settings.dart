@@ -3,11 +3,11 @@ import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/hex_color.dart';
+import 'package:black_dog/utils/sizes.dart';
 import 'package:black_dog/widgets/input_field.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'change_password.dart';
@@ -56,6 +56,22 @@ class _ProfileSettingsState extends State<ProfileSettings> {
         color: HexColor.lightElement,
         onTap: _saveChanges,
       ),
+      bottomWidget: Container(
+          alignment: Alignment.bottomCenter,
+          margin: EdgeInsets.only(top: 20, bottom: 40),
+          child: SizedBox(
+            width: ScreenSize.width - 64,
+            child: CupertinoButton(
+                onPressed: () => Navigator.of(context, rootNavigator: true)
+                    .push(CupertinoPageRoute(
+                        builder: (context) => ChangePassword())),
+                color: HexColor.lightElement,
+                child: Text(
+                    AppLocalizations.of(context).translate('change_password'),
+                    style: Utils.instance
+                        .getTextStyle('headline2')
+                        .copyWith(color: HexColor.darkElement))),
+          )),
       child: Form(
         key: _formKey,
         child: Column(
@@ -77,7 +93,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 hintText: AppLocalizations.of(context).translate('first_name'),
                 keyboardType: TextInputType.name,
                 inputAction: TextInputAction.next),
-            Utils.instance.showValidateError(fieldsError, key: 'first_name'),
+            Utils.instance
+                .showValidateError(context, fieldsError, key: 'first_name'),
             Container(
                 padding: EdgeInsets.only(left: 10, bottom: 5),
                 alignment: Alignment.centerLeft,
@@ -90,25 +107,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 hintText: AppLocalizations.of(context).translate('last_name'),
                 keyboardType: TextInputType.text,
                 inputAction: TextInputAction.done),
-            Utils.instance.showValidateError(fieldsError, key: 'last_name'),
-            Container(
-              alignment: Alignment.bottomCenter,
-              margin: EdgeInsets.only(top: 20),
-              child: SizedBox(
-                width: ScreenSize.width - 64,
-                child: CupertinoButton(
-                    onPressed: () => Navigator.of(context, rootNavigator: true)
-                        .push(CupertinoPageRoute(
-                            builder: (context) => ChangePassword())),
-                    color: HexColor.lightElement,
-                    child: Text(
-                        AppLocalizations.of(context)
-                            .translate('change_password'),
-                        style: Utils.instance
-                            .getTextStyle('headline2')
-                            .copyWith(color: HexColor.darkElement))),
-              ),
-            ),
+            Utils.instance
+                .showValidateError(context, fieldsError, key: 'last_name')
           ],
         ),
       ),
@@ -129,7 +129,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     await Api.instance.updateUser(_sendData()).then((response) {
       bool result = response.remove('result');
       if (result) {
-        EasyLoading.instance..backgroundColor = Colors.green.withOpacity(0.8);
+        EasyLoading.instance
+          ..backgroundColor = HexColor.successGreen.withOpacity(0.8);
         EasyLoading.showSuccess('');
         Navigator.of(context).pop();
       } else {
@@ -146,7 +147,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     }).catchError((error) {
       print(error);
       setState(() => isLoading = !isLoading);
-      EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
+      EasyLoading.instance..backgroundColor = HexColor.errorRed;
       EasyLoading.showError('');
     });
   }

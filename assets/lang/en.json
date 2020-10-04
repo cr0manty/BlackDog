@@ -65,5 +65,11 @@
   "exit": "Exit",
   "exit_text": "Do you really want to log out?",
   "error_scan": "An error occurred while scanning",
-  "success_scan": "QR code scanned successfully"
+  "success_scan": "QR code scanned successfully",
+  "title": "the Black Dog Coffee",
+  "terms": "Terms of Use",
+  "privacy": "Privacy Policy",
+  "contact_us": "Contact Us",
+  "user_accept": "I accept",
+  "and": "and"
 }

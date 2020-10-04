@@ -8,8 +8,16 @@ class ImageView extends StatelessWidget {
 
   ImageView(this.url);
 
+  Widget placeholder(BuildContext context) {
+    return Image.asset(Utils.loadImage, fit: BoxFit.cover);
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (url == null) {
+      return placeholder(context);
+    }
+
     return CachedNetworkImage(
             imageUrl: url,
             imageBuilder: (context, imageProvider) => Container(
@@ -18,8 +26,7 @@ class ImageView extends StatelessWidget {
                         image: imageProvider, fit: BoxFit.cover),
                   ),
                 ),
-            errorWidget: (context, url, error) =>
-                Image.asset(Utils.loadImage, fit: BoxFit.fill),
+            errorWidget: (context, url, error) => placeholder(context),
             placeholder: (context, url) => Container(
                 color: HexColor.semiElement.withOpacity(0.3),
                 child: Center(child: CupertinoActivityIndicator())));

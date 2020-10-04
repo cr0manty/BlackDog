@@ -1,8 +1,8 @@
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/hex_color.dart';
+import 'package:black_dog/utils/sizes.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 class UserCard extends StatelessWidget {
   final String username;

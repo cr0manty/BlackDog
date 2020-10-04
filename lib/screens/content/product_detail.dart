@@ -3,11 +3,10 @@ import 'package:black_dog/models/menu_item.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/image_view.dart';
 import 'package:black_dog/utils/localization.dart';
-import 'package:black_dog/utils/scroll_glow.dart';
+import 'package:black_dog/utils/sizes.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 class ProductDetail extends StatefulWidget {
@@ -75,7 +74,7 @@ class _ProductDetailState extends State<ProductDetail>
     return PageScaffold(
       shrinkWrap: true,
       alwaysNavigation: true,
-      titleMargin: false,
+      titleMargin: 0,
       leading: RouteButton(
         defaultIcon: true,
         text: AppLocalizations.of(context).translate('back'),
@@ -89,7 +88,7 @@ class _ProductDetailState extends State<ProductDetail>
               height: ScreenSize.menuItemPhotoSize,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: Colors.grey,
+                color: HexColor.semiElement,
               ),
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
@@ -127,23 +126,20 @@ class _ProductDetailState extends State<ProductDetail>
                   SizedBox(
                       height: 50,
                       width: ScreenSize.width,
-                      child: ScrollConfiguration(
-                          behavior: ScrollGlow(),
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: ConstrainedBox(
-                              constraints: BoxConstraints(
-                                minWidth: MediaQuery.of(context).size.width,
-                              ),
-                              child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: List.generate(
-                                      widget.product.variations.length,
-                                      (index) => _buildVariation(index))),
-                            ),
-                          ))),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minWidth: MediaQuery.of(context).size.width,
+                          ),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisSize: MainAxisSize.max,
+                              children: List.generate(
+                                  widget.product.variations.length,
+                                  (index) => _buildVariation(index))),
+                        ),
+                      )),
                   SizedBox(
                     height: 16,
                   )
