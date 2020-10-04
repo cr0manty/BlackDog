@@ -6,7 +6,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'app_bar.dart';
 
-class PageScaffold extends StatelessWidget {
+class PageScaffold extends StatefulWidget {
   final ScrollController scrollController;
   final NavigationBar navigationBar;
   final Widget child;
@@ -17,6 +17,7 @@ class PageScaffold extends StatelessWidget {
   final bool shrinkWrap;
   final bool titleMargin;
   final bool alwaysNavigation;
+  final VoidCallback onRefresh;
 
   PageScaffold(
       {this.scrollController,
@@ -25,62 +26,62 @@ class PageScaffold extends StatelessWidget {
       this.navigationBar,
       this.title,
       this.padding,
+      this.onRefresh,
       this.shrinkWrap = false,
       this.alwaysNavigation = false,
       this.inAsyncCall = false,
       this.titleMargin = true})
       : assert(child != null || children != null);
 
+  @override
+  State<StatefulWidget> createState() => _PageScaffoldState();
+}
+
+class _PageScaffoldState extends State<PageScaffold>
+    with SingleTickerProviderStateMixin {
   Widget _titleWidget() {
-    if (title != null) {
+    if (widget.title != null) {
       return Container(
         alignment: Alignment.topCenter,
         padding: EdgeInsets.only(top: 0, bottom: 15),
         width: ScreenSize.mainTextWidth,
-        child: title,
-      );
-    }
-    return Container(height: alwaysNavigation && titleMargin ? 10 : 0);
-  }
-
-  List<Widget> _buildBodyChildren(List<Widget> listChildren) {
-    if (child == null) {
-      return listChildren + children;
-    }
-    listChildren.add(child);
-    return listChildren;
-  }
-
-  Widget navigationBody(BuildContext context) {
-    if (alwaysNavigation) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          Expanded(
-              child: Container(
-                  padding: padding ?? EdgeInsets.zero,
-                  child:  ListView(
-                        controller: scrollController,
-                        shrinkWrap: shrinkWrap,
-                        children: _buildBodyChildren(<Widget>[_titleWidget()]),
-                  )))
-        ],
+        child: widget.title,
       );
     }
     return Container(
-      child: ListView(
-        controller: scrollController,
-        shrinkWrap: shrinkWrap,
-        children: _buildBodyChildren([_titleWidget()]),
-      ),
+        height: widget.alwaysNavigation && widget.titleMargin ? 10 : 0);
+  }
+
+  List<Widget> _buildBodyChildren(List<Widget> listChildren) {
+    if (widget.child == null) {
+      return listChildren + widget.children;
+    }
+    listChildren.add(widget.child);
+    return listChildren;
+  }
+
+  Widget buildRefresh(BuildContext context, Widget child) {
+    if (widget.onRefresh == null) {
+      return child;
+    }
+    return Container(
+      margin: EdgeInsets.only(
+          top: widget.alwaysNavigation
+              ? MediaQuery.of(context).padding.top + 50
+              : 0),
+      child: CustomScrollView(slivers: <Widget>[
+        CupertinoSliverRefreshControl(onRefresh: widget.onRefresh),
+        SliverList(
+            delegate:
+                SliverChildListDelegate(_buildBodyChildren([_titleWidget()])))
+      ]),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-        navigationBar: navigationBar,
+        navigationBar: widget.navigationBar,
         child: Stack(
           children: [
             Positioned(
@@ -96,19 +97,28 @@ class PageScaffold extends StatelessWidget {
                 )),
             ModalProgressHUD(
                 progressIndicator: CupertinoActivityIndicator(),
-                inAsyncCall: inAsyncCall,
+                inAsyncCall: widget.inAsyncCall,
                 child: GestureDetector(
                   onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
                   child: Container(
                       margin: EdgeInsets.only(
-                          top: alwaysNavigation
+                          top: widget.alwaysNavigation
                               ? MediaQuery.of(context).padding.top + 10
                               : 0),
                       height: ScreenSize.height,
                       width: ScreenSize.width,
-                      child:  navigationBody(context)),
+                      child: buildRefresh(
+                          context,
+                          Container(
+                            padding: widget.padding ?? EdgeInsets.zero,
+                            child: ListView(
+                              controller: widget.scrollController,
+                              shrinkWrap: widget.shrinkWrap,
+                              children: _buildBodyChildren([_titleWidget()]),
+                            ),
+                          ))),
                 )),
-            StatusBarColor(enabled: !alwaysNavigation),
+            StatusBarColor(enabled: !widget.alwaysNavigation),
           ],
         ));
   }

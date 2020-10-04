@@ -24,7 +24,7 @@ void main() async {
   }
 
   ConnectionsCheck.instance.initialise();
-  NotificationManager.instance.configure();
+  await NotificationManager.instance.configure();
   await Firebase.initializeApp();
 
   runApp(BlackDogApp());
@@ -48,7 +48,6 @@ class _BlackDogAppState extends State<BlackDogApp> {
   @override
   void initState() {
     Account.instance.initialize();
-    NotificationManager.instance.requestPermission();
     configurePopUp();
     super.initState();
   }

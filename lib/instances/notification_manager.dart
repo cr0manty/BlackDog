@@ -20,9 +20,9 @@ class NotificationManager {
 
   FirebaseMessaging _fcm;
 
-  void configure() {
+  Future configure() async {
     _fcm = FirebaseMessaging();
-
+    await _fcm.requestNotificationPermissions();
     _fcm.onTokenRefresh.listen((token) async {
       Api.instance.sendFCMToken();
       SharedPrefs.saveFCMToken(token);
@@ -35,8 +35,6 @@ class NotificationManager {
         onResume: _foregroundMessageHandler,
         onBackgroundMessage: Platform.isIOS ? null : _backgroundMessageHandler);
   }
-
-  void requestPermission() async => await _fcm.requestNotificationPermissions();
 
   static Future _backgroundMessageHandler(Map<String, dynamic> message) async {
     _messageHandler(message);

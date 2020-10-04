@@ -12,38 +12,12 @@ import 'package:black_dog/models/restaurant.dart';
 import 'package:black_dog/models/restaurant_config.dart';
 import 'package:black_dog/models/user.dart';
 import 'package:black_dog/models/voucher.dart';
+import 'package:black_dog/utils/logs_interseptor.dart';
 import 'package:http/http.dart';
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'connection_check.dart';
-
-class LogInterceptor implements InterceptorContract {
-  void printWrapped(String text) {
-    final pattern = RegExp('.{1,800}');
-    pattern.allMatches(text).forEach((match) => print(match.group(0)));
-  }
-
-  String prettyJson(String jsonString) {
-    return JsonEncoder.withIndent('  ')
-        .convert(json.decode(utf8.decode(jsonString.runes.toList())));
-  }
-
-  @override
-  Future<RequestData> interceptRequest({RequestData data}) async {
-    print(
-        "Request Method: ${data.method} , Url: ${data.url} Headers: ${data.headers}");
-    return data;
-  }
-
-  @override
-  Future<ResponseData> interceptResponse({ResponseData data}) async {
-    printWrapped(
-        "Response Method: ${data.method} , Url: ${data.url}, Status Code: ${data.statusCode}");
-    printWrapped('Body: ${prettyJson(data.body)}');
-    return data;
-  }
-}
 
 class Api {
   static const defaultPerPage = 10;
@@ -407,8 +381,8 @@ class Api {
   }
 
   Future termsAndConditions() async {
-    final response =
-    await _client.get(_setUrl(path: '/restaurant/terms-and-conditions'),
+    final response = await _client.get(
+        _setUrl(path: '/restaurant/terms-and-conditions'),
         headers: _setHeaders(useToken: false));
     Map body = json.decode(utf8.decode(response.bodyBytes));
     body['result'] = response.statusCode == 200;

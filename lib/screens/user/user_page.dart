@@ -3,8 +3,6 @@ import 'dart:math' as math;
 
 import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/api.dart';
-import 'package:black_dog/instances/connection_check.dart';
-import 'package:black_dog/instances/notification_manager.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/voucher.dart';
@@ -29,46 +27,19 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
-  StreamSubscription _connectionChange;
   StreamSubscription _apiChange;
-  StreamSubscription _onMessage;
-  BaseVoucher currentVoucher;
-  List<Voucher> _vouchers = [];
 
   @override
   void initState() {
     _apiChange = Api.instance.apiChange.listen((event) => setState(() {}));
-    _onMessage =
-        NotificationManager.instance.onMessage.listen(onNotificationListener);
-    _vouchers = SharedPrefs.getActiveVouchers();
-    currentVoucher = SharedPrefs.getCurrentVoucher();
-    _connectionChange =
-        ConnectionsCheck.instance.onChange.listen((event) => setState(() {}));
+    Account.instance.refreshVouchers();
     super.initState();
-  }
-
-  void onNotificationListener(NotificationType event) {
-    switch (event) {
-      case NotificationType.VOUCHER_RECEIVED:
-        _vouchers = SharedPrefs.getActiveVouchers();
-        currentVoucher = SharedPrefs.getCurrentVoucher();
-        break;
-      case NotificationType.VOUCHER_SCANNED:
-        _vouchers = SharedPrefs.getActiveVouchers();
-        break;
-      case NotificationType.QR_CODE_SCANNED:
-        currentVoucher = SharedPrefs.getCurrentVoucher();
-        break;
-      default:
-        break;
-    }
-    setState(() {});
   }
 
   Widget _bonusWidget() {
     return CircularStepProgressIndicator(
       totalSteps: 100,
-      currentStep: currentVoucher.currentStep,
+      currentStep: Account.instance.currentVoucher?.currentStep ?? 0,
       stepSize: 10,
       selectedColor: HexColor.lightElement,
       unselectedColor: HexColor.inputHintColor,
@@ -89,7 +60,7 @@ class _UserPageState extends State<UserPage> {
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(currentVoucher.name,
+                Text(Account.instance.currentVoucher?.name ?? '',
                     style: Utils.instance.getTextStyle('headline1')),
                 Container(height: 8),
                 Icon(BlackDogIcons.coffee,
@@ -102,12 +73,14 @@ class _UserPageState extends State<UserPage> {
             child: RichText(
               text: TextSpan(children: [
                 TextSpan(
-                    text: '${currentVoucher.purchaseCount}',
+                    text:
+                        '${Account.instance.currentVoucher?.purchaseCount ?? 0}',
                     style: Utils.instance
                         .getTextStyle('subtitle1')
                         .copyWith(fontSize: TextSize.extra)),
                 TextSpan(
-                    text: '/${currentVoucher.purchaseToBonus}',
+                    text:
+                        '/${Account.instance.currentVoucher?.purchaseToBonus ?? 0}',
                     style: Utils.instance.getTextStyle('subtitle1').copyWith(
                         fontSize: TextSize.extra, color: HexColor.semiElement)),
               ]),
@@ -160,7 +133,7 @@ class _UserPageState extends State<UserPage> {
   }
 
   Widget _voucherBuild(int index) {
-    Voucher voucher = _vouchers[index];
+    Voucher voucher = Account.instance.vouchers[index];
 
     return GestureDetector(
       onTap: () => Utils.instance.showQRCodeModal(context,
@@ -221,6 +194,12 @@ class _UserPageState extends State<UserPage> {
       shrinkWrap: true,
       alwaysNavigation: true,
       titleMargin: false,
+      onRefresh: () async {
+        await Account.instance.refreshUser();
+        await Api.instance.voucherDetails();
+        Account.instance.refreshVouchers();
+        setState(() {});
+      },
       navigationBar: NavigationBar(
           leading: RouteButton(
             defaultIcon: true,
@@ -250,11 +229,12 @@ class _UserPageState extends State<UserPage> {
         Container(
             margin: EdgeInsets.only(left: 16, right: 16, bottom: 4, top: 10),
             color: HexColor.semiElement,
-            height: _vouchers.length != 0 ? 1 : 0),
+            height: Account.instance.vouchers.length != 0 ? 1 : 0),
         Container(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Column(
-              children: List.generate(_vouchers.length, _voucherBuild),
+              children: List.generate(
+                  Account.instance.vouchers.length, _voucherBuild),
             )),
         SizedBox(
           height: 20,
@@ -266,8 +246,6 @@ class _UserPageState extends State<UserPage> {
   @override
   void dispose() {
     _apiChange?.cancel();
-    _onMessage?.cancel();
-    _connectionChange?.cancel();
     super.dispose();
   }
 }
