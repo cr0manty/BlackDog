@@ -61,8 +61,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                     inputAction: TextInputAction.next,
                     keyboardType: TextInputType.visiblePassword,
                   )),
-              Utils.instance
-                  .showValidateError(fieldsError, key: 'new_password1'),
+              Utils.instance.showValidateError(context, fieldsError,
+                  key: 'new_password1'),
               Container(
                   alignment: Alignment.center,
                   child: TextInput(
@@ -74,8 +74,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                     inputAction: TextInputAction.done,
                     keyboardType: TextInputType.visiblePassword,
                   )),
-              Utils.instance
-                  .showValidateError(fieldsError, key: 'new_password2'),
+              Utils.instance.showValidateError(context, fieldsError,
+                  key: 'new_password2'),
             ],
           ),
         ),

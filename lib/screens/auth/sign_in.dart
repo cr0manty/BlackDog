@@ -129,7 +129,8 @@ class _SignInPageState extends State<SignInPage> {
                                 hintText: AppLocalizations.of(context)
                                     .translate('phone'),
                               ),
-                              Utils.instance.showValidateError(fieldsError,
+                              Utils.instance.showValidateError(
+                                  context, fieldsError,
                                   key: 'phone_number'),
                               TextInput(
                                 alignment: Alignment.center,
@@ -149,7 +150,8 @@ class _SignInPageState extends State<SignInPage> {
                                         () => _obscureText = !_obscureText)),
                                 inputAction: TextInputAction.done,
                               ),
-                              Utils.instance.showValidateError(fieldsError,
+                              Utils.instance.showValidateError(
+                                  context, fieldsError,
                                   key: 'password', bottomPadding: false),
                               _forgotPassword()
                             ],

@@ -19,6 +19,7 @@ class PageScaffold extends StatefulWidget {
   final double titleMargin;
   final bool alwaysNavigation;
   final VoidCallback onRefresh;
+  final Widget bottomWidget;
 
   PageScaffold(
       {this.scrollController,
@@ -29,11 +30,13 @@ class PageScaffold extends StatefulWidget {
       this.title,
       this.padding,
       this.onRefresh,
+      this.bottomWidget,
       this.shrinkWrap = false,
       this.alwaysNavigation = false,
       this.inAsyncCall = false,
       this.titleMargin = 10})
-      : assert(child != null || children != null);
+      : assert(child != null || children != null),
+        assert(bottomWidget != null && alwaysNavigation == true || bottomWidget == null);
 
   @override
   State<StatefulWidget> createState() => _PageScaffoldState();
@@ -92,7 +95,8 @@ class _PageScaffoldState extends State<PageScaffold>
           ),
           Expanded(
               child:
-                  buildRefresh(context, _buildBodyChildren([_titleWidget()])))
+                  buildRefresh(context, _buildBodyChildren([_titleWidget()]))),
+          widget.bottomWidget ?? Container()
         ],
       );
     }

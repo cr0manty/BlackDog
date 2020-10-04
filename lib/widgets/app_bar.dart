@@ -16,7 +16,7 @@ class NavigationBar extends StatelessWidget {
           ? HexColor.black.withOpacity(0.6)
           : HexColor.transparent,
       padding: EdgeInsets.only(
-          top: alwaysNavigation ? MediaQuery.of(context).padding.top : 10),
+          top: alwaysNavigation ? MediaQuery.of(context).padding.top : 0),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

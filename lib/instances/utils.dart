@@ -108,7 +108,7 @@ class Utils {
             )).then((value) => _showPopUp = null);
   }
 
-  Widget showValidateError(Map fieldsError,
+  Widget showValidateError(BuildContext context, Map fieldsError,
       {String key, bool bottomPadding = true}) {
     if (fieldsError.containsKey(key)) {
       return Container(
@@ -120,14 +120,17 @@ class Utils {
           child: Text(fieldsError[key],
               style: Utils.instance.getTextStyle('error')));
     } else if (fieldsError.containsKey('all')) {
-      return Container(
-          alignment: Alignment.centerLeft,
-          padding: EdgeInsets.only(
-              top: 10,
-              left: 10,
-              bottom: bottomPadding ? ScreenSize.elementIndentHeight : 0),
-          child: Text(fieldsError['all'] ?? '',
-              style: Utils.instance.getTextStyle('error')));
+      if (_showPopUp == null) {
+        _showPopUp = showCupertinoDialog(
+            context: context,
+            useRootNavigator: false,
+            barrierDismissible: true,
+            builder: (context) => CupertinoAlertDialog(
+                  content: Text(fieldsError[key],
+                      style: Utils.instance.getTextStyle('headline1')),
+                )).then((_) => _showPopUp = null);
+      }
+      return Container();
     }
     return SizedBox(height: bottomPadding ? ScreenSize.elementIndentHeight : 0);
   }

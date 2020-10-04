@@ -25,7 +25,8 @@ class UserPage extends StatefulWidget {
   _UserPageState createState() => _UserPageState();
 }
 
-class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin {
+class _UserPageState extends State<UserPage>
+    with SingleTickerProviderStateMixin {
   StreamSubscription _apiChange;
   Future<BaseVoucher> currentVoucher;
 
@@ -203,12 +204,13 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
       shrinkWrap: true,
       alwaysNavigation: true,
       titleMargin: 20,
-      onRefresh: () async {
+      onRefresh: () async =>
+          await Future.delayed(Duration(milliseconds: 500), () async {
         await Account.instance.refreshUser();
         await Api.instance.voucherDetails();
         Account.instance.refreshVouchers();
         setState(() {});
-      },
+      }),
       leading: RouteButton(
         defaultIcon: true,
         text: AppLocalizations.of(context).translate('home'),

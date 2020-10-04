@@ -36,11 +36,47 @@ class _AboutUsPageState extends State<AboutUsPage> {
     return PageScaffold(
       shrinkWrap: true,
       alwaysNavigation: true,
-          leading: RouteButton(
+      leading: RouteButton(
         defaultIcon: true,
         text: AppLocalizations.of(context).translate('home'),
         color: HexColor.lightElement,
         onTap: () => Navigator.of(context).pop(),
+      ),
+      bottomWidget: Container(
+        color: HexColor.cardBackground,
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            CupertinoButton(
+                padding: EdgeInsets.zero,
+                onPressed: () => Utils.instance.showTermPolicy(
+                    context,
+                    Api.instance.termsAndPrivacy(),
+                    'terms',
+                    'terms_and_conditions'),
+                child: Text(AppLocalizations.of(context).translate('terms'),
+                    style: Utils.instance
+                        .getTextStyle('subtitle2')
+                        .copyWith(decoration: TextDecoration.underline))),
+            Text(
+              ' ${AppLocalizations.of(context).translate('and')} ',
+              style: Utils.instance.getTextStyle('subtitle2'),
+            ),
+            CupertinoButton(
+                padding: EdgeInsets.zero,
+                onPressed: () => Utils.instance.showTermPolicy(
+                    context,
+                    Api.instance.termsAndPrivacy(methodName: 'privacy-policy'),
+                    'privacy',
+                    'privacy_policy'),
+                child: Text(AppLocalizations.of(context).translate('privacy'),
+                    style: Utils.instance
+                        .getTextStyle('subtitle2')
+                        .copyWith(decoration: TextDecoration.underline))),
+          ],
+        ),
       ),
       title: Text(
           restaurant?.name ??

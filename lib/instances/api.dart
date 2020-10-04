@@ -382,9 +382,9 @@ class Api {
     return logs;
   }
 
-  Future termsAndConditions() async {
+  Future termsAndPrivacy({String methodName = 'terms-and-conditions'}) async {
     final response = await _client.get(
-        _setUrl(path: '/restaurant/terms-and-conditions'),
+        _setUrl(path: '/restaurant/$methodName'),
         headers: _setHeaders(useToken: false));
     Map body = json.decode(utf8.decode(response.bodyBytes));
     body['result'] = response.statusCode == 200;

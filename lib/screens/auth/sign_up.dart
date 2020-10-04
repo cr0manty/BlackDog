@@ -51,7 +51,8 @@ class _SignUpPageState extends State<SignUpPage> {
               keyboardType: TextInputType.phone,
               hintText: AppLocalizations.of(context).translate('phone'),
             )),
-        Utils.instance.showValidateError(fieldsError, key: 'phone_number'),
+        Utils.instance
+            .showValidateError(context, fieldsError, key: 'phone_number'),
         Container(
             alignment: Alignment.center,
             child: TextInput(
@@ -71,7 +72,8 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
               inputAction: TextInputAction.next,
             )),
-        Utils.instance.showValidateError(fieldsError, key: 'password1'),
+        Utils.instance
+            .showValidateError(context, fieldsError, key: 'password1'),
         Container(
             alignment: Alignment.center,
             child: TextInput(
@@ -99,7 +101,7 @@ class _SignUpPageState extends State<SignUpPage> {
               },
               inputAction: TextInputAction.done,
             )),
-        Utils.instance.showValidateError(fieldsError, key: 'password2')
+        Utils.instance.showValidateError(context, fieldsError, key: 'password2')
       ],
     );
   }

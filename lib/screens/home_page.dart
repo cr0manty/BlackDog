@@ -31,7 +31,8 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
   final ScrollController _scrollController = ScrollController();
   StreamSubscription _apiChange;
   StreamSubscription _connectionChange;
@@ -41,7 +42,7 @@ class _HomePageState extends State<HomePage>with SingleTickerProviderStateMixin 
   Future<List<News>> _news;
   Future<List<MenuCategory>> _category;
 
-  void initDependencies() async {
+  void initDependencies() {
     Api.instance.getNewsConfig();
     Account.instance.refreshUser();
     setState(() {});
@@ -78,10 +79,12 @@ class _HomePageState extends State<HomePage>with SingleTickerProviderStateMixin 
         inAsyncCall: isLoading,
         scrollController: _scrollController,
         alwaysNavigation: false,
-        onRefresh: () async {
-          updateNetworkItems = true;
-          onNetworkChange(ConnectionsCheck.instance.isOnline);
-        },
+        onRefresh: () async =>
+            await Future.delayed(Duration(milliseconds: 500), () {
+              updateNetworkItems = true;
+              onNetworkChange(ConnectionsCheck.instance.isOnline);
+            }),
+        padding: EdgeInsets.only(top: 20),
         children: <Widget>[
           NavigationBar(
               alwaysNavigation: false,

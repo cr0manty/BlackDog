@@ -48,7 +48,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             hintText: AppLocalizations.of(context).translate('phone'),
             inputAction: TextInputAction.done,
           )),
-      Utils.instance.showValidateError(_validationError, key: 'phone'),
+      Utils.instance.showValidateError(context, _validationError, key: 'phone'),
       _confirmButton(onPressed: _sendPhoneClick)
     ];
   }
@@ -93,7 +93,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             hintText: AppLocalizations.of(context).translate('new_password'),
             inputAction: TextInputAction.next,
           )),
-      Utils.instance.showValidateError(_validationError, key: 'new_password1'),
+      Utils.instance.showValidateError(context, _validationError, key: 'new_password1'),
       Container(
           alignment: Alignment.center,
           child: TextInput(
@@ -105,7 +105,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 AppLocalizations.of(context).translate('confirm_password'),
             inputAction: TextInputAction.done,
           )),
-      Utils.instance.showValidateError(_validationError, key: 'new_password2'),
+      Utils.instance.showValidateError(context, _validationError, key: 'new_password2'),
       _confirmButton(onPressed: _sendNewPassword, textKey: 'save')
     ];
   }
