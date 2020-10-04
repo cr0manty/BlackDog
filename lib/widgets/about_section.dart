@@ -1,12 +1,10 @@
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/hex_color.dart';
+import 'package:black_dog/utils/sizes.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutSection extends StatelessWidget {
-  final GlobalKey<ScaffoldState> key = GlobalKey<ScaffoldState>();
-
   final bool call;
   final bool email;
   final bool web;

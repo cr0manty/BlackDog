@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:black_dog/models/log.dart';
 import 'package:black_dog/models/restaurant.dart';
 import 'package:black_dog/models/restaurant_config.dart';
 import 'package:black_dog/models/user.dart';

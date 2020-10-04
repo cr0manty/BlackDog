@@ -6,17 +6,17 @@ import 'package:black_dog/models/log.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/instances/utils.dart';
+import 'package:black_dog/utils/sizes.dart';
 import 'package:black_dog/widgets/log_card.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:black_dog/widgets/section.dart';
 import 'package:black_dog/widgets/user_card.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/shared_pref.dart';
-import 'package:black_dog/screens/user/sign_in.dart';
+import 'package:black_dog/screens/auth/sign_in.dart';
 import 'package:intl/intl.dart';
 import 'package:black_dog/screens/content/log_list.dart';
 
@@ -125,9 +125,7 @@ class _StaffHomePageState extends State<StaffHomePage> {
           _buildScanQRCode(),
           PageSection(
             label: AppLocalizations.of(context).translate('scans'),
-            child: FutureBuilder(
-                builder: _buildFuture,
-                future: _logs),
+            child: FutureBuilder(builder: _buildFuture, future: _logs),
             subWidgetText: AppLocalizations.of(context).translate('more'),
             subWidgetAction: () => Navigator.of(context).push(
               CupertinoPageRoute(builder: (context) => LogListPage()),

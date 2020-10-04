@@ -3,22 +3,20 @@ import 'dart:math' as math;
 
 import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/api.dart';
-import 'package:black_dog/instances/connection_check.dart';
-import 'package:black_dog/instances/notification_manager.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/voucher.dart';
-import 'package:black_dog/screens/user/sign_in.dart';
-import 'package:black_dog/utils/black_dog_icons_icons.dart';
+import 'package:black_dog/screens/auth/sign_in.dart';
+import 'package:black_dog/utils/black_dog_icons.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
+import 'package:black_dog/utils/sizes.dart';
 import 'package:black_dog/widgets/edit_button.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:black_dog/widgets/user_card.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 
@@ -27,94 +25,80 @@ class UserPage extends StatefulWidget {
   _UserPageState createState() => _UserPageState();
 }
 
-class _UserPageState extends State<UserPage> {
-  StreamSubscription _connectionChange;
+class _UserPageState extends State<UserPage>
+    with SingleTickerProviderStateMixin {
   StreamSubscription _apiChange;
-  StreamSubscription _onMessage;
-  BaseVoucher currentVoucher;
-  List<Voucher> _vouchers = [];
+  Future<BaseVoucher> currentVoucher;
 
   @override
   void initState() {
     _apiChange = Api.instance.apiChange.listen((event) => setState(() {}));
-    _onMessage =
-        NotificationManager.instance.onMessage.listen(onNotificationListener);
-    _vouchers = SharedPrefs.getActiveVouchers();
-    currentVoucher = SharedPrefs.getCurrentVoucher();
-    _connectionChange =
-        ConnectionsCheck.instance.onChange.listen((event) => setState(() {}));
+    currentVoucher = Api.instance.voucherDetails();
+    Account.instance.refreshVouchers();
     super.initState();
-  }
-
-  void onNotificationListener(NotificationType event) {
-    switch (event) {
-      case NotificationType.VOUCHER_RECEIVED:
-        _vouchers = SharedPrefs.getActiveVouchers();
-        currentVoucher = SharedPrefs.getCurrentVoucher();
-        break;
-      case NotificationType.VOUCHER_SCANNED:
-        _vouchers = SharedPrefs.getActiveVouchers();
-        break;
-      case NotificationType.QR_CODE_SCANNED:
-        currentVoucher = SharedPrefs.getCurrentVoucher();
-        break;
-      default:
-        break;
-    }
-    setState(() {});
   }
 
   Widget _bonusWidget() {
     return CircularStepProgressIndicator(
-      totalSteps: 100,
-      currentStep: currentVoucher.currentStep,
-      stepSize: 10,
-      selectedColor: HexColor.lightElement,
-      unselectedColor: HexColor.inputHintColor,
-      padding: 0,
-      width: 150,
-      height: 150,
-      startingAngle: -math.pi * 2 / 2.7,
-      arcSize: math.pi * 2 / 3 * 2.23,
-      roundedCap: (_, __) => true,
-      child: Center(
-          child: Stack(
-        children: [
-          Container(
-            alignment: Alignment.center,
-            padding: EdgeInsets.only(bottom: 20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(currentVoucher.name,
-                    style: Utils.instance.getTextStyle('headline1')),
-                Container(height: 8),
-                Icon(BlackDogIcons.coffee,
-                    color: HexColor.lightElement, size: 37),
-              ],
-            ),
-          ),
-          Container(
-            alignment: Alignment.bottomCenter,
-            child: RichText(
-              text: TextSpan(children: [
-                TextSpan(
-                    text: '${currentVoucher.purchaseCount}',
-                    style: Utils.instance
-                        .getTextStyle('subtitle1')
-                        .copyWith(fontSize: TextSize.extra)),
-                TextSpan(
-                    text: '/${currentVoucher.purchaseToBonus}',
-                    style: Utils.instance.getTextStyle('subtitle1').copyWith(
-                        fontSize: TextSize.extra, color: HexColor.semiElement)),
-              ]),
-            ),
-          )
-        ],
-      )),
-    );
+        totalSteps: 100,
+        currentStep: Account.instance.currentVoucher?.currentStep ?? 0,
+        stepSize: 10,
+        selectedColor: HexColor.lightElement,
+        unselectedColor: HexColor.inputHintColor,
+        padding: 0,
+        width: 150,
+        height: 150,
+        startingAngle: -math.pi * 2 / 2.7,
+        arcSize: math.pi * 2 / 3 * 2.23,
+        roundedCap: (_, __) => true,
+        child: Center(
+          child: FutureBuilder(
+              initialData: Account.instance.currentVoucher,
+              future: currentVoucher,
+              builder: (context, snapshot) {
+                BaseVoucher baseVoucher =
+                    snapshot.data ?? Account.instance.currentVoucher;
+                return Stack(
+                  children: [
+                    Container(
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.only(bottom: 20),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(baseVoucher?.name ?? '',
+                              style: Utils.instance.getTextStyle('headline1')),
+                          Container(height: 8),
+                          Icon(BlackDogIcons.coffee,
+                              color: HexColor.lightElement, size: 37),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.bottomCenter,
+                      child: RichText(
+                        text: TextSpan(children: [
+                          TextSpan(
+                              text: '${baseVoucher?.purchaseCount ?? 0}',
+                              style: Utils.instance
+                                  .getTextStyle('subtitle1')
+                                  .copyWith(fontSize: TextSize.extra)),
+                          TextSpan(
+                              text: '/${baseVoucher?.purchaseToBonus ?? 0}',
+                              style: Utils.instance
+                                  .getTextStyle('subtitle1')
+                                  .copyWith(
+                                      fontSize: TextSize.extra,
+                                      color: HexColor.semiElement)),
+                        ]),
+                      ),
+                    )
+                  ],
+                );
+              }),
+        ));
   }
 
   Widget _currentBonusCard() {
@@ -146,10 +130,8 @@ class _UserPageState extends State<UserPage> {
                             3,
                             (index) => Container(
                                 margin: EdgeInsets.all(8),
-                                child: Icon(
-                                  SFSymbols.star_fill,
-                                  size: 13,
-                                )))))
+                                child: Icon(SFSymbols.star_fill,
+                                    size: 13, color: HexColor.lightElement)))))
               ],
             ),
           ),
@@ -161,7 +143,7 @@ class _UserPageState extends State<UserPage> {
   }
 
   Widget _voucherBuild(int index) {
-    Voucher voucher = _vouchers[index];
+    Voucher voucher = Account.instance.vouchers[index];
 
     return GestureDetector(
       onTap: () => Utils.instance.showQRCodeModal(context,
@@ -221,7 +203,14 @@ class _UserPageState extends State<UserPage> {
     return PageScaffold(
       shrinkWrap: true,
       alwaysNavigation: true,
-      titleMargin: false,
+      titleMargin: 20,
+      onRefresh: () async =>
+          await Future.delayed(Duration(milliseconds: 500), () async {
+        await Account.instance.refreshUser();
+        await Api.instance.voucherDetails();
+        Account.instance.refreshVouchers();
+        setState(() {});
+      }),
       leading: RouteButton(
         defaultIcon: true,
         text: AppLocalizations.of(context).translate('home'),
@@ -229,16 +218,14 @@ class _UserPageState extends State<UserPage> {
         onTap: () => Navigator.of(context).pop(),
       ),
       action: RouteButton(
-        text: AppLocalizations.of(context).translate('logout'),
-        color: HexColor.lightElement,
-        onTap: () => Utils.instance.logoutAsk(context, () {
-                    SharedPrefs.logout();
-                    Navigator.of(context, rootNavigator: true)
-                        .pushAndRemoveUntil(
-                            CupertinoPageRoute(
-                                builder: (context) => SignInPage()),
-                            (route) => false);
-                  })),
+          text: AppLocalizations.of(context).translate('logout'),
+          color: HexColor.lightElement,
+          onTap: () => Utils.instance.logoutAsk(context, () {
+                SharedPrefs.logout();
+                Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+                    CupertinoPageRoute(builder: (context) => SignInPage()),
+                    (route) => false);
+              })),
       children: <Widget>[
         UserCard(
           onPressed: null,
@@ -250,11 +237,12 @@ class _UserPageState extends State<UserPage> {
         Container(
             margin: EdgeInsets.only(left: 16, right: 16, bottom: 4, top: 10),
             color: HexColor.semiElement,
-            height: _vouchers.length != 0 ? 1 : 0),
+            height: Account.instance.vouchers.length != 0 ? 1 : 0),
         Container(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Column(
-              children: List.generate(_vouchers.length, _voucherBuild),
+              children: List.generate(
+                  Account.instance.vouchers.length, _voucherBuild),
             )),
         SizedBox(
           height: 20,
@@ -266,8 +254,6 @@ class _UserPageState extends State<UserPage> {
   @override
   void dispose() {
     _apiChange?.cancel();
-    _onMessage?.cancel();
-    _connectionChange?.cancel();
     super.dispose();
   }
 }

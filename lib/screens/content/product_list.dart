@@ -8,10 +8,10 @@ import 'package:black_dog/screens/content/product_detail.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/image_view.dart';
 import 'package:black_dog/utils/localization.dart';
+import 'package:black_dog/utils/sizes.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 class ProductList extends StatefulWidget {
   final String title;
@@ -67,7 +67,7 @@ class _ProductListState extends State<ProductList> {
       leading: RouteButton(
         defaultIcon: true,
         text: AppLocalizations.of(context).translate('home'),
-        color: Colors.white,
+        color: CupertinoColors.white,
         onTap: () => Navigator.of(context).pop(),
       ),
       title: Text(
@@ -98,7 +98,7 @@ class _ProductListState extends State<ProductList> {
       onTap: () => Navigator.of(context).push(CupertinoPageRoute(
           builder: (BuildContext context) => ProductDetail(product: menu))),
       child: Container(
-        color: Colors.transparent,
+        color: HexColor.transparent,
         margin: EdgeInsets.symmetric(vertical: 15),
         child: Row(
           mainAxisSize: MainAxisSize.max,

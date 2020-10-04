@@ -1,16 +1,13 @@
 import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/instances/shared_pref.dart';
-import 'package:black_dog/screens/user/sign_in.dart';
+import 'package:black_dog/screens/auth/sign_in.dart';
 import 'package:black_dog/utils/localization.dart';
-import 'package:black_dog/utils/scroll_glow.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/hex_color.dart';
+import 'package:black_dog/utils/sizes.dart';
 import 'package:black_dog/widgets/input_field.dart';
-import 'package:black_dog/widgets/soacial_auth.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -58,7 +55,7 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
               keyboardType: TextInputType.name,
               hintText: AppLocalizations.of(context).translate('first_name'),
             )),
-        Utils.instance.showValidateError(fieldsError, key: 'first_name'),
+        Utils.instance.showValidateError(context, fieldsError, key: 'first_name'),
         Container(
             alignment: Alignment.center,
             child: TextInput(
@@ -68,7 +65,7 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
               keyboardType: TextInputType.name,
               hintText: AppLocalizations.of(context).translate('last_name'),
             )),
-        Utils.instance.showValidateError(fieldsError, key: 'last_name'),
+        Utils.instance.showValidateError(context, fieldsError, key: 'last_name'),
         GestureDetector(
             onTap: () => _showModalBottomSheet(context),
             child: Container(
@@ -92,11 +89,11 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
                     ),
                     Icon(
                       SFSymbols.calendar,
-                      color: Colors.black,
+                      color: HexColor.black,
                     )
                   ],
                 ))),
-        Utils.instance.showValidateError(fieldsError, key: 'birth_date'),
+        Utils.instance.showValidateError(context, fieldsError, key: 'birth_date'),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.max,
@@ -106,7 +103,7 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
                 padding: EdgeInsets.zero,
                 onPressed: () => Utils.instance.showTermPolicy(
                     context,
-                    Api.instance.termsAndConditions(),
+                    Api.instance.termsAndPrivacy(),
                     'terms',
                     'terms_and_conditions'),
                 child: Container(
@@ -145,8 +142,8 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(children: [
+    return CupertinoPageScaffold(
+      child: Stack(children: [
         Positioned(
             top: 0.0,
             child: Container(
@@ -169,9 +166,7 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Form(
                       key: _formKey,
-                      child: ScrollConfiguration(
-                        behavior: ScrollGlow(),
-                        child: SingleChildScrollView(
+                      child:  SingleChildScrollView(
                             child: Column(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -238,7 +233,7 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
                                   ))
                             ])),
                       ))),
-            )),
+            ),
       ]),
     );
   }
@@ -247,11 +242,12 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
     FocusScope.of(context).requestFocus(FocusNode());
     DateTime today = DateTime.now();
 
-    showModalBottomSheet(
+    showCupertinoModalPopup(
         context: context,
         builder: (BuildContext context) {
           return Container(
               height: MediaQuery.of(context).copyWith().size.height / 3,
+              color: HexColor.darkElement,
               child: CupertinoTheme(
                   data: CupertinoThemeData(
                     textTheme: CupertinoTextThemeData(
@@ -300,7 +296,7 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
       } else {
         SharedPrefs.logout();
         setState(() => isLoading = false);
-        EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
+        EasyLoading.instance..backgroundColor = HexColor.errorRed;
         EasyLoading.showError('');
       }
     } else {

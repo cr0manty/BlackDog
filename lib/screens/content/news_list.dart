@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/instances/connection_check.dart';
 import 'package:black_dog/instances/utils.dart';
@@ -7,10 +6,10 @@ import 'package:black_dog/models/news.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/image_view.dart';
 import 'package:black_dog/utils/localization.dart';
+import 'package:black_dog/utils/sizes.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 import 'news_detail.dart';
 
@@ -61,7 +60,7 @@ class _NewsListState extends State<NewsList> {
         scrollController: _scrollController,
         padding: EdgeInsets.symmetric(horizontal: 16),
         alwaysNavigation: true,
-        leading: RouteButton(
+            leading: RouteButton(
           defaultIcon: true,
           text: AppLocalizations.of(context).translate('home'),
           color: HexColor.lightElement,
@@ -96,7 +95,7 @@ class _NewsListState extends State<NewsList> {
                 news: news,
               ))),
       child: Container(
-        color: Colors.transparent,
+        color: HexColor.transparent,
         margin: EdgeInsets.symmetric(vertical: 15),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

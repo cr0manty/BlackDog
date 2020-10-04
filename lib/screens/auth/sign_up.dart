@@ -1,22 +1,15 @@
-import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/instances/shared_pref.dart';
-import 'package:black_dog/screens/user/sign_in.dart';
-import 'package:black_dog/screens/user/sign_up_confirm.dart';
+import 'package:black_dog/screens/auth/sign_up_confirm.dart';
 import 'package:black_dog/utils/localization.dart';
-import 'package:black_dog/utils/scroll_glow.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/hex_color.dart';
+import 'package:black_dog/utils/sizes.dart';
 import 'package:black_dog/widgets/input_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-
-import '../home_page.dart';
-import '../staff_home.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -58,7 +51,8 @@ class _SignUpPageState extends State<SignUpPage> {
               keyboardType: TextInputType.phone,
               hintText: AppLocalizations.of(context).translate('phone'),
             )),
-        Utils.instance.showValidateError(fieldsError, key: 'phone_number'),
+        Utils.instance
+            .showValidateError(context, fieldsError, key: 'phone_number'),
         Container(
             alignment: Alignment.center,
             child: TextInput(
@@ -70,13 +64,16 @@ class _SignUpPageState extends State<SignUpPage> {
               hintText: AppLocalizations.of(context).translate('password'),
               suffixIcon: GestureDetector(
                 child: Icon(
-                    _obscureText ? Icons.remove_red_eye : Icons.visibility_off,
+                    _obscureText
+                        ? CupertinoIcons.eye_solid
+                        : CupertinoIcons.eye_solid,
                     color: HexColor.darkElement),
                 onTap: () => setState(() => _obscureText = !_obscureText),
               ),
               inputAction: TextInputAction.next,
             )),
-        Utils.instance.showValidateError(fieldsError, key: 'password1'),
+        Utils.instance
+            .showValidateError(context, fieldsError, key: 'password1'),
         Container(
             alignment: Alignment.center,
             child: TextInput(
@@ -88,8 +85,8 @@ class _SignUpPageState extends State<SignUpPage> {
               suffixIcon: GestureDetector(
                 child: Icon(
                     _obscureTextConfirm
-                        ? Icons.remove_red_eye
-                        : Icons.visibility_off,
+                        ? CupertinoIcons.eye_solid
+                        : CupertinoIcons.eye_solid,
                     color: HexColor.darkElement),
                 onTap: () =>
                     setState(() => _obscureTextConfirm = !_obscureTextConfirm),
@@ -104,7 +101,7 @@ class _SignUpPageState extends State<SignUpPage> {
               },
               inputAction: TextInputAction.done,
             )),
-        Utils.instance.showValidateError(fieldsError, key: 'password2')
+        Utils.instance.showValidateError(context, fieldsError, key: 'password2')
       ],
     );
   }
@@ -123,8 +120,8 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(children: [
+    return CupertinoPageScaffold(
+      child: Stack(children: [
         Positioned(
             top: 0.0,
             child: Container(
@@ -137,84 +134,74 @@ class _SignUpPageState extends State<SignUpPage> {
               )),
             )),
         ModalProgressHUD(
-            progressIndicator: CupertinoActivityIndicator(),
-            inAsyncCall: isLoading,
-            child: GestureDetector(
+          progressIndicator: CupertinoActivityIndicator(),
+          inAsyncCall: isLoading,
+          child: GestureDetector(
               onTap: FocusScope.of(context).unfocus,
               child: Container(
                   height: ScreenSize.height,
                   width: ScreenSize.width,
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Form(
-                      key: _formKey,
-                      child: ScrollConfiguration(
-                        behavior: ScrollGlow(),
-                        child: SingleChildScrollView(
-                            child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                mainAxisSize: MainAxisSize.max,
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                    key: _formKey,
+                    child: SingleChildScrollView(
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisSize: MainAxisSize.max,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                          Container(
+                            alignment: Alignment.topCenter,
+                            padding: EdgeInsets.only(
+                                top: ScreenSize.mainMarginTop,
+                                bottom: ScreenSize.sectionIndent * 2),
+                            child: Text(
+                              AppLocalizations.of(context)
+                                  .translate('register'),
+                              style: Utils.instance.getTextStyle('caption'),
+                            ),
+                          ),
+                          _buildFields(),
+                          // widget.signUpPageType == SignUpPageType.MAIN_DATA
+                          //     ? SocialAuth(textKey: 'sign_up_with')
+                          //     : Container(), // todo: after release
+                          Container(
+                              alignment: Alignment.bottomCenter,
+                              padding: EdgeInsets.symmetric(vertical: 20),
+                              child: Column(
                                 children: <Widget>[
-                              Container(
-                                alignment: Alignment.topCenter,
-                                padding: EdgeInsets.only(
-                                    top: ScreenSize.mainMarginTop,
-                                    bottom: ScreenSize.sectionIndent * 2),
-                                child: Text(
-                                  AppLocalizations.of(context)
-                                      .translate('register'),
-                                  style: Utils.instance.getTextStyle('caption'),
-                                ),
-                              ),
-                              _buildFields(),
-                              // widget.signUpPageType == SignUpPageType.MAIN_DATA
-                              //     ? SocialAuth(textKey: 'sign_up_with')
-                              //     : Container(), // todo: after release
-                              Container(
-                                  alignment: Alignment.bottomCenter,
-                                  padding: EdgeInsets.symmetric(vertical: 20),
-                                  child: Column(
-                                    children: <Widget>[
-                                      SizedBox(
-                                          width: ScreenSize.width - 64,
-                                          child: CupertinoButton(
-                                              onPressed: _mainRegistration,
-                                              color: HexColor.lightElement,
-                                              child: Text(
-                                                AppLocalizations.of(context)
-                                                    .translate('register'),
-                                                overflow: TextOverflow.fade,
-                                                maxLines: 1,
-                                                textAlign: TextAlign.center,
-                                                style: Utils.instance
-                                                    .getTextStyle('headline1')
-                                                    .copyWith(
-                                                        color: HexColor
-                                                            .darkElement),
-                                              ))),
-                                      CupertinoButton(
-                                        onPressed: () => Navigator.of(context,
-                                                rootNavigator: true)
-                                            .pushAndRemoveUntil(
-                                                CupertinoPageRoute(
-                                                    builder: (context) =>
-                                                        SignInPage()),
-                                                (route) => false),
-                                        child: Text(
-                                          AppLocalizations.of(context)
-                                              .translate(
-                                                  'already_have_account'),
-                                          textAlign: TextAlign.center,
-                                          style: Utils.instance
-                                              .getTextStyle('bodyText2'),
-                                        ),
-                                      ),
-                                    ],
-                                  ))
-                            ])),
-                      ))),
-            )),
+                                  SizedBox(
+                                      width: ScreenSize.width - 64,
+                                      child: CupertinoButton(
+                                          onPressed: _mainRegistration,
+                                          color: HexColor.lightElement,
+                                          child: Text(
+                                            AppLocalizations.of(context)
+                                                .translate('register'),
+                                            overflow: TextOverflow.fade,
+                                            maxLines: 1,
+                                            textAlign: TextAlign.center,
+                                            style: Utils.instance
+                                                .getTextStyle('headline1')
+                                                .copyWith(
+                                                    color:
+                                                        HexColor.darkElement),
+                                          ))),
+                                  CupertinoButton(
+                                    onPressed: Navigator.of(context).pop,
+                                    child: Text(
+                                      AppLocalizations.of(context)
+                                          .translate('already_have_account'),
+                                      textAlign: TextAlign.center,
+                                      style: Utils.instance
+                                          .getTextStyle('bodyText2'),
+                                    ),
+                                  ),
+                                ],
+                              ))
+                        ])),
+                  ))),
+        ),
       ]),
     );
   }
@@ -237,7 +224,7 @@ class _SignUpPageState extends State<SignUpPage> {
         verificationCompleted: (AuthCredential credential) {},
         verificationFailed: (FirebaseAuthException authException) {
           print(authException.message);
-          EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
+          EasyLoading.instance..backgroundColor = HexColor.errorRed;
           EasyLoading.showError('');
         },
         codeSent: (String verificationId, [int forceResendingToken]) {
@@ -272,16 +259,16 @@ class _SignUpPageState extends State<SignUpPage> {
                               .catchError((error) {
                             Navigator.of(context).pop();
                             EasyLoading.instance
-                              ..backgroundColor = Colors.red.withOpacity(0.8);
+                              ..backgroundColor = HexColor.errorRed;
                             EasyLoading.showError('');
                           });
                           if (result != null && result.user != null) {
                             SharedPrefs.saveUserFirebaseUid(result.user.uid);
-                            Navigator.of(context)
-                                .pushReplacement(CupertinoPageRoute(
-                                    builder: (context) => SignUpConfirmPage(
-                                          token: token,
-                                        )));
+                            Navigator.of(context).pushAndRemoveUntil(
+                                CupertinoPageRoute(
+                                    builder: (context) =>
+                                        SignUpConfirmPage(token: token)),
+                                (route) => false);
                           }
                           return null;
                         },
@@ -292,7 +279,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             AppLocalizations.of(context).translate('cancel'),
                             style: Utils.instance
                                 .getTextStyle('subtitle2')
-                                .copyWith(color: HexColor.errorLog)),
+                                .copyWith(color: HexColor.errorRed)),
                         onPressed: () {
                           setState(() => isLoading = false);
                           Navigator.of(context).pop();
@@ -332,7 +319,7 @@ class _SignUpPageState extends State<SignUpPage> {
     }).catchError((error) {
       print(error);
       setState(() => isLoading = false);
-      EasyLoading.instance..backgroundColor = Colors.red.withOpacity(0.8);
+      EasyLoading.instance..backgroundColor = HexColor.errorRed;
       EasyLoading.showError('');
     });
   }
