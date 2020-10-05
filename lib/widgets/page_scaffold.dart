@@ -36,7 +36,8 @@ class PageScaffold extends StatefulWidget {
       this.inAsyncCall = false,
       this.titleMargin = 10})
       : assert(child != null || children != null),
-        assert(bottomWidget != null && alwaysNavigation == true || bottomWidget == null);
+        assert(bottomWidget != null && alwaysNavigation == true ||
+            bottomWidget == null);
 
   @override
   State<StatefulWidget> createState() => _PageScaffoldState();
@@ -48,7 +49,7 @@ class _PageScaffoldState extends State<PageScaffold>
     if (widget.title != null) {
       return Container(
         alignment: Alignment.topCenter,
-        padding: EdgeInsets.only(top: 0, bottom: 15),
+        padding: EdgeInsets.only(top: 15, bottom: 15),
         width: ScreenSize.mainTextWidth,
         child: widget.title,
       );

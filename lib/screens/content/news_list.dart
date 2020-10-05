@@ -59,8 +59,15 @@ class _NewsListState extends State<NewsList> {
         shrinkWrap: true,
         scrollController: _scrollController,
         padding: EdgeInsets.symmetric(horizontal: 16),
+        onRefresh: () async {
+          await Future.delayed(Duration(milliseconds: 500), () async {
+            newsList = [];
+            page = 0;
+            await getNewsList();
+          });
+        },
         alwaysNavigation: true,
-            leading: RouteButton(
+        leading: RouteButton(
           defaultIcon: true,
           text: AppLocalizations.of(context).translate('home'),
           color: HexColor.lightElement,
@@ -70,7 +77,6 @@ class _NewsListState extends State<NewsList> {
           AppLocalizations.of(context).translate('news'),
           style: Utils.instance.getTextStyle('caption'),
           overflow: TextOverflow.ellipsis,
-          maxLines: 1,
         ),
         children:
             List.generate(newsList.length + 1, (index) => _buildNews(index)));

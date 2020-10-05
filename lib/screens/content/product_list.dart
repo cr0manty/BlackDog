@@ -63,6 +63,13 @@ class _ProductListState extends State<ProductList> {
       scrollController: _scrollController,
       alwaysNavigation: true,
       shrinkWrap: true,
+      onRefresh: () async {
+        await Future.delayed(Duration(milliseconds: 500), () async {
+          _menu = [];
+          page = 0;
+          await _getMenu();
+        });
+      },
       padding: EdgeInsets.symmetric(horizontal: 16),
       leading: RouteButton(
         defaultIcon: true,
