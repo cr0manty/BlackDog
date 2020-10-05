@@ -32,6 +32,7 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
   void _showModal(RestaurantConfig config) {
     popUpOnScreen = showCupertinoDialog(
         context: context,
+        barrierDismissible: true,
         builder: (context) =>  CupertinoAlertDialog(
           title: Text(config.branchName,
               style: Utils.instance.getTextStyle('headline1')),
