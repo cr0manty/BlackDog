@@ -25,10 +25,14 @@ class _AboutUsPageState extends State<AboutUsPage> {
   @override
   void initState() {
     restaurant = SharedPrefs.getAboutUs();
+    getAboutUs();
+    super.initState();
+  }
+
+  void getAboutUs() {
     Api.instance
         .getAboutUs()
         .then((value) => setState(() => restaurant = SharedPrefs.getAboutUs()));
-    super.initState();
   }
 
   @override
@@ -36,6 +40,11 @@ class _AboutUsPageState extends State<AboutUsPage> {
     return PageScaffold(
       shrinkWrap: true,
       alwaysNavigation: true,
+      onRefresh: () async {
+        await Future.delayed(Duration(milliseconds: 500), () async {
+          getAboutUs();
+        });
+      },
       leading: RouteButton(
         defaultIcon: true,
         text: AppLocalizations.of(context).translate('home'),

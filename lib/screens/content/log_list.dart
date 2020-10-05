@@ -55,8 +55,15 @@ class _LogListPageState extends State<LogListPage> {
     return PageScaffold(
         shrinkWrap: true,
         scrollController: _scrollController,
+        onRefresh: () async {
+          await Future.delayed(Duration(milliseconds: 500), () async {
+            logList = [];
+            page = 0;
+            await getLogList();
+          });
+        },
         alwaysNavigation: true,
-            leading: RouteButton(
+        leading: RouteButton(
           defaultIcon: true,
           text: AppLocalizations.of(context).translate('home'),
           color: HexColor.lightElement,

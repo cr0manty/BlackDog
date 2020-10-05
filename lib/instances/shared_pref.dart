@@ -38,6 +38,7 @@ abstract class SharedPrefs {
     _prefs.setString(_currentToken, '');
     _prefs.setString(_qrCode, '');
     _prefs.setString(_fcmToken, '');
+    _prefs.setBool(_fcmSend, false);
     _prefs.setString(_firebaseUserUid, '');
   }
 

@@ -45,6 +45,8 @@ class _HomePageState extends State<HomePage>
   void initDependencies() {
     Api.instance.getNewsConfig();
     Account.instance.refreshUser();
+    Api.instance.voucherDetails();
+    Api.instance.getAboutUs();
     setState(() {});
   }
 

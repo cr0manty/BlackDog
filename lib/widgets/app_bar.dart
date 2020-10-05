@@ -11,12 +11,13 @@ class NavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double padding = MediaQuery.of(context).padding.top > 25 ? 10: 0;
     return Container(
       color: alwaysNavigation
           ? HexColor.black.withOpacity(0.6)
           : HexColor.transparent,
       padding: EdgeInsets.only(
-          top: alwaysNavigation ? MediaQuery.of(context).padding.top : 0),
+          top: alwaysNavigation ? MediaQuery.of(context).padding.top * 0.8 : padding),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

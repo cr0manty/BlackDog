@@ -58,10 +58,7 @@ class _StaffHomePageState extends State<StaffHomePage> {
             context,
             scanned['message'] ??
                 AppLocalizations.of(context).translate('success_scan'));
-        _logs = Api.instance.getLogs(date: currentDate).then((value) {
-          setState(() {});
-          return null;
-        });
+        _logs = Api.instance.getLogs(date: currentDate);
       } else {
         print(scanned);
         Utils.instance.infoDialog(
@@ -111,6 +108,7 @@ class _StaffHomePageState extends State<StaffHomePage> {
         inAsyncCall: isLoading,
         scrollController: _scrollController,
         alwaysNavigation: true,
+        onRefresh: () async => await Future.delayed(Duration(milliseconds: 500), () => _logs = Api.instance.getLogs(date: currentDate)),
         action: RouteButton(
             text: AppLocalizations.of(context).translate('logout'),
             color: HexColor.lightElement,

@@ -28,12 +28,10 @@ class UserPage extends StatefulWidget {
 class _UserPageState extends State<UserPage>
     with SingleTickerProviderStateMixin {
   StreamSubscription _apiChange;
-  Future<BaseVoucher> currentVoucher;
 
   @override
   void initState() {
     _apiChange = Api.instance.apiChange.listen((event) => setState(() {}));
-    currentVoucher = Api.instance.voucherDetails();
     Account.instance.refreshVouchers();
     super.initState();
   }
@@ -52,52 +50,45 @@ class _UserPageState extends State<UserPage>
         arcSize: math.pi * 2 / 3 * 2.23,
         roundedCap: (_, __) => true,
         child: Center(
-          child: FutureBuilder(
-              initialData: Account.instance.currentVoucher,
-              future: currentVoucher,
-              builder: (context, snapshot) {
-                BaseVoucher baseVoucher =
-                    snapshot.data ?? Account.instance.currentVoucher;
-                return Stack(
+          child: Stack(
+            children: [
+              Container(
+                alignment: Alignment.center,
+                padding: EdgeInsets.only(bottom: 20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Container(
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.only(bottom: 20),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(baseVoucher?.name ?? '',
-                              style: Utils.instance.getTextStyle('headline1')),
-                          Container(height: 8),
-                          Icon(BlackDogIcons.coffee,
-                              color: HexColor.lightElement, size: 37),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      alignment: Alignment.bottomCenter,
-                      child: RichText(
-                        text: TextSpan(children: [
-                          TextSpan(
-                              text: '${baseVoucher?.purchaseCount ?? 0}',
-                              style: Utils.instance
-                                  .getTextStyle('subtitle1')
-                                  .copyWith(fontSize: TextSize.extra)),
-                          TextSpan(
-                              text: '/${baseVoucher?.purchaseToBonus ?? 0}',
-                              style: Utils.instance
-                                  .getTextStyle('subtitle1')
-                                  .copyWith(
-                                      fontSize: TextSize.extra,
-                                      color: HexColor.semiElement)),
-                        ]),
-                      ),
-                    )
+                    Text(Account.instance.currentVoucher?.name ?? '',
+                        style: Utils.instance.getTextStyle('headline1')),
+                    Container(height: 8),
+                    Icon(BlackDogIcons.coffee,
+                        color: HexColor.lightElement, size: 37),
                   ],
-                );
-              }),
+                ),
+              ),
+              Container(
+                alignment: Alignment.bottomCenter,
+                child: RichText(
+                  text: TextSpan(children: [
+                    TextSpan(
+                        text: '${Account.instance.currentVoucher?.purchaseCount ?? 0}',
+                        style: Utils.instance
+                            .getTextStyle('subtitle1')
+                            .copyWith(fontSize: TextSize.extra)),
+                    TextSpan(
+                        text: '/${Account.instance.currentVoucher?.purchaseToBonus ?? 0}',
+                        style: Utils.instance
+                            .getTextStyle('subtitle1')
+                            .copyWith(
+                                fontSize: TextSize.extra,
+                                color: HexColor.semiElement)),
+                  ]),
+                ),
+              )
+            ],
+          ),
         ));
   }
 
