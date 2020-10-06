@@ -5,11 +5,12 @@ import 'package:flutter/cupertino.dart';
 
 class ImageView extends StatelessWidget {
   final String url;
+  final BoxFit fit;
 
-  ImageView(this.url);
+  ImageView(this.url, {this.fit});
 
   Widget placeholder(BuildContext context) {
-    return Image.asset(Utils.loadImage, fit: BoxFit.cover);
+    return Image.asset(Utils.loadImage, fit: fit ?? BoxFit.cover);
   }
 
   @override
@@ -23,7 +24,7 @@ class ImageView extends StatelessWidget {
             imageBuilder: (context, imageProvider) => Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                        image: imageProvider, fit: BoxFit.cover),
+                        image: imageProvider, fit: fit ?? BoxFit.cover),
                   ),
                 ),
             errorWidget: (context, url, error) => placeholder(context),

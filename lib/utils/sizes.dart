@@ -45,9 +45,7 @@ abstract class ScreenSize {
 
   static double get menuItemSize => height * 0.1;
 
-  static double get menuItemPhotoSize => height * 0.4;
-
-  static double get newsItemPhotoSize => height * 0.35;
+  static double get detailViewImage => height * 0.4;
 
   static double get newsListTextSize => width - newsListImageSize - 48;
 

@@ -217,6 +217,17 @@ class Api {
     return menu;
   }
 
+  Future getProduct(int id) async {
+    Response response = await _client.get(_setUrl(path: '/menu/product-details/$id'),
+        headers: _setHeaders());
+
+    if (response.statusCode == 200) {
+      Map body = json.decode(utf8.decode(response.bodyBytes)) as Map;
+      return MenuItem.fromJson(body);
+    }
+    return null;
+  }
+
   Future saveQRCode(String url) async {
     if (url == null || url.isEmpty || !ConnectionsCheck.instance.isOnline) {
       return;

@@ -26,7 +26,9 @@ class _NewsDetailState extends State<NewsDetail> {
 
   Future _getNews() async {
     News getNews = await Api.instance.getNews(widget.news.id);
-    setState(() => news = getNews);
+    if (getNews != null) {
+      setState(() => news = getNews);
+    }
   }
 
   @override
@@ -45,6 +47,9 @@ class _NewsDetailState extends State<NewsDetail> {
     return PageScaffold(
       alwaysNavigation: true,
       shrinkWrap: true,
+      titleMargin: 20,
+      onRefresh: () async => await Future.delayed(
+          Duration(milliseconds: 500), () async => await _getNews()),
       leading: RouteButton(
         defaultIcon: true,
         text: AppLocalizations.of(context)
@@ -56,10 +61,13 @@ class _NewsDetailState extends State<NewsDetail> {
         CarouselSlider.builder(
             itemBuilder: (context, index) => Container(
                 width: ScreenSize.width - 32,
-                child: _clipImage(ImageView(news.listImages[index]))),
+                child: _clipImage(ImageView(
+                  news.listImages[index],
+                  fit: BoxFit.fill,
+                ))),
             itemCount: news?.listImages?.length ?? 0,
             options: CarouselOptions(
-              height: ScreenSize.newsItemPhotoSize,
+              height: ScreenSize.detailViewImage,
               viewportFraction: 1,
               enlargeCenterPage: true,
               enableInfiniteScroll: false,

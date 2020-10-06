@@ -1,3 +1,4 @@
+import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/menu_item.dart';
 import 'package:black_dog/utils/hex_color.dart';
@@ -20,13 +21,14 @@ class ProductDetail extends StatefulWidget {
 
 class _ProductDetailState extends State<ProductDetail>
     with TickerProviderStateMixin {
+  MenuItem product;
   AnimationController animationController;
   MenuItemVariation selectedVariation;
   Animation animation;
   int selectedVariationIndex = 0;
 
   Widget _buildVariation(int index) {
-    MenuItemVariation variation = widget.product.variations[index];
+    MenuItemVariation variation = product.variations[index];
     return GestureDetector(
         onTap: () async {
           if (selectedVariation != variation) {
@@ -57,16 +59,24 @@ class _ProductDetailState extends State<ProductDetail>
                 : HexColor.semiElement.withOpacity(0.4),
             borderRadius: BorderRadius.circular(10)),
         child: Center(
-            child: Text(widget.product.variations[index].name,
+            child: Text(product.variations[index].name,
                 style: Utils.instance.getTextStyle('headline1'))));
   }
 
   @override
   void initState() {
+    super.initState();
+    product = widget.product;
     animationController =
         AnimationController(duration: Duration(milliseconds: 250), vsync: this);
     animationController.forward();
-    super.initState();
+  }
+
+  Future _getProduct() async {
+    MenuItem getProduct = await Api.instance.getProduct(product.id);
+    if (getProduct != null) {
+      setState(() => product = getProduct);
+    }
   }
 
   @override
@@ -74,7 +84,9 @@ class _ProductDetailState extends State<ProductDetail>
     return PageScaffold(
       shrinkWrap: true,
       alwaysNavigation: true,
-      titleMargin: 0,
+      titleMargin: 20,
+      onRefresh: () async => await Future.delayed(
+          Duration(milliseconds: 500), () async => await _getProduct()),
       leading: RouteButton(
         defaultIcon: true,
         text: AppLocalizations.of(context).translate('back'),
@@ -85,14 +97,17 @@ class _ProductDetailState extends State<ProductDetail>
         Center(
           child: Container(
               width: ScreenSize.width - 32,
-              height: ScreenSize.menuItemPhotoSize,
+              height: ScreenSize.detailViewImage,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: HexColor.semiElement,
               ),
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: ImageView(widget.product.image))),
+                  child: ImageView(
+                    product.image,
+                    fit: BoxFit.fill,
+                  ))),
         ),
         Container(
             margin: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
@@ -103,7 +118,7 @@ class _ProductDetailState extends State<ProductDetail>
                 children: <Widget>[
                   SizedBox(
                       width: ScreenSize.mainTextWidth,
-                      child: Text(widget.product.capitalizeTitle,
+                      child: Text(product.capitalizeTitle,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 3,
                           style: Utils.instance.getTextStyle('caption'))),
@@ -111,13 +126,13 @@ class _ProductDetailState extends State<ProductDetail>
                       opacity: animationController
                           .drive(CurveTween(curve: Curves.easeOut)),
                       child: Text(
-                          widget.product.priceWithCurrency(context,
+                          product.priceWithCurrency(context,
                               actualPrice: selectedVariation?.price),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                           style: Utils.instance.getTextStyle('subtitle1'))),
                 ])),
-        widget.product.variations.length != 0
+        product.variations.length != 0
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -135,8 +150,7 @@ class _ProductDetailState extends State<ProductDetail>
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               mainAxisSize: MainAxisSize.max,
-                              children: List.generate(
-                                  widget.product.variations.length,
+                              children: List.generate(product.variations.length,
                                   (index) => _buildVariation(index))),
                         ),
                       )),
@@ -146,8 +160,7 @@ class _ProductDetailState extends State<ProductDetail>
                 ],
               )
             : Container(),
-        widget.product.description != null &&
-                widget.product.description.isNotEmpty
+        product.description != null && product.description.isNotEmpty
             ? Container(
                 margin: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
                 child: Text(
@@ -156,7 +169,7 @@ class _ProductDetailState extends State<ProductDetail>
             : Container(),
         Container(
           margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          child: Text(widget.product.description ?? '',
+          child: Text(product.description ?? '',
               style: Utils.instance.getTextStyle('subtitle2')),
         ),
       ],

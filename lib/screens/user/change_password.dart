@@ -61,7 +61,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                     inputAction: TextInputAction.next,
                     keyboardType: TextInputType.visiblePassword,
                   )),
-              Utils.instance.showValidateError(context, fieldsError,
+              Utils.instance.showValidateError(fieldsError,
                   key: 'new_password1'),
               Container(
                   alignment: Alignment.center,
@@ -74,7 +74,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                     inputAction: TextInputAction.done,
                     keyboardType: TextInputType.visiblePassword,
                   )),
-              Utils.instance.showValidateError(context, fieldsError,
+              Utils.instance.showValidateError(fieldsError,
                   key: 'new_password2'),
             ],
           ),
@@ -108,7 +108,8 @@ class _ChangePasswordState extends State<ChangePassword> {
           if (key == 'new_password1' || key == 'new_password2') {
             fieldsError[key] = value[0];
           } else {
-            fieldsError['all'] = value[0];
+            Utils.instance.infoDialog(context, value[0]);
+            return;
           }
         });
       }
