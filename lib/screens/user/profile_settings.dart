@@ -41,7 +41,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   Widget build(BuildContext context) {
     return PageScaffold(
       shrinkWrap: true,
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      horizontalPadding: 16,
       alwaysNavigation: true,
       inAsyncCall: isLoading,
       leading: RouteButton(
@@ -93,8 +93,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 hintText: AppLocalizations.of(context).translate('first_name'),
                 keyboardType: TextInputType.name,
                 inputAction: TextInputAction.next),
-            Utils.instance
-                .showValidateError(fieldsError, key: 'first_name'),
+            Utils.instance.showValidateError(fieldsError, key: 'first_name'),
             Container(
                 padding: EdgeInsets.only(left: 10, bottom: 5),
                 alignment: Alignment.centerLeft,
@@ -107,8 +106,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 hintText: AppLocalizations.of(context).translate('last_name'),
                 keyboardType: TextInputType.text,
                 inputAction: TextInputAction.done),
-            Utils.instance
-                .showValidateError(fieldsError, key: 'last_name')
+            Utils.instance.showValidateError(fieldsError, key: 'last_name')
           ],
         ),
       ),

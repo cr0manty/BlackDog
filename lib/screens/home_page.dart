@@ -86,12 +86,11 @@ class _HomePageState extends State<HomePage>
               updateNetworkItems = true;
               onNetworkChange(ConnectionsCheck.instance.isOnline);
             }),
-        padding: EdgeInsets.only(top: 20),
         children: <Widget>[
           NavigationBar(
               alwaysNavigation: false,
               action: RouteButton(
-                  padding: EdgeInsets.only(top: 5),
+                  padding: EdgeInsets.only(top: 25),
                   iconColor: HexColor.lightElement,
                   textColor: HexColor.lightElement,
                   iconWidget: Container(

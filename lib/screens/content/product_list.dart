@@ -70,7 +70,7 @@ class _ProductListState extends State<ProductList> {
           await _getMenu();
         });
       },
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      horizontalPadding: 16,
       leading: RouteButton(
         defaultIcon: true,
         text: AppLocalizations.of(context).translate('home'),

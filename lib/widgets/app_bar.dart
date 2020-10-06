@@ -14,7 +14,7 @@ class NavigationBar extends StatelessWidget {
     double padding = MediaQuery.of(context).padding.top > 25 ? 10: 0;
     return Container(
       color: alwaysNavigation
-          ? HexColor.black.withOpacity(0.6)
+          ? HexColor.black.withOpacity(0.4)
           : HexColor.transparent,
       padding: EdgeInsets.only(
           top: alwaysNavigation ? MediaQuery.of(context).padding.top * 0.8 : padding),
