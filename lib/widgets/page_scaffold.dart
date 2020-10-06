@@ -14,7 +14,7 @@ class PageScaffold extends StatefulWidget {
   final List<Widget> children;
   final Widget title;
   final bool inAsyncCall;
-  final EdgeInsets padding;
+  final double horizontalPadding;
   final bool shrinkWrap;
   final double titleMargin;
   final bool alwaysNavigation;
@@ -28,7 +28,7 @@ class PageScaffold extends StatefulWidget {
       this.action,
       this.leading,
       this.title,
-      this.padding,
+      this.horizontalPadding,
       this.onRefresh,
       this.bottomWidget,
       this.shrinkWrap = false,
@@ -68,14 +68,14 @@ class _PageScaffoldState extends State<PageScaffold>
   Widget buildRefresh(BuildContext context, List<Widget> children) {
     if (widget.onRefresh == null) {
       return Container(
-          padding: widget.padding ?? EdgeInsets.zero,
+          padding: EdgeInsets.symmetric(horizontal: widget.horizontalPadding ?? 0),
           child: ListView(
               controller: widget.scrollController,
               shrinkWrap: widget.shrinkWrap,
               children: children));
     }
     return Container(
-      padding: widget.padding ?? EdgeInsets.zero,
+      padding: EdgeInsets.symmetric(horizontal: widget.horizontalPadding ?? 0),
       child: CustomScrollView(slivers: <Widget>[
         CupertinoSliverRefreshControl(onRefresh: widget.onRefresh),
         SliverList(delegate: SliverChildListDelegate(children))

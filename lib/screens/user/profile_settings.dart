@@ -41,7 +41,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   Widget build(BuildContext context) {
     return PageScaffold(
       shrinkWrap: true,
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      horizontalPadding: 16,
       alwaysNavigation: true,
       inAsyncCall: isLoading,
       leading: RouteButton(
