@@ -1,4 +1,5 @@
 PODS:
+  - Alamofire (5.2.2)
   - barcode_scan (0.0.1):
     - Flutter
     - MTBBarcodeScanner
@@ -137,6 +138,7 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - Alamofire
   - barcode_scan (from `.symlinks/plugins/barcode_scan/ios`)
   - connectivity (from `.symlinks/plugins/connectivity/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
@@ -153,6 +155,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - Alamofire
     - Firebase
     - FirebaseAnalyticsInterop
     - FirebaseAuth
@@ -206,6 +209,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher/ios"
 
 SPEC CHECKSUMS:
+  Alamofire: 814429acc853c6c54ff123fc3d2ef66803823ce0
   barcode_scan: a5c27959edfafaa0c771905bad0b29d6d39e4479
   connectivity: c4130b2985d4ef6fd26f9702e886bd5260681467
   Firebase: 7cf5f9c67f03cb3b606d1d6535286e1080e57eb6
@@ -243,6 +247,6 @@ SPEC CHECKSUMS:
   SwiftProtobuf: 4ef85479c18ca85b5482b343df9c319c62bda699
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
 
-PODFILE CHECKSUM: 7368163408c647b7eb699d0d788ba6718e18fb8d
+PODFILE CHECKSUM: 358b85f7180325377a1df92920ec4e047e41ea56
 
 COCOAPODS: 1.10.0.rc.1
