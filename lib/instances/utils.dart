@@ -110,7 +110,7 @@ class Utils {
             )).then((value) => _showPopUp = null);
   }
 
-  Widget showValidateError(BuildContext context, Map fieldsError,
+  Widget showValidateError(Map fieldsError,
       {String key, bool bottomPadding = true}) {
     if (fieldsError.containsKey(key)) {
       return Container(
@@ -121,18 +121,6 @@ class Utils {
               bottom: bottomPadding ? ScreenSize.elementIndentHeight : 0),
           child: Text(fieldsError[key],
               style: Utils.instance.getTextStyle('error')));
-    } else if (fieldsError.containsKey('all')) {
-      if (_showPopUp == null) {
-        _showPopUp = showCupertinoDialog(
-            context: context,
-            useRootNavigator: false,
-            barrierDismissible: true,
-            builder: (context) => CupertinoAlertDialog(
-                  content: Text(fieldsError[key],
-                      style: Utils.instance.getTextStyle('headline1')),
-                )).then((_) => _showPopUp = null);
-      }
-      return Container();
     }
     return SizedBox(height: bottomPadding ? ScreenSize.elementIndentHeight : 0);
   }
@@ -179,6 +167,9 @@ class Utils {
       BuildContext context, Future func, String textKey, String key) {
     func.then((value) {
       if (value['result']) {
+        if (_showPopUp != null) {
+          return;
+        }
         _showPopUp = showCupertinoDialog(
             context: context,
             useRootNavigator: false,

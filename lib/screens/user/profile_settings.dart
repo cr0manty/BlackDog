@@ -94,7 +94,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 keyboardType: TextInputType.name,
                 inputAction: TextInputAction.next),
             Utils.instance
-                .showValidateError(context, fieldsError, key: 'first_name'),
+                .showValidateError(fieldsError, key: 'first_name'),
             Container(
                 padding: EdgeInsets.only(left: 10, bottom: 5),
                 alignment: Alignment.centerLeft,
@@ -108,7 +108,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 keyboardType: TextInputType.text,
                 inputAction: TextInputAction.done),
             Utils.instance
-                .showValidateError(context, fieldsError, key: 'last_name')
+                .showValidateError(fieldsError, key: 'last_name')
           ],
         ),
       ),
@@ -138,7 +138,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
           if (key == 'last_name' || key == 'first_name') {
             fieldsError[key] = value[0];
           } else {
-            fieldsError['all'] = value[0];
+            Utils.instance.infoDialog(context, value[0]);
+            return;
           }
         });
       }

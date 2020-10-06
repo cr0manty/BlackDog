@@ -52,7 +52,7 @@ class _SignUpPageState extends State<SignUpPage> {
               hintText: AppLocalizations.of(context).translate('phone'),
             )),
         Utils.instance
-            .showValidateError(context, fieldsError, key: 'phone_number'),
+            .showValidateError(fieldsError, key: 'phone_number'),
         Container(
             alignment: Alignment.center,
             child: TextInput(
@@ -73,7 +73,7 @@ class _SignUpPageState extends State<SignUpPage> {
               inputAction: TextInputAction.next,
             )),
         Utils.instance
-            .showValidateError(context, fieldsError, key: 'password1'),
+            .showValidateError(fieldsError, key: 'password1'),
         Container(
             alignment: Alignment.center,
             child: TextInput(
@@ -91,7 +91,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 onTap: () =>
                     setState(() => _obscureTextConfirm = !_obscureTextConfirm),
               ),
-              onFieldSubmitted: (_) => onFieldSubmitted(registerWithPhone),
+              onFieldSubmitted: (_) => _mainRegistration(),
               validator: (String text) {
                 if (text != _password1Controller.text) {
                   return AppLocalizations.of(context)
@@ -101,21 +101,9 @@ class _SignUpPageState extends State<SignUpPage> {
               },
               inputAction: TextInputAction.done,
             )),
-        Utils.instance.showValidateError(context, fieldsError, key: 'password2')
+        Utils.instance.showValidateError(fieldsError, key: 'password2')
       ],
     );
-  }
-
-  void onFieldSubmitted(Function function) {
-    if (_phoneController.text.isEmpty) {
-      FocusScope.of(context).requestFocus(_phoneFocus);
-    } else if (_password1Controller.text.isEmpty) {
-      FocusScope.of(context).requestFocus(_password1Focus);
-    } else if (_password2Controller.text.isEmpty) {
-      FocusScope.of(context).unfocus();
-    } else {
-      function();
-    }
   }
 
   @override
@@ -310,7 +298,8 @@ class _SignUpPageState extends State<SignUpPage> {
           if (_fieldsList.contains(key)) {
             fieldsError[key] = value[0];
           } else {
-            fieldsError['all'] = value[0];
+            Utils.instance.infoDialog(context, value[0]);
+            return;
           }
         });
       }

@@ -55,7 +55,7 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
               keyboardType: TextInputType.name,
               hintText: AppLocalizations.of(context).translate('first_name'),
             )),
-        Utils.instance.showValidateError(context, fieldsError, key: 'first_name'),
+        Utils.instance.showValidateError(fieldsError, key: 'first_name'),
         Container(
             alignment: Alignment.center,
             child: TextInput(
@@ -65,7 +65,7 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
               keyboardType: TextInputType.name,
               hintText: AppLocalizations.of(context).translate('last_name'),
             )),
-        Utils.instance.showValidateError(context, fieldsError, key: 'last_name'),
+        Utils.instance.showValidateError(fieldsError, key: 'last_name'),
         GestureDetector(
             onTap: () => _showModalBottomSheet(context),
             child: Container(
@@ -93,7 +93,7 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
                     )
                   ],
                 ))),
-        Utils.instance.showValidateError(context, fieldsError, key: 'birth_date'),
+        Utils.instance.showValidateError(fieldsError, key: 'birth_date'),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.max,
@@ -304,7 +304,8 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
         if (_fieldsList.contains(key)) {
           fieldsError[key] = value[0];
         } else {
-          fieldsError['all'] = value[0];
+          Utils.instance.infoDialog(context, value[0]);
+          return;
         }
       });
     }
