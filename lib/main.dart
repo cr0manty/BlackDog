@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:black_dog/screens/auth/sign_in.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -9,7 +11,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-
 import 'instances/account.dart';
 import 'instances/api.dart';
 import 'instances/connection_check.dart';
@@ -19,13 +20,9 @@ import 'instances/shared_pref.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  if (SharedPrefs.getInstance() == null) {
-    await SharedPrefs.initialize();
-  }
-
   ConnectionsCheck.instance.initialise();
   await NotificationManager.instance.configure();
-  await Firebase.initializeApp();
+  Firebase.initializeApp();
 
   runApp(BlackDogApp());
 }
@@ -37,8 +34,8 @@ class BlackDogApp extends StatefulWidget {
 
 class _BlackDogAppState extends State<BlackDogApp> {
   void initWithContext(BuildContext context) async {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: HexColor.transparent));
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle(statusBarColor: HexColor.transparent));
     precacheImage(AssetImage(Utils.loadImage), context);
     precacheImage(AssetImage(Utils.bannerImage), context);
     precacheImage(AssetImage(Utils.logo), context);
@@ -47,8 +44,14 @@ class _BlackDogAppState extends State<BlackDogApp> {
 
   @override
   void initState() {
-    Account.instance.initialize();
     configurePopUp();
+
+    SharedPrefs.initialize().then((value) {
+      SharedPrefs.saveLanguageCode(window.locale.languageCode);
+
+      Account.instance.initialize();
+      setState(() {});
+    });
     super.initState();
   }
 
@@ -83,19 +86,12 @@ class _BlackDogAppState extends State<BlackDogApp> {
       ],
       localeListResolutionCallback: (locales, supportedLocales) {
         Locale currentLocale;
-        for (Locale locale in locales) {
-          for (Locale supportedLocale in supportedLocales) {
-            if (supportedLocale.languageCode == locale.languageCode) {
-              currentLocale = supportedLocale;
-              break;
-            }
-          }
+        if (supportedLocales.contains(window.locale)) {
+          currentLocale = window.locale;
         }
         currentLocale ??= supportedLocales.first;
         print('Device language code: ${currentLocale.languageCode}');
         print('Device country code: ${currentLocale.countryCode ?? ''}');
-
-        SharedPrefs.saveLanguageCode(currentLocale.languageCode);
         return currentLocale;
       },
       theme: CupertinoThemeData(

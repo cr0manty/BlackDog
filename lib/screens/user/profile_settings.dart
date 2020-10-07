@@ -41,7 +41,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   Widget build(BuildContext context) {
     return PageScaffold(
       shrinkWrap: true,
-      horizontalPadding: 16,
+      padding: EdgeInsets.symmetric(horizontal: 16),
       alwaysNavigation: true,
       inAsyncCall: isLoading,
       leading: RouteButton(
@@ -56,22 +56,6 @@ class _ProfileSettingsState extends State<ProfileSettings> {
         color: HexColor.lightElement,
         onTap: _saveChanges,
       ),
-      bottomWidget: Container(
-          alignment: Alignment.bottomCenter,
-          margin: EdgeInsets.only(top: 20, bottom: 40),
-          child: SizedBox(
-            width: ScreenSize.width - 64,
-            child: CupertinoButton(
-                onPressed: () => Navigator.of(context, rootNavigator: true)
-                    .push(CupertinoPageRoute(
-                        builder: (context) => ChangePassword())),
-                color: HexColor.lightElement,
-                child: Text(
-                    AppLocalizations.of(context).translate('change_password'),
-                    style: Utils.instance
-                        .getTextStyle('headline2')
-                        .copyWith(color: HexColor.darkElement))),
-          )),
       child: Form(
         key: _formKey,
         child: Column(
@@ -106,7 +90,25 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 hintText: AppLocalizations.of(context).translate('last_name'),
                 keyboardType: TextInputType.text,
                 inputAction: TextInputAction.done),
-            Utils.instance.showValidateError(fieldsError, key: 'last_name')
+            Utils.instance.showValidateError(fieldsError, key: 'last_name'),
+            Container(
+                alignment: Alignment.bottomCenter,
+                margin: EdgeInsets.only(top: 20),
+                child: SizedBox(
+                  width: ScreenSize.width - 64,
+                  child: CupertinoButton(
+                      onPressed: () =>
+                          Navigator.of(context, rootNavigator: true).push(
+                              CupertinoPageRoute(
+                                  builder: (context) => ChangePassword())),
+                      color: HexColor.lightElement,
+                      child: Text(
+                          AppLocalizations.of(context)
+                              .translate('change_password'),
+                          style: Utils.instance
+                              .getTextStyle('headline2')
+                              .copyWith(color: HexColor.darkElement))),
+                )),
           ],
         ),
       ),
@@ -136,15 +138,14 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   }
 
   Future _saveChanges() async {
-    setState(() => isLoading = !isLoading);
+    FocusScope.of(context).unfocus();
     fieldsError = {};
 
     if (!_validator()) {
-      setState(() {
-        isLoading = !isLoading;
-      });
+      setState(() {});
       return;
     }
+    setState(() => isLoading = !isLoading);
 
     await Api.instance.updateUser(_sendData()).then((response) {
       bool result = response.remove('result');
@@ -152,7 +153,6 @@ class _ProfileSettingsState extends State<ProfileSettings> {
         EasyLoading.instance
           ..backgroundColor = HexColor.successGreen.withOpacity(0.8);
         EasyLoading.showSuccess('');
-        Navigator.of(context).pop();
       } else {
         response.forEach((key, value) {
           if (key == 'last_name' || key == 'first_name') {

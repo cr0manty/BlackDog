@@ -205,7 +205,7 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   Future loginClick() async {
-    FocusScope.of(context).requestFocus(FocusNode());
+    FocusScope.of(context).unfocus();
     setState(() {
       isLoading = !isLoading;
       fieldsError = {};
@@ -216,6 +216,7 @@ class _SignInPageState extends State<SignInPage> {
         .then((response) async {
       bool result = response.remove('result');
       if (result && await Account.instance.setUser()) {
+        Api.instance.sendFCMToken();
         Navigator.of(context).pushAndRemoveUntil(
             CupertinoPageRoute(
                 builder: (context) => Account.instance.user.isStaff

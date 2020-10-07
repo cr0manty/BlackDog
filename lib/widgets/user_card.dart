@@ -41,8 +41,8 @@ class UserCard extends StatelessWidget {
                   child: Text(
                     username,
                     style: Utils.instance.getTextStyle('subtitle1'),
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
+                    textAlign: TextAlign.left,
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),

@@ -125,7 +125,8 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
 
   List<TextSpan> termsText() {
     List<TextSpan> widgets = [
-      TextSpan(text: '${AppLocalizations.of(context).translate('user_accept')} ')
+      TextSpan(
+          text: '${AppLocalizations.of(context).translate('user_accept')} ')
     ];
 
     List<TextSpan> addition = [
@@ -137,7 +138,10 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
               decoration: TextDecoration.underline))
     ];
 
-    return widgets + (SharedPrefs.getLanguageCode() == 'en' ? addition : addition.reversed.toList());
+    return widgets +
+        (SharedPrefs.getLanguageCode() == 'en'
+            ? addition
+            : addition.reversed.toList());
   }
 
   @override
@@ -156,90 +160,87 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
               )),
             )),
         ModalProgressHUD(
-            progressIndicator: CupertinoActivityIndicator(),
-            inAsyncCall: isLoading,
-            child: GestureDetector(
+          progressIndicator: CupertinoActivityIndicator(),
+          inAsyncCall: isLoading,
+          child: GestureDetector(
               onTap: FocusScope.of(context).unfocus,
               child: Container(
                   height: ScreenSize.height,
                   width: ScreenSize.width,
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Form(
-                      key: _formKey,
-                      child:  SingleChildScrollView(
-                            child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                mainAxisSize: MainAxisSize.max,
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                    key: _formKey,
+                    child: SingleChildScrollView(
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisSize: MainAxisSize.max,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                          Container(
+                            alignment: Alignment.topCenter,
+                            padding: EdgeInsets.only(
+                                top: ScreenSize.mainMarginTop,
+                                bottom: ScreenSize.sectionIndent * 2),
+                            child: Text(
+                              AppLocalizations.of(context)
+                                  .translate('register'),
+                              style: Utils.instance.getTextStyle('caption'),
+                            ),
+                          ),
+                          _buildAddition(),
+                          Container(
+                              alignment: Alignment.bottomCenter,
+                              padding: EdgeInsets.only(top: 40),
+                              child: Column(
                                 children: <Widget>[
-                              Container(
-                                alignment: Alignment.topCenter,
-                                padding: EdgeInsets.only(
-                                    top: ScreenSize.mainMarginTop,
-                                    bottom: ScreenSize.sectionIndent * 2),
-                                child: Text(
-                                  AppLocalizations.of(context)
-                                      .translate('register'),
-                                  style: Utils.instance.getTextStyle('caption'),
-                                ),
-                              ),
-                              _buildAddition(),
-                              Container(
-                                  alignment: Alignment.bottomCenter,
-                                  padding: EdgeInsets.only(top: 40),
-                                  child: Column(
-                                    children: <Widget>[
-                                      SizedBox(
-                                          width: ScreenSize.width - 64,
-                                          child: CupertinoButton(
-                                              disabledColor: HexColor
-                                                  .lightElement
-                                                  .withOpacity(0.5),
-                                              onPressed: termsAccept
-                                                  ? _additionRegister
-                                                  : null,
-                                              color: HexColor.lightElement,
-                                              child: Text(
-                                                AppLocalizations.of(context)
-                                                    .translate('register'),
-                                                overflow: TextOverflow.fade,
-                                                maxLines: 1,
-                                                textAlign: TextAlign.center,
-                                                style: Utils.instance
-                                                    .getTextStyle('headline1')
-                                                    .copyWith(
-                                                        color: HexColor
-                                                            .darkElement),
-                                              ))),
-                                      CupertinoButton(
-                                        onPressed: () => Navigator.of(context,
-                                                rootNavigator: true)
-                                            .pushAndRemoveUntil(
-                                                CupertinoPageRoute(
-                                                    builder: (context) =>
-                                                        SignInPage()),
-                                                (route) => false),
-                                        child: Text(
-                                          AppLocalizations.of(context)
-                                              .translate(
-                                                  'already_have_account'),
-                                          textAlign: TextAlign.center,
-                                          style: Utils.instance
-                                              .getTextStyle('bodyText2'),
-                                        ),
-                                      ),
-                                    ],
-                                  ))
-                            ])),
-                      ))),
-            ),
+                                  SizedBox(
+                                      width: ScreenSize.width - 64,
+                                      child: CupertinoButton(
+                                          disabledColor: HexColor.lightElement
+                                              .withOpacity(0.5),
+                                          onPressed: termsAccept
+                                              ? _additionRegister
+                                              : null,
+                                          color: HexColor.lightElement,
+                                          child: Text(
+                                            AppLocalizations.of(context)
+                                                .translate('register'),
+                                            overflow: TextOverflow.fade,
+                                            maxLines: 1,
+                                            textAlign: TextAlign.center,
+                                            style: Utils.instance
+                                                .getTextStyle('headline1')
+                                                .copyWith(
+                                                    color:
+                                                        HexColor.darkElement),
+                                          ))),
+                                  CupertinoButton(
+                                    onPressed: () => Navigator.of(context,
+                                            rootNavigator: true)
+                                        .pushAndRemoveUntil(
+                                            CupertinoPageRoute(
+                                                builder: (context) =>
+                                                    SignInPage()),
+                                            (route) => false),
+                                    child: Text(
+                                      AppLocalizations.of(context)
+                                          .translate('already_have_account'),
+                                      textAlign: TextAlign.center,
+                                      style: Utils.instance
+                                          .getTextStyle('bodyText2'),
+                                    ),
+                                  ),
+                                ],
+                              ))
+                        ])),
+                  ))),
+        ),
       ]),
     );
   }
 
   void _showModalBottomSheet(context) {
-    FocusScope.of(context).requestFocus(FocusNode());
+    FocusScope.of(context).unfocus();
     DateTime today = DateTime.now();
 
     showCupertinoModalPopup(
@@ -276,6 +277,7 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
   }
 
   Future _additionRegister() async {
+    FocusScope.of(context).unfocus();
     setState(() {
       isLoading = !isLoading;
       fieldsError = {};
@@ -287,6 +289,7 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
     if (result) {
       SharedPrefs.saveToken(widget.token);
       if (await Account.instance.setUser()) {
+        Api.instance.sendFCMToken();
         Navigator.of(context).pushAndRemoveUntil(
             CupertinoPageRoute(
                 builder: (context) => Account.instance.user.isStaff

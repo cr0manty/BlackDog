@@ -91,6 +91,7 @@ class _ChangePasswordState extends State<ChangePassword> {
   }
 
   Future _changePassword() async {
+    FocusScope.of(context).unfocus();
     setState(() {
       isLoading = !isLoading;
       fieldsError = {};

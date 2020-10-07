@@ -1,6 +1,5 @@
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/sizes.dart';
-import 'package:black_dog/widgets/status_bar_color.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
@@ -14,7 +13,7 @@ class PageScaffold extends StatefulWidget {
   final List<Widget> children;
   final Widget title;
   final bool inAsyncCall;
-  final double horizontalPadding;
+  final EdgeInsets padding;
   final bool shrinkWrap;
   final double titleMargin;
   final bool alwaysNavigation;
@@ -28,9 +27,9 @@ class PageScaffold extends StatefulWidget {
       this.action,
       this.leading,
       this.title,
-      this.horizontalPadding,
       this.onRefresh,
       this.bottomWidget,
+      this.padding,
       this.shrinkWrap = false,
       this.alwaysNavigation = false,
       this.inAsyncCall = false,
@@ -68,14 +67,14 @@ class _PageScaffoldState extends State<PageScaffold>
   Widget buildRefresh(BuildContext context, List<Widget> children) {
     if (widget.onRefresh == null) {
       return Container(
-          padding: EdgeInsets.symmetric(horizontal: widget.horizontalPadding ?? 0),
+          padding: widget.padding ?? EdgeInsets.zero,
           child: ListView(
               controller: widget.scrollController,
               shrinkWrap: widget.shrinkWrap,
               children: children));
     }
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: widget.horizontalPadding ?? 0),
+      padding: widget.padding ?? EdgeInsets.zero,
       child: CustomScrollView(slivers: <Widget>[
         CupertinoSliverRefreshControl(onRefresh: widget.onRefresh),
         SliverList(delegate: SliverChildListDelegate(children))
@@ -139,7 +138,6 @@ class _PageScaffoldState extends State<PageScaffold>
                   width: ScreenSize.width,
                   child: buildNavigationBody()),
             )),
-        StatusBarColor(enabled: !widget.alwaysNavigation),
       ],
     ));
   }

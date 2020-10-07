@@ -13,13 +13,11 @@ abstract class SharedPrefs {
   static const _localeCode = 'LocaleCode';
   static const _showNews = 'ShowNews';
   static const _maxNewsAmount = 'MaxPostAmount';
-  static const _fcmToken = 'FCMToken';
   static const _currentVoucher = 'CurrentVoucher';
   static const _firebaseUserUid = 'FirebaseUserUID';
   static const _activeVouchers = 'ActiveVouchers';
   static const _abutUs = 'AboutUs';
   static const _abutUsList = 'AboutUsList';
-  static const _fcmSend = 'FCMTokenSend';
 
   static SharedPreferences _prefs;
 
@@ -37,8 +35,6 @@ abstract class SharedPrefs {
     _prefs.setString(_currentUser, '');
     _prefs.setString(_currentToken, '');
     _prefs.setString(_qrCode, '');
-    _prefs.setString(_fcmToken, '');
-    _prefs.setBool(_fcmSend, false);
     _prefs.setString(_firebaseUserUid, '');
   }
 
@@ -47,19 +43,6 @@ abstract class SharedPrefs {
 
     _prefs.setString(
         _currentToken, (token != null && token.isNotEmpty) ? token : '');
-  }
-
-  static void saveFCMToken(String token) {
-    print('SharedPrefs: saveFCMToken');
-
-    _prefs.setString(
-        _fcmToken, (token != null && token.isNotEmpty) ? token : '');
-  }
-
-  static void saveFCMTokenSend(bool send) {
-    print('SharedPrefs: saveFCMTokenSend');
-
-    _prefs.setBool(_fcmSend, send);
   }
 
   static void saveUser(User user) {
@@ -134,19 +117,7 @@ abstract class SharedPrefs {
   static String getToken() {
     print('SharedPrefs: getToken');
 
-    return _prefs.getString(_currentToken);
-  }
-
-  static String getFCMToken() {
-    print('SharedPrefs: getFCMToken');
-
-    return _prefs.getString(_fcmToken);
-  }
-
-  static bool getFCMTokenSend() {
-    print('SharedPrefs: getFCMTokenSend');
-
-    return _prefs.getBool(_fcmSend) ?? false;
+    return _prefs?.getString(_currentToken) ?? '';
   }
 
   static String getQRCode() {
@@ -158,7 +129,7 @@ abstract class SharedPrefs {
   static String getLanguageCode() {
     print('SharedPrefs: getLanguageCode');
 
-    return _prefs.getString(_localeCode) ?? 'en';
+    return _prefs?.getString(_localeCode) ?? 'en';
   }
 
   static bool getShowNews() {

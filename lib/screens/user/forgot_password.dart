@@ -117,8 +117,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       inAsyncCall: isLoading,
       shrinkWrap: true,
       titleMargin: 0,
-      horizontalPadding: 16,
-          leading: RouteButton(
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      leading: RouteButton(
         defaultIcon: true,
         text: AppLocalizations.of(context).translate('sign_in'),
         color: HexColor.lightElement,
@@ -159,6 +159,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   void _firebaseVerifyPhone() async {
     _codeController.clear();
+    FocusScope.of(context).unfocus();
     setState(() {
       _validationError = {};
     });
@@ -283,7 +284,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   }
 
   void _sendNewPassword() async {
-    FocusScope.of(context).requestFocus(FocusNode());
+    FocusScope.of(context).unfocus();
     _codeController.clear();
     setState(() {
       isLoading = !isLoading;

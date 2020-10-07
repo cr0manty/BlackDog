@@ -81,6 +81,7 @@ class _HomePageState extends State<HomePage>
         inAsyncCall: isLoading,
         scrollController: _scrollController,
         alwaysNavigation: false,
+        padding: EdgeInsets.only(top: 20),
         onRefresh: () async =>
             await Future.delayed(Duration(milliseconds: 500), () {
               updateNetworkItems = true;
@@ -90,7 +91,7 @@ class _HomePageState extends State<HomePage>
           NavigationBar(
               alwaysNavigation: false,
               action: RouteButton(
-                  padding: EdgeInsets.only(top: 25),
+                  padding: EdgeInsets.only(top: 5),
                   iconColor: HexColor.lightElement,
                   textColor: HexColor.lightElement,
                   iconWidget: Container(
