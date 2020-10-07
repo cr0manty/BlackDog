@@ -118,7 +118,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       shrinkWrap: true,
       titleMargin: 0,
       horizontalPadding: 16,
-      leading: RouteButton(
+          leading: RouteButton(
         defaultIcon: true,
         text: AppLocalizations.of(context).translate('sign_in'),
         color: HexColor.lightElement,

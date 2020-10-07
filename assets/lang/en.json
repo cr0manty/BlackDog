@@ -71,5 +71,6 @@
   "privacy": "Privacy Policy",
   "contact_us": "Contact Us",
   "user_accept": "I accept",
-  "and": "and"
+  "and": "and",
+  "fields_required": "This fields is required"
 }

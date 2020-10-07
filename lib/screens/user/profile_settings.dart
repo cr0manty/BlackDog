@@ -120,9 +120,31 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     };
   }
 
+  bool _validator() {
+    bool isValid = true;
+    if (_nameController.text == null || _nameController.text.isEmpty) {
+      isValid = false;
+      fieldsError['first_name'] =
+          AppLocalizations.of(context).translate('fields_required');
+    }
+    if (_lastNameController.text == null || _lastNameController.text.isEmpty) {
+      isValid = false;
+      fieldsError['last_name'] =
+          AppLocalizations.of(context).translate('fields_required');
+    }
+    return isValid;
+  }
+
   Future _saveChanges() async {
     setState(() => isLoading = !isLoading);
     fieldsError = {};
+
+    if (!_validator()) {
+      setState(() {
+        isLoading = !isLoading;
+      });
+      return;
+    }
 
     await Api.instance.updateUser(_sendData()).then((response) {
       bool result = response.remove('result');
