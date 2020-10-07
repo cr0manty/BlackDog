@@ -21,7 +21,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   ConnectionsCheck.instance.initialise();
-  // await SharedPrefs.initialize(); // TODO check work on release or not
   await NotificationManager.instance.configure();
   Firebase.initializeApp();
 
