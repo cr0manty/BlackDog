@@ -39,6 +39,8 @@ target 'AppClip' do
   use_modular_headers!
   
   pod 'Alamofire'
+  pod 'Firebase/Analytics'
+  pod 'Firebase/Crashlytics'
 end
 
 post_install do |installer|

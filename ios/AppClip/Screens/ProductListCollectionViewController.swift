@@ -1,17 +1,18 @@
 //
-//  CategoryViewController.swift
+//  ProductListCollectionViewController.swift
 //  AppClip
 //
-//  Created by Просто Денис on 06.10.2020.
+//  Created by Просто Денис on 07.10.2020.
 //
 
 import UIKit
 
 private let reuseIdentifier = "Cell"
 
-class CategoryViewController: UICollectionViewController {
-    var categories: [Category] = []
-
+class ProductListCollectionViewController: UICollectionViewController {
+    var categoryId: Int!
+    var products: [Product] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -20,22 +21,18 @@ class CategoryViewController: UICollectionViewController {
 
         // Register cell classes
         self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-        self.getCategories()
+
         // Do any additional setup after loading the view.
     }
-    
-    func getCategories(limit: Int = 10, offset: Int = 0) {
-        RequestManager.makeRequest(url: "/menu/categories-list") { (response) in
-            for data in response["results"] as! [AnyObject] {
-                let category: Category = Category(data as! [String: AnyObject])
-                self.categories.append(category)
+
+    func getProductList() {
+        RequestManager.makeRequest(url: "/menu/categories-list/\(self.categoryId!)") { (response) in
+            for data in response["products"] as! [AnyObject] {
+                let product: Product = Product(data as! [String: AnyObject])
+                self.products.append(product)
             }
             self.collectionView.reloadData()
         }
-    }
-
-    @IBAction func spawnCrash(_ sender: Any) {
-        fatalError()
     }
     
     /*
@@ -58,7 +55,7 @@ class CategoryViewController: UICollectionViewController {
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
-        return categories.count
+        return 0
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
