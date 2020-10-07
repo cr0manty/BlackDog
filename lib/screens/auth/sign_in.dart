@@ -205,7 +205,7 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   Future loginClick() async {
-    FocusScope.of(context).requestFocus(FocusNode());
+    FocusScope.of(context).unfocus();
     setState(() {
       isLoading = !isLoading;
       fieldsError = {};

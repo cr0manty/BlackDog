@@ -218,7 +218,8 @@ class Api {
   }
 
   Future getProduct(int id) async {
-    Response response = await _client.get(_setUrl(path: '/menu/product-details/$id'),
+    Response response = await _client.get(
+        _setUrl(path: '/menu/product-details/$id'),
         headers: _setHeaders());
 
     if (response.statusCode == 200) {
@@ -394,11 +395,20 @@ class Api {
   }
 
   Future termsAndPrivacy({String methodName = 'terms-and-conditions'}) async {
-    final response = await _client.get(
-        _setUrl(path: '/restaurant/$methodName'),
-        headers: _setHeaders(useToken: false));
-    Map body = json.decode(utf8.decode(response.bodyBytes));
-    body['result'] = response.statusCode == 200;
+    bool result = true;
+    final response = await _client
+        .get(_setUrl(path: '/restaurant/$methodName'),
+            headers: _setHeaders(useToken: false))
+        .catchError((_) {
+      result = false;
+    });
+    Map body = {};
+    if (response != null && response.statusCode == 200) {
+      body = json.decode(utf8.decode(response.bodyBytes));
+      result = true;
+    }
+
+    body['result'] = result;
     return body;
   }
 

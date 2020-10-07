@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:black_dog/instances/connection_check.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/image_view.dart';
 import 'package:black_dog/utils/localization.dart';
@@ -143,8 +144,7 @@ class Utils {
       codeImage = ImageView(codeUrl);
     }
     if (codeImage == null) {
-      EasyLoading.instance
-        ..backgroundColor = HexColor('#ff0000').withOpacity(0.8);
+      EasyLoading.instance..backgroundColor = HexColor.errorRed;
       EasyLoading.showError('');
     } else {
       if (_showPopUp != null) {
@@ -174,7 +174,7 @@ class Utils {
   void showTermPolicy(
       BuildContext context, Future func, String textKey, String key) {
     func.then((value) {
-      if (value['result']) {
+      if (value['result'] && ConnectionsCheck.instance.isOnline) {
         if (_showPopUp != null) {
           return;
         }
@@ -189,8 +189,7 @@ class Utils {
                       style: Utils.instance.getTextStyle('subtitle2')),
                 )).then((_) => _showPopUp = null);
       } else {
-        EasyLoading.instance
-          ..backgroundColor = HexColor('#ff0000').withOpacity(0.8);
+        EasyLoading.instance..backgroundColor = HexColor.errorRed;
         EasyLoading.showError('');
       }
     });
