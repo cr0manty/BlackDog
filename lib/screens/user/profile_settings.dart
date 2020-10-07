@@ -92,12 +92,6 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                     FocusScope.of(context).requestFocus(_lastNameFocus),
                 hintText: AppLocalizations.of(context).translate('first_name'),
                 keyboardType: TextInputType.name,
-                validator: (String text) {
-                  if (text == null || text.isNotEmpty) {
-                    AppLocalizations.of(context).translate('fields_required');
-                  }
-                  return null;
-                },
                 inputAction: TextInputAction.next),
             Utils.instance.showValidateError(fieldsError, key: 'first_name'),
             Container(
@@ -111,12 +105,6 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 focusNode: _lastNameFocus,
                 hintText: AppLocalizations.of(context).translate('last_name'),
                 keyboardType: TextInputType.text,
-                validator: (String text) {
-                  if (text == null || text.isNotEmpty) {
-                    AppLocalizations.of(context).translate('fields_required');
-                  }
-                  return null;
-                },
                 inputAction: TextInputAction.done),
             Utils.instance.showValidateError(fieldsError, key: 'last_name')
           ],
@@ -132,9 +120,31 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     };
   }
 
+  bool _validator() {
+    bool isValid = true;
+    if (_nameController.text == null || _nameController.text.isEmpty) {
+      isValid = false;
+      fieldsError['first_name'] =
+          AppLocalizations.of(context).translate('fields_required');
+    }
+    if (_lastNameController.text == null || _lastNameController.text.isEmpty) {
+      isValid = false;
+      fieldsError['last_name'] =
+          AppLocalizations.of(context).translate('fields_required');
+    }
+    return isValid;
+  }
+
   Future _saveChanges() async {
     setState(() => isLoading = !isLoading);
     fieldsError = {};
+
+    if (!_validator()) {
+      setState(() {
+        isLoading = !isLoading;
+      });
+      return;
+    }
 
     await Api.instance.updateUser(_sendData()).then((response) {
       bool result = response.remove('result');
