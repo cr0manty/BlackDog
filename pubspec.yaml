@@ -1,5 +1,5 @@
 name: black_dog
-description: A Flutter project for black dog coffe.
+description: A Flutter project for Black Dog Coffee.
 
 version: 1.0.7+9
 
@@ -32,6 +32,7 @@ dependencies:
   step_progress_indicator:
   map_launcher:
   cached_network_image:
+  screen:
 
 
   flutter_localizations:

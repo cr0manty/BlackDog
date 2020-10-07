@@ -58,7 +58,7 @@ class _NewsListState extends State<NewsList> {
     return PageScaffold(
         shrinkWrap: true,
         scrollController: _scrollController,
-        padding: EdgeInsets.symmetric(horizontal: 16),
+        horizontalPadding: 16,
         onRefresh: () async {
           await Future.delayed(Duration(milliseconds: 500), () async {
             newsList = [];

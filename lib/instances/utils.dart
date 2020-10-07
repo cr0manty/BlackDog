@@ -8,9 +8,11 @@ import 'package:black_dog/utils/sizes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:screen/screen.dart';
 
 class Utils {
   static final Utils instance = Utils._internal();
+  double brightness;
   Future _showPopUp;
 
   Utils._internal();
@@ -128,7 +130,7 @@ class Utils {
   void showQRCodeModal(BuildContext context,
       {@required String codeUrl,
       String textKey = 'scan_qr',
-      bool isLocal = true}) {
+      bool isLocal = true}) async {
     Widget codeImage;
     if (isLocal) {
       File qrCode = File(codeUrl);
@@ -148,6 +150,9 @@ class Utils {
       if (_showPopUp != null) {
         return;
       }
+      brightness = await Screen.brightness;
+      await Screen.setBrightness(1.0);
+
       _showPopUp = showCupertinoDialog(
           context: context,
           useRootNavigator: false,
@@ -159,7 +164,10 @@ class Utils {
                   padding: EdgeInsets.only(top: 20),
                   child: codeImage,
                 ),
-              )).then((_) => _showPopUp = null);
+              )).then((_) {
+        _showPopUp = null;
+        Screen.setBrightness(brightness);
+      });
     }
   }
 
