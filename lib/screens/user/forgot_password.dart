@@ -117,8 +117,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       inAsyncCall: isLoading,
       shrinkWrap: true,
       titleMargin: 0,
-      horizontalPadding: 16,
-          leading: RouteButton(
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      leading: RouteButton(
         defaultIcon: true,
         text: AppLocalizations.of(context).translate('sign_in'),
         color: HexColor.lightElement,

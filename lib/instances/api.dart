@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:black_dog/instances/account.dart';
+import 'package:black_dog/instances/notification_manager.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/models/log.dart';
 import 'package:black_dog/models/menu_category.dart';
@@ -39,7 +40,7 @@ class Api {
   Map<String, String> _setHeaders(
       {String token, bool useToken = true, useJson = false}) {
     Map<String, String> headers = {
-      'Accept-Language': SharedPrefs.getLanguageCode()
+      'Accept-Language': SharedPrefs?.getLanguageCode() ?? 'en'
     };
 
     if (useToken) {
@@ -329,18 +330,18 @@ class Api {
     return null;
   }
 
-  void sendFCMToken() async {
-    bool tokenSaved = SharedPrefs.getFCMTokenSend();
-    Response response =
-        await _client.post(_setUrl(path: '/register-notify-token/', base: true),
-            body: json.encode({
-              'registration_id': SharedPrefs.getFCMToken(),
-              'type': Platform.isIOS
-                  ? 'ios'
-                  : (Platform.isAndroid ? 'android' : 'web')
-            }),
-            headers: _setHeaders(useJson: true));
-    SharedPrefs.saveFCMTokenSend(tokenSaved || response.statusCode == 200);
+  Future sendFCMToken({String token}) async {
+    String fcmToken = token ?? await NotificationManager.instance.getToken();
+    return await _client.post(
+        _setUrl(path: '/register-notify-token/', base: true),
+        body: json.encode({
+          'registration_id': fcmToken,
+          'type':
+              Platform.isIOS ? 'ios' : (Platform.isAndroid ? 'android' : 'web')
+        }),
+        headers: _setHeaders(useJson: true)).catchError((error) {
+          print(error);
+    });
   }
 
   Future<bool> checkPhoneNumberExist(String phone) async {

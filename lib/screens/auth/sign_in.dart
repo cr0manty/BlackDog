@@ -216,6 +216,7 @@ class _SignInPageState extends State<SignInPage> {
         .then((response) async {
       bool result = response.remove('result');
       if (result && await Account.instance.setUser()) {
+        Api.instance.sendFCMToken();
         Navigator.of(context).pushAndRemoveUntil(
             CupertinoPageRoute(
                 builder: (context) => Account.instance.user.isStaff
