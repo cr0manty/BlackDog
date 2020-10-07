@@ -10,6 +10,7 @@ import UIKit
 private let reuseIdentifier = "Cell"
 
 class CategoryViewController: UICollectionViewController {
+    var categories: [Category] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,6 +22,16 @@ class CategoryViewController: UICollectionViewController {
         self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
 
         // Do any additional setup after loading the view.
+    }
+    
+    func getCategories(limit: Int = 10, offset: Int = 0) {
+        RequestManager.makeRequest(url: "/menu/categories-list") { (response) in
+            for data in response["results"] as! [AnyObject] {
+                let category: Category = Category(data as! [String: AnyObject])
+                self.categories.append(category)
+            }
+            self.collectionView.reloadData()
+        }
     }
 
     /*
@@ -43,7 +54,7 @@ class CategoryViewController: UICollectionViewController {
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
-        return 0
+        return categories.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
