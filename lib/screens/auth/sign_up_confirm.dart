@@ -239,7 +239,7 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
   }
 
   void _showModalBottomSheet(context) {
-    FocusScope.of(context).requestFocus(FocusNode());
+    FocusScope.of(context).unfocus();
     DateTime today = DateTime.now();
 
     showCupertinoModalPopup(
@@ -276,6 +276,7 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
   }
 
   Future _additionRegister() async {
+    FocusScope.of(context).unfocus();
     setState(() {
       isLoading = !isLoading;
       fieldsError = {};

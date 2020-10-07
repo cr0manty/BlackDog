@@ -131,19 +131,16 @@ class _AboutUsPageState extends State<AboutUsPage> {
           restaurant?.instagramLink,
           SFSymbols.logo_instagram,
           web: true,
-          maxLines: 1,
         ),
         AboutSection(
           restaurant?.facebook,
           SFSymbols.logo_facebook,
           web: true,
-          maxLines: 1,
         ),
         AboutSection(
           restaurant?.email,
           SFSymbols.envelope_fill,
           email: true,
-          maxLines: 1,
         ),
       ],
     );
