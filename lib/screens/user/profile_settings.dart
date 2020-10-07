@@ -92,9 +92,14 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                     FocusScope.of(context).requestFocus(_lastNameFocus),
                 hintText: AppLocalizations.of(context).translate('first_name'),
                 keyboardType: TextInputType.name,
+                validator: (String text) {
+                  if (text == null || text.isNotEmpty) {
+                    AppLocalizations.of(context).translate('fields_required');
+                  }
+                  return null;
+                },
                 inputAction: TextInputAction.next),
-            Utils.instance
-                .showValidateError(fieldsError, key: 'first_name'),
+            Utils.instance.showValidateError(fieldsError, key: 'first_name'),
             Container(
                 padding: EdgeInsets.only(left: 10, bottom: 5),
                 alignment: Alignment.centerLeft,
@@ -106,9 +111,14 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 focusNode: _lastNameFocus,
                 hintText: AppLocalizations.of(context).translate('last_name'),
                 keyboardType: TextInputType.text,
+                validator: (String text) {
+                  if (text == null || text.isNotEmpty) {
+                    AppLocalizations.of(context).translate('fields_required');
+                  }
+                  return null;
+                },
                 inputAction: TextInputAction.done),
-            Utils.instance
-                .showValidateError(fieldsError, key: 'last_name')
+            Utils.instance.showValidateError(fieldsError, key: 'last_name')
           ],
         ),
       ),
