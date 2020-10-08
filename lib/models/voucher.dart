@@ -136,7 +136,8 @@ class Voucher extends BaseVoucher {
 
   Future saveQrCode() async {
     if (qrCodeLocal == null || qrCodeLocal.isEmpty) {
-      qrCodeLocal = await Api.instance.saveQRCode(qrCode);
+      String qrCodeLocalPath = await Api.instance.saveQRCode(qrCode);
+      qrCodeLocal = qrCodeLocalPath ?? qrCodeLocal;
     }
   }
 }

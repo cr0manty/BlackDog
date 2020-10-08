@@ -117,7 +117,7 @@ abstract class SharedPrefs {
   static String getToken() {
     print('SharedPrefs: getToken');
 
-    return _prefs?.getString(_currentToken) ?? '';
+    return _prefs.getString(_currentToken) ?? '';
   }
 
   static String getQRCode() {
@@ -129,7 +129,7 @@ abstract class SharedPrefs {
   static String getLanguageCode() {
     print('SharedPrefs: getLanguageCode');
 
-    return _prefs?.getString(_localeCode) ?? 'en';
+    return _prefs.getString(_localeCode) ?? 'en';
   }
 
   static bool getShowNews() {
