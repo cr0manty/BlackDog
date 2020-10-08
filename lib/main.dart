@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:black_dog/screens/auth/sign_in.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -9,23 +11,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-
 import 'instances/account.dart';
 import 'instances/api.dart';
 import 'instances/connection_check.dart';
 import 'instances/notification_manager.dart';
 import 'instances/shared_pref.dart';
 
+
+// flutter build apk --no-shrink  - command to build release build
+// need to add `--no-shrink` because of SharedPreferences not support `await` on android release build
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  if (SharedPrefs.getInstance() == null) {
-    await SharedPrefs.initialize();
-  }
-
+  await SharedPrefs.initialize();
   ConnectionsCheck.instance.initialise();
+
   await NotificationManager.instance.configure();
-  await Firebase.initializeApp();
+  Firebase.initializeApp();
 
   runApp(BlackDogApp());
 }
@@ -37,8 +38,8 @@ class BlackDogApp extends StatefulWidget {
 
 class _BlackDogAppState extends State<BlackDogApp> {
   void initWithContext(BuildContext context) async {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: HexColor.transparent));
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle(statusBarColor: HexColor.transparent));
     precacheImage(AssetImage(Utils.loadImage), context);
     precacheImage(AssetImage(Utils.bannerImage), context);
     precacheImage(AssetImage(Utils.logo), context);
@@ -47,8 +48,10 @@ class _BlackDogAppState extends State<BlackDogApp> {
 
   @override
   void initState() {
-    Account.instance.initialize();
     configurePopUp();
+
+    SharedPrefs.saveLanguageCode(window.locale.languageCode);
+    Account.instance.initialize();
     super.initState();
   }
 

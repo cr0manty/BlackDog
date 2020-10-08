@@ -72,6 +72,7 @@ class Account {
     if (user != null) {
       _user = user;
       SharedPrefs.saveUser(_user);
+      refreshVouchers();
     }
   }
 

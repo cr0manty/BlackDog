@@ -81,7 +81,7 @@ class _HomePageState extends State<HomePage>
         inAsyncCall: isLoading,
         scrollController: _scrollController,
         alwaysNavigation: false,
-        verticalPadding: 20,
+        padding: EdgeInsets.only(top: 20),
         onRefresh: () async =>
             await Future.delayed(Duration(milliseconds: 500), () {
               updateNetworkItems = true;

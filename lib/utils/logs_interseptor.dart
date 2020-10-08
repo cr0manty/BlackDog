@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http_interceptor/interceptor_contract.dart';
 import 'package:http_interceptor/models/request_data.dart';
 import 'package:http_interceptor/models/response_data.dart';
+import 'package:flutter/foundation.dart';
 
 class LogInterceptor implements InterceptorContract {
   void printWrapped(String text) {
@@ -17,16 +18,20 @@ class LogInterceptor implements InterceptorContract {
 
   @override
   Future<RequestData> interceptRequest({RequestData data}) async {
-    print(
-        "Request Method: ${data.method} , Url: ${data.url} Headers: ${data.headers}");
+    if (kDebugMode) {
+      print(
+          "Request Method: ${data.method} , Url: ${data.url} Headers: ${data.headers}");
+    }
     return data;
   }
 
   @override
   Future<ResponseData> interceptResponse({ResponseData data}) async {
-    printWrapped(
-        "Response Method: ${data.method} , Url: ${data.url}, Status Code: ${data.statusCode}");
-    printWrapped('Body: ${prettyJson(data.body)}');
+    if (kDebugMode) {
+      printWrapped(
+          "Response Method: ${data.method} , Url: ${data.url}, Status Code: ${data.statusCode}");
+      printWrapped('Body: ${prettyJson(data.body)}');
+    }
     return data;
   }
 }
