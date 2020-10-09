@@ -10,7 +10,7 @@ import UIKit
 class ProductListViewCell: UICollectionViewCell {
     @IBOutlet weak var price: UILabel!
     @IBOutlet weak var title: UILabel!
-    @IBOutlet weak var image: ImageViewLoader!
+    @IBOutlet weak var image: UIImageView!
     
     func loadCell(_ product: Product) {
         self.image.layer.cornerRadius = 10

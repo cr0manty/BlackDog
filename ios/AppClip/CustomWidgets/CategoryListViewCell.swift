@@ -11,7 +11,7 @@ import UIKit
 
 class CategoryListViewCell: UICollectionViewCell {
     @IBOutlet weak var title: UILabel!
-    @IBOutlet weak var image: ImageViewLoader!
+    @IBOutlet weak var image: UIImageView!
     
     func loadCell(_ category: Category) {
         self.image.layer.cornerRadius = 10

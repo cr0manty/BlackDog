@@ -9,10 +9,13 @@ import UIKit
 
 class ProductDetailViewController: UIViewController {
     var product: Product!
-
+    @IBOutlet weak var image: UIImageView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = self.product.name
+        self.image.downloadImageFrom(self.product.image)
+        self.image.layer.cornerRadius = 10
     }
     
 

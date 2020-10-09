@@ -33,7 +33,7 @@
             </objects>
             <point key="canvasLocation" x="-1759" y="-44"/>
         </scene>
-        <!--Menu-->
+        <!--Меню-->
         <scene sceneID="5TN-n9-5XB">
             <objects>
                 <collectionViewController id="xNJ-sX-8an" customClass="CategoryViewController" customModule="AppClip" customModuleProvider="target" sceneMemberID="viewController">
@@ -89,27 +89,43 @@
                             <outlet property="delegate" destination="xNJ-sX-8an" id="C5f-gq-NDQ"/>
                         </connections>
                     </collectionView>
-                    <navigationItem key="navigationItem" title="Menu" id="hG3-D7-3nJ"/>
+                    <navigationItem key="navigationItem" title="Меню" id="hG3-D7-3nJ"/>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jwp-6K-T5F" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-917.39130434782612" y="-44.196428571428569"/>
         </scene>
-        <!--Product Detail View Controller-->
+        <!--Product-->
         <scene sceneID="Jwq-fs-d9p">
             <objects>
                 <viewController id="EGm-xn-AiZ" customClass="ProductDetailViewController" customModule="AppClip" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="uc9-lV-Boz">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="yLo-TZ-vZ5">
+                                <rect key="frame" x="20" y="140" width="374" height="300"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="300" id="ZZo-HL-iBP"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="qdP-wF-gFo"/>
                         <color key="backgroundColor" red="0.14515340330000001" green="0.14096531270000001" blue="0.15294289589999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <constraints>
+                            <constraint firstItem="qdP-wF-gFo" firstAttribute="trailing" secondItem="yLo-TZ-vZ5" secondAttribute="trailing" constant="20" id="7Fz-jr-Zgh"/>
+                            <constraint firstItem="yLo-TZ-vZ5" firstAttribute="leading" secondItem="qdP-wF-gFo" secondAttribute="leading" constant="20" id="MaH-IO-jLj"/>
+                            <constraint firstItem="yLo-TZ-vZ5" firstAttribute="top" secondItem="qdP-wF-gFo" secondAttribute="top" id="OOd-EA-8pI"/>
+                        </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="XKg-3b-jJj"/>
+                    <navigationItem key="navigationItem" title="Product" id="XKg-3b-jJj"/>
+                    <connections>
+                        <outlet property="image" destination="yLo-TZ-vZ5" id="4i3-lM-KVZ"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="elx-6h-lBV" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="797" y="-44"/>
+            <point key="canvasLocation" x="795.6521739130435" y="-44.196428571428569"/>
         </scene>
         <!--Products-->
         <scene sceneID="sph-42-Xkj">
@@ -134,13 +150,13 @@
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="clip" numberOfLines="3" minimumFontSize="10" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="c9N-oO-vCU">
-                                            <rect key="frame" x="0.0" y="183" width="48" height="24"/>
+                                            <rect key="frame" x="0.0" y="182" width="48" height="24"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <color key="highlightedColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </label>
                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="LBf-9m-qsr">
-                                            <rect key="frame" x="0.0" y="0.0" width="189" height="184"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="189" height="177"/>
                                             <color key="backgroundColor" red="0.65177704015544036" green="0.65177704015544036" blue="0.65177704015544036" alpha="0.6018728640223695" colorSpace="custom" customColorSpace="displayP3"/>
                                         </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1Gn-xl-ou0">
@@ -151,14 +167,14 @@
                                         </label>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="LBf-9m-qsr" firstAttribute="top" secondItem="NcX-7D-8we" secondAttribute="top" id="5vg-5c-sE7"/>
-                                        <constraint firstItem="c9N-oO-vCU" firstAttribute="leading" secondItem="NcX-7D-8we" secondAttribute="leading" id="AeL-dO-6D8"/>
-                                        <constraint firstItem="1Gn-xl-ou0" firstAttribute="top" secondItem="c9N-oO-vCU" secondAttribute="bottom" constant="1" id="Byn-AL-2E4"/>
-                                        <constraint firstItem="1Gn-xl-ou0" firstAttribute="top" secondItem="LBf-9m-qsr" secondAttribute="bottom" constant="24" id="Cco-36-zMo"/>
-                                        <constraint firstItem="LBf-9m-qsr" firstAttribute="leading" secondItem="NcX-7D-8we" secondAttribute="leading" id="DVo-1E-ukk"/>
-                                        <constraint firstAttribute="bottom" secondItem="c9N-oO-vCU" secondAttribute="bottom" constant="26" id="YgM-vc-tzL"/>
-                                        <constraint firstAttribute="trailing" secondItem="LBf-9m-qsr" secondAttribute="trailing" id="Ylf-NE-zgf"/>
-                                        <constraint firstItem="c9N-oO-vCU" firstAttribute="leading" secondItem="1Gn-xl-ou0" secondAttribute="leading" id="w6Y-c3-PPH"/>
+                                        <constraint firstItem="1Gn-xl-ou0" firstAttribute="leading" secondItem="NcX-7D-8we" secondAttribute="leading" id="0OH-mz-yYi"/>
+                                        <constraint firstItem="1Gn-xl-ou0" firstAttribute="top" secondItem="c9N-oO-vCU" secondAttribute="bottom" constant="2" id="FJT-ki-ZBx"/>
+                                        <constraint firstItem="c9N-oO-vCU" firstAttribute="top" secondItem="LBf-9m-qsr" secondAttribute="bottom" constant="5" id="IHy-8h-HGT"/>
+                                        <constraint firstItem="LBf-9m-qsr" firstAttribute="top" secondItem="NcX-7D-8we" secondAttribute="top" id="RGd-0o-wQN"/>
+                                        <constraint firstItem="c9N-oO-vCU" firstAttribute="leading" secondItem="NcX-7D-8we" secondAttribute="leading" id="Vy2-Vr-8Nf"/>
+                                        <constraint firstItem="LBf-9m-qsr" firstAttribute="leading" secondItem="NcX-7D-8we" secondAttribute="leading" id="WUW-Eb-bi8"/>
+                                        <constraint firstAttribute="trailing" secondItem="LBf-9m-qsr" secondAttribute="trailing" id="rHm-my-S7Z"/>
+                                        <constraint firstAttribute="bottom" secondItem="1Gn-xl-ou0" secondAttribute="bottom" constant="4" id="sxn-Ar-9zT"/>
                                     </constraints>
                                 </collectionViewCellContentView>
                                 <size key="customSize" width="189" height="233"/>
@@ -166,6 +182,7 @@
                                     <outlet property="image" destination="LBf-9m-qsr" id="a3e-8H-lGO"/>
                                     <outlet property="price" destination="1Gn-xl-ou0" id="KdY-nB-f6h"/>
                                     <outlet property="title" destination="c9N-oO-vCU" id="MPx-zU-YmS"/>
+                                    <segue destination="EGm-xn-AiZ" kind="show" identifier="ToDetailView" id="8gN-Pk-Frs"/>
                                 </connections>
                             </collectionViewCell>
                         </cells>
@@ -181,6 +198,7 @@
             <point key="canvasLocation" x="-26.086956521739133" y="-44.196428571428569"/>
         </scene>
     </scenes>
+    <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
     <resources>
         <systemColor name="labelColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

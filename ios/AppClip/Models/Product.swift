@@ -26,7 +26,7 @@ class Product: NSObject {
     
     var priceWithCurrency: String {
         get {
-            return "\(price) hrn"
+            return "\(price) грн"
         }
     }
 }

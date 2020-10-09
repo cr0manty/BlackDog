@@ -7,10 +7,10 @@
 
 import UIKit
 
-class ImageViewLoader: UIImageView {
-    let imageCache = NSCache<NSString, AnyObject>()
-    var imageURLString: String?
-    
+let imageCache = NSCache<NSString, AnyObject>()
+
+
+extension UIImageView {
     var activityIndicator: UIActivityIndicatorView {
         let activityIndicator = UIActivityIndicatorView()
         activityIndicator.hidesWhenStopped = true
@@ -59,7 +59,7 @@ class ImageViewLoader: UIImageView {
                             var imageToCache = UIImage(data: imageData)
                             self?.image = nil
                             self?.image = imageToCache
-                            self?.imageCache.setObject(imageToCache!, forKey: url.absoluteString as NSString)
+                            imageCache.setObject(imageToCache!, forKey: url.absoluteString as NSString)
                             imageToCache = nil
                         }
                     }
