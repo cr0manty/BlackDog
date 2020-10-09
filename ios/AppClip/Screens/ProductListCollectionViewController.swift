@@ -7,26 +7,19 @@
 
 import UIKit
 
-private let reuseIdentifier = "Cell"
+private let reuseIdentifier = "ItemCollectionsCell"
 
-class ProductListCollectionViewController: UICollectionViewController {
-    var categoryId: Int!
+class ProductListCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+    var category: Category!
     var products: [Product] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Register cell classes
-        self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-
-        // Do any additional setup after loading the view.
+        self.getProductList()
     }
 
     func getProductList() {
-        RequestManager.makeRequest(url: "/menu/categories-list/\(self.categoryId!)") { (response) in
+        RequestManager.makeRequest(url: "/menu/categories-list/\(self.category.id)") { (response) in
             for data in response["products"] as! [AnyObject] {
                 let product: Product = Product(data as! [String: AnyObject])
                 self.products.append(product)
@@ -48,22 +41,24 @@ class ProductListCollectionViewController: UICollectionViewController {
     // MARK: UICollectionViewDataSource
 
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
+        return 1
     }
 
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of items
-        return 0
+        return self.products.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
-    
-        // Configure the cell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! ProductListViewCell
+        
+        cell.loadCell(self.products[indexPath.row])
     
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: (self.view.frame.width - 60) / 2, height: self.view.frame.height * 0.3)
     }
 
     // MARK: UICollectionViewDelegate

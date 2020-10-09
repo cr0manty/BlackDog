@@ -25,4 +25,10 @@ class ProductVariation: NSObject {
         }
         return variations
     }
+    
+    var priceWithCurrency: String {
+        get {
+            return "\(price) hrn"
+        }
+    }
 }

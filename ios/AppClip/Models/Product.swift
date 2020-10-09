@@ -23,4 +23,10 @@ class Product: NSObject {
         self.price = data["price"] as! String
         self.variations = ProductVariation.arrayFromJson(data["variations"] as! [AnyObject])
     }
+    
+    var priceWithCurrency: String {
+        get {
+            return "\(price) hrn"
+        }
+    }
 }
