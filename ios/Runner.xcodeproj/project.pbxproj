@@ -13,7 +13,6 @@
 		50156D32251C07D200FA63F2 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50156D31251C07D100FA63F2 /* Config.swift */; };
 		5048F8D4252C927D00CA638C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048F8D3252C927D00CA638C /* AppDelegate.swift */; };
 		5048F8D6252C927D00CA638C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048F8D5252C927D00CA638C /* SceneDelegate.swift */; };
-		5048F8D8252C927D00CA638C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5048F8D7252C927D00CA638C /* ViewController.swift */; };
 		5048F8DB252C927D00CA638C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5048F8D9252C927D00CA638C /* Main.storyboard */; };
 		5048F8DD252C927F00CA638C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5048F8DC252C927F00CA638C /* Assets.xcassets */; };
 		5048F8FB252C928000CA638C /* AppClip.app in Embed App Clips */ = {isa = PBXBuildFile; fileRef = 5048F8D1252C927D00CA638C /* AppClip.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -86,7 +85,6 @@
 		5048F8D1252C927D00CA638C /* AppClip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppClip.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5048F8D3252C927D00CA638C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5048F8D5252C927D00CA638C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		5048F8D7252C927D00CA638C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		5048F8DA252C927D00CA638C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		5048F8DC252C927F00CA638C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5048F8E1252C927F00CA638C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -108,6 +106,8 @@
 		509EDE1A2530876F00E4F505 /* ProductListViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListViewCell.swift; sourceTree = "<group>"; };
 		509EDE7925308A2300E4F505 /* NetworkImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkImage.swift; sourceTree = "<group>"; };
 		50B9409F252DE28600B83D4D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		50FF7EA02533616400082392 /* Realm.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Realm.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		50FF7ED42533624F00082392 /* Realm.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Realm.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		59E4DFF24A5D91BD7253CD31 /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
 		5A3D2A4D6109CD37F1DE685C /* Pods_AppClip.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AppClip.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		716489DF0DB56DE2DCC5A52F /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
@@ -170,7 +170,6 @@
 				5048F9BF252C950A00CA638C /* Manager */,
 				5048F8D3252C927D00CA638C /* AppDelegate.swift */,
 				5048F8D5252C927D00CA638C /* SceneDelegate.swift */,
-				5048F8D7252C927D00CA638C /* ViewController.swift */,
 				5048F8D9252C927D00CA638C /* Main.storyboard */,
 				5048F8DC252C927F00CA638C /* Assets.xcassets */,
 				5048F8E1252C927F00CA638C /* Info.plist */,
@@ -288,6 +287,8 @@
 		BEB02CF177D9D62C5601E347 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				50FF7ED42533624F00082392 /* Realm.framework */,
+				50FF7EA02533616400082392 /* Realm.framework */,
 				504E94D5252DE850005508A5 /* FirebaseCore.framework */,
 				504E94D7252DE850005508A5 /* FirebaseCrashlytics.framework */,
 				7FC913BB820657EB7D019E24 /* Pods_Runner.framework */,
@@ -579,7 +580,6 @@
 			files = (
 				509EDE1B2530876F00E4F505 /* ProductListViewCell.swift in Sources */,
 				5048F9C2252C951900CA638C /* RequestManager.swift in Sources */,
-				5048F8D8252C927D00CA638C /* ViewController.swift in Sources */,
 				5048F90F252C92D400CA638C /* Config.swift in Sources */,
 				5048F8D4252C927D00CA638C /* AppDelegate.swift in Sources */,
 				504E97A6252E0108005508A5 /* ProductListCollectionViewController.swift in Sources */,
@@ -748,6 +748,8 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Alamofire\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseCrashlytics\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseCore\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Realm\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/RealmSwift\"",
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				HEADER_SEARCH_PATHS = (
@@ -760,6 +762,8 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseCoreDiagnostics/FirebaseCoreDiagnostics.framework/Headers\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseCore/FirebaseCore.framework/Headers\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/firebase_core/firebase_core.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Realm/Realm.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/RealmSwift/RealmSwift.framework/Headers\"",
 				);
 				INFOPLIST_FILE = AppClip/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -799,6 +803,8 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Alamofire\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseCrashlytics\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseCore\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Realm\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/RealmSwift\"",
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				HEADER_SEARCH_PATHS = (
@@ -811,6 +817,8 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseCoreDiagnostics/FirebaseCoreDiagnostics.framework/Headers\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseCore/FirebaseCore.framework/Headers\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/firebase_core/firebase_core.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Realm/Realm.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/RealmSwift/RealmSwift.framework/Headers\"",
 				);
 				INFOPLIST_FILE = AppClip/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -847,6 +855,8 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Alamofire\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseCrashlytics\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseCore\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Realm\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/RealmSwift\"",
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				HEADER_SEARCH_PATHS = (
@@ -859,6 +869,8 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseCoreDiagnostics/FirebaseCoreDiagnostics.framework/Headers\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseCore/FirebaseCore.framework/Headers\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/firebase_core/firebase_core.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Realm/Realm.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/RealmSwift/RealmSwift.framework/Headers\"",
 				);
 				INFOPLIST_FILE = AppClip/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;

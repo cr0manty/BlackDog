@@ -11,7 +11,6 @@ private let reuseIdentifier = "ItemCollectionsCell"
 
 class ProductListCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     var category: Category!
-    var products: [Product] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,10 +20,13 @@ class ProductListCollectionViewController: UICollectionViewController, UICollect
 
     func getProductList() {
         RequestManager.makeRequest(url: "/menu/categories-list/\(self.category.id)") { (response) in
+            var productList: [Product] = []
+
             for data in response["products"] as! [AnyObject] {
                 let product: Product = Product(data as! [String: AnyObject])
-                self.products.append(product)
+                productList.append(product)
             }
+            self.category.renewProducts(products: productList)
             self.collectionView.reloadData()
         }
     }
@@ -47,13 +49,13 @@ class ProductListCollectionViewController: UICollectionViewController, UICollect
 
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.products.count
+        return self.category.productsCount
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! ProductListViewCell
         
-        cell.loadCell(self.products[indexPath.row])
+        cell.loadCell(self.category.getProductAt(indexPath.row))
     
         return cell
     }
@@ -68,7 +70,7 @@ class ProductListCollectionViewController: UICollectionViewController, UICollect
             let indexPath: NSIndexPath = self.collectionView.indexPath(for: cell)! as NSIndexPath
             let productDetail = segue.destination as! ProductDetailViewController
             
-            productDetail.product = self.products[indexPath.row] as Product
+            productDetail.product = self.category.getProductAt(indexPath.row) as Product
         }
     }
 
