@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/notification_manager.dart';
 import 'package:black_dog/instances/shared_pref.dart';
+import 'package:black_dog/models/base_voucher.dart';
 import 'package:black_dog/models/log.dart';
 import 'package:black_dog/models/menu_category.dart';
 import 'package:black_dog/models/menu_item.dart';
