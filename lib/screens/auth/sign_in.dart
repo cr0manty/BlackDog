@@ -2,6 +2,7 @@ import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/screens/staff_home.dart';
 import 'package:black_dog/screens/auth/sign_up.dart';
+import 'package:black_dog/utils/debug_print.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/screens/home_page.dart';
@@ -237,7 +238,7 @@ class _SignInPageState extends State<SignInPage> {
       return;
     }).catchError((error) {
       setState(() => isLoading = !isLoading);
-      print(error);
+      debugPrefixPrint(error, prefix: 'error');
       EasyLoading.instance..backgroundColor = HexColor.errorRed;
       EasyLoading.showError('');
     });

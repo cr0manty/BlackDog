@@ -5,6 +5,7 @@ import 'package:black_dog/instances/connection_check.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/restaurant_config.dart';
+import 'package:black_dog/utils/debug_print.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/utils/map_launch.dart';
@@ -51,7 +52,7 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
                       MapUtils.openMap(
                           config.lat, config.lon, config.branchName);
                     } catch (e) {
-                      print(e);
+                      debugPrefixPrint(e, prefix: 'error');
                       Navigator.of(context).pop();
                       EasyLoading.instance
                         ..backgroundColor = HexColor.errorRed;

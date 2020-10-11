@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:black_dog/screens/auth/sign_in.dart';
+import 'package:black_dog/utils/debug_print.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:black_dog/instances/utils.dart';
@@ -95,8 +96,8 @@ class _BlackDogAppState extends State<BlackDogApp> {
           }
         }
         currentLocale ??= supportedLocales.first;
-        print('Device language code: ${currentLocale.languageCode}');
-        print('Device country code: ${currentLocale.countryCode ?? ''}');
+        debugPrefixPrint('Device language code: ${currentLocale.languageCode}', prefix: 'lang');
+        debugPrefixPrint('Device country code: ${currentLocale.countryCode ?? ''}', prefix: 'lang');
 
         SharedPrefs.saveLanguageCode(currentLocale.languageCode);
         return currentLocale;

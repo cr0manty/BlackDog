@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:barcode_scan/platform_wrapper.dart';
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/models/log.dart';
+import 'package:black_dog/utils/debug_print.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/instances/utils.dart';
@@ -37,7 +38,7 @@ class _StaffHomePageState extends State<StaffHomePage> {
     Account.instance.refreshUser().then((value) => setState(() {}));
   }
 
-  String get currentDate => DateFormat('M/d/y').format(DateTime.now());
+  String get currentDate => DateFormat('M/d/y H:mm').format(DateTime.now());
 
   @override
   void initState() {
@@ -49,22 +50,27 @@ class _StaffHomePageState extends State<StaffHomePage> {
   void _onScanTap() async {
     setState(() => isLoading = !isLoading);
     var result = await BarcodeScanner.scan();
-    print('Scanned QR Code url: ${result.rawContent}');
+    debugPrefixPrint('Scanned QR Code url: ${result.rawContent}', prefix: 'scan');
 
     if (result.rawContent.isNotEmpty) {
       Map scanned = await Api.instance.staffScanQRCode(result.rawContent);
+      String errorMsg;
+      if (scanned['message'] != null) {
+        errorMsg = scanned['message'] is List
+            ? scanned['message'][0]
+            : scanned['message'];
+      } else {
+        errorMsg = AppLocalizations.of(context)
+            .translate(scanned['result'] ? 'success_scan' : 'error_scan');
+      }
+
       if (scanned['result']) {
-        Utils.instance.infoDialog(
-            context,
-            scanned['message'] ??
-                AppLocalizations.of(context).translate('success_scan'));
+        Utils.instance.infoDialog(context, errorMsg);
         _logs = Api.instance.getLogs(date: currentDate);
       } else {
-        print(scanned);
-        Utils.instance.infoDialog(
-            context,
-            scanned['message'] ??
-                AppLocalizations.of(context).translate('error_scan'));
+        debugPrefixPrint(scanned, prefix: 'scan');
+
+        Utils.instance.infoDialog(context, errorMsg);
       }
     }
     setState(() => isLoading = !isLoading);
@@ -108,7 +114,8 @@ class _StaffHomePageState extends State<StaffHomePage> {
         inAsyncCall: isLoading,
         scrollController: _scrollController,
         alwaysNavigation: true,
-        onRefresh: () async => await Future.delayed(Duration(milliseconds: 500), () => _logs = Api.instance.getLogs(date: currentDate)),
+        onRefresh: () async => await Future.delayed(Duration(milliseconds: 500),
+            () => _logs = Api.instance.getLogs(date: currentDate)),
         action: RouteButton(
             text: AppLocalizations.of(context).translate('logout'),
             color: HexColor.lightElement,

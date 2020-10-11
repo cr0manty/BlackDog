@@ -1,6 +1,7 @@
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/screens/auth/sign_up_confirm.dart';
+import 'package:black_dog/utils/debug_print.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/hex_color.dart';
@@ -211,7 +212,7 @@ class _SignUpPageState extends State<SignUpPage> {
         timeout: Duration(seconds: 60),
         verificationCompleted: (AuthCredential credential) {},
         verificationFailed: (FirebaseAuthException authException) {
-          print(authException.message);
+          debugPrefixPrint(authException.message);
           EasyLoading.instance..backgroundColor = HexColor.errorRed;
           EasyLoading.showError('');
         },
@@ -278,7 +279,7 @@ class _SignUpPageState extends State<SignUpPage> {
         },
         codeAutoRetrievalTimeout: (String verificationId) {
           verificationId = verificationId;
-          print('Time out: $verificationId');
+          debugPrefixPrint('Time out: $verificationId');
         });
   }
 
@@ -306,7 +307,7 @@ class _SignUpPageState extends State<SignUpPage> {
       setState(() => isLoading = false);
       return;
     }).catchError((error) {
-      print(error);
+      debugPrefixPrint(error, prefix: 'error');
       setState(() => isLoading = false);
       EasyLoading.instance..backgroundColor = HexColor.errorRed;
       EasyLoading.showError('');

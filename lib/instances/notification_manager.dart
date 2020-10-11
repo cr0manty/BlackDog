@@ -1,20 +1,29 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/models/voucher.dart';
+import 'package:black_dog/utils/debug_print.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'api.dart';
 
 enum NotificationType { VOUCHER_RECEIVED, VOUCHER_SCANNED, QR_CODE_SCANNED }
 
+class NotificationMessage {
+  NotificationType type;
+  String msg;
+
+  NotificationMessage({this.type, this.msg});
+}
+
 class NotificationManager {
   static final NotificationManager instance = NotificationManager._internal();
-  final StreamController<NotificationType> _onMessage =
-      StreamController<NotificationType>.broadcast();
+  final StreamController<NotificationMessage> _onMessage =
+      StreamController<NotificationMessage>.broadcast();
 
-  Stream<NotificationType> get onMessage => _onMessage.stream;
+  Stream<NotificationMessage> get onMessage => _onMessage.stream;
 
   NotificationManager._internal();
 
@@ -25,7 +34,7 @@ class NotificationManager {
     await _fcm.requestNotificationPermissions();
     _fcm.onTokenRefresh.listen((token) async {
       Api.instance.sendFCMToken(token: token);
-      print('FCM Token: $token');
+      debugPrefixPrint('FCM Token: $token', prefix: 'fcm');
     });
 
     _fcm.configure(
@@ -40,50 +49,57 @@ class NotificationManager {
   }
 
   Future _foregroundMessageHandler(Map<String, dynamic> message) async {
-    NotificationType notificationType = await _messageHandler(message);
-    _onMessage.add(notificationType);
+    NotificationMessage msg = await _messageHandler(message);
+    _onMessage.add(msg);
   }
 
   static Future _messageHandler(Map<String, dynamic> message) async {
-    print("onMessage: $message");
+    debugPrefixPrint("onMessage: $message", prefix: 'fcm');
 
     if (SharedPrefs.getInstance() == null) {
       await SharedPrefs.initialize();
     }
 
     if (message.containsKey('data')) {
-      print("Message date type: ${message['data']['code']}");
+      debugPrefixPrint("Message date type: ${message['data']['code']}", prefix: 'fcm');
       if (message['data']['code'] == 'voucher_received') {
-        Voucher voucher = Voucher.fromStringJson(message['data']['voucher']);
-        _updateVouchers(voucher: voucher);
+        Voucher voucher = Voucher.fromStringJson(message['data']['voucher'], config: true);
+        await _updateVouchers(voucher: voucher);
         _updateCounter(int.parse(message['data']['updated_counter'] ?? '0'));
-        return NotificationType.VOUCHER_RECEIVED;
+        return NotificationMessage(
+            type: NotificationType.VOUCHER_RECEIVED,
+            msg: message['notification']['title']);
       } else if (message['data']['code'] == 'voucher_scanned') {
-        _updateVouchers(id: int.parse(message['data']['voucher_id']));
-        _updateCounter(int.parse(message['data']['updated_counter'] ?? '0'));
-        return NotificationType.VOUCHER_SCANNED;
+       await _updateVouchers(id: int.parse(message['data']['voucher_id']));
+       _updateCounter(int.parse(message['data']['updated_counter'] ?? '0'));
+        return NotificationMessage(
+            type: NotificationType.VOUCHER_SCANNED,
+            msg: message['notification']['title']);
       } else if (message['data']['code'] == 'qr_code_scanned') {
         _updateCounter(int.parse(message['data']['updated_counter'] ?? '0'));
-        return NotificationType.QR_CODE_SCANNED;
+        return NotificationMessage(
+            type: NotificationType.QR_CODE_SCANNED,
+            msg: message['notification']['title']);
       }
     }
   }
 
-  static void _updateVouchers({Voucher voucher, int id}) {
-    List<Voucher> vouchers = SharedPrefs.getActiveVouchers();
-
+  static Future _updateVouchers({Voucher voucher, int id}) async {
     if (id != null) {
-      vouchers.removeWhere((item) => item.id == id);
+      Account.instance.vouchers.removeWhere((item) => item.id == id);
     } else if (voucher != null) {
-      vouchers.add(voucher);
+      String qrCode = await Api.instance.saveQRCode(voucher.qrCode);
+      if (qrCode != null) {
+        voucher.qrCodeLocal = qrCode;
+      }
+      Account.instance.vouchers.add(voucher);
     }
-    SharedPrefs.saveActiveVoucher(vouchers);
+    SharedPrefs.saveActiveVoucher(Account.instance.vouchers);
   }
 
   static void _updateCounter(int counter) {
-    BaseVoucher currentVoucher = SharedPrefs.getCurrentVoucher();
-    currentVoucher.purchaseCount = counter;
-    SharedPrefs.saveCurrentVoucher(currentVoucher);
+    Account.instance.currentVoucher.purchaseCount = counter;
+    SharedPrefs.saveCurrentVoucher(Account.instance.currentVoucher);
   }
 
   Future<String> getToken() {

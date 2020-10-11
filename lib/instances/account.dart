@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/instances/shared_pref.dart';
+import 'package:black_dog/models/base_voucher.dart';
 import 'package:black_dog/models/user.dart';
 import 'package:black_dog/models/voucher.dart';
 
@@ -17,7 +18,6 @@ class Account {
   BaseVoucher _currentVoucher;
   List<Voucher> _vouchers = [];
   static final Account _instance = Account._internal();
-  StreamSubscription _onMessage;
 
   static Account get instance => _instance;
 
@@ -37,12 +37,11 @@ class Account {
     if (_user != null) {
       state = _user.isStaff ?? false ? AccountState.STAFF : AccountState.USER;
     }
-    _onMessage =
-        NotificationManager.instance.onMessage.listen(_onNotificationListener);
+
   }
 
-  void _onNotificationListener(NotificationType event) {
-    switch (event) {
+  void onNotificationListener(NotificationMessage event) {
+    switch (event.type) {
       case NotificationType.VOUCHER_RECEIVED:
         _vouchers = SharedPrefs.getActiveVouchers();
         _currentVoucher = SharedPrefs.getCurrentVoucher();
@@ -79,9 +78,5 @@ class Account {
   void refreshVouchers() {
     _vouchers = SharedPrefs.getActiveVouchers();
     _currentVoucher = SharedPrefs.getCurrentVoucher();
-  }
-
-  void dispose() {
-    _onMessage?.cancel();
   }
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/instances/connection_check.dart';
+import 'package:black_dog/instances/notification_manager.dart';
 import 'package:black_dog/models/menu_category.dart';
 import 'package:black_dog/models/news.dart';
 import 'package:black_dog/screens/content/product_list.dart';
@@ -36,6 +37,7 @@ class _HomePageState extends State<HomePage>
   final ScrollController _scrollController = ScrollController();
   StreamSubscription _apiChange;
   StreamSubscription _connectionChange;
+  StreamSubscription _onMessage;
 
   bool isLoading = false;
   bool updateNetworkItems = true;
@@ -63,6 +65,8 @@ class _HomePageState extends State<HomePage>
 
   @override
   void initState() {
+    super.initState();
+
     _apiChange = Api.instance.apiChange.listen((event) => setState(() {}));
     _connectionChange =
         ConnectionsCheck.instance.onChange.listen(onNetworkChange);
@@ -70,7 +74,13 @@ class _HomePageState extends State<HomePage>
     if (ConnectionsCheck.instance.isOnline) {
       onNetworkChange(true);
     }
-    super.initState();
+    _onMessage = NotificationManager.instance.onMessage.listen((event) {
+      Account.instance.onNotificationListener(event);
+      Utils.instance.closePopUp(context);
+      if (event.msg != null) {
+        Utils.instance.infoDialog(context, event.msg);
+      }
+    });
   }
 
   @override
@@ -295,6 +305,7 @@ class _HomePageState extends State<HomePage>
   void dispose() {
     _apiChange?.cancel();
     _connectionChange?.cancel();
+    _onMessage?.cancel();
     super.dispose();
   }
 }

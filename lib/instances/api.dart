@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/notification_manager.dart';
 import 'package:black_dog/instances/shared_pref.dart';
+import 'package:black_dog/models/base_voucher.dart';
 import 'package:black_dog/models/log.dart';
 import 'package:black_dog/models/menu_category.dart';
 import 'package:black_dog/models/menu_item.dart';
@@ -13,6 +14,7 @@ import 'package:black_dog/models/restaurant.dart';
 import 'package:black_dog/models/restaurant_config.dart';
 import 'package:black_dog/models/user.dart';
 import 'package:black_dog/models/voucher.dart';
+import 'package:black_dog/utils/debug_print.dart';
 import 'package:black_dog/utils/logs_interseptor.dart';
 import 'package:http/http.dart';
 import 'package:http_interceptor/http_interceptor.dart';
@@ -235,13 +237,13 @@ class Api {
       return;
     }
 
-    print('Saving qr code $url');
+    debugPrefixPrint('Saving qr code $url', prefix: 'qr');
     String documentDir = (await getApplicationDocumentsDirectory()).path;
     String fileName = url.substring(url.lastIndexOf('/'));
     File qrCode = File(documentDir + fileName);
 
     if (!await qrCode.exists()) {
-      print('Downloading qr code');
+      debugPrefixPrint('Downloading qr code', prefix: 'qr');
 
       Response response = await get(url);
       await qrCode.writeAsBytes(response.bodyBytes);
@@ -259,7 +261,7 @@ class Api {
         SharedPrefs.saveAboutUs(restaurant);
       }
     }).catchError((e) {
-      print(e);
+      debugPrefixPrint(e, prefix: 'error');
     });
   }
 
@@ -288,7 +290,7 @@ class Api {
       body['result'] = response.statusCode == 200;
       return body;
     }).catchError((error) {
-      print(error);
+      debugPrefixPrint(error, prefix: 'error');
       return {'result': false};
     });
   }
@@ -332,15 +334,18 @@ class Api {
 
   Future sendFCMToken({String token}) async {
     String fcmToken = token ?? await NotificationManager.instance.getToken();
-    return await _client.post(
-        _setUrl(path: '/register-notify-token/', base: true),
-        body: json.encode({
-          'registration_id': fcmToken,
-          'type':
-              Platform.isIOS ? 'ios' : (Platform.isAndroid ? 'android' : 'web')
-        }),
-        headers: _setHeaders(useJson: true)).catchError((error) {
-          print(error);
+    return await _client
+        .post(_setUrl(path: '/register-notify-token/', base: true),
+            body: json.encode({
+              'device_id': 'fcmToken',
+              'registration_id': fcmToken,
+              'type': Platform.isIOS
+                  ? 'ios'
+                  : (Platform.isAndroid ? 'android' : 'web')
+            }),
+            headers: _setHeaders(useJson: true))
+        .catchError((error) {
+      debugPrefixPrint(error, prefix: 'error');
     });
   }
 
@@ -373,7 +378,7 @@ class Api {
       }
       return result;
     }).catchError((error) {
-      print(error);
+      debugPrefixPrint(error, prefix: 'error');
       return {'result': false};
     });
   }

@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 
+import 'base_voucher.dart';
+
 Future vouchersFromJsonList(List vouchersList) async {
   List<Voucher> vouchers = [];
   await Future.wait(vouchersList.map((element) async {
@@ -12,67 +14,12 @@ Future vouchersFromJsonList(List vouchersList) async {
   SharedPrefs.saveActiveVoucher(vouchers);
 }
 
-BaseVoucher baseVoucherFromJson(String str) {
-  if (str != null && str.isNotEmpty) {
-    final data = json.decode(str);
-    return BaseVoucher.fromJson(data);
-  }
-  return BaseVoucher();
-}
-
-String baseVoucherToJson(BaseVoucher data) {
-  final str = data.toJson();
-  return json.encode(str);
-}
-
 Voucher voucherFromJson(String str) {
   if (str != null && str.isNotEmpty) {
     final data = json.decode(str);
     return Voucher.fromJson(data);
   }
   return Voucher();
-}
-
-String voucherToJson(BaseVoucher data) {
-  final str = data.toJson();
-  return json.encode(str);
-}
-
-class BaseVoucher {
-  int id;
-  String discount;
-
-  int purchaseCount;
-  int purchaseToBonus;
-  String amount;
-  String name;
-
-  BaseVoucher(
-      {this.name,
-      this.amount,
-      this.id,
-      this.discount,
-      this.purchaseCount,
-      this.purchaseToBonus});
-
-  factory BaseVoucher.fromJson(Map<String, dynamic> data) => BaseVoucher(
-      name: data['name'] ?? '',
-      amount: data['amount'] ?? '',
-      id: data['id'] ?? -1,
-      discount: data['discount'],
-      purchaseToBonus: data['purchase_count'] ?? 10,
-      purchaseCount: data['user_current_purchase_count'] ?? 0);
-
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'discount': discount,
-        'user_current_purchase_count': purchaseCount,
-        'purchase_count': purchaseToBonus,
-        'amount': amount,
-        'name': name,
-      };
-
-  int get currentStep => ((purchaseCount / purchaseToBonus) * 100).toInt();
 }
 
 class Voucher extends BaseVoucher {
@@ -92,21 +39,30 @@ class Voucher extends BaseVoucher {
       this.used = false,
       int id,
       String amount,
+      String name,
       String discount})
-      : super(id: id, discount: discount, amount: amount);
+      : super(id: id, discount: discount, amount: amount, name: name);
 
-  factory Voucher.fromStringJson(String data) {
+  factory Voucher.fromStringJson(String data, {bool config = false}) {
     Map jsonData = json.decode(data);
+
+    if (config) {
+      Voucher voucher = Voucher.fromJson(jsonData['voucher_config']);
+      voucher.qrCode = jsonData['qr_code'];
+      return voucher;
+    }
+
     return Voucher.fromJson(jsonData);
   }
 
   factory Voucher.fromJson(Map<String, dynamic> data) => Voucher(
       qrCode: data['qr_code'],
       title: data['title'],
+      name: data['name'],
       amount: data['amount'],
       id: data['id'],
       expirationDate: data['expiration_date'],
-      discount: data['discount'],
+      discount: data['discount'] ?? data[''][''],
       qrCodeLocal: data['qr_code_local'],
       used: data['used'] ?? false,
       description: data['description']);
@@ -116,6 +72,7 @@ class Voucher extends BaseVoucher {
         'title': title,
         'id': id,
         'amount': amount,
+        'name': name,
         'expiration_date': expirationDate,
         'discount': discount,
         'description': description,
@@ -127,7 +84,7 @@ class Voucher extends BaseVoucher {
     if (discount == 'percentage') {
       return '-$amount%';
     } else if (discount == 'fixed' || discount == "free_item") {
-      return title;
+      return voucherName;
     }
     return '';
   }
@@ -140,4 +97,6 @@ class Voucher extends BaseVoucher {
       qrCodeLocal = qrCodeLocalPath ?? qrCodeLocal;
     }
   }
+
+  String get voucherName => title ?? name;
 }
