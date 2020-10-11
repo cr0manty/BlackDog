@@ -1,5 +1,6 @@
 import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/utils/debug_print.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/hex_color.dart';
@@ -166,7 +167,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       setState(() => isLoading = !isLoading);
       return;
     }).catchError((error) {
-      print(error);
+      debugPrefixPrint(error, prefix: 'error');
       setState(() => isLoading = !isLoading);
       EasyLoading.instance..backgroundColor = HexColor.errorRed;
       EasyLoading.showError('');

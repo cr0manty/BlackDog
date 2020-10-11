@@ -92,6 +92,9 @@ class Utils {
   }
 
   void infoDialog(BuildContext context, String content) {
+    if (_showPopUp != null) {
+      return;
+    }
     _showPopUp = showCupertinoDialog(
         context: context,
         barrierDismissible: true,
@@ -243,6 +246,13 @@ class Utils {
             fontFamily: 'Century-Gothic',
             fontSize: TextSize.small,
             color: HexColor.semiElement);
+    }
+  }
+
+  void closePopUp(BuildContext context) {
+    if (_showPopUp != null) {
+      Navigator.of(context).pop();
+      _showPopUp = null;
     }
   }
 }

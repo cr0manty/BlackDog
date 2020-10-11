@@ -1,4 +1,5 @@
 import 'package:black_dog/instances/utils.dart';
+import 'package:black_dog/utils/debug_print.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/sizes.dart';
 import 'package:flutter/cupertino.dart';
@@ -32,7 +33,7 @@ class AboutSection extends StatelessWidget {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
-      print('Could not launch $url');
+      debugPrefixPrint('Could not launch $url', prefix: 'error');
     }
   }
 
