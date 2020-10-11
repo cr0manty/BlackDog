@@ -13,7 +13,7 @@ class RequestManager : NSObject {
     
     static func makeRequest(url: String, closureBloack: @escaping ([String: AnyObject]) -> ()) {
         
-        AF.request(self.baseUrl + url, headers: headers).responseJSON { (response) in
+        AF.request(self.baseUrl + url).responseJSON { (response) in
             switch response.result {
             case .success(let value):
                 closureBloack(value as! [String: AnyObject])
