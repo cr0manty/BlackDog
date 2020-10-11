@@ -20,13 +20,13 @@
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
-	<key>LSRequiresIPhoneOS</key>
-	<true/>
 	<key>FirebaseAppDelegateProxyEnabled</key>
+	<true/>
+	<key>FirebaseScreenReportingEnabled</key>
 	<true/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
-	<key>FirebaseScreenReportingEnabled</key>
+	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppClip</key>
 	<dict>
@@ -69,8 +69,6 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>

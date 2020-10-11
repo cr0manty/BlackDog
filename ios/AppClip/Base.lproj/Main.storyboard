@@ -115,7 +115,7 @@
                         <constraints>
                             <constraint firstItem="qdP-wF-gFo" firstAttribute="trailing" secondItem="yLo-TZ-vZ5" secondAttribute="trailing" constant="20" id="7Fz-jr-Zgh"/>
                             <constraint firstItem="yLo-TZ-vZ5" firstAttribute="leading" secondItem="qdP-wF-gFo" secondAttribute="leading" constant="20" id="MaH-IO-jLj"/>
-                            <constraint firstItem="yLo-TZ-vZ5" firstAttribute="top" secondItem="qdP-wF-gFo" secondAttribute="top" id="OOd-EA-8pI"/>
+                            <constraint firstItem="yLo-TZ-vZ5" firstAttribute="top" secondItem="qdP-wF-gFo" secondAttribute="top" id="vZx-Mt-2Y4"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Product" id="XKg-3b-jJj"/>
