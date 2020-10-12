@@ -38,19 +38,17 @@ class NotificationManager {
     });
 
     _fcm.configure(
-        onMessage: _foregroundMessageHandler,
-        onLaunch: _foregroundMessageHandler,
-        onResume: _foregroundMessageHandler,
-        onBackgroundMessage: Platform.isIOS ? null : _backgroundMessageHandler);
+        onMessage: (Map<String, dynamic> message) async {
+          NotificationMessage msg = await _messageHandler(message);
+          _onMessage.add(msg);
+        },
+        onLaunch: (Map<String, dynamic> message) async => await _messageHandler(message),
+        onResume: (Map<String, dynamic> message) async => await _messageHandler(message),
+        onBackgroundMessage:  _backgroundMessageHandler);
   }
 
   static Future _backgroundMessageHandler(Map<String, dynamic> message) async {
     _messageHandler(message);
-  }
-
-  Future _foregroundMessageHandler(Map<String, dynamic> message) async {
-    NotificationMessage msg = await _messageHandler(message);
-    _onMessage.add(msg);
   }
 
   static Future _messageHandler(Map<String, dynamic> message) async {
@@ -61,17 +59,19 @@ class NotificationManager {
     }
 
     if (message.containsKey('data')) {
-      debugPrefixPrint("Message date type: ${message['data']['code']}", prefix: 'fcm');
+      debugPrefixPrint("Message date type: ${message['data']['code']}",
+          prefix: 'fcm');
       if (message['data']['code'] == 'voucher_received') {
-        Voucher voucher = Voucher.fromStringJson(message['data']['voucher'], config: true);
+        Voucher voucher =
+            Voucher.fromStringJson(message['data']['voucher'], config: true);
         await _updateVouchers(voucher: voucher);
         _updateCounter(int.parse(message['data']['updated_counter'] ?? '0'));
         return NotificationMessage(
             type: NotificationType.VOUCHER_RECEIVED,
             msg: message['notification']['title']);
       } else if (message['data']['code'] == 'voucher_scanned') {
-       await _updateVouchers(id: int.parse(message['data']['voucher_id']));
-       _updateCounter(int.parse(message['data']['updated_counter'] ?? '0'));
+        await _updateVouchers(id: int.parse(message['data']['voucher_id']));
+        _updateCounter(int.parse(message['data']['updated_counter'] ?? '0'));
         return NotificationMessage(
             type: NotificationType.VOUCHER_SCANNED,
             msg: message['notification']['title']);
