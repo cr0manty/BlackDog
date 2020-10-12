@@ -75,9 +75,9 @@ class _BlackDogAppState extends State<BlackDogApp> {
     return CupertinoApp(
       debugShowCheckedModeBanner: false,
       supportedLocales: [
-        Locale('en', 'US'),
+        // Locale('en', 'US'),
         Locale('ru', 'RU'),
-        Locale('uk', 'UA'),
+        // Locale('uk', 'UA'),
       ],
       localizationsDelegates: [
         AppLocalizations.delegate,

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/shared_pref.dart';
@@ -43,8 +42,7 @@ class NotificationManager {
           _onMessage.add(msg);
         },
         onLaunch: (Map<String, dynamic> message) async => await _messageHandler(message),
-        onResume: (Map<String, dynamic> message) async => await _messageHandler(message),
-        onBackgroundMessage:  _backgroundMessageHandler);
+        onResume: (Map<String, dynamic> message) async => await _messageHandler(message));
   }
 
   static Future _backgroundMessageHandler(Map<String, dynamic> message) async {
