@@ -1,7 +1,7 @@
 name: black_dog
 description: A Flutter project for Black Dog Coffee.
 
-version: 1.0.8+12
+version: 1.0.8+13
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -34,6 +34,7 @@ dependencies:
   cached_network_image:
   screen:
   device_id:
+  rate_my_app:
 
   flutter_localizations:
     sdk: flutter

@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:black_dog/screens/auth/sign_in.dart';
 import 'package:black_dog/utils/debug_print.dart';
 import 'package:black_dog/utils/hex_color.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/screens/home_page.dart';
 import 'package:black_dog/screens/staff_home.dart';
@@ -18,7 +17,6 @@ import 'instances/connection_check.dart';
 import 'instances/notification_manager.dart';
 import 'instances/shared_pref.dart';
 
-
 // flutter build apk --no-shrink  - command to build release build
 // need to add `--no-shrink` because of SharedPreferences not support `await` on android release build
 void main() async {
@@ -27,7 +25,6 @@ void main() async {
   ConnectionsCheck.instance.initialise();
 
   await NotificationManager.instance.configure();
-  Firebase.initializeApp();
 
   runApp(BlackDogApp());
 }
@@ -49,11 +46,11 @@ class _BlackDogAppState extends State<BlackDogApp> {
 
   @override
   void initState() {
+    super.initState();
     configurePopUp();
 
     SharedPrefs.saveLanguageCode(window.locale.languageCode);
     Account.instance.initialize();
-    super.initState();
   }
 
   void configurePopUp() {
@@ -75,15 +72,16 @@ class _BlackDogAppState extends State<BlackDogApp> {
     return CupertinoApp(
       debugShowCheckedModeBanner: false,
       supportedLocales: [
-        // Locale('en', 'US'),
         Locale('ru', 'RU'),
-        // Locale('uk', 'UA'),
+        Locale('en', 'US'),
+        Locale('uk', 'UA'),
       ],
       localizationsDelegates: [
         AppLocalizations.delegate,
         AppLocalizations.cupertinoDelegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
       ],
       localeListResolutionCallback: (locales, supportedLocales) {
         Locale currentLocale;
@@ -96,8 +94,11 @@ class _BlackDogAppState extends State<BlackDogApp> {
           }
         }
         currentLocale ??= supportedLocales.first;
-        debugPrefixPrint('Device language code: ${currentLocale.languageCode}', prefix: 'lang');
-        debugPrefixPrint('Device country code: ${currentLocale.countryCode ?? ''}', prefix: 'lang');
+        debugPrefixPrint('Device language code: ${currentLocale.languageCode}',
+            prefix: 'lang');
+        debugPrefixPrint(
+            'Device country code: ${currentLocale.countryCode ?? ''}',
+            prefix: 'lang');
 
         SharedPrefs.saveLanguageCode(currentLocale.languageCode);
         return currentLocale;
