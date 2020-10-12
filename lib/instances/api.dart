@@ -15,10 +15,10 @@ import 'package:black_dog/models/restaurant_config.dart';
 import 'package:black_dog/models/user.dart';
 import 'package:black_dog/models/voucher.dart';
 import 'package:black_dog/utils/logs_interseptor.dart';
+import 'package:device_id/device_id.dart';
 import 'package:http/http.dart';
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:path_provider/path_provider.dart';
-
 import 'connection_check.dart';
 
 class Api {
@@ -336,7 +336,7 @@ class Api {
     return await _client.post(
         _setUrl(path: '/register-notify-token/', base: true),
         body: json.encode({
-          'registration_id': 'black-dog',
+          'registration_id': await DeviceId.getID,
           'device_id': fcmToken,
           'type':
               Platform.isIOS ? 'ios' : (Platform.isAndroid ? 'android' : 'web')

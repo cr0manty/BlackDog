@@ -33,7 +33,7 @@ dependencies:
   map_launcher:
   cached_network_image:
   screen:
-
+  device_id:
 
   flutter_localizations:
     sdk: flutter
