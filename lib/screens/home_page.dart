@@ -24,6 +24,7 @@ import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/screens/content/about_us.dart';
 import 'package:black_dog/screens/content/news_detail.dart';
+import 'package:rate_my_app/rate_my_app.dart';
 
 import 'content/news_list.dart';
 
@@ -63,6 +64,29 @@ class _HomePageState extends State<HomePage>
     setState(() {});
   }
 
+  void rateMyApp() {
+    RateMyApp rateMyApp = RateMyApp(
+      minDays: 3,
+      minLaunches: 10,
+      remindDays: 14,
+      remindLaunches: 28,
+      googlePlayIdentifier: 'com.blackdog.coffee',
+      appStoreIdentifier: '1534425694',
+    );
+    rateMyApp.init().then((_) {
+      if (rateMyApp.shouldOpenDialog) {
+        rateMyApp.showRateDialog(
+          context,
+          title: AppLocalizations.of(context).translate('rate_app'),
+          message: AppLocalizations.of(context).translate('rate_app_desc'),
+          rateButton: AppLocalizations.of(context).translate('rate'),
+          noButton: AppLocalizations.of(context).translate('no_thanks'),
+          laterButton: AppLocalizations.of(context).translate('later'),
+        );
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -81,6 +105,8 @@ class _HomePageState extends State<HomePage>
         Utils.instance.infoDialog(context, event.msg);
       }
     });
+
+    rateMyApp();
   }
 
   @override
@@ -92,11 +118,10 @@ class _HomePageState extends State<HomePage>
         scrollController: _scrollController,
         alwaysNavigation: false,
         padding: EdgeInsets.only(top: 20),
-        onRefresh: () async =>
-            await Future.delayed(Duration(milliseconds: 500), () {
-              updateNetworkItems = true;
-              onNetworkChange(ConnectionsCheck.instance.isOnline);
-            }),
+        onRefresh: () async {
+          updateNetworkItems = true;
+          onNetworkChange(ConnectionsCheck.instance.isOnline);
+        },
         children: <Widget>[
           NavigationBar(
               alwaysNavigation: false,

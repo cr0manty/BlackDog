@@ -38,7 +38,7 @@ class _StaffHomePageState extends State<StaffHomePage> {
     Account.instance.refreshUser().then((value) => setState(() {}));
   }
 
-  String get currentDate => DateFormat('M/d/y H:mm').format(DateTime.now());
+  String get currentDate => DateFormat('M/d/y HH:mm').format(DateTime.now());
 
   @override
   void initState() {
@@ -50,7 +50,8 @@ class _StaffHomePageState extends State<StaffHomePage> {
   void _onScanTap() async {
     setState(() => isLoading = !isLoading);
     var result = await BarcodeScanner.scan();
-    debugPrefixPrint('Scanned QR Code url: ${result.rawContent}', prefix: 'scan');
+    debugPrefixPrint('Scanned QR Code url: ${result.rawContent}',
+        prefix: 'scan');
 
     if (result.rawContent.isNotEmpty) {
       Map scanned = await Api.instance.staffScanQRCode(result.rawContent);
@@ -67,6 +68,7 @@ class _StaffHomePageState extends State<StaffHomePage> {
       if (scanned['result']) {
         Utils.instance.infoDialog(context, errorMsg);
         _logs = Api.instance.getLogs(date: currentDate);
+        setState(() {});
       } else {
         debugPrefixPrint(scanned, prefix: 'scan');
 
@@ -114,8 +116,10 @@ class _StaffHomePageState extends State<StaffHomePage> {
         inAsyncCall: isLoading,
         scrollController: _scrollController,
         alwaysNavigation: true,
-        onRefresh: () async => await Future.delayed(Duration(milliseconds: 500),
-            () => _logs = Api.instance.getLogs(date: currentDate)),
+        onRefresh: () async {
+          _logs = Api.instance.getLogs(date: currentDate);
+          setState(() {});
+        },
         action: RouteButton(
             text: AppLocalizations.of(context).translate('logout'),
             color: HexColor.lightElement,

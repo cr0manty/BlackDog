@@ -72,5 +72,10 @@
   "contact_us": "Contact Us",
   "user_accept": "I accept",
   "and": "and",
-  "fields_required": "This fields is required"
+  "fields_required": "This fields is required",
+  "rate_app": "Rate this app",
+  "rate_app_desc": "If you like this app, please take a little bit of your time to review it !\\nIt really helps us and it shouldn\\'t take you more than one minute.",
+  "rate": "Rate",
+  "no_thanks": "No thanks",
+  "later": "Maybe later"
 }

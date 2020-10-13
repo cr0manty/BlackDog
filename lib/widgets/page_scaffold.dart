@@ -75,10 +75,12 @@ class _PageScaffoldState extends State<PageScaffold>
     }
     return Container(
       padding: widget.padding ?? EdgeInsets.zero,
-      child: CustomScrollView(slivers: <Widget>[
-        CupertinoSliverRefreshControl(onRefresh: widget.onRefresh),
-        SliverList(delegate: SliverChildListDelegate(children))
-      ]),
+      child: CustomScrollView(
+          controller: widget.scrollController,
+          slivers: <Widget>[
+            CupertinoSliverRefreshControl(onRefresh: widget.onRefresh),
+            SliverList(delegate: SliverChildListDelegate(children))
+          ]),
     );
   }
 
