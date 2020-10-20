@@ -7,6 +7,7 @@ import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/screens/home_page.dart';
 import 'package:black_dog/screens/staff_home.dart';
 import 'package:black_dog/utils/localization.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -25,6 +26,7 @@ void main() async {
   ConnectionsCheck.instance.initialise();
 
   await NotificationManager.instance.configure();
+  Firebase.initializeApp();
 
   runApp(BlackDogApp());
 }

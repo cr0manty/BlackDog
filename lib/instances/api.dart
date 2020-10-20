@@ -23,7 +23,7 @@ import 'connection_check.dart';
 
 class Api {
   static const defaultPerPage = 10;
-  static const String _base_url = 'dev-black-dog.redfoxproject.com';
+  static const String _base_url = 'black-dog.redfoxproject.com';
 
   Api._internal();
 

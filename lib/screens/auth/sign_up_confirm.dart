@@ -34,7 +34,6 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
   static const List<String> _fieldsList = [
     'first_name',
     'last_name',
-    'birth_date'
   ];
   Map fieldsError = {};
   bool isLoading = false;
@@ -52,6 +51,7 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
               onFieldSubmitted: (_) =>
                   FocusScope.of(context).requestFocus(_lastNameFocus),
               controller: _nameController,
+              inputAction: TextInputAction.next,
               keyboardType: TextInputType.name,
               hintText: AppLocalizations.of(context).translate('first_name'),
             )),
@@ -60,40 +60,13 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
             alignment: Alignment.center,
             child: TextInput(
               focusNode: _lastNameFocus,
-              onFieldSubmitted: (_) => _showModalBottomSheet(context),
+              onFieldSubmitted: (_) => _additionRegister(),
               controller: _lastNameController,
+              inputAction: TextInputAction.done,
               keyboardType: TextInputType.name,
               hintText: AppLocalizations.of(context).translate('last_name'),
             )),
         Utils.instance.showValidateError(fieldsError, key: 'last_name'),
-        GestureDetector(
-            onTap: () => _showModalBottomSheet(context),
-            child: Container(
-                height: 50,
-                width: ScreenSize.width - 32,
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: HexColor.lightElement),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(
-                      Utils.instance.showDateFormat(selectedDate) ??
-                          AppLocalizations.of(context).translate('birth_date'),
-                      style: Utils.instance.getTextStyle('bodyText1').copyWith(
-                          color: selectedDate != null
-                              ? HexColor.darkElement
-                              : HexColor.inputHintColor),
-                    ),
-                    Icon(
-                      SFSymbols.calendar,
-                      color: HexColor.black,
-                    )
-                  ],
-                ))),
-        Utils.instance.showValidateError(fieldsError, key: 'birth_date'),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.max,
@@ -239,37 +212,8 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
     );
   }
 
-  void _showModalBottomSheet(context) {
-    FocusScope.of(context).unfocus();
-    DateTime today = DateTime.now();
-
-    showCupertinoModalPopup(
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-              height: MediaQuery.of(context).copyWith().size.height / 3,
-              color: HexColor.darkElement,
-              child: CupertinoTheme(
-                  data: CupertinoThemeData(
-                    textTheme: CupertinoTextThemeData(
-                      dateTimePickerTextStyle:
-                          Utils.instance.getTextStyle('subtitle1'),
-                    ),
-                  ),
-                  child: CupertinoDatePicker(
-                    initialDateTime: today,
-                    onDateTimeChanged: (DateTime newDate) =>
-                        setState(() => selectedDate = newDate),
-                    minimumYear: today.year - 200,
-                    maximumYear: today.year + 2,
-                    mode: CupertinoDatePickerMode.date,
-                  )));
-        });
-  }
-
   Map<String, String> _sendData() {
     return {
-      'birth_date': Utils.instance.dateFormat(selectedDate),
       'first_name': _nameController.text,
       'last_name': _lastNameController.text,
       'firebase_uid': SharedPrefs.getUserFirebaseUID()

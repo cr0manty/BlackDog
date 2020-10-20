@@ -48,13 +48,6 @@ class Utils {
 
   bool get popUpOnScreen => _showPopUp != null;
 
-  String dateFormat(DateTime date) {
-    if (date == null) {
-      return null;
-    }
-    return '${date.year}-${date.month}-${date.day}';
-  }
-
   String showDateFormat(DateTime date) {
     if (date == null) {
       return null;
