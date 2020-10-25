@@ -227,7 +227,7 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
       fieldsError = {};
     });
     Map response =
-        await Api.instance.updateUser(_sendData(), token: widget.token);
+        await Api.instance.registerComplete(_sendData(), widget.token);
     bool result = response.remove('result');
 
     if (result) {

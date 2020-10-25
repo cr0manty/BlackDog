@@ -139,6 +139,22 @@ class Api {
     return body;
   }
 
+    Future registerComplete(Map content, String token) async {
+    Response response = await _client.patch(
+        _setUrl(path: 'user/register/complete', base: true),
+        body: json.encode(content),
+        headers: _setHeaders(useJson: true, token: token));
+
+    Map body = json.decode(utf8.decode(response.bodyBytes)) as Map;
+    if (response.statusCode == 200) {
+      await getUser();
+      return {'result': true};
+    }
+
+    body['result'] = false;
+    return body;
+  }
+
   Future<List<News>> getNewsList(
       {int limit = defaultPerPage, int page = 0}) async {
     List<News> newsList = [];
