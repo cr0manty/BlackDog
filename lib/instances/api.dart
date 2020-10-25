@@ -141,7 +141,7 @@ class Api {
 
     Future registerComplete(Map content, String token) async {
     Response response = await _client.patch(
-        _setUrl(path: 'user/register/complete', base: true),
+        _setUrl(path: '/user/register/complete'),
         body: json.encode(content),
         headers: _setHeaders(useJson: true, token: token));
 
