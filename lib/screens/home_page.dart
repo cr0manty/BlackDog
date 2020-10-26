@@ -149,28 +149,39 @@ class _HomePageState extends State<HomePage>
             additionWidget: BonusCard(),
           ),
           SizedBox(height: ScreenSize.sectionIndent - 20),
-          PageSection(
+          FutureBuilder(
+            future: _news,
+            builder: (context, snapshot) => PageSection(
               label: AppLocalizations.of(context).translate('news'),
+              captionEnabled: snapshot.hasData && snapshot.data.length > 0,
               child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: FutureBuilder(
-                    builder: (context, snapshot) => _buildFuture(
-                        context, snapshot, 'no_news', _buildNews(snapshot)),
-                    future: _news,
-                  )),
+                scrollDirection: Axis.horizontal,
+                child: _buildFuture(
+                    context, snapshot, 'no_news', _buildNews(snapshot)),
+              ),
               subWidgetText: AppLocalizations.of(context).translate('more'),
               subWidgetAction: () => Navigator.of(context).push(
-                    CupertinoPageRoute(builder: (context) => NewsList()),
-                  ),
-              enabled: SharedPrefs.getShowNews()),
+                CupertinoPageRoute(
+                  builder: (context) => NewsList(),
+                ),
+              ),
+              enabled: SharedPrefs.getShowNews(),
+            ),
+          ),
           SizedBox(height: ScreenSize.sectionIndent / 1.5),
-          PageSection(
+          FutureBuilder(
+            future: _category,
+            builder: (context, snapshot) => PageSection(
+              captionEnabled: snapshot.hasData && snapshot.data.length > 0,
               label: AppLocalizations.of(context).translate('menu'),
-              child: FutureBuilder(
-                builder: (context, snapshot) => _buildFuture(
-                    context, snapshot, 'no_menu', _buildCategories(snapshot)),
-                future: _category,
-              )),
+              child: _buildFuture(
+                context,
+                snapshot,
+                'no_menu',
+                _buildCategories(snapshot),
+              ),
+            ),
+          ),
           Container(height: 20)
         ]);
   }
@@ -184,23 +195,10 @@ class _HomePageState extends State<HomePage>
           AppLocalizations.of(context).translate(stringKey),
           style: Utils.instance.getTextStyle('subtitle1'),
         )));
-
-    switch (snapshot.connectionState) {
-      case ConnectionState.none:
-        return noData;
-      case ConnectionState.waiting:
-      case ConnectionState.active:
-        return Container(
-            width: ScreenSize.width,
-            child: Center(child: CupertinoActivityIndicator()));
-      case ConnectionState.done:
-        if (snapshot.hasData && !snapshot.hasError) {
-          return child;
-        }
-        return noData;
-      default:
-        return noData;
+    if (snapshot.hasData && !snapshot.hasError) {
+      return child;
     }
+    return SizedBox.shrink();
   }
 
   Widget _buildNews(AsyncSnapshot snapshot) {

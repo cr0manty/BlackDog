@@ -8,7 +8,6 @@ import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/utils/sizes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:screen/screen.dart';
 
 class Utils {
@@ -140,8 +139,10 @@ class Utils {
       codeImage = ImageView(codeUrl);
     }
     if (codeImage == null) {
-      EasyLoading.instance..backgroundColor = HexColor.errorRed;
-      EasyLoading.showError('');
+      infoDialog(
+        context,
+        AppLocalizations.of(context).translate('error'),
+      );
     } else {
       if (_showPopUp != null) {
         return;
@@ -185,8 +186,12 @@ class Utils {
                       style: Utils.instance.getTextStyle('subtitle2')),
                 )).then((_) => _showPopUp = null);
       } else {
-        EasyLoading.instance..backgroundColor = HexColor.errorRed;
-        EasyLoading.showError('');
+        infoDialog(
+          context,
+          AppLocalizations.of(context).translate(
+            ConnectionsCheck.instance.isOnline ? 'error' : 'no_internet',
+          ),
+        );
       }
     });
   }

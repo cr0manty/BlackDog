@@ -10,7 +10,6 @@ import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/sizes.dart';
 import 'package:black_dog/widgets/input_field.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import '../user/forgot_password.dart';
@@ -239,8 +238,10 @@ class _SignInPageState extends State<SignInPage> {
     }).catchError((error) {
       setState(() => isLoading = !isLoading);
       debugPrefixPrint(error, prefix: 'error');
-      EasyLoading.instance..backgroundColor = HexColor.errorRed;
-      EasyLoading.showError('');
+      Utils.instance.infoDialog(
+        context,
+        AppLocalizations.of(context).translate('error'),
+      );
     });
   }
 }

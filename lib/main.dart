@@ -10,7 +10,6 @@ import 'package:black_dog/utils/localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'instances/account.dart';
 import 'instances/api.dart';
@@ -49,22 +48,8 @@ class _BlackDogAppState extends State<BlackDogApp> {
   @override
   void initState() {
     super.initState();
-    configurePopUp();
-
     SharedPrefs.saveLanguageCode(window.locale.languageCode);
     Account.instance.initialize();
-  }
-
-  void configurePopUp() {
-    EasyLoading.instance
-      ..loadingStyle = EasyLoadingStyle.custom
-      ..displayDuration = const Duration(seconds: 1)
-      ..progressColor = CupertinoColors.white
-      ..indicatorSize = 50
-      ..radius = 10.0
-      ..indicatorColor = CupertinoColors.white
-      ..textColor = CupertinoColors.white
-      ..backgroundColor = HexColor.errorRed;
   }
 
   @override
@@ -109,11 +94,6 @@ class _BlackDogAppState extends State<BlackDogApp> {
         brightness: Brightness.dark,
         scaffoldBackgroundColor: Color.fromRGBO(40, 39, 41, 1),
       ),
-      builder: (BuildContext context, Widget child) {
-        return FlutterEasyLoading(
-          child: child,
-        );
-      },
       home: switchPages(),
     );
   }

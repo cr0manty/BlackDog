@@ -14,7 +14,6 @@ import 'package:black_dog/widgets/about_section.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:black_dog/widgets/status_bar_color.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -34,50 +33,51 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
     popUpOnScreen = showCupertinoDialog(
         context: context,
         barrierDismissible: true,
-        builder: (context) =>  CupertinoAlertDialog(
-          title: Text(config.branchName,
-              style: Utils.instance.getTextStyle('headline1')),
-          content: Column(
-            children: [
-              Container(
-                margin: EdgeInsets.only(top: 8),
-                child: AboutSection(
-                  config.address,
-                  SFSymbols.placemark_fill,
-                  itemWidth: ScreenSize.modalMaxTextWidth,
-                  horizontalPadding: 0,
-                  color: HexColor.errorRed,
-                  onTap: () {
-                    try {
-                      MapUtils.openMap(
-                          config.lat, config.lon, config.branchName);
-                    } catch (e) {
-                      debugPrefixPrint(e, prefix: 'error');
-                      Navigator.of(context).pop();
-                      EasyLoading.instance
-                        ..backgroundColor = HexColor.errorRed;
-                      EasyLoading.showError('');
-                    }
-                  },
-                ),
+        builder: (context) => CupertinoAlertDialog(
+              title: Text(config.branchName,
+                  style: Utils.instance.getTextStyle('headline1')),
+              content: Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(top: 8),
+                    child: AboutSection(
+                      config.address,
+                      SFSymbols.placemark_fill,
+                      itemWidth: ScreenSize.modalMaxTextWidth,
+                      horizontalPadding: 0,
+                      color: HexColor.errorRed,
+                      onTap: () {
+                        try {
+                          MapUtils.openMap(
+                              config.lat, config.lon, config.branchName);
+                        } catch (e) {
+                          debugPrefixPrint(e, prefix: 'error');
+                          Navigator.of(context).pop();
+                          Utils.instance.infoDialog(
+                            context,
+                            AppLocalizations.of(context).translate('map_error'),
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                  AboutSection(
+                    config.weekdayWorkingTime(context),
+                    SFSymbols.clock_fill,
+                    itemWidth: ScreenSize.modalMaxTextWidth,
+                    horizontalPadding: 0,
+                  ),
+                  AboutSection(
+                      config.weekendWorkingTime(context), SFSymbols.clock_fill,
+                      itemWidth: ScreenSize.modalMaxTextWidth,
+                      horizontalPadding: 0),
+                  AboutSection(config.branchPhone, SFSymbols.phone_fill,
+                      itemWidth: ScreenSize.modalMaxTextWidth,
+                      call: true,
+                      horizontalPadding: 0)
+                ],
               ),
-              AboutSection(
-                config.weekdayWorkingTime(context),
-                SFSymbols.clock_fill,
-                itemWidth: ScreenSize.modalMaxTextWidth,
-                horizontalPadding: 0,
-              ),
-              AboutSection(
-                  config.weekendWorkingTime(context), SFSymbols.clock_fill,
-                  itemWidth: ScreenSize.modalMaxTextWidth,
-                  horizontalPadding: 0),
-              AboutSection(config.branchPhone, SFSymbols.phone_fill,
-                  itemWidth: ScreenSize.modalMaxTextWidth,
-                  call: true,
-                  horizontalPadding: 0)
-            ],
-          ),
-        ));
+            ));
   }
 
   void _addMarkers() {

@@ -7,7 +7,6 @@ import 'package:black_dog/widgets/input_field.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class ChangePassword extends StatefulWidget {
   @override
@@ -62,8 +61,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                     inputAction: TextInputAction.next,
                     keyboardType: TextInputType.visiblePassword,
                   )),
-              Utils.instance.showValidateError(fieldsError,
-                  key: 'new_password1'),
+              Utils.instance
+                  .showValidateError(fieldsError, key: 'new_password1'),
               Container(
                   alignment: Alignment.center,
                   child: TextInput(
@@ -75,8 +74,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                     inputAction: TextInputAction.done,
                     keyboardType: TextInputType.visiblePassword,
                   )),
-              Utils.instance.showValidateError(fieldsError,
-                  key: 'new_password2'),
+              Utils.instance
+                  .showValidateError(fieldsError, key: 'new_password2'),
             ],
           ),
         ),
@@ -101,10 +100,10 @@ class _ChangePasswordState extends State<ChangePassword> {
     await Api.instance.changePassword(_sendData()).then((response) {
       bool result = response.remove('result');
       if (result) {
-        EasyLoading.instance
-          ..backgroundColor = HexColor.successGreen.withOpacity(0.8);
-        EasyLoading.showSuccess('');
-        Navigator.of(context).pop();
+        Utils.instance.infoDialog(
+          context,
+          response['detail'],
+        );
       } else {
         response.forEach((key, value) {
           if (key == 'new_password1' || key == 'new_password2') {
@@ -120,8 +119,10 @@ class _ChangePasswordState extends State<ChangePassword> {
     }).catchError((error) {
       debugPrefixPrint(error, prefix: 'error');
       setState(() => isLoading = !isLoading);
-      EasyLoading.instance..backgroundColor = HexColor.errorRed;
-      EasyLoading.showError('');
+      Utils.instance.infoDialog(
+        context,
+        AppLocalizations.of(context).translate('error'),
+      );
     });
   }
 }
