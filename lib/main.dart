@@ -61,7 +61,7 @@ class _BlackDogAppState extends State<BlackDogApp> {
       supportedLocales: [
         Locale('ru', 'RU'),
         Locale('en', 'US'),
-        Locale('uk', 'UA'),
+        // Locale('uk', 'UA'),
       ],
       localizationsDelegates: [
         AppLocalizations.delegate,
