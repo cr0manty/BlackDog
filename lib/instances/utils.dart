@@ -83,15 +83,27 @@ class Utils {
             )).then((value) => _showPopUp = null);
   }
 
-  void infoDialog(BuildContext context, String content) {
+  void infoDialog(BuildContext context, String content,
+      {String label, bool isError = false}) {
     if (_showPopUp != null) {
       return;
     }
+
+    String contentText = isError && !ConnectionsCheck.instance.isOnline
+        ? AppLocalizations.of(context).translate('no_internet')
+        : content;
+
     _showPopUp = showCupertinoDialog(
         context: context,
         barrierDismissible: true,
         builder: (context) => CupertinoAlertDialog(
-              content: Text(content,
+              title: label != null
+                  ? Text(
+                      label,
+                      style: Utils.instance.getTextStyle('subtitle1'),
+                    )
+                  : null,
+              content: Text(contentText,
                   style: Utils.instance.getTextStyle('subtitle2')),
               actions: [
                 CupertinoDialogAction(
@@ -142,6 +154,7 @@ class Utils {
       infoDialog(
         context,
         AppLocalizations.of(context).translate('error'),
+        isError: true,
       );
     } else {
       if (_showPopUp != null) {

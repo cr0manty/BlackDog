@@ -55,24 +55,28 @@ class _StaffHomePageState extends State<StaffHomePage> {
 
     if (result.rawContent.isNotEmpty) {
       Map scanned = await Api.instance.staffScanQRCode(result.rawContent);
-      String errorMsg;
+      String msg;
+      String label;
       if (scanned['message'] != null) {
-        errorMsg = scanned['message'] is List
+        msg = scanned['message'] is List
             ? scanned['message'][0]
             : scanned['message'];
+        if (scanned.containsKey('voucher')) {
+          label = scanned['message']['voucher_config']['name'];
+        }
       } else {
-        errorMsg = AppLocalizations.of(context)
+        msg = AppLocalizations.of(context)
             .translate(scanned['result'] ? 'success_scan' : 'error_scan');
       }
 
       if (scanned['result']) {
-        Utils.instance.infoDialog(context, errorMsg);
+        Utils.instance.infoDialog(context, msg, );
         _logs = Api.instance.getLogs(date: currentDate);
         setState(() {});
       } else {
         debugPrefixPrint(scanned, prefix: 'scan');
 
-        Utils.instance.infoDialog(context, errorMsg);
+        Utils.instance.infoDialog(context, msg);
       }
     }
     setState(() => isLoading = !isLoading);

@@ -148,7 +148,6 @@ class _HomePageState extends State<HomePage>
             trailing: EditButton(fromHome: true),
             additionWidget: BonusCard(),
           ),
-          SizedBox(height: ScreenSize.sectionIndent - 20),
           FutureBuilder(
             future: _news,
             builder: (context, snapshot) => PageSection(
@@ -156,8 +155,9 @@ class _HomePageState extends State<HomePage>
               captionEnabled: snapshot.hasData && snapshot.data.length > 0,
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: _buildFuture(
-                    context, snapshot, 'no_news', _buildNews(snapshot)),
+                child: snapshot.hasData && !snapshot.hasError
+                    ? _buildNews(snapshot)
+                    : SizedBox.shrink(),
               ),
               subWidgetText: AppLocalizations.of(context).translate('more'),
               subWidgetAction: () => Navigator.of(context).push(
@@ -168,47 +168,32 @@ class _HomePageState extends State<HomePage>
               enabled: SharedPrefs.getShowNews(),
             ),
           ),
-          SizedBox(height: ScreenSize.sectionIndent / 1.5),
           FutureBuilder(
             future: _category,
             builder: (context, snapshot) => PageSection(
+              heightPadding: snapshot.hasData && snapshot.data.length > 0
+                  ? ScreenSize.sectionIndent - 20
+                  : 0,
               captionEnabled: snapshot.hasData && snapshot.data.length > 0,
               label: AppLocalizations.of(context).translate('menu'),
-              child: _buildFuture(
-                context,
-                snapshot,
-                'no_menu',
-                _buildCategories(snapshot),
-              ),
+              child: snapshot.hasData && !snapshot.hasError
+                  ? _buildCategories(snapshot)
+                  : SizedBox.shrink(),
             ),
           ),
           Container(height: 20)
         ]);
   }
 
-  Widget _buildFuture(BuildContext context, AsyncSnapshot snapshot,
-      String stringKey, Widget child) {
-    Widget noData = Container(
-        width: ScreenSize.width,
-        child: Center(
-            child: Text(
-          AppLocalizations.of(context).translate(stringKey),
-          style: Utils.instance.getTextStyle('subtitle1'),
-        )));
-    if (snapshot.hasData && !snapshot.hasError) {
-      return child;
-    }
-    return SizedBox.shrink();
-  }
-
   Widget _buildNews(AsyncSnapshot snapshot) {
     if (snapshot.hasData && !snapshot.hasError) {
       int maxNews = SharedPrefs.getMaxNewsAmount();
-
       return Row(
-          children: List.generate(
-              snapshot.data.length < maxNews ? snapshot.data.length : maxNews,
-              (index) => _buildNewsBlock(snapshot.data, index)));
+        children: List.generate(
+          snapshot.data.length < maxNews ? snapshot.data.length : maxNews,
+          (index) => _buildNewsBlock(snapshot.data, index),
+        ),
+      );
     }
     return Container();
   }
@@ -216,10 +201,13 @@ class _HomePageState extends State<HomePage>
   Widget _buildCategories(AsyncSnapshot snapshot) {
     if (snapshot.hasData && !snapshot.hasError) {
       return Column(
-          children: List.generate(snapshot.data.length,
-              (index) => _buildMenu(snapshot.data[index])));
+        children: List.generate(
+          snapshot.data.length,
+          (index) => _buildMenu(snapshot.data[index]),
+        ),
+      );
     }
-    return Container();
+    return SizedBox.shrink();
   }
 
   Widget _buildNewsBlock(List<News> newsList, int index) {
@@ -259,7 +247,6 @@ class _HomePageState extends State<HomePage>
             Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: HexColor.semiElement.withOpacity(0.3),
                 ),
                 height: ScreenSize.newsImageHeight,
                 width: ScreenSize.newsImageWidth,

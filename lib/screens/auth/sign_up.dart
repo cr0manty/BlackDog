@@ -314,6 +314,7 @@ class _SignUpPageState extends State<SignUpPage> {
       Utils.instance.infoDialog(
         context,
         AppLocalizations.of(context).translate('error'),
+        isError: true,
       );
     });
   }

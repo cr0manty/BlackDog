@@ -122,6 +122,7 @@ class _ChangePasswordState extends State<ChangePassword> {
       Utils.instance.infoDialog(
         context,
         AppLocalizations.of(context).translate('error'),
+        isError: true,
       );
     });
   }

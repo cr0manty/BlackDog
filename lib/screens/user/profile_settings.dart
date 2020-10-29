@@ -172,6 +172,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       Utils.instance.infoDialog(
         context,
         AppLocalizations.of(context).translate('error'),
+        isError: true,
       );
     });
   }

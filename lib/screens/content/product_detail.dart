@@ -100,7 +100,6 @@ class _ProductDetailState extends State<ProductDetail>
               height: ScreenSize.detailViewImage,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: HexColor.semiElement,
               ),
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),

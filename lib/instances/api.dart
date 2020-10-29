@@ -16,6 +16,7 @@ import 'package:black_dog/models/user.dart';
 import 'package:black_dog/models/voucher.dart';
 import 'package:black_dog/utils/logs_interseptor.dart';
 import 'package:device_id/device_id.dart';
+import 'package:device_info/device_info.dart';
 import 'package:http/http.dart';
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:path_provider/path_provider.dart';
@@ -139,7 +140,7 @@ class Api {
     return body;
   }
 
-    Future registerComplete(Map content, String token) async {
+  Future registerComplete(Map content, String token) async {
     Response response = await _client.patch(
         _setUrl(path: '/user/register/complete'),
         body: json.encode(content),
@@ -349,16 +350,18 @@ class Api {
 
   Future sendFCMToken({String token}) async {
     String fcmToken = token ?? await NotificationManager.instance.getToken();
-    return await _client.post(
-        _setUrl(path: '/register-notify-token/', base: true),
-        body: json.encode({
-          'registration_id': await DeviceId.getID,
-          'device_id': fcmToken,
-          'type':
-              Platform.isIOS ? 'ios' : (Platform.isAndroid ? 'android' : 'web')
-        }),
-        headers: _setHeaders(useJson: true)).catchError((error) {
-          print(error);
+    return await _client
+        .post(_setUrl(path: '/register-notify-token/', base: true),
+            body: json.encode({
+              'device_id': await DeviceId.getID,
+              'registration_id': fcmToken,
+              'type': Platform.isIOS
+                  ? 'ios'
+                  : (Platform.isAndroid ? 'android' : 'web')
+            }),
+            headers: _setHeaders(useJson: true))
+        .catchError((error) {
+      print(error);
     });
   }
 

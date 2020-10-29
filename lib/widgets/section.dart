@@ -9,12 +9,14 @@ class PageSection extends StatelessWidget {
   final Function subWidgetAction;
   final bool enabled;
   final bool captionEnabled;
+  final double heightPadding;
 
   PageSection(
       {@required this.child,
       @required this.label,
       this.subWidgetAction,
       this.subWidgetText,
+      this.heightPadding = 0,
       this.captionEnabled = true,
       this.enabled = true});
 
@@ -31,7 +33,7 @@ class PageSection extends StatelessWidget {
       children: <Widget>[
         if (captionEnabled)
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 26),
+            padding: EdgeInsets.only(right: 26, left: 26, top: enabled ? 0 : 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[

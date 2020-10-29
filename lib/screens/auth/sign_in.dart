@@ -241,6 +241,7 @@ class _SignInPageState extends State<SignInPage> {
       Utils.instance.infoDialog(
         context,
         AppLocalizations.of(context).translate('error'),
+        isError: true,
       );
     });
   }

@@ -244,6 +244,7 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
         Utils.instance.infoDialog(
           context,
           AppLocalizations.of(context).translate('error'),
+          isError: true,
         );
       }
     } else {

@@ -205,10 +205,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               .signInWithCredential(credential)
                               .catchError((error) {
                             Navigator.of(context).pop();
-                            Utils.instance.infoDialog(
-                              context,
-                                error.toString()
-                            );
+                            Utils.instance
+                                .infoDialog(context, error.toString());
                           });
                           if (result != null && result.user != null) {
                             onSuccessCode(result.user.uid);
@@ -234,6 +232,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           Utils.instance.infoDialog(
             context,
             AppLocalizations.of(context).translate('error'),
+            isError: true,
           );
         });
   }
@@ -321,6 +320,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       Utils.instance.infoDialog(
         context,
         AppLocalizations.of(context).translate('error'),
+        isError: true,
       );
     });
   }
