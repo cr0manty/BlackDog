@@ -28,6 +28,7 @@ class Utils {
   void initScreenSize(MediaQueryData query) {
     ScreenSize.height = query.size.height;
     ScreenSize.width = query.size.width;
+    ScreenSize.pixelRatio = query.devicePixelRatio;
     initTextSize(query);
   }
 

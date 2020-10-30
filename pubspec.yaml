@@ -34,7 +34,6 @@ dependencies:
   screen:
   device_id:
   rate_my_app:
-  device_info:
 
   flutter_localizations:
     sdk: flutter

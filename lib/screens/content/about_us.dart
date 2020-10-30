@@ -103,7 +103,6 @@ class _AboutUsPageState extends State<AboutUsPage> {
       children: <Widget>[
         Center(
           child: Container(
-            width: ScreenSize.width - 32,
             height: ScreenSize.aboutUsLogoSize,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),

@@ -16,7 +16,6 @@ import 'package:black_dog/models/user.dart';
 import 'package:black_dog/models/voucher.dart';
 import 'package:black_dog/utils/logs_interseptor.dart';
 import 'package:device_id/device_id.dart';
-import 'package:device_info/device_info.dart';
 import 'package:http/http.dart';
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:path_provider/path_provider.dart';

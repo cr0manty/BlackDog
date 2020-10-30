@@ -29,13 +29,14 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
   List<RestaurantConfig> _restaurants;
   Future popUpOnScreen;
 
-  void _showModal(RestaurantConfig config) {
+  void _zoomAndShowModal(RestaurantConfig config, LatLng position) async {
+
     popUpOnScreen = showCupertinoDialog(
         context: context,
         barrierDismissible: true,
         builder: (context) => CupertinoAlertDialog(
               title: Text(config.branchName,
-                  style: Utils.instance.getTextStyle('headline1')),
+                  style: Utils.instance.getTextStyle('headline1'),),
               content: Column(
                 children: [
                   Container(
@@ -92,10 +93,21 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
         markers[markerId] = Marker(
           markerId: markerId,
           position: position,
-          onTap: () => _showModal(config),
+          onTap: () => _zoomToBranch(position, config),
         );
       });
     });
+  }
+
+  Future<void> _zoomToBranch(LatLng position, RestaurantConfig config) async {
+    CameraPosition newPosition = CameraPosition(
+      target: position,
+      zoom: 17,
+    );
+    final GoogleMapController controller = await _controller.future;
+    controller
+        .animateCamera(CameraUpdate.newCameraPosition(newPosition))
+        .then((value) => _zoomAndShowModal(config, position));
   }
 
   LatLng get _initPosition => LatLng(49.989128, 36.230987);
