@@ -9,7 +9,7 @@ class ImageView extends StatelessWidget {
   ImageView(this.url, {this.fit});
 
   Widget placeholder(BuildContext context) {
-    return Image.asset(Utils.loadImage, fit: fit ?? BoxFit.fill);
+    return Image.asset(Utils.loadImage, fit: fit ?? BoxFit.cover);
   }
 
   @override
@@ -23,7 +23,7 @@ class ImageView extends StatelessWidget {
       imageBuilder: (context, imageProvider) => Container(
         child: Image(
           image: imageProvider,
-          fit: fit ?? BoxFit.fill,
+          fit: fit ?? BoxFit.cover,
         ),
       ),
       errorWidget: (context, url, error) => placeholder(context),

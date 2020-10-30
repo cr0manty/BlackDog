@@ -36,7 +36,7 @@ class _AboutUsMapPageState extends State<AboutUsMapPage> {
         barrierDismissible: true,
         builder: (context) => CupertinoAlertDialog(
               title: Text(config.branchName,
-                  style: Utils.instance.getTextStyle('headline1')),
+                  style: Utils.instance.getTextStyle('headline1'),),
               content: Column(
                 children: [
                   Container(
