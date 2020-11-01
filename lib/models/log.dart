@@ -43,7 +43,7 @@ class Log {
   bool status;
   String errorMessage;
   UserLog user;
-  int voucher;
+  String voucher;
 
   Log(
       {this.user,

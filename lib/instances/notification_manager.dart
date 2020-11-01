@@ -37,15 +37,12 @@ class NotificationManager {
     });
 
     _fcm.configure(
-        onMessage: (Map<String, dynamic> message) async {
-          NotificationMessage msg = await _messageHandler(message);
-          _onMessage.add(msg);
-        },
-        onLaunch: (Map<String, dynamic> message) async => await _messageHandler(message),
-        onResume: (Map<String, dynamic> message) async => await _messageHandler(message));
+        onMessage: _messageHandler,
+        onLaunch: _messageHandler,
+        onResume: _messageHandler);
   }
 
-  static Future _messageHandler(Map<String, dynamic> message) async {
+  Future _messageHandler(Map<String, dynamic> message) async {
     debugPrefixPrint("onMessage: $message", prefix: 'fcm');
 
     if (SharedPrefs.getInstance() == null) {
@@ -60,25 +57,25 @@ class NotificationManager {
             Voucher.fromStringJson(message['data']['voucher'], config: true);
         await _updateVouchers(voucher: voucher);
         _updateCounter(int.parse(message['data']['updated_counter'] ?? '0'));
-        return NotificationMessage(
+        _onMessage.add(NotificationMessage(
             type: NotificationType.VOUCHER_RECEIVED,
-            msg: message['notification']['title']);
+            msg: message['notification']['title']));
       } else if (message['data']['code'] == 'voucher_scanned') {
         await _updateVouchers(id: int.parse(message['data']['voucher_id']));
         _updateCounter(int.parse(message['data']['updated_counter'] ?? '0'));
-        return NotificationMessage(
+        _onMessage.add(NotificationMessage(
             type: NotificationType.VOUCHER_SCANNED,
-            msg: message['notification']['title']);
+            msg: message['notification']['title']));
       } else if (message['data']['code'] == 'qr_code_scanned') {
         _updateCounter(int.parse(message['data']['updated_counter'] ?? '0'));
-        return NotificationMessage(
+        _onMessage.add(NotificationMessage(
             type: NotificationType.QR_CODE_SCANNED,
-            msg: message['notification']['title']);
+            msg: message['notification']['title']));
       }
     }
   }
 
-  static Future _updateVouchers({Voucher voucher, int id}) async {
+  Future _updateVouchers({Voucher voucher, int id}) async {
     if (id != null) {
       Account.instance.vouchers.removeWhere((item) => item.id == id);
     } else if (voucher != null) {
@@ -91,7 +88,7 @@ class NotificationManager {
     SharedPrefs.saveActiveVoucher(Account.instance.vouchers);
   }
 
-  static void _updateCounter(int counter) {
+  void _updateCounter(int counter) {
     Account.instance.currentVoucher.purchaseCount = counter;
     SharedPrefs.saveCurrentVoucher(Account.instance.currentVoucher);
   }

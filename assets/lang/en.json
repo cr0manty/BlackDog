@@ -84,5 +84,6 @@
   "status": "Status",
   "message": "Message",
   "scan_type": "Scan type",
-  "created_time": "Creation time"
+  "created_time": "Creation time",
+  "scan_id": "Scan №"
 }

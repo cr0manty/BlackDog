@@ -2,7 +2,6 @@ import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/log.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
-import 'package:black_dog/utils/sizes.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -49,7 +48,7 @@ class LogDetail extends StatelessWidget {
       ),
       children: <Widget>[
         Container(
-          padding: EdgeInsets.all(16),
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           margin: EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: HexColor.cardBackground,
@@ -82,10 +81,10 @@ class LogDetail extends StatelessWidget {
                 AppLocalizations.of(context).translate('created_time'),
                 _log.created,
               ),
-              if (_log.voucher != null)
+              if (_log.voucher != null && _log.voucher.isNotEmpty)
                 _logEntryRow(
                   AppLocalizations.of(context).translate('scanned_voucher'),
-                  '${_log.voucher}',
+                  _log.voucher,
                 ),
             ],
           ),

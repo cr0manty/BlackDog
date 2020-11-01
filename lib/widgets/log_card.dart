@@ -72,7 +72,7 @@ class LogCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  log.created ?? '',
+                  log.created,
                   style: Utils.instance.getTextStyle('bodyText2'),
                   maxLines: 1,
                 )
