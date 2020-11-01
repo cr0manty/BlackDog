@@ -53,8 +53,24 @@ class _BlackDogAppState extends State<BlackDogApp> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     initWithContext(context);
+  }
+
+  Locale _setSupportedLanguage(Locale locale) {
+    debugPrefixPrint('Device language code: ${locale.languageCode}',
+        prefix: 'lang');
+    debugPrefixPrint(
+        'Device country code: ${locale.countryCode ?? ''}',
+        prefix: 'lang');
+
+    SharedPrefs.saveLanguageCode(locale.languageCode);
+    return locale;
+  }
+
+  @override
+  Widget build(BuildContext context) {
 
     return CupertinoApp(
       debugShowCheckedModeBanner: false,
@@ -71,24 +87,14 @@ class _BlackDogAppState extends State<BlackDogApp> {
         GlobalCupertinoLocalizations.delegate,
       ],
       localeListResolutionCallback: (locales, supportedLocales) {
-        Locale currentLocale;
         for (Locale locale in locales) {
           for (Locale supportedLocale in supportedLocales) {
             if (supportedLocale.languageCode == locale.languageCode) {
-              currentLocale = supportedLocale;
-              break;
+              return _setSupportedLanguage(supportedLocale);
             }
           }
         }
-        currentLocale ??= supportedLocales.first;
-        debugPrefixPrint('Device language code: ${currentLocale.languageCode}',
-            prefix: 'lang');
-        debugPrefixPrint(
-            'Device country code: ${currentLocale.countryCode ?? ''}',
-            prefix: 'lang');
-
-        SharedPrefs.saveLanguageCode(currentLocale.languageCode);
-        return currentLocale;
+        return _setSupportedLanguage(supportedLocales.first);
       },
       theme: CupertinoThemeData(
         brightness: Brightness.dark,

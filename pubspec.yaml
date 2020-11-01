@@ -39,6 +39,13 @@ dependencies:
     sdk: flutter
 
 
+dependency_overrides:
+  sqflite:
+    git:
+      url: https://github.com/TinyProgrammers/sqflite.git
+      path: sqflite
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
