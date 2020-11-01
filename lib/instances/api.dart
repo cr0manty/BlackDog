@@ -139,7 +139,7 @@ class Api {
     return body;
   }
 
-    Future registerComplete(Map content, String token) async {
+  Future registerComplete(Map content, String token) async {
     Response response = await _client.patch(
         _setUrl(path: '/user/register/complete'),
         body: json.encode(content),
@@ -349,16 +349,18 @@ class Api {
 
   Future sendFCMToken({String token}) async {
     String fcmToken = token ?? await NotificationManager.instance.getToken();
-    return await _client.post(
-        _setUrl(path: '/register-notify-token/', base: true),
-        body: json.encode({
-          'registration_id': await DeviceId.getID,
-          'device_id': fcmToken,
-          'type':
-              Platform.isIOS ? 'ios' : (Platform.isAndroid ? 'android' : 'web')
-        }),
-        headers: _setHeaders(useJson: true)).catchError((error) {
-          print(error);
+    return await _client
+        .post(_setUrl(path: '/register-notify-token/', base: true),
+            body: json.encode({
+              'device_id': await DeviceId.getID,
+              'registration_id': fcmToken,
+              'type': Platform.isIOS
+                  ? 'ios'
+                  : (Platform.isAndroid ? 'android' : 'web')
+            }),
+            headers: _setHeaders(useJson: true))
+        .catchError((error) {
+      print(error);
     });
   }
 

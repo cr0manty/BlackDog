@@ -42,5 +42,5 @@ class ConnectionsCheck {
     _controller.add(isOnline);
   }
 
-  void dispose() => _controller.close();
+  void dispose() => _controller?.close();
 }

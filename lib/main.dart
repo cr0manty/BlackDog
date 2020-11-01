@@ -10,7 +10,6 @@ import 'package:black_dog/utils/localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'instances/account.dart';
 import 'instances/api.dart';
@@ -49,34 +48,36 @@ class _BlackDogAppState extends State<BlackDogApp> {
   @override
   void initState() {
     super.initState();
-    configurePopUp();
-
     SharedPrefs.saveLanguageCode(window.locale.languageCode);
     Account.instance.initialize();
   }
 
-  void configurePopUp() {
-    EasyLoading.instance
-      ..loadingStyle = EasyLoadingStyle.custom
-      ..displayDuration = const Duration(seconds: 1)
-      ..progressColor = CupertinoColors.white
-      ..indicatorSize = 50
-      ..radius = 10.0
-      ..indicatorColor = CupertinoColors.white
-      ..textColor = CupertinoColors.white
-      ..backgroundColor = HexColor.errorRed;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    initWithContext(context);
+  }
+
+  Locale _setSupportedLanguage(Locale locale) {
+    debugPrefixPrint('Device language code: ${locale.languageCode}',
+        prefix: 'lang');
+    debugPrefixPrint(
+        'Device country code: ${locale.countryCode ?? ''}',
+        prefix: 'lang');
+
+    SharedPrefs.saveLanguageCode(locale.languageCode);
+    return locale;
   }
 
   @override
   Widget build(BuildContext context) {
-    initWithContext(context);
 
     return CupertinoApp(
       debugShowCheckedModeBanner: false,
       supportedLocales: [
         Locale('ru', 'RU'),
         Locale('en', 'US'),
-        Locale('uk', 'UA'),
+        // Locale('uk', 'UA'),
       ],
       localizationsDelegates: [
         AppLocalizations.delegate,
@@ -86,34 +87,19 @@ class _BlackDogAppState extends State<BlackDogApp> {
         GlobalCupertinoLocalizations.delegate,
       ],
       localeListResolutionCallback: (locales, supportedLocales) {
-        Locale currentLocale;
         for (Locale locale in locales) {
           for (Locale supportedLocale in supportedLocales) {
             if (supportedLocale.languageCode == locale.languageCode) {
-              currentLocale = supportedLocale;
-              break;
+              return _setSupportedLanguage(supportedLocale);
             }
           }
         }
-        currentLocale ??= supportedLocales.first;
-        debugPrefixPrint('Device language code: ${currentLocale.languageCode}',
-            prefix: 'lang');
-        debugPrefixPrint(
-            'Device country code: ${currentLocale.countryCode ?? ''}',
-            prefix: 'lang');
-
-        SharedPrefs.saveLanguageCode(currentLocale.languageCode);
-        return currentLocale;
+        return _setSupportedLanguage(supportedLocales.first);
       },
       theme: CupertinoThemeData(
         brightness: Brightness.dark,
         scaffoldBackgroundColor: Color.fromRGBO(40, 39, 41, 1),
       ),
-      builder: (BuildContext context, Widget child) {
-        return FlutterEasyLoading(
-          child: child,
-        );
-      },
       home: switchPages(),
     );
   }

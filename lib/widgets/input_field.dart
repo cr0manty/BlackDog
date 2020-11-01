@@ -47,43 +47,46 @@ class TextInputState extends State<TextInput> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: widget.alignment,
-      margin: EdgeInsets.zero,
-      color: HexColor.transparent,
-      child: TextFormField(
-        focusNode: widget.focusNode,
-        style: Utils.instance
-            .getTextStyle('subtitle1')
-            .copyWith(color: widget.textColor ?? HexColor.darkElement),
-        keyboardType: widget.keyboardType,
-        textInputAction: widget.inputAction ?? TextInputAction.next,
-        validator: widget.validator,
-        obscureText: widget.obscureText ?? false,
-        controller: widget.controller,
-        onChanged: (String text) => setState(() => isEmpty = text.isEmpty),
-        onFieldSubmitted: widget.onFieldSubmitted,
-        decoration: InputDecoration(
-            hintText: widget.hintText,
-            focusColor: Colors.transparent,
-            filled: true,
-            suffixIcon: widget.suffixIcon,
-            hintStyle: Utils.instance
-                .getTextStyle('subtitle1')
-                .copyWith(color: widget.textColor ?? HexColor.inputHintColor),
-            fillColor: widget.backgroundColor ?? HexColor.lightElement,
-            border: UnderlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: BorderRadius.all(
-                Radius.circular(9.0),
+    return Material(
+      color: Colors.transparent,
+      child: Container(
+        alignment: widget.alignment,
+        margin: EdgeInsets.zero,
+        color: HexColor.transparent,
+        child: TextFormField(
+          focusNode: widget.focusNode,
+          style: Utils.instance
+              .getTextStyle('subtitle1')
+              .copyWith(color: widget.textColor ?? HexColor.darkElement),
+          keyboardType: widget.keyboardType,
+          textInputAction: widget.inputAction ?? TextInputAction.next,
+          validator: widget.validator,
+          obscureText: widget.obscureText ?? false,
+          controller: widget.controller,
+          onChanged: (String text) => setState(() => isEmpty = text.isEmpty),
+          onFieldSubmitted: widget.onFieldSubmitted,
+          decoration: InputDecoration(
+              hintText: widget.hintText,
+              focusColor: Colors.transparent,
+              filled: true,
+              suffixIcon: widget.suffixIcon,
+              hintStyle: Utils.instance
+                  .getTextStyle('subtitle1')
+                  .copyWith(color: widget.textColor ?? HexColor.inputHintColor),
+              fillColor: widget.backgroundColor ?? HexColor.lightElement,
+              border: UnderlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(9.0),
+                ),
               ),
-            ),
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: BorderRadius.all(
-                Radius.circular(9.0),
-              ),
-            )),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(9.0),
+                ),
+              )),
+        ),
       ),
     );
   }

@@ -45,10 +45,6 @@ class NotificationManager {
         onResume: (Map<String, dynamic> message) async => await _messageHandler(message));
   }
 
-  static Future _backgroundMessageHandler(Map<String, dynamic> message) async {
-    _messageHandler(message);
-  }
-
   static Future _messageHandler(Map<String, dynamic> message) async {
     debugPrefixPrint("onMessage: $message", prefix: 'fcm');
 

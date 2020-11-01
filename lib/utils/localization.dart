@@ -37,7 +37,7 @@ class AppLocalizations {
 
 class _AppLocalizationsDelegate
     extends LocalizationsDelegate<AppLocalizations> {
-  static const List _supportedLanguages = ['en', 'ru', 'uk'];
+  static const List _supportedLanguages = ['ru', 'en']; // TODO 'uk'
 
   const _AppLocalizationsDelegate();
 

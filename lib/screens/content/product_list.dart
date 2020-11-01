@@ -115,7 +115,6 @@ class _ProductListState extends State<ProductList> {
               height: ScreenSize.menuItemSize,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: HexColor.semiElement.withOpacity(0.3),
               ),
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),

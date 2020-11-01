@@ -76,6 +76,7 @@ class _PageScaffoldState extends State<PageScaffold>
     return Container(
       padding: widget.padding ?? EdgeInsets.zero,
       child: CustomScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
           controller: widget.scrollController,
           slivers: <Widget>[
             CupertinoSliverRefreshControl(onRefresh: widget.onRefresh),
