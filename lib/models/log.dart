@@ -87,6 +87,6 @@ class Log {
     } else if (type == 'user') {
       key = 'scanned_user';
     }
-   return AppLocalizations.of(context).translate(key ?? 'unknown');
+    return AppLocalizations.of(context).translate(key ?? 'unknown');
   }
 }

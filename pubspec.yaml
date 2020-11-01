@@ -13,6 +13,7 @@ dependencies:
   cupertino_icons:
   http:
   shared_preferences:
+  qrscan:
   barcode_scan:
   connectivity:
   modal_progress_hud:

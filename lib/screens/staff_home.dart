@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:barcode_scan/platform_wrapper.dart';
 import 'package:black_dog/instances/api.dart';
@@ -20,6 +21,7 @@ import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/screens/auth/sign_in.dart';
 import 'package:intl/intl.dart';
 import 'package:black_dog/screens/content/log_list.dart';
+import 'package:qrscan/qrscan.dart' as scanner;
 
 class StaffHomePage extends StatefulWidget {
   @override
@@ -48,13 +50,17 @@ class _StaffHomePageState extends State<StaffHomePage> {
   }
 
   void _onScanTap() async {
-    setState(() => isLoading = !isLoading);
-    var result = await BarcodeScanner.scan();
-    debugPrefixPrint('Scanned QR Code url: ${result.rawContent}',
-        prefix: 'scan');
+    String scanUrl;
+    if (Platform.isAndroid) {
+      scanUrl = await scanner.scan();
+    } else {
+      var result = await BarcodeScanner.scan();
+      scanUrl = result.rawContent;
+    }
+    debugPrefixPrint('Scanned QR Code url: $scanUrl', prefix: 'scan');
 
-    if (result.rawContent.isNotEmpty) {
-      Map scanned = await Api.instance.staffScanQRCode(result.rawContent);
+    if (scanUrl.isNotEmpty) {
+      Map scanned = await Api.instance.staffScanQRCode(scanUrl);
       String msg;
       String label;
       if (scanned['message'] != null) {
@@ -62,7 +68,7 @@ class _StaffHomePageState extends State<StaffHomePage> {
             ? scanned['message'][0]
             : scanned['message'];
         if (scanned.containsKey('voucher')) {
-          label = scanned['message']['voucher_config']['name'];
+          label = scanned['voucher']['voucher_config']['name'];
         }
       } else {
         msg = AppLocalizations.of(context)
@@ -70,16 +76,18 @@ class _StaffHomePageState extends State<StaffHomePage> {
       }
 
       if (scanned['result']) {
-        Utils.instance.infoDialog(context, msg, );
+        Utils.instance.infoDialog(
+          context,
+          msg,
+        );
         _logs = Api.instance.getLogs(date: currentDate);
         setState(() {});
       } else {
         debugPrefixPrint(scanned, prefix: 'scan');
 
-        Utils.instance.infoDialog(context, msg);
+        Utils.instance.infoDialog(context, msg, label: label);
       }
     }
-    setState(() => isLoading = !isLoading);
   }
 
   Widget _buildFuture(BuildContext context, AsyncSnapshot snapshot) {
@@ -103,8 +111,13 @@ class _StaffHomePageState extends State<StaffHomePage> {
       case ConnectionState.done:
         if (snapshot.hasData && snapshot.data.length > 0) {
           return Column(
-              children: List.generate(snapshot.data.length,
-                  (index) => LogCard(log: snapshot.data[index])));
+            children: List.generate(
+              snapshot.data.length,
+              (index) => LogCard(
+                log: snapshot.data[index],
+              ),
+            ),
+          );
         }
         return noData;
       default:
