@@ -1,6 +1,6 @@
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/log.dart';
-import 'file:///C:/Users/Cr0manty/AndroidStudioProjects/BlackDog/lib/screens/staff/log_detail.dart';
+import 'package:black_dog/screens/staff/log_detail.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/utils/sizes.dart';

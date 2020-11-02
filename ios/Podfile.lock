@@ -118,8 +118,6 @@ PODS:
     - Flutter
   - PromisesObjC (1.2.11)
   - Protobuf (3.13.0)
-  - qrscan (0.0.1):
-    - Flutter
   - rate_my_app (0.7.1):
     - Flutter
   - Reachability (3.2)
@@ -146,7 +144,6 @@ DEPENDENCIES:
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
   - map_launcher (from `.symlinks/plugins/map_launcher/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
-  - qrscan (from `.symlinks/plugins/qrscan/ios`)
   - rate_my_app (from `.symlinks/plugins/rate_my_app/ios`)
   - screen (from `.symlinks/plugins/screen/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
@@ -198,8 +195,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/map_launcher/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
-  qrscan:
-    :path: ".symlinks/plugins/qrscan/ios"
   rate_my_app:
     :path: ".symlinks/plugins/rate_my_app/ios"
   screen:
@@ -240,7 +235,6 @@ SPEC CHECKSUMS:
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   PromisesObjC: 8c196f5a328c2cba3e74624585467a557dcb482f
   Protobuf: 3dac39b34a08151c6d949560efe3f86134a3f748
-  qrscan: 42f49ba37d3c423a3b140434003e821135cfc4c3
   rate_my_app: 3b64dd0876bd286001595ee2e69193e757c4d77c
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   screen: abd91ca7bf3426e1cc3646d27e9b2358d6bf07b0
