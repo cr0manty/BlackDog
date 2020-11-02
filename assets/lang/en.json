@@ -80,5 +80,10 @@
   "later": "Maybe later",
   "map_error": "There was an error while opening the map",
   "no_internet": "No internet Connection",
-  "changes_saved": "Changes saved"
+  "changes_saved": "Changes saved",
+  "status": "Status",
+  "message": "Message",
+  "scan_type": "Scan type",
+  "created_time": "Creation time",
+  "scan_id": "Scan №"
 }

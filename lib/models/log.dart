@@ -43,7 +43,7 @@ class Log {
   bool status;
   String errorMessage;
   UserLog user;
-  int voucher;
+  String voucher;
 
   Log(
       {this.user,
@@ -87,6 +87,6 @@ class Log {
     } else if (type == 'user') {
       key = 'scanned_user';
     }
-   return AppLocalizations.of(context).translate(key ?? 'unknown');
+    return AppLocalizations.of(context).translate(key ?? 'unknown');
   }
 }

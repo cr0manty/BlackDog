@@ -49,6 +49,7 @@ class Voucher extends BaseVoucher {
     if (config) {
       Voucher voucher = Voucher.fromJson(jsonData['voucher_config']);
       voucher.qrCode = jsonData['qr_code'];
+      voucher.id = jsonData['id'];
       return voucher;
     }
 
