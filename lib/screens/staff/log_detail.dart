@@ -24,6 +24,7 @@ class LogDetail extends StatelessWidget {
             width: ScreenSize.homePageNewsWidth,
             child: Text(
               label,
+              textAlign: TextAlign.left,
               style: Utils.instance.getTextStyle('headline1'),
             ),
           ),
@@ -31,6 +32,7 @@ class LogDetail extends StatelessWidget {
             width: ScreenSize.homePageNewsWidth,
             child: Text(
               value,
+              textAlign: TextAlign.right,
               style: Utils.instance.getTextStyle('bodyText2').copyWith(
                     color: valueColor ?? HexColor.lightElement,
                   ),
