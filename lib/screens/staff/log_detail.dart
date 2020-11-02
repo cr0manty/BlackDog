@@ -2,6 +2,7 @@ import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/log.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
+import 'package:black_dog/utils/sizes.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,15 +20,21 @@ class LogDetail extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            label,
-            style: Utils.instance.getTextStyle('headline1'),
+          Container(
+            width: ScreenSize.homePageNewsWidth,
+            child: Text(
+              label,
+              style: Utils.instance.getTextStyle('headline1'),
+            ),
           ),
-          Text(
-            value,
-            style: Utils.instance.getTextStyle('bodyText2').copyWith(
-                  color: valueColor ?? HexColor.lightElement,
-                ),
+          Container(
+            width: ScreenSize.homePageNewsWidth,
+            child: Text(
+              value,
+              style: Utils.instance.getTextStyle('bodyText2').copyWith(
+                    color: valueColor ?? HexColor.lightElement,
+                  ),
+            ),
           ),
         ],
       ),

@@ -19,7 +19,8 @@ import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/screens/auth/sign_in.dart';
 import 'package:intl/intl.dart';
-import 'package:black_dog/screens/content/log_list.dart';
+
+import 'log_list.dart';
 
 class StaffHomePage extends StatefulWidget {
   @override
@@ -87,10 +88,10 @@ class _StaffHomePageState extends State<StaffHomePage> {
         width: ScreenSize.width,
         child: Center(
             child: Text(
-              AppLocalizations.of(context).translate('no_logs'),
-              textAlign: TextAlign.center,
-              style: Utils.instance.getTextStyle('subtitle1'),
-            )));
+          AppLocalizations.of(context).translate('no_logs'),
+          textAlign: TextAlign.center,
+          style: Utils.instance.getTextStyle('subtitle1'),
+        )));
 
     switch (snapshot.connectionState) {
       case ConnectionState.none:
@@ -105,10 +106,9 @@ class _StaffHomePageState extends State<StaffHomePage> {
           return Column(
             children: List.generate(
               snapshot.data.length,
-                  (index) =>
-                  LogCard(
-                    log: snapshot.data[index],
-                  ),
+              (index) => LogCard(
+                log: snapshot.data[index],
+              ),
             ),
           );
         }
@@ -133,12 +133,11 @@ class _StaffHomePageState extends State<StaffHomePage> {
         action: RouteButton(
             text: AppLocalizations.of(context).translate('logout'),
             color: HexColor.lightElement,
-            onTap: () =>
-                Utils.instance.logoutAsk(context, () {
+            onTap: () => Utils.instance.logoutAsk(context, () {
                   SharedPrefs.logout();
                   Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
                       CupertinoPageRoute(builder: (context) => SignInPage()),
-                          (route) => false);
+                      (route) => false);
                 })),
         children: <Widget>[
           UserCard(onPressed: null, username: Account.instance.name),
@@ -147,10 +146,9 @@ class _StaffHomePageState extends State<StaffHomePage> {
             label: AppLocalizations.of(context).translate('scans'),
             child: FutureBuilder(builder: _buildFuture, future: _logs),
             subWidgetText: AppLocalizations.of(context).translate('more'),
-            subWidgetAction: () =>
-                Navigator.of(context).push(
-                  CupertinoPageRoute(builder: (context) => LogListPage()),
-                ),
+            subWidgetAction: () => Navigator.of(context).push(
+              CupertinoPageRoute(builder: (context) => LogListPage()),
+            ),
           )
         ]);
   }

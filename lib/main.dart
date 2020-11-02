@@ -5,7 +5,7 @@ import 'package:black_dog/utils/debug_print.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/screens/home_page.dart';
-import 'package:black_dog/screens/staff_home.dart';
+import 'file:///C:/Users/Cr0manty/AndroidStudioProjects/BlackDog/lib/screens/staff/staff_home.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';

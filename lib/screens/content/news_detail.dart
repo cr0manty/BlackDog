@@ -59,20 +59,23 @@ class _NewsDetailState extends State<NewsDetail> {
       ),
       children: <Widget>[
         CarouselSlider.builder(
-            itemBuilder: (context, index) => Container(
-                width: ScreenSize.width - 32,
-                child: _clipImage(ImageView(
-                  news.listImages[index],
-                  fit: BoxFit.fill,
-                ))),
-            itemCount: news?.listImages?.length ?? 0,
-            options: CarouselOptions(
-              height: ScreenSize.detailViewImage,
-              viewportFraction: 1,
-              enlargeCenterPage: true,
-              enableInfiniteScroll: false,
-              autoPlay: true,
-            )),
+          itemBuilder: (context, index) => Container(
+            width: ScreenSize.width - 32,
+            child: _clipImage(
+              ImageView(
+                news.listImages[index],
+              ),
+            ),
+          ),
+          itemCount: news?.listImages?.length ?? 0,
+          options: CarouselOptions(
+            height: ScreenSize.detailViewImage,
+            viewportFraction: 1,
+            enlargeCenterPage: true,
+            enableInfiniteScroll: false,
+            autoPlay: true,
+          ),
+        ),
         Container(
             margin: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
             alignment: Alignment.center,

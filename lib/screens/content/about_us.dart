@@ -104,13 +104,12 @@ class _AboutUsPageState extends State<AboutUsPage> {
         Center(
           child: Container(
             height: ScreenSize.aboutUsLogoSize,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-            ),
+
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: ImageView(
                 restaurant?.logo,
+                borderRadius: 10,
                 fit: BoxFit.fitHeight,
               ),
             ),

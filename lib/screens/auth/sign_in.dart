@@ -1,6 +1,6 @@
 import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/api.dart';
-import 'package:black_dog/screens/staff_home.dart';
+import 'file:///C:/Users/Cr0manty/AndroidStudioProjects/BlackDog/lib/screens/staff/staff_home.dart';
 import 'package:black_dog/screens/auth/sign_up.dart';
 import 'package:black_dog/utils/debug_print.dart';
 import 'package:black_dog/utils/localization.dart';
