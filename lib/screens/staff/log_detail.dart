@@ -51,7 +51,7 @@ class LogDetail extends StatelessWidget {
       leading: RouteButton(
         defaultIcon: true,
         text: AppLocalizations.of(context)
-            .translate(fromLogList ? 'home' : 'scans'),
+            .translate(fromLogList ? 'scans' : 'home'),
         color: HexColor.lightElement,
         onTap: Navigator.of(context).pop,
       ),

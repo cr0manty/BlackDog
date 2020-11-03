@@ -91,7 +91,6 @@ class _LogListPageState extends State<LogListPage> {
     }
     return LogCard(
       log: logList[index],
-      fromLogList: true,
     );
   }
 
