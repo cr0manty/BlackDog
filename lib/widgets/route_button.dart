@@ -16,6 +16,7 @@ class RouteButton extends StatelessWidget {
   final double _indent;
   final EdgeInsets padding;
   final EdgeInsets margin;
+  final Stream stream;
 
   RouteButton(
       {this.icon,
@@ -27,6 +28,7 @@ class RouteButton extends StatelessWidget {
       this.padding,
       this.iconWidget,
       this.margin,
+      this.stream,
       this.iconFirst = true,
       this.defaultIcon = false})
       : assert(icon != null || text != null),
@@ -94,10 +96,19 @@ class RouteButton extends StatelessWidget {
         ),
         margin: margin ?? EdgeInsets.zero,
         padding: padding ?? EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        child: Row(
-          children: iconFirst
-              ? _iconFirstBuild(context)
-              : _iconNotFirstWidget(context),
+        child: StreamBuilder<bool>(
+          stream: stream,
+          initialData: false,
+          builder: (context, snapshot) {
+            if (snapshot.data) {
+              return CupertinoActivityIndicator();
+            }
+            return Row(
+              children: iconFirst
+                  ? _iconFirstBuild(context)
+                  : _iconNotFirstWidget(context),
+            );
+          }
         ),
       ),
     );

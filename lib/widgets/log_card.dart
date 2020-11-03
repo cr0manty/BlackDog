@@ -21,7 +21,10 @@ class LogCard extends StatelessWidget {
       onTap: () {
         Navigator.of(context).push(
           CupertinoPageRoute(
-            builder: (context) => LogDetail(log),
+            builder: (context) => LogDetail(
+              log,
+              fromLogList: fromLogList,
+            ),
           ),
         );
       },

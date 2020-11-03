@@ -2,6 +2,8 @@ import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/screens/auth/sign_in.dart';
+import 'package:black_dog/screens/home_page/home_view.dart';
+import 'package:black_dog/screens/staff/staff_home_view.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/hex_color.dart';
@@ -10,8 +12,6 @@ import 'package:black_dog/widgets/input_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
-import '../home_page.dart';
-import '../staff/staff_home.dart';
 
 class SignUpConfirmPage extends StatefulWidget {
   final String token;

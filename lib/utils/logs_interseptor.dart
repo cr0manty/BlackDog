@@ -8,10 +8,10 @@ import 'debug_print.dart';
 
 class LogInterceptor implements InterceptorContract {
   void debugPrefixPrintWrapped(String text) {
-    final pattern = RegExp('.{1,800}');
-    pattern
-        .allMatches(text)
-        .forEach((match) => debugPrefixPrint(match.group(0)));
+    // final pattern = RegExp('.{1,800}');
+    // pattern
+    //     .allMatches(text)
+    //     .forEach((match) => debugPrefixPrint(match.group(0)));
   }
 
   String prettyJson(String jsonString) {
