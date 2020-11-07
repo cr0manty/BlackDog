@@ -48,7 +48,6 @@ class _BlackDogAppState extends State<BlackDogApp> {
   @override
   void initState() {
     super.initState();
-    SharedPrefs.saveLanguageCode(window.locale.languageCode);
     Account.instance.initialize();
   }
 

@@ -19,13 +19,10 @@ class LogDetail extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(
-            flex: 2,
-            child: Text(
-              label,
-              textAlign: TextAlign.left,
-              style: Utils.instance.getTextStyle('headline1'),
-            ),
+          Text(
+            label,
+            textAlign: TextAlign.left,
+            style: Utils.instance.getTextStyle('headline1'),
           ),
           Expanded(
             flex: 1,
