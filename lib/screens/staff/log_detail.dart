@@ -2,7 +2,6 @@ import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/log.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
-import 'package:black_dog/utils/sizes.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,16 +19,13 @@ class LogDetail extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Container(
-            width: ScreenSize.homePageNewsWidth,
-            child: Text(
-              label,
-              textAlign: TextAlign.left,
-              style: Utils.instance.getTextStyle('headline1'),
-            ),
+          Text(
+            label,
+            textAlign: TextAlign.left,
+            style: Utils.instance.getTextStyle('headline1'),
           ),
-          Container(
-            width: ScreenSize.homePageNewsWidth,
+          Expanded(
+            flex: 1,
             child: Text(
               value,
               textAlign: TextAlign.right,
@@ -51,7 +47,7 @@ class LogDetail extends StatelessWidget {
       leading: RouteButton(
         defaultIcon: true,
         text: AppLocalizations.of(context)
-            .translate(fromLogList ? 'home' : 'scans'),
+            .translate(fromLogList ? 'scans' : 'home'),
         color: HexColor.lightElement,
         onTap: Navigator.of(context).pop,
       ),

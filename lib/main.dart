@@ -1,11 +1,11 @@
 import 'dart:ui';
 
 import 'package:black_dog/screens/auth/sign_in.dart';
-import 'package:black_dog/screens/staff/staff_home.dart';
+import 'package:black_dog/screens/home_page/home_view.dart';
+import 'package:black_dog/screens/staff/staff_home_view.dart';
 import 'package:black_dog/utils/debug_print.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/instances/utils.dart';
-import 'package:black_dog/screens/home_page.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
@@ -48,7 +48,6 @@ class _BlackDogAppState extends State<BlackDogApp> {
   @override
   void initState() {
     super.initState();
-    SharedPrefs.saveLanguageCode(window.locale.languageCode);
     Account.instance.initialize();
   }
 
