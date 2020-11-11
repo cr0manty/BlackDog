@@ -12,6 +12,7 @@ import 'shared_pref.dart';
 enum AccountState { GUEST, USER, STAFF }
 
 class Account {
+  final StreamController<String> _onUserChange = StreamController<String>.broadcast();
   Account._internal();
 
   User _user;
@@ -31,13 +32,15 @@ class Account {
 
   List<Voucher> get vouchers => _vouchers;
 
+  Stream<String> get onUsernameChange => _onUserChange.stream;
+
   void initialize() {
     _user = SharedPrefs.getUser();
 
     if (_user != null) {
       state = _user.isStaff ?? false ? AccountState.STAFF : AccountState.USER;
+      _onUserChange.add(_user.fullName);
     }
-
   }
 
   void onNotificationListener(NotificationMessage event) {
@@ -63,6 +66,8 @@ class Account {
       _user = user;
       state = _user.isStaff ? AccountState.STAFF : AccountState.USER;
     }
+    _onUserChange.add(_user.fullName);
+
     return _user != null;
   }
 
@@ -70,6 +75,7 @@ class Account {
     User user = await Api.instance.getUser();
     if (user != null) {
       _user = user;
+      _onUserChange.add(_user.fullName);
       SharedPrefs.saveUser(_user);
       refreshVouchers();
     }

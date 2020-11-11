@@ -65,7 +65,7 @@ class Api {
       return {'result': false, 'message': null};
     }
     Response response = await _client.post(url, headers: _setHeaders());
-    Map body = json.decode(response.body);
+    Map body = json.decode(utf8.decode(response.bodyBytes)) as Map;
     body['result'] = response.statusCode == 200;
     return body;
   }

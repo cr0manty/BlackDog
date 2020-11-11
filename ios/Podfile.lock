@@ -207,7 +207,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher/ios"
 
 SPEC CHECKSUMS:
-  barcode_scan: a5c27959edfafaa0c771905bad0b29d6d39e4479
+  barcode_scan: 6dd1caf4a5faecef4144392ec66c4fd3a5a84d61
   connectivity: c4130b2985d4ef6fd26f9702e886bd5260681467
   device_id: 4a0bf078741a3eec6ba0e6cc72e786395d5991b0
   Firebase: 8db6f2d1b2c5e2984efba4949a145875a8f65fe5

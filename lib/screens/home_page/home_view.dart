@@ -105,7 +105,6 @@ class _HomePageState extends State<HomePage>
             onPressed: () => Navigator.of(context, rootNavigator: true).push(
                 CupertinoPageRoute(
                     builder: (BuildContext context) => UserPage())),
-            username: Account.instance.name,
             trailing: EditButton(fromHome: true),
             additionWidget: BonusCard(),
           ),

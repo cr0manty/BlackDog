@@ -18,7 +18,6 @@ import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/screens/auth/sign_in.dart';
-import 'package:intl/intl.dart';
 
 import 'log_list.dart';
 
@@ -39,12 +38,10 @@ class _StaffHomePageState extends State<StaffHomePage> {
     Account.instance.refreshUser().then((value) => setState(() {}));
   }
 
-  String get currentDate => DateFormat('M/d/y HH:mm').format(DateTime.now());
-
   @override
   void initState() {
     _apiChange = Api.instance.apiChange.listen((event) => setState(() {}));
-    _logs = Api.instance.getLogs(date: currentDate);
+    _logs = Api.instance.getLogs(limit: 10);
     super.initState();
   }
 
@@ -54,6 +51,7 @@ class _StaffHomePageState extends State<StaffHomePage> {
 
     if (result.rawContent.isNotEmpty) {
       Map scanned = await Api.instance.staffScanQRCode(result.rawContent);
+
       String msg;
       String label;
       if (scanned['message'] != null) {
@@ -72,8 +70,9 @@ class _StaffHomePageState extends State<StaffHomePage> {
         Utils.instance.infoDialog(
           context,
           msg,
+          label: label
         );
-        _logs = Api.instance.getLogs(date: currentDate);
+        _logs = Api.instance.getLogs(limit: 10);
         setState(() {});
       } else {
         debugPrefixPrint(scanned, prefix: 'scan');
@@ -127,7 +126,7 @@ class _StaffHomePageState extends State<StaffHomePage> {
         scrollController: _scrollController,
         alwaysNavigation: true,
         onRefresh: () async {
-          _logs = Api.instance.getLogs(date: currentDate);
+          _logs = Api.instance.getLogs(limit: 10);
           setState(() {});
         },
         action: RouteButton(
@@ -140,7 +139,7 @@ class _StaffHomePageState extends State<StaffHomePage> {
                       (route) => false);
                 })),
         children: <Widget>[
-          UserCard(onPressed: null, username: Account.instance.name),
+          UserCard(onPressed: null),
           _buildScanQRCode(),
           PageSection(
             label: AppLocalizations.of(context).translate('scans'),

@@ -228,7 +228,6 @@ class _UserPageState extends State<UserPage>
       children: <Widget>[
         UserCard(
           onPressed: null,
-          username: Account.instance.name,
           trailing: EditButton(),
           additionWidget: BonusCard(),
         ),
