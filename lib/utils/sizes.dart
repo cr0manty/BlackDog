@@ -8,6 +8,7 @@ abstract class TextSize {
 abstract class ScreenSize {
   static double height;
   static double width;
+  static double pixelRatio;
 
   static double get sectionIndent => height * 0.04;
 
@@ -15,7 +16,12 @@ abstract class ScreenSize {
 
   static double get scanQRCodeSize => height * 0.17;
 
-  static double get bonusCardSize => height * 0.12;
+  static double get bonusCardSize {
+    if (pixelRatio <= 2) {
+      return 75;
+    }
+    return 30 * pixelRatio;
+  }
 
   static double get scanQRCodeIconSize => scanQRCodeSize * 0.85;
 

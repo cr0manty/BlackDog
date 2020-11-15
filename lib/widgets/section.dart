@@ -8,12 +8,16 @@ class PageSection extends StatelessWidget {
   final String subWidgetText;
   final Function subWidgetAction;
   final bool enabled;
+  final bool captionEnabled;
+  final double heightPadding;
 
   PageSection(
       {@required this.child,
       @required this.label,
       this.subWidgetAction,
       this.subWidgetText,
+      this.heightPadding = 0,
+      this.captionEnabled = true,
       this.enabled = true});
 
   @override
@@ -27,36 +31,35 @@ class PageSection extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 26),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              CupertinoButton(
-                onPressed: null,
-                minSize: 0,
-                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 7),
-                child: Text(
-                  label,
-                  style: Utils.instance.getTextStyle('caption'),
+        if (captionEnabled)
+          Padding(
+            padding: EdgeInsets.only(right: 26, left: 26, top: enabled ? 0 : 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                CupertinoButton(
+                  onPressed: null,
+                  minSize: 0,
+                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 7),
+                  child: Text(
+                    label,
+                    style: Utils.instance.getTextStyle('caption'),
+                  ),
                 ),
-              ),
-              subWidgetText != null
-                  ? CupertinoButton(
-                      onPressed: subWidgetAction,
-                      minSize: 0,
-                      padding:
-                          EdgeInsets.symmetric(vertical: 16, horizontal: 7),
-                      child: Text(
-                        subWidgetText,
-                        style: Utils.instance.getTextStyle('subtitle1'),
-                      ),
-                    )
-                  : Container(),
-            ],
+                if (subWidgetText != null)
+                  CupertinoButton(
+                    onPressed: subWidgetAction,
+                    minSize: 0,
+                    padding: EdgeInsets.symmetric(vertical: 16, horizontal: 7),
+                    child: Text(
+                      subWidgetText,
+                      style: Utils.instance.getTextStyle('subtitle1'),
+                    ),
+                  )
+              ],
+            ),
           ),
-        ),
-        SizedBox(height: ScreenSize.labelIndent),
+        if (captionEnabled) SizedBox(height: ScreenSize.labelIndent),
         child
       ],
     );

@@ -37,6 +37,7 @@ class _LogListPageState extends State<LogListPage> {
     setState(() {
       page++;
       logList.addAll(logs);
+      showProgress = false;
     });
   }
 
@@ -46,7 +47,6 @@ class _LogListPageState extends State<LogListPage> {
         logList.length % Api.defaultPerPage == 0) {
       setState(() => showProgress = true);
       await getLogList();
-      setState(() => showProgress = false);
     }
   }
 
@@ -91,6 +91,7 @@ class _LogListPageState extends State<LogListPage> {
     }
     return LogCard(
       log: logList[index],
+      fromLogList: true,
     );
   }
 

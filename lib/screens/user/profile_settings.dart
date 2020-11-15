@@ -1,5 +1,6 @@
 import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/utils/debug_print.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/hex_color.dart';
@@ -8,7 +9,6 @@ import 'package:black_dog/widgets/input_field.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'change_password.dart';
 
@@ -75,7 +75,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 onFieldSubmitted: (_) =>
                     FocusScope.of(context).requestFocus(_lastNameFocus),
                 hintText: AppLocalizations.of(context).translate('first_name'),
-                keyboardType: TextInputType.name,
+                keyboardType: TextInputType.text,
                 inputAction: TextInputAction.next),
             Utils.instance.showValidateError(fieldsError, key: 'first_name'),
             Container(
@@ -150,9 +150,10 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     await Api.instance.updateUser(_sendData()).then((response) {
       bool result = response.remove('result');
       if (result) {
-        EasyLoading.instance
-          ..backgroundColor = HexColor.successGreen.withOpacity(0.8);
-        EasyLoading.showSuccess('');
+        Utils.instance.infoDialog(
+          context,
+          AppLocalizations.of(context).translate('changes_saved'),
+        );
       } else {
         response.forEach((key, value) {
           if (key == 'last_name' || key == 'first_name') {
@@ -166,10 +167,13 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       setState(() => isLoading = !isLoading);
       return;
     }).catchError((error) {
-      print(error);
+      debugPrefixPrint(error, prefix: 'error');
       setState(() => isLoading = !isLoading);
-      EasyLoading.instance..backgroundColor = HexColor.errorRed;
-      EasyLoading.showError('');
+      Utils.instance.infoDialog(
+        context,
+        AppLocalizations.of(context).translate('error'),
+        isError: true,
+      );
     });
   }
 }

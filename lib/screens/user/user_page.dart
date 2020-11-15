@@ -3,6 +3,7 @@ import 'dart:math' as math;
 
 import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/instances/notification_manager.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/voucher.dart';
@@ -28,12 +29,17 @@ class UserPage extends StatefulWidget {
 class _UserPageState extends State<UserPage>
     with SingleTickerProviderStateMixin {
   StreamSubscription _apiChange;
+  StreamSubscription _onMessage;
 
   @override
   void initState() {
+    super.initState();
+
     _apiChange = Api.instance.apiChange.listen((event) => setState(() {}));
     Account.instance.refreshVouchers();
-    super.initState();
+    _onMessage = NotificationManager.instance.onMessage.listen((event) {
+      setState(() {});
+    });
   }
 
   Widget _bonusWidget() {
@@ -73,12 +79,14 @@ class _UserPageState extends State<UserPage>
                 child: RichText(
                   text: TextSpan(children: [
                     TextSpan(
-                        text: '${Account.instance.currentVoucher?.purchaseCount ?? 0}',
+                        text:
+                            '${Account.instance.currentVoucher?.purchaseCount ?? 0}',
                         style: Utils.instance
                             .getTextStyle('subtitle1')
                             .copyWith(fontSize: TextSize.extra)),
                     TextSpan(
-                        text: '/${Account.instance.currentVoucher?.purchaseToBonus ?? 0}',
+                        text:
+                            '/${Account.instance.currentVoucher?.purchaseToBonus ?? 0}',
                         style: Utils.instance
                             .getTextStyle('subtitle1')
                             .copyWith(
@@ -220,7 +228,6 @@ class _UserPageState extends State<UserPage>
       children: <Widget>[
         UserCard(
           onPressed: null,
-          username: Account.instance.name,
           trailing: EditButton(),
           additionWidget: BonusCard(),
         ),
@@ -245,6 +252,7 @@ class _UserPageState extends State<UserPage>
   @override
   void dispose() {
     _apiChange?.cancel();
+    _onMessage?.cancel();
     super.dispose();
   }
 }

@@ -8,7 +8,6 @@ import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/utils/sizes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:screen/screen.dart';
 
 class Utils {
@@ -29,6 +28,7 @@ class Utils {
   void initScreenSize(MediaQueryData query) {
     ScreenSize.height = query.size.height;
     ScreenSize.width = query.size.width;
+    ScreenSize.pixelRatio = query.devicePixelRatio;
     initTextSize(query);
   }
 
@@ -47,13 +47,6 @@ class Utils {
   }
 
   bool get popUpOnScreen => _showPopUp != null;
-
-  String dateFormat(DateTime date) {
-    if (date == null) {
-      return null;
-    }
-    return '${date.year}-${date.month}-${date.day}';
-  }
 
   String showDateFormat(DateTime date) {
     if (date == null) {
@@ -91,12 +84,27 @@ class Utils {
             )).then((value) => _showPopUp = null);
   }
 
-  void infoDialog(BuildContext context, String content) {
+  void infoDialog(BuildContext context, String content,
+      {String label, bool isError = false}) {
+    if (_showPopUp != null) {
+      return;
+    }
+
+    String contentText = isError && !ConnectionsCheck.instance.isOnline
+        ? AppLocalizations.of(context).translate('no_internet')
+        : content;
+
     _showPopUp = showCupertinoDialog(
         context: context,
         barrierDismissible: true,
         builder: (context) => CupertinoAlertDialog(
-              content: Text(content,
+              title: label != null
+                  ? Text(
+                      label,
+                      style: Utils.instance.getTextStyle('subtitle1'),
+                    )
+                  : null,
+              content: Text(contentText,
                   style: Utils.instance.getTextStyle('subtitle2')),
               actions: [
                 CupertinoDialogAction(
@@ -144,8 +152,11 @@ class Utils {
       codeImage = ImageView(codeUrl);
     }
     if (codeImage == null) {
-      EasyLoading.instance..backgroundColor = HexColor.errorRed;
-      EasyLoading.showError('');
+      infoDialog(
+        context,
+        AppLocalizations.of(context).translate('error'),
+        isError: true,
+      );
     } else {
       if (_showPopUp != null) {
         return;
@@ -189,8 +200,12 @@ class Utils {
                       style: Utils.instance.getTextStyle('subtitle2')),
                 )).then((_) => _showPopUp = null);
       } else {
-        EasyLoading.instance..backgroundColor = HexColor.errorRed;
-        EasyLoading.showError('');
+        infoDialog(
+          context,
+          AppLocalizations.of(context).translate(
+            ConnectionsCheck.instance.isOnline ? 'error' : 'no_internet',
+          ),
+        );
       }
     });
   }
@@ -243,6 +258,13 @@ class Utils {
             fontFamily: 'Century-Gothic',
             fontSize: TextSize.small,
             color: HexColor.semiElement);
+    }
+  }
+
+  void closePopUp(BuildContext context) {
+    if (_showPopUp != null) {
+      Navigator.of(context).pop();
+      _showPopUp = null;
     }
   }
 }

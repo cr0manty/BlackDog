@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:barcode_scan/platform_wrapper.dart';
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/models/log.dart';
+import 'package:black_dog/utils/debug_print.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/instances/utils.dart';
@@ -17,8 +18,8 @@ import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/screens/auth/sign_in.dart';
-import 'package:intl/intl.dart';
-import 'package:black_dog/screens/content/log_list.dart';
+
+import 'log_list.dart';
 
 class StaffHomePage extends StatefulWidget {
   @override
@@ -37,37 +38,48 @@ class _StaffHomePageState extends State<StaffHomePage> {
     Account.instance.refreshUser().then((value) => setState(() {}));
   }
 
-  String get currentDate => DateFormat('M/d/y').format(DateTime.now());
-
   @override
   void initState() {
     _apiChange = Api.instance.apiChange.listen((event) => setState(() {}));
-    _logs = Api.instance.getLogs(date: currentDate);
+    _logs = Api.instance.getLogs(limit: 10);
     super.initState();
   }
 
   void _onScanTap() async {
-    setState(() => isLoading = !isLoading);
     var result = await BarcodeScanner.scan();
-    print('Scanned QR Code url: ${result.rawContent}');
+    debugPrefixPrint('Scanned QR Code url: ${result.rawContent}', prefix: 'scan');
 
     if (result.rawContent.isNotEmpty) {
       Map scanned = await Api.instance.staffScanQRCode(result.rawContent);
+
+      String msg;
+      String label;
+      if (scanned['message'] != null) {
+        msg = scanned['message'] is List
+            ? scanned['message'][0]
+            : scanned['message'];
+        if (scanned.containsKey('voucher')) {
+          label = scanned['voucher']['voucher_config']['name'];
+        }
+      } else {
+        msg = AppLocalizations.of(context)
+            .translate(scanned['result'] ? 'success_scan' : 'error_scan');
+      }
+
       if (scanned['result']) {
         Utils.instance.infoDialog(
-            context,
-            scanned['message'] ??
-                AppLocalizations.of(context).translate('success_scan'));
-        _logs = Api.instance.getLogs(date: currentDate);
+          context,
+          msg,
+          label: label
+        );
+        _logs = Api.instance.getLogs(limit: 10);
+        setState(() {});
       } else {
-        print(scanned);
-        Utils.instance.infoDialog(
-            context,
-            scanned['message'] ??
-                AppLocalizations.of(context).translate('error_scan'));
+        debugPrefixPrint(scanned, prefix: 'scan');
+
+        Utils.instance.infoDialog(context, msg, label: label);
       }
     }
-    setState(() => isLoading = !isLoading);
   }
 
   Widget _buildFuture(BuildContext context, AsyncSnapshot snapshot) {
@@ -91,8 +103,13 @@ class _StaffHomePageState extends State<StaffHomePage> {
       case ConnectionState.done:
         if (snapshot.hasData && snapshot.data.length > 0) {
           return Column(
-              children: List.generate(snapshot.data.length,
-                  (index) => LogCard(log: snapshot.data[index])));
+            children: List.generate(
+              snapshot.data.length,
+              (index) => LogCard(
+                log: snapshot.data[index],
+              ),
+            ),
+          );
         }
         return noData;
       default:
@@ -108,7 +125,10 @@ class _StaffHomePageState extends State<StaffHomePage> {
         inAsyncCall: isLoading,
         scrollController: _scrollController,
         alwaysNavigation: true,
-        onRefresh: () async => await Future.delayed(Duration(milliseconds: 500), () => _logs = Api.instance.getLogs(date: currentDate)),
+        onRefresh: () async {
+          _logs = Api.instance.getLogs(limit: 10);
+          setState(() {});
+        },
         action: RouteButton(
             text: AppLocalizations.of(context).translate('logout'),
             color: HexColor.lightElement,
@@ -119,7 +139,7 @@ class _StaffHomePageState extends State<StaffHomePage> {
                       (route) => false);
                 })),
         children: <Widget>[
-          UserCard(onPressed: null, username: Account.instance.name),
+          UserCard(onPressed: null),
           _buildScanQRCode(),
           PageSection(
             label: AppLocalizations.of(context).translate('scans'),

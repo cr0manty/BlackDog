@@ -2,18 +2,16 @@ import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/screens/auth/sign_in.dart';
+import 'package:black_dog/screens/home_page/home_view.dart';
+import 'package:black_dog/screens/staff/staff_home_view.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/sizes.dart';
 import 'package:black_dog/widgets/input_field.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
-import '../home_page.dart';
-import '../staff_home.dart';
 
 class SignUpConfirmPage extends StatefulWidget {
   final String token;
@@ -34,7 +32,6 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
   static const List<String> _fieldsList = [
     'first_name',
     'last_name',
-    'birth_date'
   ];
   Map fieldsError = {};
   bool isLoading = false;
@@ -52,6 +49,7 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
               onFieldSubmitted: (_) =>
                   FocusScope.of(context).requestFocus(_lastNameFocus),
               controller: _nameController,
+              inputAction: TextInputAction.next,
               keyboardType: TextInputType.name,
               hintText: AppLocalizations.of(context).translate('first_name'),
             )),
@@ -60,40 +58,13 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
             alignment: Alignment.center,
             child: TextInput(
               focusNode: _lastNameFocus,
-              onFieldSubmitted: (_) => _showModalBottomSheet(context),
+              onFieldSubmitted: (_) => _additionRegister(),
               controller: _lastNameController,
+              inputAction: TextInputAction.done,
               keyboardType: TextInputType.name,
               hintText: AppLocalizations.of(context).translate('last_name'),
             )),
         Utils.instance.showValidateError(fieldsError, key: 'last_name'),
-        GestureDetector(
-            onTap: () => _showModalBottomSheet(context),
-            child: Container(
-                height: 50,
-                width: ScreenSize.width - 32,
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: HexColor.lightElement),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(
-                      Utils.instance.showDateFormat(selectedDate) ??
-                          AppLocalizations.of(context).translate('birth_date'),
-                      style: Utils.instance.getTextStyle('bodyText1').copyWith(
-                          color: selectedDate != null
-                              ? HexColor.darkElement
-                              : HexColor.inputHintColor),
-                    ),
-                    Icon(
-                      SFSymbols.calendar,
-                      color: HexColor.black,
-                    )
-                  ],
-                ))),
-        Utils.instance.showValidateError(fieldsError, key: 'birth_date'),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.max,
@@ -239,37 +210,8 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
     );
   }
 
-  void _showModalBottomSheet(context) {
-    FocusScope.of(context).unfocus();
-    DateTime today = DateTime.now();
-
-    showCupertinoModalPopup(
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-              height: MediaQuery.of(context).copyWith().size.height / 3,
-              color: HexColor.darkElement,
-              child: CupertinoTheme(
-                  data: CupertinoThemeData(
-                    textTheme: CupertinoTextThemeData(
-                      dateTimePickerTextStyle:
-                          Utils.instance.getTextStyle('subtitle1'),
-                    ),
-                  ),
-                  child: CupertinoDatePicker(
-                    initialDateTime: today,
-                    onDateTimeChanged: (DateTime newDate) =>
-                        setState(() => selectedDate = newDate),
-                    minimumYear: today.year - 200,
-                    maximumYear: today.year + 2,
-                    mode: CupertinoDatePickerMode.date,
-                  )));
-        });
-  }
-
   Map<String, String> _sendData() {
     return {
-      'birth_date': Utils.instance.dateFormat(selectedDate),
       'first_name': _nameController.text,
       'last_name': _lastNameController.text,
       'firebase_uid': SharedPrefs.getUserFirebaseUID()
@@ -283,7 +225,7 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
       fieldsError = {};
     });
     Map response =
-        await Api.instance.updateUser(_sendData(), token: widget.token);
+        await Api.instance.registerComplete(_sendData(), widget.token);
     bool result = response.remove('result');
 
     if (result) {
@@ -299,8 +241,11 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
       } else {
         SharedPrefs.logout();
         setState(() => isLoading = false);
-        EasyLoading.instance..backgroundColor = HexColor.errorRed;
-        EasyLoading.showError('');
+        Utils.instance.infoDialog(
+          context,
+          AppLocalizations.of(context).translate('error'),
+          isError: true,
+        );
       }
     } else {
       response.forEach((key, value) {

@@ -6,9 +6,15 @@
                 android:gravity="fill"
                 android:src="@drawable/background" />
     </item>
-    <item>
+    <item
+            android:width="250dp"
+            android:height="250dp"
+            android:gravity="center">
         <bitmap
-                android:gravity="center"
-                android:src="@drawable/logo" />
+                android:width="250dp"
+                android:height="250dp"
+                android:gravity="fill_horizontal|fill_vertical|center"
+                android:src="@drawable/logo"
+                android:text=""/>
     </item>
 </layer-list>

@@ -8,7 +8,6 @@ import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 enum PageState { ENTER_PHONE, NEW_PASSWORD }
 
@@ -171,8 +170,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         verificationFailed: (FirebaseAuthException authException) {
           print(authException.message);
           Navigator.of(context).pop();
-          EasyLoading.instance..backgroundColor = HexColor.errorRed;
-          EasyLoading.showError('');
+          Utils.instance.infoDialog(
+            context,
+            authException.message,
+          );
         },
         codeSent: (String verificationId, [int forceResendingToken]) {
           setState(() => isLoading = false);
@@ -204,9 +205,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               .signInWithCredential(credential)
                               .catchError((error) {
                             Navigator.of(context).pop();
-                            EasyLoading.instance
-                              ..backgroundColor = HexColor.errorRed;
-                            EasyLoading.showError('');
+                            Utils.instance
+                                .infoDialog(context, error.toString());
                           });
                           if (result != null && result.user != null) {
                             onSuccessCode(result.user.uid);
@@ -229,8 +229,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           Navigator.of(context).pop();
           verificationId = verificationId;
           print('Time out: $verificationId');
-          EasyLoading.instance..backgroundColor = HexColor.errorRed;
-          EasyLoading.showError('');
+          Utils.instance.infoDialog(
+            context,
+            AppLocalizations.of(context).translate('error'),
+            isError: true,
+          );
         });
   }
 
@@ -314,8 +317,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     }).catchError((error) {
       setState(() => isLoading = !isLoading);
       print(error);
-      EasyLoading.instance..backgroundColor = HexColor.errorRed;
-      EasyLoading.showError('');
+      Utils.instance.infoDialog(
+        context,
+        AppLocalizations.of(context).translate('error'),
+        isError: true,
+      );
     });
   }
 }

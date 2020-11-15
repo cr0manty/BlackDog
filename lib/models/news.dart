@@ -26,4 +26,6 @@ class News extends ModelItem {
 
 
   String get previewImage => listImages?.first;
+
+  List get images => listImages ?? [];
 }

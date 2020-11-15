@@ -1,10 +1,11 @@
 import 'dart:async';
 
-import 'package:black_dog/instances/api.dart';
-import 'package:black_dog/instances/connection_check.dart';
+import 'package:black_dog/instances/notification_manager.dart';
 import 'package:black_dog/models/menu_category.dart';
 import 'package:black_dog/models/news.dart';
+import 'package:black_dog/screens/content/news_list.dart';
 import 'package:black_dog/screens/content/product_list.dart';
+import 'package:black_dog/screens/home_page/home_model.dart';
 import 'package:black_dog/screens/user/user_page.dart';
 import 'package:black_dog/utils/black_dog_icons.dart';
 import 'package:black_dog/utils/hex_color.dart';
@@ -23,8 +24,7 @@ import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/screens/content/about_us.dart';
 import 'package:black_dog/screens/content/news_detail.dart';
-
-import 'content/news_list.dart';
+import 'package:rate_my_app/rate_my_app.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -34,43 +34,44 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   final ScrollController _scrollController = ScrollController();
-  StreamSubscription _apiChange;
-  StreamSubscription _connectionChange;
+  StreamSubscription _onMessage;
+  HomeModel _model;
 
-  bool isLoading = false;
-  bool updateNetworkItems = true;
-  Future<List<News>> _news;
-  Future<List<MenuCategory>> _category;
-
-  void initDependencies() {
-    Api.instance.getNewsConfig();
-    Account.instance.refreshUser();
-    Api.instance.voucherDetails();
-    Api.instance.getAboutUs();
-    setState(() {});
-  }
-
-  void onNetworkChange(isOnline) {
-    if (isOnline && updateNetworkItems) {
-      updateNetworkItems = false;
-      initDependencies();
-      _category = Api.instance.getCategories(limit: 100);
-      _news = Api.instance
-          .getNewsList(page: 0, limit: SharedPrefs.getMaxNewsAmount());
-    }
-    setState(() {});
+  void rateMyApp() {
+    RateMyApp rateMyApp = RateMyApp(
+      minDays: 3,
+      minLaunches: 10,
+      remindDays: 14,
+      remindLaunches: 28,
+      googlePlayIdentifier: 'com.blackdog.coffee',
+      appStoreIdentifier: '1534425694',
+    );
+    rateMyApp.init().then((_) {
+      if (rateMyApp.shouldOpenDialog) {
+        rateMyApp.showRateDialog(
+          context,
+          title: AppLocalizations.of(context).translate('rate_app'),
+          message: AppLocalizations.of(context).translate('rate_app_desc'),
+          rateButton: AppLocalizations.of(context).translate('rate'),
+          noButton: AppLocalizations.of(context).translate('no_thanks'),
+          laterButton: AppLocalizations.of(context).translate('later'),
+        );
+      }
+    });
   }
 
   @override
   void initState() {
-    _apiChange = Api.instance.apiChange.listen((event) => setState(() {}));
-    _connectionChange =
-        ConnectionsCheck.instance.onChange.listen(onNetworkChange);
-
-    if (ConnectionsCheck.instance.isOnline) {
-      onNetworkChange(true);
-    }
     super.initState();
+    _onMessage = NotificationManager.instance.onMessage.listen((event) {
+      Account.instance.onNotificationListener(event);
+      Utils.instance.closePopUp(context);
+      if (event.msg != null) {
+        Utils.instance.infoDialog(context, event.msg);
+      }
+    });
+    _model = HomeModel();
+    rateMyApp();
   }
 
   @override
@@ -78,15 +79,10 @@ class _HomePageState extends State<HomePage>
     Utils.instance.initScreenSize(MediaQuery.of(context));
 
     return PageScaffold(
-        inAsyncCall: isLoading,
         scrollController: _scrollController,
         alwaysNavigation: false,
         padding: EdgeInsets.only(top: 20),
-        onRefresh: () async =>
-            await Future.delayed(Duration(milliseconds: 500), () {
-              updateNetworkItems = true;
-              onNetworkChange(ConnectionsCheck.instance.isOnline);
-            }),
+        onRefresh: _model.onPageRefresh,
         children: <Widget>[
           NavigationBar(
               alwaysNavigation: false,
@@ -109,73 +105,55 @@ class _HomePageState extends State<HomePage>
             onPressed: () => Navigator.of(context, rootNavigator: true).push(
                 CupertinoPageRoute(
                     builder: (BuildContext context) => UserPage())),
-            username: Account.instance.name,
             trailing: EditButton(fromHome: true),
             additionWidget: BonusCard(),
           ),
-          SizedBox(height: ScreenSize.sectionIndent - 20),
-          PageSection(
+          StreamBuilder(
+            stream: _model.newsStream,
+            builder: (context, snapshot) => PageSection(
               label: AppLocalizations.of(context).translate('news'),
+              captionEnabled: snapshot.hasData && snapshot.data.length > 0,
               child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: FutureBuilder(
-                    builder: (context, snapshot) => _buildFuture(
-                        context, snapshot, 'no_news', _buildNews(snapshot)),
-                    future: _news,
-                  )),
+                scrollDirection: Axis.horizontal,
+                child: snapshot.hasData && !snapshot.hasError
+                    ? _buildNews(snapshot)
+                    : SizedBox.shrink(),
+              ),
               subWidgetText: AppLocalizations.of(context).translate('more'),
               subWidgetAction: () => Navigator.of(context).push(
-                    CupertinoPageRoute(builder: (context) => NewsList()),
-                  ),
-              enabled: SharedPrefs.getShowNews()),
-          SizedBox(height: ScreenSize.sectionIndent / 1.5),
-          PageSection(
+                CupertinoPageRoute(
+                  builder: (context) => NewsList(),
+                ),
+              ),
+              enabled: SharedPrefs.getShowNews(),
+            ),
+          ),
+          StreamBuilder(
+            stream: _model.menuStream,
+            builder: (context, snapshot) => PageSection(
+              heightPadding: snapshot.hasData && snapshot.data.length > 0
+                  ? ScreenSize.sectionIndent - 20
+                  : 0,
+              captionEnabled: snapshot.hasData && snapshot.data.length > 0,
               label: AppLocalizations.of(context).translate('menu'),
-              child: FutureBuilder(
-                builder: (context, snapshot) => _buildFuture(
-                    context, snapshot, 'no_menu', _buildCategories(snapshot)),
-                future: _category,
-              )),
+              child: snapshot.hasData && !snapshot.hasError
+                  ? _buildCategories(snapshot)
+                  : SizedBox.shrink(),
+            ),
+          ),
           Container(height: 20)
         ]);
-  }
-
-  Widget _buildFuture(BuildContext context, AsyncSnapshot snapshot,
-      String stringKey, Widget child) {
-    Widget noData = Container(
-        width: ScreenSize.width,
-        child: Center(
-            child: Text(
-          AppLocalizations.of(context).translate(stringKey),
-          style: Utils.instance.getTextStyle('subtitle1'),
-        )));
-
-    switch (snapshot.connectionState) {
-      case ConnectionState.none:
-        return noData;
-      case ConnectionState.waiting:
-      case ConnectionState.active:
-        return Container(
-            width: ScreenSize.width,
-            child: Center(child: CupertinoActivityIndicator()));
-      case ConnectionState.done:
-        if (snapshot.hasData && !snapshot.hasError) {
-          return child;
-        }
-        return noData;
-      default:
-        return noData;
-    }
   }
 
   Widget _buildNews(AsyncSnapshot snapshot) {
     if (snapshot.hasData && !snapshot.hasError) {
       int maxNews = SharedPrefs.getMaxNewsAmount();
-
       return Row(
-          children: List.generate(
-              snapshot.data.length < maxNews ? snapshot.data.length : maxNews,
-              (index) => _buildNewsBlock(snapshot.data, index)));
+        children: List.generate(
+          snapshot.data.length < maxNews ? snapshot.data.length : maxNews,
+          (index) => _buildNewsBlock(snapshot.data, index),
+        ),
+      );
     }
     return Container();
   }
@@ -183,10 +161,13 @@ class _HomePageState extends State<HomePage>
   Widget _buildCategories(AsyncSnapshot snapshot) {
     if (snapshot.hasData && !snapshot.hasError) {
       return Column(
-          children: List.generate(snapshot.data.length,
-              (index) => _buildMenu(snapshot.data[index])));
+        children: List.generate(
+          snapshot.data.length,
+          (index) => _buildMenu(snapshot.data[index]),
+        ),
+      );
     }
-    return Container();
+    return SizedBox.shrink();
   }
 
   Widget _buildNewsBlock(List<News> newsList, int index) {
@@ -226,7 +207,6 @@ class _HomePageState extends State<HomePage>
             Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: HexColor.semiElement.withOpacity(0.3),
                 ),
                 height: ScreenSize.newsImageHeight,
                 width: ScreenSize.newsImageWidth,
@@ -242,59 +222,65 @@ class _HomePageState extends State<HomePage>
 
   Widget _buildMenu(MenuCategory category) {
     return GestureDetector(
-        onTap: () => Navigator.of(context).push(CupertinoPageRoute(
-            builder: (context) =>
-                ProductList(title: category.name, id: category.id))),
+      onTap: () => Navigator.of(context).push(
+        CupertinoPageRoute(
+          builder: (context) => ProductList(
+            title: category.name,
+            id: category.id,
+          ),
+        ),
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: HexColor.semiElement.withOpacity(0.3),
+        ),
+        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        height: ScreenSize.menuBlockHeight,
+        width: ScreenSize.width - 32,
         child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: HexColor.semiElement.withOpacity(0.3),
+          alignment: Alignment.centerLeft,
+          child: Stack(
+            children: <Widget>[
+              Container(
+                height: ScreenSize.menuBlockHeight,
+                width: ScreenSize.width - 32,
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: ImageView(category.image)),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(9),
+                    gradient: LinearGradient(
+                        colors: [
+                          HexColor('#000000').withOpacity(0.2),
+                          HexColor('#000000').withOpacity(0.8),
+                        ],
+                        stops: [
+                          0.2,
+                          2
+                        ],
+                        begin: Alignment.centerRight,
+                        end: Alignment.centerLeft)),
+              ),
+              Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  alignment: Alignment.centerLeft,
+                  child: Text(category.capitalizeTitle,
+                      maxLines: 2,
+                      style: Utils.instance.getTextStyle('caption')))
+            ],
           ),
-          margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          height: ScreenSize.menuBlockHeight,
-          width: ScreenSize.width - 32,
-          child: Container(
-            alignment: Alignment.centerLeft,
-            child: Stack(
-              children: <Widget>[
-                Container(
-                  height: ScreenSize.menuBlockHeight,
-                  width: ScreenSize.width - 32,
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: ImageView(category.image)),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(9),
-                      gradient: LinearGradient(
-                          colors: [
-                            HexColor('#000000').withOpacity(0.2),
-                            HexColor('#000000').withOpacity(0.8),
-                          ],
-                          stops: [
-                            0.2,
-                            2
-                          ],
-                          begin: Alignment.centerRight,
-                          end: Alignment.centerLeft)),
-                ),
-                Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    alignment: Alignment.centerLeft,
-                    child: Text(category.capitalizeTitle,
-                        maxLines: 2,
-                        style: Utils.instance.getTextStyle('caption')))
-              ],
-            ),
-          ),
-        ));
+        ),
+      ),
+    );
   }
 
   @override
   void dispose() {
-    _apiChange?.cancel();
-    _connectionChange?.cancel();
+    _model?.dispose();
+    _onMessage?.cancel();
     super.dispose();
   }
 }

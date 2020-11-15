@@ -102,16 +102,19 @@ class _AboutUsPageState extends State<AboutUsPage> {
           style: Utils.instance.getTextStyle('caption')),
       children: <Widget>[
         Center(
-            child: Container(
-                width: ScreenSize.width - 32,
-                height: ScreenSize.aboutUsLogoSize,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: HexColor.semiElement.withOpacity(0.3),
-                ),
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: ImageView(restaurant?.logo)))),
+          child: Container(
+            height: ScreenSize.aboutUsLogoSize,
+
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: ImageView(
+                restaurant?.logo,
+                borderRadius: 10,
+                fit: BoxFit.fitHeight,
+              ),
+            ),
+          ),
+        ),
         Container(
             margin: EdgeInsets.symmetric(horizontal: 32, vertical: 32),
             width: ScreenSize.width - 64,

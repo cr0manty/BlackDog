@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/notification_manager.dart';
 import 'package:black_dog/instances/shared_pref.dart';
+import 'package:black_dog/models/base_voucher.dart';
 import 'package:black_dog/models/log.dart';
 import 'package:black_dog/models/menu_category.dart';
 import 'package:black_dog/models/menu_item.dart';
@@ -14,10 +15,10 @@ import 'package:black_dog/models/restaurant_config.dart';
 import 'package:black_dog/models/user.dart';
 import 'package:black_dog/models/voucher.dart';
 import 'package:black_dog/utils/logs_interseptor.dart';
+import 'package:device_id/device_id.dart';
 import 'package:http/http.dart';
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:path_provider/path_provider.dart';
-
 import 'connection_check.dart';
 
 class Api {
@@ -64,7 +65,7 @@ class Api {
       return {'result': false, 'message': null};
     }
     Response response = await _client.post(url, headers: _setHeaders());
-    Map body = json.decode(response.body);
+    Map body = json.decode(utf8.decode(response.bodyBytes)) as Map;
     body['result'] = response.statusCode == 200;
     return body;
   }
@@ -125,6 +126,22 @@ class Api {
   Future updateUser(Map content, {String token}) async {
     Response response = await _client.patch(
         _setUrl(path: '/auth/user/', base: true),
+        body: json.encode(content),
+        headers: _setHeaders(useJson: true, token: token));
+
+    Map body = json.decode(utf8.decode(response.bodyBytes)) as Map;
+    if (response.statusCode == 200) {
+      await getUser();
+      return {'result': true};
+    }
+
+    body['result'] = false;
+    return body;
+  }
+
+  Future registerComplete(Map content, String token) async {
+    Response response = await _client.patch(
+        _setUrl(path: '/user/register/complete'),
         body: json.encode(content),
         headers: _setHeaders(useJson: true, token: token));
 
@@ -332,15 +349,18 @@ class Api {
 
   Future sendFCMToken({String token}) async {
     String fcmToken = token ?? await NotificationManager.instance.getToken();
-    return await _client.post(
-        _setUrl(path: '/register-notify-token/', base: true),
-        body: json.encode({
-          'registration_id': fcmToken,
-          'type':
-              Platform.isIOS ? 'ios' : (Platform.isAndroid ? 'android' : 'web')
-        }),
-        headers: _setHeaders(useJson: true)).catchError((error) {
-          print(error);
+    return await _client
+        .post(_setUrl(path: '/register-notify-token/', base: true),
+            body: json.encode({
+              'device_id': await DeviceId.getID,
+              'registration_id': fcmToken,
+              'type': Platform.isIOS
+                  ? 'ios'
+                  : (Platform.isAndroid ? 'android' : 'web')
+            }),
+            headers: _setHeaders(useJson: true))
+        .catchError((error) {
+      print(error);
     });
   }
 

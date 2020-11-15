@@ -1,6 +1,7 @@
 import 'package:black_dog/instances/api.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/screens/auth/sign_up_confirm.dart';
+import 'package:black_dog/utils/debug_print.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/hex_color.dart';
@@ -8,7 +9,6 @@ import 'package:black_dog/utils/sizes.dart';
 import 'package:black_dog/widgets/input_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -211,9 +211,11 @@ class _SignUpPageState extends State<SignUpPage> {
         timeout: Duration(seconds: 60),
         verificationCompleted: (AuthCredential credential) {},
         verificationFailed: (FirebaseAuthException authException) {
-          print(authException.message);
-          EasyLoading.instance..backgroundColor = HexColor.errorRed;
-          EasyLoading.showError('');
+          debugPrefixPrint(authException.message);
+          Utils.instance.infoDialog(
+            context,
+            authException.message,
+          );
         },
         codeSent: (String verificationId, [int forceResendingToken]) {
           setState(() => isLoading = !isLoading);
@@ -246,9 +248,10 @@ class _SignUpPageState extends State<SignUpPage> {
                               .signInWithCredential(credential)
                               .catchError((error) {
                             Navigator.of(context).pop();
-                            EasyLoading.instance
-                              ..backgroundColor = HexColor.errorRed;
-                            EasyLoading.showError('');
+                            Utils.instance.infoDialog(
+                              context,
+                              error.toString(),
+                            );
                           });
                           if (result != null && result.user != null) {
                             SharedPrefs.saveUserFirebaseUid(result.user.uid);
@@ -278,7 +281,7 @@ class _SignUpPageState extends State<SignUpPage> {
         },
         codeAutoRetrievalTimeout: (String verificationId) {
           verificationId = verificationId;
-          print('Time out: $verificationId');
+          debugPrefixPrint('Time out: $verificationId');
         });
   }
 
@@ -306,10 +309,13 @@ class _SignUpPageState extends State<SignUpPage> {
       setState(() => isLoading = false);
       return;
     }).catchError((error) {
-      print(error);
+      debugPrefixPrint(error, prefix: 'error');
       setState(() => isLoading = false);
-      EasyLoading.instance..backgroundColor = HexColor.errorRed;
-      EasyLoading.showError('');
+      Utils.instance.infoDialog(
+        context,
+        AppLocalizations.of(context).translate('error'),
+        isError: true,
+      );
     });
   }
 }

@@ -43,7 +43,7 @@ class Log {
   bool status;
   String errorMessage;
   UserLog user;
-  int voucher;
+  String voucher;
 
   Log(
       {this.user,
@@ -79,8 +79,14 @@ class Log {
 
   Color get color => status ? HexColor('#3C852E') : HexColor.errorRed;
 
-  String scanType(BuildContext context) =>
-      AppLocalizations.of(context).translate(errorMessage != null
-          ? 'unknown'
-          : (voucher != null ? 'scanned_voucher' : 'scanned_user'));
+  String scanType(BuildContext context) {
+    String key;
+
+    if (type == 'voucher') {
+      key = 'scanned_voucher';
+    } else if (type == 'user') {
+      key = 'scanned_user';
+    }
+    return AppLocalizations.of(context).translate(key ?? 'unknown');
+  }
 }

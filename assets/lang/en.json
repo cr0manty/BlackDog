@@ -72,5 +72,18 @@
   "contact_us": "Contact Us",
   "user_accept": "I accept",
   "and": "and",
-  "fields_required": "This fields is required"
+  "fields_required": "This field is required",
+  "rate_app": "Rate this app",
+  "rate_app_desc": "If you like this app, please take a little bit of your time to review it !\\nIt really helps us and it shouldn\\'t take you more than one minute.",
+  "rate": "Rate",
+  "no_thanks": "No thanks",
+  "later": "Maybe later",
+  "map_error": "There was an error while opening the map",
+  "no_internet": "No internet Connection",
+  "changes_saved": "Changes saved",
+  "status": "Status",
+  "message": "Message",
+  "scan_type": "Scan type",
+  "created_time": "Creation time",
+  "scan_id": "Scan №"
 }

@@ -8,8 +8,8 @@ import 'package:black_dog/utils/sizes.dart';
 import 'package:black_dog/widgets/divider.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class NewsDetail extends StatefulWidget {
   final News news;
@@ -22,6 +22,7 @@ class NewsDetail extends StatefulWidget {
 }
 
 class _NewsDetailState extends State<NewsDetail> {
+  final PageController _controller = PageController();
   News news;
 
   Future _getNews() async {
@@ -39,7 +40,13 @@ class _NewsDetailState extends State<NewsDetail> {
   }
 
   Widget _clipImage(Widget child) {
-    return ClipRRect(borderRadius: BorderRadius.circular(10), child: child);
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 16),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: child,
+      ),
+    );
   }
 
   @override
@@ -58,23 +65,39 @@ class _NewsDetailState extends State<NewsDetail> {
         onTap: Navigator.of(context).pop,
       ),
       children: <Widget>[
-        CarouselSlider.builder(
+        SizedBox(
+          height: ScreenSize.detailViewImage,
+          child: PageView.builder(
+            controller: _controller,
             itemBuilder: (context, index) => Container(
-                width: ScreenSize.width - 32,
-                child: _clipImage(ImageView(
+              width: ScreenSize.width - 32,
+              child: _clipImage(
+                ImageView(
                   news.listImages[index],
-                  fit: BoxFit.fill,
-                ))),
-            itemCount: news?.listImages?.length ?? 0,
-            options: CarouselOptions(
-              height: ScreenSize.detailViewImage,
-              viewportFraction: 1,
-              enlargeCenterPage: true,
-              enableInfiniteScroll: false,
-              autoPlay: true,
-            )),
+                ),
+              ),
+            ),
+            itemCount: news.images.length,
+          ),
+        ),
+        if (news.images.length > 1)
+          Container(
+            alignment: Alignment.center,
+            height: 20,
+            margin: EdgeInsets.only(top: 8),
+            child: SmoothPageIndicator(
+              controller: _controller,
+              count: news.images.length,
+              effect: WormEffect(
+                dotWidth: 5,
+                activeDotColor: HexColor.lightElement,
+                dotColor: HexColor.semiElement.withOpacity(0.5),
+                dotHeight: 5,
+              ),
+            ),
+          ),
         Container(
-            margin: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
             alignment: Alignment.center,
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

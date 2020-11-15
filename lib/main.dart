@@ -1,22 +1,21 @@
 import 'dart:ui';
 
 import 'package:black_dog/screens/auth/sign_in.dart';
+import 'package:black_dog/screens/home_page/home_view.dart';
+import 'package:black_dog/screens/staff/staff_home_view.dart';
+import 'package:black_dog/utils/debug_print.dart';
 import 'package:black_dog/utils/hex_color.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:black_dog/instances/utils.dart';
-import 'package:black_dog/screens/home_page.dart';
-import 'package:black_dog/screens/staff_home.dart';
 import 'package:black_dog/utils/localization.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'instances/account.dart';
 import 'instances/api.dart';
 import 'instances/connection_check.dart';
 import 'instances/notification_manager.dart';
 import 'instances/shared_pref.dart';
-
 
 // flutter build apk --no-shrink  - command to build release build
 // need to add `--no-shrink` because of SharedPreferences not support `await` on android release build
@@ -48,68 +47,58 @@ class _BlackDogAppState extends State<BlackDogApp> {
 
   @override
   void initState() {
-    configurePopUp();
-
-    SharedPrefs.saveLanguageCode(window.locale.languageCode);
-    Account.instance.initialize();
     super.initState();
+    Account.instance.initialize();
   }
 
-  void configurePopUp() {
-    EasyLoading.instance
-      ..loadingStyle = EasyLoadingStyle.custom
-      ..displayDuration = const Duration(seconds: 1)
-      ..progressColor = CupertinoColors.white
-      ..indicatorSize = 50
-      ..radius = 10.0
-      ..indicatorColor = CupertinoColors.white
-      ..textColor = CupertinoColors.white
-      ..backgroundColor = HexColor.errorRed;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    initWithContext(context);
+  }
+
+  Locale _setSupportedLanguage(Locale locale) {
+    debugPrefixPrint('Device language code: ${locale.languageCode}',
+        prefix: 'lang');
+    debugPrefixPrint(
+        'Device country code: ${locale.countryCode ?? ''}',
+        prefix: 'lang');
+
+    SharedPrefs.saveLanguageCode(locale.languageCode);
+    return locale;
   }
 
   @override
   Widget build(BuildContext context) {
-    initWithContext(context);
 
     return CupertinoApp(
       debugShowCheckedModeBanner: false,
       supportedLocales: [
-        Locale('en', 'US'),
         Locale('ru', 'RU'),
-        Locale('uk', 'UA'),
+        Locale('en', 'US'),
+        // Locale('uk', 'UA'),
       ],
       localizationsDelegates: [
         AppLocalizations.delegate,
         AppLocalizations.cupertinoDelegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
       ],
       localeListResolutionCallback: (locales, supportedLocales) {
-        Locale currentLocale;
         for (Locale locale in locales) {
           for (Locale supportedLocale in supportedLocales) {
             if (supportedLocale.languageCode == locale.languageCode) {
-              currentLocale = supportedLocale;
-              break;
+              return _setSupportedLanguage(supportedLocale);
             }
           }
         }
-        currentLocale ??= supportedLocales.first;
-        print('Device language code: ${currentLocale.languageCode}');
-        print('Device country code: ${currentLocale.countryCode ?? ''}');
-
-        SharedPrefs.saveLanguageCode(currentLocale.languageCode);
-        return currentLocale;
+        return _setSupportedLanguage(supportedLocales.first);
       },
       theme: CupertinoThemeData(
         brightness: Brightness.dark,
         scaffoldBackgroundColor: Color.fromRGBO(40, 39, 41, 1),
       ),
-      builder: (BuildContext context, Widget child) {
-        return FlutterEasyLoading(
-          child: child,
-        );
-      },
       home: switchPages(),
     );
   }

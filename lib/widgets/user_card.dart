@@ -1,3 +1,4 @@
+import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/hex_color.dart';
@@ -5,15 +6,13 @@ import 'package:black_dog/utils/sizes.dart';
 import 'package:flutter/cupertino.dart';
 
 class UserCard extends StatelessWidget {
-  final String username;
   final Function onPressed;
   final Widget additionWidget;
   final Widget trailing;
   final double topPadding;
 
   UserCard(
-      {@required this.username,
-      @required this.onPressed,
+      {@required this.onPressed,
       this.additionWidget,
       this.trailing,
       this.topPadding = 0});
@@ -38,12 +37,18 @@ class UserCard extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                   width: ScreenSize.mainTextWidth,
                   alignment: Alignment.centerLeft,
-                  child: Text(
-                    username,
-                    style: Utils.instance.getTextStyle('subtitle1'),
-                    textAlign: TextAlign.left,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                  child: StreamBuilder<String>(
+                    stream: Account.instance.onUsernameChange,
+                    initialData: Account.instance.name,
+                    builder: (context, snapshot) {
+                      return Text(
+                        snapshot.data,
+                        style: Utils.instance.getTextStyle('subtitle1'),
+                        textAlign: TextAlign.left,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      );
+                    }
                   ),
                 ),
               trailing ?? Container()

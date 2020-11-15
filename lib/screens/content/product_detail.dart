@@ -30,37 +30,46 @@ class _ProductDetailState extends State<ProductDetail>
   Widget _buildVariation(int index) {
     MenuItemVariation variation = product.variations[index];
     return GestureDetector(
-        onTap: () async {
-          if (selectedVariation != variation) {
-            animationController.reverse().then((value) {
-              setState(() {
-                selectedVariation = variation;
-                selectedVariationIndex = index;
-              });
-              animationController.forward();
+      onTap: () async {
+        if (selectedVariation != variation) {
+          animationController.reverse().then((value) {
+            setState(() {
+              selectedVariation = variation;
+              selectedVariationIndex = index;
             });
-          }
-        },
-        child: selectedVariationIndex != index
-            ? _buildSizeElement(index)
-            : FadeTransition(
-                opacity: animationController
-                    .drive(CurveTween(curve: Curves.easeOut)),
-                child: _buildSizeElement(index)));
+            animationController.forward();
+          });
+        }
+      },
+      child: selectedVariationIndex != index
+          ? _buildSizeElement(index)
+          : FadeTransition(
+              opacity: animationController.drive(
+                CurveTween(
+                  curve: Curves.easeOut,
+                ),
+              ),
+              child: _buildSizeElement(index),
+            ),
+    );
   }
 
   Widget _buildSizeElement(int index) {
     return Container(
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-        margin: EdgeInsets.symmetric(horizontal: 10),
-        decoration: BoxDecoration(
-            color: selectedVariationIndex != index
-                ? HexColor.cardBackground.withOpacity(0.6)
-                : HexColor.semiElement.withOpacity(0.4),
-            borderRadius: BorderRadius.circular(10)),
-        child: Center(
-            child: Text(product.variations[index].name,
-                style: Utils.instance.getTextStyle('headline1'))));
+      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      margin: EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+          color: selectedVariationIndex != index
+              ? HexColor.cardBackground.withOpacity(0.6)
+              : HexColor.semiElement.withOpacity(0.4),
+          borderRadius: BorderRadius.circular(10)),
+      child: Center(
+        child: Text(
+          product.variations[index].name,
+          style: Utils.instance.getTextStyle('headline1'),
+        ),
+      ),
+    );
   }
 
   @override
@@ -86,7 +95,9 @@ class _ProductDetailState extends State<ProductDetail>
       alwaysNavigation: true,
       titleMargin: 20,
       onRefresh: () async => await Future.delayed(
-          Duration(milliseconds: 500), () async => await _getProduct()),
+        Duration(milliseconds: 500),
+        () async => await _getProduct(),
+      ),
       leading: RouteButton(
         defaultIcon: true,
         text: AppLocalizations.of(context).translate('back'),
@@ -96,42 +107,44 @@ class _ProductDetailState extends State<ProductDetail>
       children: <Widget>[
         Center(
           child: Container(
-              width: ScreenSize.width - 32,
-              height: ScreenSize.detailViewImage,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: HexColor.semiElement,
+            width: ScreenSize.width - 32,
+            height: ScreenSize.detailViewImage,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: ImageView(
+                product.image,
               ),
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: ImageView(
-                    product.image,
-                    fit: BoxFit.fill,
-                  ))),
+            ),
+          ),
         ),
         Container(
-            margin: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(
-                      width: ScreenSize.mainTextWidth,
-                      child: Text(product.capitalizeTitle,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 3,
-                          style: Utils.instance.getTextStyle('caption'))),
-                  FadeTransition(
-                      opacity: animationController
-                          .drive(CurveTween(curve: Curves.easeOut)),
-                      child: Text(
-                          product.priceWithCurrency(context,
-                              actualPrice: selectedVariation?.price),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          style: Utils.instance.getTextStyle('subtitle1'))),
-                ])),
+          margin: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(
+                  width: ScreenSize.mainTextWidth,
+                  child: Text(product.capitalizeTitle,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 3,
+                      style: Utils.instance.getTextStyle('caption'))),
+              FadeTransition(
+                  opacity: animationController
+                      .drive(CurveTween(curve: Curves.easeOut)),
+                  child: Text(
+                      product.priceWithCurrency(context,
+                          actualPrice: selectedVariation?.price),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: Utils.instance.getTextStyle('subtitle1'))),
+            ],
+          ),
+        ),
         product.variations.length != 0
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -139,24 +152,25 @@ class _ProductDetailState extends State<ProductDetail>
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   SizedBox(
-                      height: 50,
-                      width: ScreenSize.width,
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            minWidth: MediaQuery.of(context).size.width,
-                          ),
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              mainAxisSize: MainAxisSize.max,
-                              children: List.generate(product.variations.length,
-                                  (index) => _buildVariation(index))),
+                    height: 50,
+                    width: ScreenSize.width,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minWidth: MediaQuery.of(context).size.width,
                         ),
-                      )),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisSize: MainAxisSize.max,
+                            children: List.generate(product.variations.length,
+                                (index) => _buildVariation(index))),
+                      ),
+                    ),
+                  ),
                   SizedBox(
                     height: 16,
-                  )
+                  ),
                 ],
               )
             : Container(),
@@ -164,15 +178,20 @@ class _ProductDetailState extends State<ProductDetail>
             ? Container(
                 margin: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
                 child: Text(
-                    AppLocalizations.of(context).translate('description'),
-                    style: Utils.instance.getTextStyle('subtitle1')))
+                  AppLocalizations.of(context).translate('description'),
+                  style: Utils.instance.getTextStyle('subtitle1'),
+                ),
+              )
             : Container(),
         Container(
           margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          child: Text(product.description ?? '',
-              style: Utils.instance.getTextStyle('subtitle2')),
+          child: Text(
+            product.description ?? '',
+            style: Utils.instance.getTextStyle('subtitle2'),
+          ),
         ),
       ],
     );
   }
 }
+

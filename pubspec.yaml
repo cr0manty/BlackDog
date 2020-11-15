@@ -1,7 +1,7 @@
 name: black_dog
 description: A Flutter project for Black Dog Coffee.
 
-version: 1.0.8+10
+version: 1.0.9+23
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -19,7 +19,6 @@ dependencies:
   http_interceptor:
   flutter_sfsymbols:
   path_provider:
-  carousel_slider:
   intl:
   url_launcher:
   firebase_crashlytics:
@@ -27,16 +26,24 @@ dependencies:
   firebase_messaging:
   firebase_auth:
   firebase_core:
-  flutter_easyloading:
   google_maps_flutter:
   step_progress_indicator:
   map_launcher:
   cached_network_image:
   screen:
-
+  device_id:
+  rate_my_app:
+  smooth_page_indicator:
 
   flutter_localizations:
     sdk: flutter
+
+
+dependency_overrides:
+  sqflite:
+    git:
+      url: https://github.com/TinyProgrammers/sqflite.git
+      path: sqflite
 
 
 dev_dependencies:
