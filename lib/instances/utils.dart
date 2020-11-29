@@ -121,8 +121,12 @@ class Utils {
             )).then((value) => _showPopUp = null);
   }
 
-  Widget showValidateError(Map fieldsError,
-      {String key, bool bottomPadding = true}) {
+  Widget showValidateError(
+    Map fieldsError, {
+    String key,
+    bool bottomPadding = true,
+  }) {
+    fieldsError ??= {};
     if (fieldsError.containsKey(key)) {
       return Container(
           alignment: Alignment.centerLeft,
