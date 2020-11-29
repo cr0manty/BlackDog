@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:black_dog/instances/account.dart';
-import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/network/api.dart';
 import 'package:black_dog/instances/notification_manager.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/instances/utils.dart';
@@ -66,8 +66,18 @@ class _UserPageState extends State<UserPage>
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(Account.instance.currentVoucher?.name ?? '',
-                        style: Utils.instance.getTextStyle('headline1')),
+                    Container(
+                      width: ScreenSize.voucherProgressTextWidth,
+                      child: Text(
+                          Account.instance.currentVoucher?.name ?? '',
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.visible,
+                          style: Utils.instance.getTextStyle(
+                            'headline1',
+                        ),
+                      ),
+                    ),
                     Container(height: 8),
                     Icon(BlackDogIcons.coffee,
                         color: HexColor.lightElement, size: 37),

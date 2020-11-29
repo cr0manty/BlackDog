@@ -33,7 +33,7 @@ class PageSection extends StatelessWidget {
       children: <Widget>[
         if (captionEnabled)
           Padding(
-            padding: EdgeInsets.only(right: 26, left: 26, top: enabled ? 0 : 0),
+            padding: EdgeInsets.only(right: 26, left: 26, top: enabled ? heightPadding : 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -50,7 +50,7 @@ class PageSection extends StatelessWidget {
                   CupertinoButton(
                     onPressed: subWidgetAction,
                     minSize: 0,
-                    padding: EdgeInsets.symmetric(vertical: 16, horizontal: 7),
+                    padding: EdgeInsets.symmetric(vertical: 16, horizontal: 0),
                     child: Text(
                       subWidgetText,
                       style: Utils.instance.getTextStyle('subtitle1'),

@@ -1,5 +1,5 @@
 import 'package:black_dog/instances/account.dart';
-import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/network/api.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/screens/auth/sign_in.dart';
 import 'package:black_dog/screens/home_page/home_view.dart';
@@ -11,7 +11,6 @@ import 'package:black_dog/utils/sizes.dart';
 import 'package:black_dog/widgets/input_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-
 
 class SignUpConfirmPage extends StatefulWidget {
   final String token;
@@ -232,19 +231,24 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
       SharedPrefs.saveToken(widget.token);
       if (await Account.instance.setUser()) {
         Api.instance.sendFCMToken();
-        Navigator.of(context).pushAndRemoveUntil(
-            CupertinoPageRoute(
-                builder: (context) => Account.instance.user.isStaff
-                    ? StaffHomePage()
-                    : HomePage()),
-            (route) => false);
+        if (Account.instance.user.isStaff) {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            '/staff',
+            (route) => false,
+          );
+        } else {
+          Navigator.of(context).pushAndRemoveUntil(
+              CupertinoPageRoute(
+                builder: (context) => HomePage(),
+              ),
+              (route) => false);
+        }
       } else {
         SharedPrefs.logout();
         setState(() => isLoading = false);
         Utils.instance.infoDialog(
           context,
           AppLocalizations.of(context).translate('error'),
-          isError: true,
         );
       }
     } else {

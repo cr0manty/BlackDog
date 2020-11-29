@@ -1,5 +1,6 @@
+import 'package:black_dog/bloc/sign_up/sign_up_bloc.dart';
 import 'package:black_dog/instances/account.dart';
-import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/network/api.dart';
 import 'package:black_dog/screens/auth/sign_up.dart';
 import 'package:black_dog/screens/home_page/home_view.dart';
 import 'package:black_dog/screens/staff/staff_home_view.dart';
@@ -10,6 +11,7 @@ import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/sizes.dart';
 import 'package:black_dog/widgets/input_field.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import '../user/forgot_password.dart';
@@ -181,9 +183,14 @@ class _SignInPageState extends State<SignInPage> {
                                         FocusScope.of(context)
                                             .requestFocus(FocusNode());
                                         Navigator.of(context).push(
-                                            CupertinoPageRoute(
-                                                builder: (context) =>
-                                                    SignUpPage()));
+                                          CupertinoPageRoute(
+                                            builder: (context) =>
+                                                BlocProvider<SignUpBloc>(
+                                              create: (_) => SignUpBloc(),
+                                              child: SignUpPage(),
+                                            ),
+                                          ),
+                                        );
                                       },
                                       child: Text(
                                           AppLocalizations.of(context)
@@ -217,12 +224,19 @@ class _SignInPageState extends State<SignInPage> {
       bool result = response.remove('result');
       if (result && await Account.instance.setUser()) {
         Api.instance.sendFCMToken();
-        Navigator.of(context).pushAndRemoveUntil(
-            CupertinoPageRoute(
-                builder: (context) => Account.instance.user.isStaff
-                    ? StaffHomePage()
-                    : HomePage()),
-            (route) => false);
+
+        if (Account.instance.user.isStaff) {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            '/staff',
+            (route) => false,
+          );
+        } else {
+          Navigator.of(context).pushAndRemoveUntil(
+              CupertinoPageRoute(
+                builder: (context) => HomePage(),
+              ),
+              (route) => false);
+        }
       } else {
         response.forEach((key, value) {
           if (_fieldsList.contains(key)) {
@@ -241,7 +255,6 @@ class _SignInPageState extends State<SignInPage> {
       Utils.instance.infoDialog(
         context,
         AppLocalizations.of(context).translate('error'),
-        isError: true,
       );
     });
   }

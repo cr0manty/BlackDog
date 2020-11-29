@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/network/api.dart';
 import 'package:black_dog/instances/connection_check.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/news.dart';

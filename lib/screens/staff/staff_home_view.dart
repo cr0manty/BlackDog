@@ -1,21 +1,20 @@
 import 'dart:async';
 
-import 'package:barcode_scan/platform_wrapper.dart';
-import 'package:black_dog/instances/api.dart';
-import 'package:black_dog/models/log.dart';
-import 'package:black_dog/utils/debug_print.dart';
+import 'package:black_dog/bloc/log_list/log_list_bloc.dart';
+import 'package:black_dog/bloc/staff_bloc/staff_bloc.dart';
+import 'package:black_dog/instances/connection_check.dart';
+import 'package:black_dog/screens/staff/widgets/log_card.dart';
+import 'package:black_dog/screens/staff/widgets/scan_code_button.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/sizes.dart';
-import 'package:black_dog/widgets/log_card.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:black_dog/widgets/section.dart';
 import 'package:black_dog/widgets/user_card.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_sfsymbols/flutter_sfsymbols.dart';
-import 'package:black_dog/instances/account.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/screens/auth/sign_in.dart';
 
@@ -27,159 +26,120 @@ class StaffHomePage extends StatefulWidget {
 }
 
 class _StaffHomePageState extends State<StaffHomePage> {
-  final ScrollController _scrollController = ScrollController();
-  StreamSubscription _apiChange;
-  Future<List<Log>> _logs;
-
-  bool isLoading = false;
-  bool isCalling = false;
-
-  void initDependencies() async {
-    Account.instance.refreshUser().then((value) => setState(() {}));
-  }
+  StaffBloc _staffBloc;
+  StreamSubscription _connectionChange;
 
   @override
   void initState() {
-    _apiChange = Api.instance.apiChange.listen((event) => setState(() {}));
-    _logs = Api.instance.getLogs(limit: 10);
     super.initState();
-  }
-
-  void _onScanTap() async {
-    var result = await BarcodeScanner.scan();
-    debugPrefixPrint('Scanned QR Code url: ${result.rawContent}', prefix: 'scan');
-
-    if (result.rawContent.isNotEmpty) {
-      Map scanned = await Api.instance.staffScanQRCode(result.rawContent);
-
-      String msg;
-      String label;
-      if (scanned['message'] != null) {
-        msg = scanned['message'] is List
-            ? scanned['message'][0]
-            : scanned['message'];
-        if (scanned.containsKey('voucher')) {
-          label = scanned['voucher']['voucher_config']['name'];
-        }
-      } else {
-        msg = AppLocalizations.of(context)
-            .translate(scanned['result'] ? 'success_scan' : 'error_scan');
-      }
-
-      if (scanned['result']) {
-        Utils.instance.infoDialog(
-          context,
-          msg,
-          label: label
-        );
-        _logs = Api.instance.getLogs(limit: 10);
-        setState(() {});
-      } else {
-        debugPrefixPrint(scanned, prefix: 'scan');
-
-        Utils.instance.infoDialog(context, msg, label: label);
-      }
-    }
-  }
-
-  Widget _buildFuture(BuildContext context, AsyncSnapshot snapshot) {
-    Widget noData = Container(
-        width: ScreenSize.width,
-        child: Center(
-            child: Text(
-          AppLocalizations.of(context).translate('no_logs'),
-          textAlign: TextAlign.center,
-          style: Utils.instance.getTextStyle('subtitle1'),
-        )));
-
-    switch (snapshot.connectionState) {
-      case ConnectionState.none:
-        return noData;
-      case ConnectionState.waiting:
-      case ConnectionState.active:
-        return Container(
-            width: ScreenSize.width,
-            child: Center(child: CupertinoActivityIndicator()));
-      case ConnectionState.done:
-        if (snapshot.hasData && snapshot.data.length > 0) {
-          return Column(
-            children: List.generate(
-              snapshot.data.length,
-              (index) => LogCard(
-                log: snapshot.data[index],
-              ),
-            ),
-          );
-        }
-        return noData;
-      default:
-        return noData;
-    }
+    _staffBloc = BlocProvider.of<StaffBloc>(context);
+    _staffBloc.add(StaffLoadingEvent());
+    _connectionChange = ConnectionsCheck.instance.onChange.listen((online) {
+      if (online) _staffBloc.add(StaffLoadingEvent());
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     Utils.instance.initScreenSize(MediaQuery.of(context));
 
-    return PageScaffold(
-        inAsyncCall: isLoading,
-        scrollController: _scrollController,
+    return BlocListener<StaffBloc, StaffState>(
+      listenWhen: (prev, current) => current.isPopUp,
+      listener: (context, state) {
+        String msg;
+
+        if (state.needTranslate) {
+          AppLocalizations.of(context).translate(state.dialogText);
+        } else {
+          msg = state.dialogText;
+        }
+        Utils.instance.infoDialog(
+          context,
+          msg,
+          label: state.dialogLabel,
+        );
+      },
+      child: PageScaffold(
         alwaysNavigation: true,
         onRefresh: () async {
-          _logs = Api.instance.getLogs(limit: 10);
-          setState(() {});
+          _staffBloc.add(StaffLoadingEvent());
         },
         action: RouteButton(
-            text: AppLocalizations.of(context).translate('logout'),
-            color: HexColor.lightElement,
-            onTap: () => Utils.instance.logoutAsk(context, () {
-                  SharedPrefs.logout();
-                  Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-                      CupertinoPageRoute(builder: (context) => SignInPage()),
-                      (route) => false);
-                })),
+          text: AppLocalizations.of(context).translate('logout'),
+          color: HexColor.lightElement,
+          onTap: () => Utils.instance.logoutAsk(
+            context,
+            () {
+              SharedPrefs.logout();
+              Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+                  CupertinoPageRoute(
+                    builder: (context) => SignInPage(),
+                  ),
+                  (route) => false);
+            },
+          ),
+        ),
         children: <Widget>[
-          UserCard(onPressed: null),
-          _buildScanQRCode(),
+          BlocBuilder<StaffBloc, StaffState>(
+            buildWhen: (prev, current) => current.userUpdated,
+            builder: (context, snapshot) {
+              return UserCard(onPressed: null);
+            },
+          ),
+          ScanCodeButton(),
           PageSection(
             label: AppLocalizations.of(context).translate('scans'),
-            child: FutureBuilder(builder: _buildFuture, future: _logs),
+            child: BlocBuilder<StaffBloc, StaffState>(
+              buildWhen: (prev, current) => prev.logs != current.logs,
+              builder: (context, state) {
+                if (state.isLoading) {
+                  return Container(
+                    width: ScreenSize.width,
+                    child: Center(
+                      child: CupertinoActivityIndicator(),
+                    ),
+                  );
+                } else if (state.logsIsNotEmpty) {
+                  return Column(
+                    children: List.generate(
+                      state.logs.length,
+                      (index) => LogCard(
+                        log: state.logs[index],
+                      ),
+                    ),
+                  );
+                }
+                return Container(
+                  width: ScreenSize.width,
+                  child: Center(
+                    child: Text(
+                      AppLocalizations.of(context).translate('no_logs'),
+                      textAlign: TextAlign.center,
+                      style: Utils.instance.getTextStyle('subtitle1'),
+                    ),
+                  ),
+                );
+              },
+            ),
             subWidgetText: AppLocalizations.of(context).translate('more'),
             subWidgetAction: () => Navigator.of(context).push(
-              CupertinoPageRoute(builder: (context) => LogListPage()),
+              CupertinoPageRoute(
+                builder: (context) => BlocProvider<LogListBloc>(
+                  create: (_) => LogListBloc(),
+                  child: LogListPage(),
+                ),
+              ),
             ),
           )
-        ]);
-  }
-
-  Widget _buildScanQRCode() {
-    return CupertinoButton(
-        onPressed: _onScanTap,
-        padding: EdgeInsets.symmetric(vertical: 20),
-        minSize: 0,
-        child: Container(
-          margin: EdgeInsets.symmetric(horizontal: ScreenSize.qrCodeMargin),
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: HexColor.cardBackground,
-          ),
-          height: ScreenSize.scanQRCodeSize,
-          child: Container(
-            alignment: FractionalOffset.center,
-            transform: Matrix4.translationValues(0, -5, 0),
-            child: Icon(
-              SFSymbols.camera_viewfinder,
-              size: ScreenSize.scanQRCodeIconSize,
-              color: HexColor.lightElement,
-            ),
-          ),
-        ));
+        ],
+      ),
+    );
   }
 
   @override
   void dispose() {
-    _apiChange?.cancel();
+    _staffBloc?.close();
+    _connectionChange?.cancel();
     super.dispose();
   }
 }

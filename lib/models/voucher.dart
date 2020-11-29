@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/network/api.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 
 import 'base_voucher.dart';

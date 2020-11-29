@@ -1,4 +1,4 @@
-import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/network/api.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/news.dart';
 import 'package:black_dog/utils/hex_color.dart';

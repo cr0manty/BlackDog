@@ -132,7 +132,7 @@ class _HomePageState extends State<HomePage>
             stream: _model.menuStream,
             builder: (context, snapshot) => PageSection(
               heightPadding: snapshot.hasData && snapshot.data.length > 0
-                  ? ScreenSize.sectionIndent - 20
+                  ? ScreenSize.sectionIndent - 10
                   : 0,
               captionEnabled: snapshot.hasData && snapshot.data.length > 0,
               label: AppLocalizations.of(context).translate('menu'),
