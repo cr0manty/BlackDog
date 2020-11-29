@@ -33,6 +33,8 @@ abstract class ScreenSize {
 
   static double get labelIndent => width * 0.005;
 
+  static double get voucherProgressTextWidth => width * 0.32;
+
   static double get newsImageHeight => height * 0.35 - 100;
 
   static double get newsImageWidth => width * 0.4;

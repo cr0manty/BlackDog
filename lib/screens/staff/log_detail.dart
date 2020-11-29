@@ -1,5 +1,6 @@
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/models/log.dart';
+import 'package:black_dog/screens/staff/widgets/log_entry_row.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
@@ -13,31 +14,6 @@ class LogDetail extends StatelessWidget {
 
   LogDetail(this._log, {this.fromLogList = false});
 
-  Widget _logEntryRow(String label, String value, {Color valueColor}) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            textAlign: TextAlign.left,
-            style: Utils.instance.getTextStyle('headline1'),
-          ),
-          Expanded(
-            flex: 1,
-            child: Text(
-              value,
-              textAlign: TextAlign.right,
-              style: Utils.instance.getTextStyle('bodyText2').copyWith(
-                    color: valueColor ?? HexColor.lightElement,
-                  ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,33 +37,33 @@ class LogDetail extends StatelessWidget {
           ),
           child: Column(
             children: [
-              _logEntryRow(
+              LogEntryRow(
                 AppLocalizations.of(context).translate('phone'),
                 _log.user.phone,
               ),
-              _logEntryRow(
+              LogEntryRow(
                 AppLocalizations.of(context).translate('last_name'),
                 _log.user.lastName,
               ),
-              _logEntryRow(
+              LogEntryRow(
                 AppLocalizations.of(context).translate('first_name'),
                 _log.user.firstName,
               ),
-              _logEntryRow(
+              LogEntryRow(
                 AppLocalizations.of(context).translate('message'),
                 _log.message(context),
                 valueColor: _log.color,
               ),
-              _logEntryRow(
+              LogEntryRow(
                 AppLocalizations.of(context).translate('scan_type'),
                 _log.scanType(context),
               ),
-              _logEntryRow(
+              LogEntryRow(
                 AppLocalizations.of(context).translate('created_time'),
                 _log.created,
               ),
               if (_log.voucher != null && _log.voucher.isNotEmpty)
-                _logEntryRow(
+                LogEntryRow(
                   AppLocalizations.of(context).translate('scanned_voucher'),
                   _log.voucher,
                 ),

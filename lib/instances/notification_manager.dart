@@ -6,7 +6,7 @@ import 'package:black_dog/models/voucher.dart';
 import 'package:black_dog/utils/debug_print.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-import 'api.dart';
+import '../network/api.dart';
 
 enum NotificationType { VOUCHER_RECEIVED, VOUCHER_SCANNED, QR_CODE_SCANNED }
 

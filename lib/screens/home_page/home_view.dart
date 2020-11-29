@@ -105,7 +105,6 @@ class _HomePageState extends State<HomePage>
             onPressed: () => Navigator.of(context, rootNavigator: true).push(
                 CupertinoPageRoute(
                     builder: (BuildContext context) => UserPage())),
-            username: Account.instance.name,
             trailing: EditButton(fromHome: true),
             additionWidget: BonusCard(),
           ),
@@ -133,7 +132,7 @@ class _HomePageState extends State<HomePage>
             stream: _model.menuStream,
             builder: (context, snapshot) => PageSection(
               heightPadding: snapshot.hasData && snapshot.data.length > 0
-                  ? ScreenSize.sectionIndent - 20
+                  ? ScreenSize.sectionIndent - 10
                   : 0,
               captionEnabled: snapshot.hasData && snapshot.data.length > 0,
               label: AppLocalizations.of(context).translate('menu'),

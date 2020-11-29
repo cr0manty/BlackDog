@@ -1,4 +1,4 @@
-import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/network/api.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/hex_color.dart';
@@ -232,7 +232,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           Utils.instance.infoDialog(
             context,
             AppLocalizations.of(context).translate('error'),
-            isError: true,
           );
         });
   }
@@ -320,7 +319,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       Utils.instance.infoDialog(
         context,
         AppLocalizations.of(context).translate('error'),
-        isError: true,
       );
     });
   }
