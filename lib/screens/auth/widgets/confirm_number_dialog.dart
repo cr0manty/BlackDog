@@ -1,9 +1,11 @@
+import 'package:black_dog/bloc/sign_up/sign_up_bloc.dart';
 import 'package:black_dog/instances/shared_pref.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../sign_up_confirm.dart';
 
@@ -47,10 +49,11 @@ class ConfirmPhoneDialog extends StatelessWidget {
             });
             if (result != null && result.user != null) {
               SharedPrefs.saveUserFirebaseUid(result.user.uid);
-              Navigator.of(context).pushAndRemoveUntil(
-                  CupertinoPageRoute(
-                      builder: (context) => SignUpConfirmPage(token: token)),
-                  (route) => false);
+              BlocProvider.of<SignUpBloc>(context).add(
+                SignUpNavigationEvent(
+                  SignUpConfirmPage(token: token),
+                ),
+              );
             }
             return null;
           },

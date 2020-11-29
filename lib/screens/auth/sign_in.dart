@@ -1,6 +1,6 @@
 import 'package:black_dog/bloc/sign_up/sign_up_bloc.dart';
 import 'package:black_dog/instances/account.dart';
-import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/network/api.dart';
 import 'package:black_dog/screens/auth/sign_up.dart';
 import 'package:black_dog/screens/home_page/home_view.dart';
 import 'package:black_dog/screens/staff/staff_home_view.dart';
@@ -224,12 +224,19 @@ class _SignInPageState extends State<SignInPage> {
       bool result = response.remove('result');
       if (result && await Account.instance.setUser()) {
         Api.instance.sendFCMToken();
-        Navigator.of(context).pushAndRemoveUntil(
-            CupertinoPageRoute(
-                builder: (context) => Account.instance.user.isStaff
-                    ? StaffHomePage()
-                    : HomePage()),
-            (route) => false);
+
+        if (Account.instance.user.isStaff) {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            '/staff',
+            (route) => false,
+          );
+        } else {
+          Navigator.of(context).pushAndRemoveUntil(
+              CupertinoPageRoute(
+                builder: (context) => HomePage(),
+              ),
+              (route) => false);
+        }
       } else {
         response.forEach((key, value) {
           if (_fieldsList.contains(key)) {
@@ -248,7 +255,6 @@ class _SignInPageState extends State<SignInPage> {
       Utils.instance.infoDialog(
         context,
         AppLocalizations.of(context).translate('error'),
-        isError: true,
       );
     });
   }

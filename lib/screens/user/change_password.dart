@@ -1,4 +1,4 @@
-import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/network/api.dart';
 import 'package:black_dog/utils/debug_print.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/instances/utils.dart';
@@ -122,7 +122,6 @@ class _ChangePasswordState extends State<ChangePassword> {
       Utils.instance.infoDialog(
         context,
         AppLocalizations.of(context).translate('error'),
-        isError: true,
       );
     });
   }

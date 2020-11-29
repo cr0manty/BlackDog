@@ -85,12 +85,12 @@ class Utils {
   }
 
   void infoDialog(BuildContext context, String content,
-      {String label, bool isError = false}) {
+      {String label}) {
     if (_showPopUp != null) {
       return;
     }
 
-    String contentText = isError && !ConnectionsCheck.instance.isOnline
+    String contentText = !ConnectionsCheck.instance.isOnline
         ? AppLocalizations.of(context).translate('no_internet')
         : content;
 
@@ -159,7 +159,6 @@ class Utils {
       infoDialog(
         context,
         AppLocalizations.of(context).translate('error'),
-        isError: true,
       );
     } else {
       if (_showPopUp != null) {

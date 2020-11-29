@@ -1,10 +1,11 @@
 import 'dart:async';
 
-import 'package:black_dog/instances/api.dart';
+import 'package:black_dog/network/api.dart';
 import 'package:black_dog/utils/debug_print.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'sign_up_event.dart';
@@ -34,7 +35,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     } else if (event is SignUpShowPhoneAuthDialogEvent) {
       yield state.copyWith(
         loading: false,
-        dialog: DialogType.info,
+        dialog: DialogType.phone,
         authToken: event.token,
         verification: event.verificationId,
       );
@@ -49,6 +50,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
           dialog: DialogType.info,
           textDialog: event.errorMsg,
           errors: event.errors,
+          translate: event.needTranslate,
         );
       }
     } else if (event is SignUpSignUpEvent) {
@@ -61,6 +63,11 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       yield state.copyWith(
         obscure: event.password,
         obscureConfirm: event.confirmPassword,
+      );
+    } else if (event is SignUpNavigationEvent) {
+      yield state.copyWith(
+        pageRoute: event.route,
+        dialog: DialogType.navigation,
       );
     }
   }
@@ -116,13 +123,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       return;
     }).catchError((error) {
       debugPrefixPrint(error, prefix: 'error');
-      this.add(SignUpCompleteEvent({}, false, errorMsg: "error"));
-
-      // Utils.instance.infoDialog(
-      //   context,
-      //   AppLocalizations.of(context).translate('error'),
-      //   isError: true,
-      // );
+      this.add(SignUpCompleteEvent({}, false, errorMsg: "error", needTranslate: true));
     });
   }
 }

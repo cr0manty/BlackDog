@@ -14,12 +14,12 @@ import 'package:black_dog/models/restaurant.dart';
 import 'package:black_dog/models/restaurant_config.dart';
 import 'package:black_dog/models/user.dart';
 import 'package:black_dog/models/voucher.dart';
-import 'package:black_dog/utils/logs_interseptor.dart';
+import 'package:black_dog/network/interceptors/logs_interseptor.dart';
 import 'package:device_id/device_id.dart';
 import 'package:http/http.dart';
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:path_provider/path_provider.dart';
-import 'connection_check.dart';
+import '../instances/connection_check.dart';
 
 class Api {
   static const defaultPerPage = 10;
@@ -32,7 +32,7 @@ class Api {
   static Api get instance => _instance;
 
   Client _client = HttpClientWithInterceptor.build(
-      interceptors: [LogInterceptor()], requestTimeout: Duration(seconds: 30));
+      interceptors: [LoggingInterceptor()], requestTimeout: Duration(seconds: 30));
 
   final StreamController<bool> _apiChange = StreamController<bool>.broadcast();
 

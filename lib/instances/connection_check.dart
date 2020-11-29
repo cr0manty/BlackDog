@@ -13,9 +13,9 @@ class ConnectionsCheck {
 
   Connectivity _connectivity = Connectivity();
 
-  StreamController _controller = StreamController.broadcast();
+  StreamController<bool> _controller = StreamController<bool>.broadcast();
 
-  Stream get onChange => _controller.stream;
+  Stream<bool> get onChange => _controller.stream;
 
   Future initialise() async {
     ConnectivityResult result = await _connectivity.checkConnectivity();

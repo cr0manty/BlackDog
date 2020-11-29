@@ -45,16 +45,32 @@ class _SignUpPageState extends State<SignUpPage> {
               if (state.showDialog == DialogType.phone) {
                 showCupertinoDialog(
                   context: context,
-                  builder: (context) => ConfirmPhoneDialog(
-                    state.verificationId,
-                    state.token,
+                  builder: (_) => BlocProvider<SignUpBloc>.value(
+                    value: BlocProvider.of<SignUpBloc>(context),
+                    child: ConfirmPhoneDialog(
+                      state.verificationId,
+                      state.token,
+                    ),
                   ),
                 );
               } else if (state.showDialog == DialogType.info) {
+                String msg;
+
+                if (state.neetTranslate) {
+                  AppLocalizations.of(context).translate(state.dialogText);
+                } else {
+                  msg = state.dialogText;
+                }
                 Utils.instance.infoDialog(
                   context,
-                  state.dialogText,
+                  msg,
                 );
+              } else if (state.showDialog == DialogType.navigation) {
+                Navigator.of(context).pushAndRemoveUntil(
+                    CupertinoPageRoute(
+                      builder: (context) => state.route,
+                    ),
+                    (route) => false);
               }
             },
             buildWhen: (prev, current) => prev.isLoading != current.isLoading,

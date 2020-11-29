@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:black_dog/bloc/staff_bloc/staff_bloc.dart';
 import 'package:black_dog/screens/auth/sign_in.dart';
 import 'package:black_dog/screens/home_page/home_view.dart';
 import 'package:black_dog/screens/staff/staff_home_view.dart';
@@ -10,9 +11,10 @@ import 'package:black_dog/utils/localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'instances/account.dart';
-import 'instances/api.dart';
+import 'network/api.dart';
 import 'instances/connection_check.dart';
 import 'instances/notification_manager.dart';
 import 'instances/shared_pref.dart';
@@ -60,8 +62,7 @@ class _BlackDogAppState extends State<BlackDogApp> {
   Locale _setSupportedLanguage(Locale locale) {
     debugPrefixPrint('Device language code: ${locale.languageCode}',
         prefix: 'lang');
-    debugPrefixPrint(
-        'Device country code: ${locale.countryCode ?? ''}',
+    debugPrefixPrint('Device country code: ${locale.countryCode ?? ''}',
         prefix: 'lang');
 
     SharedPrefs.saveLanguageCode(locale.languageCode);
@@ -70,7 +71,6 @@ class _BlackDogAppState extends State<BlackDogApp> {
 
   @override
   Widget build(BuildContext context) {
-
     return CupertinoApp(
       debugShowCheckedModeBanner: false,
       supportedLocales: [
@@ -99,6 +99,12 @@ class _BlackDogAppState extends State<BlackDogApp> {
         brightness: Brightness.dark,
         scaffoldBackgroundColor: Color.fromRGBO(40, 39, 41, 1),
       ),
+      routes: {
+        '/staff': (BuildContext context) => BlocProvider<StaffBloc>(
+              create: (_) => StaffBloc(),
+              child: StaffHomePage(),
+            )
+      },
       home: switchPages(),
     );
   }
@@ -108,7 +114,10 @@ class _BlackDogAppState extends State<BlackDogApp> {
       case AccountState.GUEST:
         return SignInPage();
       case AccountState.STAFF:
-        return StaffHomePage();
+        return BlocProvider<StaffBloc>(
+          create: (_) => StaffBloc(),
+          child: StaffHomePage(),
+        );
       case AccountState.USER:
         return HomePage();
       default:

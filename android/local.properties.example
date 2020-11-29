@@ -1,5 +1,5 @@
-sdk.dir=C:\\Users\\Cr0manty\\AppData\\Local\\Android\\Sdk
-flutter.sdk=E:\\src\\flutter
+sdk.dir=...
+flutter.sdk=...
 flutter.buildMode=debug
 flutter.versionName=1.0.6
 flutter.versionCode=6

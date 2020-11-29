@@ -14,7 +14,18 @@ class ImageView extends StatelessWidget {
   });
 
   Widget placeholder(BuildContext context) {
-    return Image.asset(Utils.loadImage, fit: fit ?? BoxFit.cover);
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(borderRadius),
+        ),
+        child: Image.asset(
+          Utils.loadImage,
+          fit: fit ?? BoxFit.cover,
+        ),
+      ),
+    );
   }
 
   @override
@@ -25,13 +36,16 @@ class ImageView extends StatelessWidget {
 
     return CachedNetworkImage(
       imageUrl: url,
-      imageBuilder: (context, imageProvider) => Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(borderRadius),
-        ),
-        child: Image(
-          image: imageProvider,
-          fit: fit ?? BoxFit.cover,
+      imageBuilder: (context, imageProvider) => ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(borderRadius),
+          ),
+          child: Image(
+            image: imageProvider,
+            fit: fit ?? BoxFit.cover,
+          ),
         ),
       ),
       errorWidget: (context, url, error) => placeholder(context),

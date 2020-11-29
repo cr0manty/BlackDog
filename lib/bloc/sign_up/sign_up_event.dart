@@ -13,11 +13,22 @@ class SignUpCompleteEvent extends SignUpEvent {
   final Map<String, dynamic> errors;
   final bool success;
   final String errorMsg;
+  final bool needTranslate;
 
-  SignUpCompleteEvent(this.errors, this.success, {this.errorMsg});
+  SignUpCompleteEvent(
+    this.errors,
+    this.success, {
+    this.errorMsg,
+    this.needTranslate = false,
+  });
 
   @override
-  List<Object> get props => [errors, success, errorMsg];
+  List<Object> get props => [
+        errors,
+        success,
+        errorMsg,
+        needTranslate,
+      ];
 }
 
 class SignUpShowDialogEvent extends SignUpEvent {
@@ -58,8 +69,17 @@ class SignUpShowPasswordEvent extends SignUpEvent {
   final bool password;
   final bool confirmPassword;
 
-  SignUpShowPasswordEvent({this.password,this.confirmPassword});
+  SignUpShowPasswordEvent({this.password, this.confirmPassword});
 
   @override
   List<Object> get props => [password, confirmPassword];
+}
+
+class SignUpNavigationEvent extends SignUpEvent {
+  final Widget route;
+
+  SignUpNavigationEvent(this.route);
+
+  @override
+  List<Object> get props => [route];
 }

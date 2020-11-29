@@ -73,7 +73,7 @@ class SignUpFields extends StatelessWidget {
             Container(
                 alignment: Alignment.center,
                 child: TextInput(
-                  obscureText: state.obscureText,
+                  obscureText: state.obscureTextConfirm,
                   controller: _password2Controller,
                   focusNode: _password2Focus,
                   hintText: AppLocalizations.of(context)
@@ -87,7 +87,7 @@ class SignUpFields extends StatelessWidget {
                     onTap: () {
                       BlocProvider.of<SignUpBloc>(context).add(
                         SignUpShowPasswordEvent(
-                          confirmPassword: state.obscureTextConfirm,
+                          confirmPassword: !state.obscureTextConfirm,
                         ),
                       );
                     },

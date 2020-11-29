@@ -1,0 +1,92 @@
+import 'dart:async';
+
+import 'package:barcode_scan/barcode_scan.dart';
+import 'package:black_dog/instances/account.dart';
+import 'package:black_dog/instances/connection_check.dart';
+import 'package:black_dog/models/log.dart';
+import 'package:black_dog/network/api.dart';
+import 'package:black_dog/utils/debug_print.dart';
+import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
+
+part 'staff_event.dart';
+
+part 'staff_state.dart';
+
+class StaffBloc extends Bloc<StaffEvent, StaffState> {
+  StaffBloc() : super(StaffState());
+
+  @override
+  Stream<StaffState> mapEventToState(StaffEvent event,) async* {
+    if (event is StaffLoadingEvent) {
+      yield state.copyWith(logList: [], loading: true);
+      _getLogs();
+      _refreshUser();
+    } else if (event is StaffScanTapEvent) {
+      _onScanTap();
+    } else if (event is StaffScanCodeEvent) {
+      _scanCode(event.url);
+    } else if (event is StaffShowDialogEvent) {
+      yield state.copyWith(
+        translate: event.needTranslate,
+        text: event.msg,
+        label: event.label,
+      );
+    } else if (event is StaffUserUpdatedEvent) {
+      yield state.copyWith(updateUser: true);
+    } else if (event is StaffFetchCompleteEvent) {
+      yield state.copyWith(logList: event.logs, loading: false);
+    }
+  }
+
+  void _refreshUser() {
+    Account.instance.refreshUser().then((_) {
+      this.add(StaffUserUpdatedEvent());
+    });
+  }
+
+  void _onScanTap() {
+    BarcodeScanner.scan().then((value) {
+      this.add(StaffScanCodeEvent(value.rawContent));
+    });
+  }
+
+  void _getLogs() async {
+    Api.instance.getLogs(limit: 10).catchError((_) {
+      this.add(StaffFetchCompleteEvent([]));
+    }).then((logs) {
+      this.add(StaffFetchCompleteEvent(logs));
+    });
+  }
+
+  void _scanCode(String result) async {
+    debugPrefixPrint('Scanned QR Code url: $result', prefix: 'scan');
+
+if (result.isNotEmpty) {
+      Map scanned = await Api.instance.staffScanQRCode(result);
+
+      String msg;
+      String label;
+      bool needTranslate = false;
+      if (scanned['message'] != null) {
+        msg = scanned['message'] is List
+            ? scanned['message'][0]
+            : scanned['message'];
+        if (scanned.containsKey('voucher')) {
+          label = scanned['voucher']['voucher_config']['name'];
+        }
+      } else {
+        msg = scanned['result'] ? 'success_scan' : 'error_scan';
+        needTranslate = true;
+      }
+
+      if (scanned['result']) {
+        _getLogs();
+      } else {
+        debugPrefixPrint(scanned, prefix: 'scan');
+      }
+      this.add(
+          StaffShowDialogEvent(msg, label, needTranslate: needTranslate));
+    }
+  }
+}
