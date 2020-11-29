@@ -103,25 +103,22 @@ class _BlackDogAppState extends State<BlackDogApp> {
         '/staff': (BuildContext context) => BlocProvider<StaffBloc>(
               create: (_) => StaffBloc(),
               child: StaffHomePage(),
-            )
+            ),
+        '/home': (_) => HomePage(),
+        '/sign_in': (_) => SignInPage(),
       },
-      home: switchPages(),
+      initialRoute: initialRoute,
     );
   }
 
-  Widget switchPages() {
+  String get initialRoute {
     switch (Account.instance.state) {
-      case AccountState.GUEST:
-        return SignInPage();
-      case AccountState.STAFF:
-        return BlocProvider<StaffBloc>(
-          create: (_) => StaffBloc(),
-          child: StaffHomePage(),
-        );
       case AccountState.USER:
-        return HomePage();
+        return "/home";
+      case AccountState.STAFF:
+        return "staff";
       default:
-        return Container();
+        return '/sign_in';
     }
   }
 

@@ -72,20 +72,21 @@ class Api {
   }
 
   Future login(String phone, String password) async {
-    Response response = await _client.post(
-        _setUrl(path: '/auth/login/', base: true),
-        body: {'phone_number': phone, 'password': password},
-        headers: _setHeaders(useToken: false));
-
-    Map body = json.decode(utf8.decode(response.bodyBytes)) as Map;
-    if (response.statusCode == 200) {
-      SharedPrefs.saveToken(body['key']);
+    return await _client
+        .post(_setUrl(path: '/auth/login/', base: true),
+            body: {'phone_number': phone, 'password': password},
+            headers: _setHeaders(useToken: false))
+        .then((response) {
+      Map body = json.decode(utf8.decode(response.bodyBytes)) as Map;
+      if (response.statusCode == 200) {
+        SharedPrefs.saveToken(body['key']);
+        _apiChange.add(true);
+        return {'result': true};
+      }
+      body['result'] = false;
       _apiChange.add(true);
-      return {'result': true};
-    }
-    body['result'] = false;
-    _apiChange.add(true);
-    return body;
+      return body;
+    });
   }
 
   Future register(Map content) async {
