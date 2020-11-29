@@ -12,7 +12,9 @@ import 'shared_pref.dart';
 enum AccountState { GUEST, USER, STAFF }
 
 class Account {
-  final StreamController<String> _onUserChange = StreamController<String>.broadcast();
+  final StreamController<String> _onUserChange =
+      StreamController<String>.broadcast();
+
   Account._internal();
 
   User _user;
@@ -55,8 +57,6 @@ class Account {
       case NotificationType.QR_CODE_SCANNED:
         _currentVoucher = SharedPrefs.getCurrentVoucher();
         break;
-      default:
-        break;
     }
   }
 
@@ -71,14 +71,15 @@ class Account {
     return _user != null;
   }
 
-  Future refreshUser() async {
-    User user = await Api.instance.getUser();
-    if (user != null) {
-      _user = user;
-      _onUserChange.add(_user.fullName);
-      SharedPrefs.saveUser(_user);
-      refreshVouchers();
-    }
+  Future<void> refreshUser() async {
+    return Api.instance.getUser().then((user) {
+      if (user != null) {
+        _user = user;
+        _onUserChange.add(_user.fullName);
+        SharedPrefs.saveUser(_user);
+        refreshVouchers();
+      }
+    });
   }
 
   void refreshVouchers() {

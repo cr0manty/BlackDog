@@ -17,7 +17,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
   StaffBloc() : super(StaffState());
 
   @override
-  Stream<StaffState> mapEventToState(StaffEvent event,) async* {
+  Stream<StaffState> mapEventToState(StaffEvent event) async* {
     if (event is StaffLoadingEvent) {
       yield state.copyWith(logList: [], loading: true);
       _getLogs();
@@ -62,7 +62,9 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
   void _scanCode(String result) async {
     debugPrefixPrint('Scanned QR Code url: $result', prefix: 'scan');
 
-if (result.isNotEmpty) {
+    if (!ConnectionsCheck.instance.isOnline) {
+      this.add(StaffShowDialogEvent('error', null, needTranslate: true));
+    } else if (result.isNotEmpty) {
       Map scanned = await Api.instance.staffScanQRCode(result);
 
       String msg;
@@ -85,8 +87,7 @@ if (result.isNotEmpty) {
       } else {
         debugPrefixPrint(scanned, prefix: 'scan');
       }
-      this.add(
-          StaffShowDialogEvent(msg, label, needTranslate: needTranslate));
+      this.add(StaffShowDialogEvent(msg, label, needTranslate: needTranslate));
     }
   }
 }

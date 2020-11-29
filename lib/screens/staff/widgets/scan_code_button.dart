@@ -14,7 +14,7 @@ class ScanCodeButton extends StatelessWidget {
       initialData: ConnectionsCheck.instance.isOnline ?? true,
       builder: (context, snapshot) {
         return Opacity(
-          opacity: snapshot.data ? 0 : 0.5,
+          opacity: snapshot.data ? 1 : 0.5,
           child: CupertinoButton(
             onPressed: snapshot.data
                 ? () {

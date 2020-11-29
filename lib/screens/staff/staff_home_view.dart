@@ -1,10 +1,14 @@
+import 'dart:async';
+
+import 'package:black_dog/bloc/log_list/log_list_bloc.dart';
 import 'package:black_dog/bloc/staff_bloc/staff_bloc.dart';
+import 'package:black_dog/instances/connection_check.dart';
+import 'package:black_dog/screens/staff/widgets/log_card.dart';
 import 'package:black_dog/screens/staff/widgets/scan_code_button.dart';
 import 'package:black_dog/utils/hex_color.dart';
 import 'package:black_dog/utils/localization.dart';
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/sizes.dart';
-import 'package:black_dog/widgets/log_card.dart';
 import 'package:black_dog/widgets/page_scaffold.dart';
 import 'package:black_dog/widgets/route_button.dart';
 import 'package:black_dog/widgets/section.dart';
@@ -23,12 +27,16 @@ class StaffHomePage extends StatefulWidget {
 
 class _StaffHomePageState extends State<StaffHomePage> {
   StaffBloc _staffBloc;
+  StreamSubscription _connectionChange;
 
   @override
   void initState() {
     super.initState();
     _staffBloc = BlocProvider.of<StaffBloc>(context);
     _staffBloc.add(StaffLoadingEvent());
+    _connectionChange = ConnectionsCheck.instance.onChange.listen((online) {
+      if (online) _staffBloc.add(StaffLoadingEvent());
+    });
   }
 
   @override
@@ -53,7 +61,7 @@ class _StaffHomePageState extends State<StaffHomePage> {
       },
       child: PageScaffold(
         alwaysNavigation: true,
-        onRefresh: () {
+        onRefresh: () async {
           _staffBloc.add(StaffLoadingEvent());
         },
         action: RouteButton(
@@ -115,7 +123,12 @@ class _StaffHomePageState extends State<StaffHomePage> {
             ),
             subWidgetText: AppLocalizations.of(context).translate('more'),
             subWidgetAction: () => Navigator.of(context).push(
-              CupertinoPageRoute(builder: (context) => LogListPage()),
+              CupertinoPageRoute(
+                builder: (context) => BlocProvider<LogListBloc>(
+                  create: (_) => LogListBloc(),
+                  child: LogListPage(),
+                ),
+              ),
             ),
           )
         ],
@@ -126,6 +139,7 @@ class _StaffHomePageState extends State<StaffHomePage> {
   @override
   void dispose() {
     _staffBloc?.close();
+    _connectionChange?.cancel();
     super.dispose();
   }
 }

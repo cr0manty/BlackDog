@@ -6,6 +6,7 @@ class ConnectionsCheck {
   ConnectionsCheck._internal();
 
   bool isOnline = false;
+  ConnectivityResult result;
 
   static final ConnectionsCheck _instance = ConnectionsCheck._internal();
 
@@ -18,10 +19,13 @@ class ConnectionsCheck {
   Stream<bool> get onChange => _controller.stream;
 
   Future initialise() async {
-    ConnectivityResult result = await _connectivity.checkConnectivity();
+    result = await _connectivity.checkConnectivity();
     await _checkStatus(result);
-    _connectivity.onConnectivityChanged.listen((result) {
-      _checkStatus(result);
+    _connectivity.onConnectivityChanged.listen((connection) {
+      if (result != connection) {
+        result = connection;
+        _checkStatus(result);
+      }
     });
   }
 
