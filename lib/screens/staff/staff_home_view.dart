@@ -47,16 +47,24 @@ class _StaffHomePageState extends State<StaffHomePage> {
       listenWhen: (prev, current) => current.isPopUp,
       listener: (context, state) {
         String msg;
+        String label;
 
         if (state.needTranslate) {
           AppLocalizations.of(context).translate(state.dialogText);
         } else {
           msg = state.dialogText;
         }
+        
+        if (state.needTranslateLabel) {
+          label = '${state.dialogText} ' + AppLocalizations.of(context).translate('scans_to_voucher');
+        } else {
+          label = state.dialogText;
+        }
+
         Utils.instance.infoDialog(
           context,
           msg,
-          label: state.dialogLabel,
+          label: label,
         );
       },
       child: PageScaffold(

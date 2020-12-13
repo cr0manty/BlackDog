@@ -5,12 +5,14 @@ class StaffState extends Equatable {
   final bool isLoading;
   final bool userUpdated;
   final bool needTranslate;
+  final bool needTranslateLabel;
   final String dialogText;
   final String dialogLabel;
 
   const StaffState({
     this.isLoading = false,
     this.needTranslate = false,
+    this.needTranslateLabel = false,
     this.logs,
     this.dialogText,
     this.userUpdated,
@@ -24,6 +26,7 @@ class StaffState extends Equatable {
     String label,
     bool updateUser = false,
     bool translate = false,
+    bool translateLabel = false,
   }) {
     return StaffState(
       logs: logList ?? logs,
@@ -32,6 +35,7 @@ class StaffState extends Equatable {
       dialogLabel: label,
       userUpdated: updateUser,
       needTranslate: translate,
+      needTranslateLabel: translateLabel,
     );
   }
 

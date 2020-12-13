@@ -38,6 +38,8 @@ class BlackDogApp extends StatefulWidget {
 }
 
 class _BlackDogAppState extends State<BlackDogApp> {
+  final StaffBloc _staffBloc = StaffBloc();
+
   void initWithContext(BuildContext context) async {
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(statusBarColor: HexColor.transparent));
@@ -100,10 +102,10 @@ class _BlackDogAppState extends State<BlackDogApp> {
         scaffoldBackgroundColor: Color.fromRGBO(40, 39, 41, 1),
       ),
       routes: {
-        '/staff': (BuildContext context) => BlocProvider<StaffBloc>(
-              create: (_) => StaffBloc(),
+        '/staff': (BuildContext context) => BlocProvider<StaffBloc>.value(
+              value: _staffBloc,
               child: StaffHomePage(),
-            )
+            ),
       },
       home: switchPages(),
     );
@@ -114,8 +116,8 @@ class _BlackDogAppState extends State<BlackDogApp> {
       case AccountState.GUEST:
         return SignInPage();
       case AccountState.STAFF:
-        return BlocProvider<StaffBloc>(
-          create: (_) => StaffBloc(),
+        return BlocProvider<StaffBloc>.value(
+          value: _staffBloc,
           child: StaffHomePage(),
         );
       case AccountState.USER:
@@ -127,6 +129,7 @@ class _BlackDogAppState extends State<BlackDogApp> {
 
   @override
   void dispose() {
+    _staffBloc.close();
     Api.instance.dispose();
     NotificationManager.instance.dispose();
     ConnectionsCheck.instance.dispose();
