@@ -33,9 +33,7 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
       if (result && await Account.instance.setUser()) {
         Api.instance.sendFCMToken();
         this.add(
-          SignInNavigationEvent(
-            Account.instance.user.isStaff ? '/staff' : '/home',
-          ),
+          SignInNavigationEvent('/'),
         );
       } else {
         response.forEach((key, value) {
@@ -49,8 +47,9 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
       }
       this.add(SignInCompleteEvent(errors, result, errorMsg: errorMsg));
     }).catchError((error) {
-      this.add(SignInCompleteEvent({}, false,
-          errorMsg: "error", needTranslate: true));
+      this.add(
+        SignInCompleteEvent({}, false, errorMsg: "error", needTranslate: true),
+      );
     });
   }
 }

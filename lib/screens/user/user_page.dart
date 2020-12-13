@@ -69,12 +69,12 @@ class _UserPageState extends State<UserPage>
                     Container(
                       width: ScreenSize.voucherProgressTextWidth,
                       child: Text(
-                          Account.instance.currentVoucher?.name ?? '',
-                          textAlign: TextAlign.center,
-                          maxLines: 2,
-                          overflow: TextOverflow.visible,
-                          style: Utils.instance.getTextStyle(
-                            'headline1',
+                        Account.instance.currentVoucher?.name ?? '',
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.visible,
+                        style: Utils.instance.getTextStyle(
+                          'headline1',
                         ),
                       ),
                     ),
@@ -227,14 +227,19 @@ class _UserPageState extends State<UserPage>
         onTap: () => Navigator.of(context).pop(),
       ),
       action: RouteButton(
-          text: AppLocalizations.of(context).translate('logout'),
-          color: HexColor.lightElement,
-          onTap: () => Utils.instance.logoutAsk(context, () {
-                SharedPrefs.logout();
-                Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-                    CupertinoPageRoute(builder: (context) => SignInPage()),
-                    (route) => false);
-              })),
+        text: AppLocalizations.of(context).translate('logout'),
+        color: HexColor.lightElement,
+        onTap: () => Utils.instance.logoutAsk(
+          context,
+          () {
+            SharedPrefs.logout();
+            Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
+              '/sign_in',
+              (route) => false,
+            );
+          },
+        ),
+      ),
       children: <Widget>[
         UserCard(
           onPressed: null,

@@ -138,18 +138,20 @@ class _SignInPageState extends State<SignInPage> {
                                           onFieldSubmitted: (_) =>
                                               onFieldSubmitted(),
                                           suffixIcon: GestureDetector(
-                                              child: Icon(
-                                                  state.obscureText
-                                                      ? CupertinoIcons.eye_fill
-                                                      : CupertinoIcons
-                                                          .eye_slash_fill,
-                                                  color: HexColor.darkElement),
-                                              onTap: () {
-                                                BlocProvider.of<SignInBloc>(
-                                                        context)
-                                                    .add(
-                                                        SignInShowPasswordEvent());
-                                              }),
+                                            child: Icon(
+                                                state.obscureText
+                                                    ? CupertinoIcons.eye_fill
+                                                    : CupertinoIcons
+                                                        .eye_slash_fill,
+                                                color: HexColor.darkElement),
+                                            onTap: () {
+                                              BlocProvider.of<SignInBloc>(
+                                                      context)
+                                                  .add(
+                                                SignInShowPasswordEvent(),
+                                              );
+                                            },
+                                          ),
                                           inputAction: TextInputAction.done,
                                         ),
                                         Utils.instance.showValidateError(

@@ -8,7 +8,7 @@ class SignInState extends Equatable {
   final String dialogText;
 
   const SignInState({
-    this.isLoading,
+    this.isLoading = false,
     this.obscureText,
     this.fieldsError,
     this.dialogText,

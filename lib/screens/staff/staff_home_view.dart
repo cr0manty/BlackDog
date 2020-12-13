@@ -71,11 +71,10 @@ class _StaffHomePageState extends State<StaffHomePage> {
             context,
             () {
               SharedPrefs.logout();
-              Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-                  CupertinoPageRoute(
-                    builder: (context) => SignInPage(),
-                  ),
-                  (route) => false);
+              Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
+              '/sign_in',
+              (route) => false,
+            );
             },
           ),
         ),

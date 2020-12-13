@@ -1,5 +1,6 @@
 import 'package:black_dog/instances/utils.dart';
 import 'package:black_dog/utils/hex_color.dart';
+import 'package:black_dog/utils/localization.dart';
 import 'package:flutter/cupertino.dart';
 
 class LogEntryRow extends StatelessWidget {
@@ -8,8 +9,9 @@ class LogEntryRow extends StatelessWidget {
   final Color valueColor;
 
   LogEntryRow(
+      this.label,
     this.value,
-    this.label, {
+    {
     this.valueColor,
   });
 
@@ -28,7 +30,7 @@ class LogEntryRow extends StatelessWidget {
           Expanded(
             flex: 1,
             child: Text(
-              value,
+              value ?? AppLocalizations.of(context).translate('unknown'),
               textAlign: TextAlign.right,
               style: Utils.instance.getTextStyle('bodyText2').copyWith(
                     color: valueColor ?? HexColor.lightElement,

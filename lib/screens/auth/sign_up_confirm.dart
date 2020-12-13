@@ -185,13 +185,13 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
                                                         HexColor.darkElement),
                                           ))),
                                   CupertinoButton(
-                                    onPressed: () => Navigator.of(context,
-                                            rootNavigator: true)
-                                        .pushAndRemoveUntil(
-                                            CupertinoPageRoute(
-                                                builder: (context) =>
-                                                    SignInPage()),
-                                            (route) => false),
+                                    onPressed: () {
+                                      Navigator.of(context, rootNavigator: true)
+                                          .pushNamedAndRemoveUntil(
+                                        '/sign_in',
+                                        (route) => false,
+                                      );
+                                    },
                                     child: Text(
                                       AppLocalizations.of(context)
                                           .translate('already_have_account'),
