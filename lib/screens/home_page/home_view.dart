@@ -67,7 +67,23 @@ class _HomePageState extends State<HomePage>
       Account.instance.onNotificationListener(event);
       Utils.instance.closePopUp(context);
       if (event.msg != null) {
-        Utils.instance.infoDialog(context, event.msg);
+        if (event.type == NotificationType.VOUCHER_RECEIVED) {
+          Utils.instance.showDialogWithWidget(
+            context,
+            label: event.msg,
+            content: Container(
+              padding: EdgeInsets.all(8),
+              alignment: Alignment.center,
+              child: Image.asset(
+                'assets/images/ic_party.png',
+                height: 100,
+                width: 100,
+              ),
+            ),
+          );
+        } else {
+          Utils.instance.infoDialog(context, event.msg);
+        }
       }
     });
     _model = HomeModel();
@@ -85,21 +101,33 @@ class _HomePageState extends State<HomePage>
         onRefresh: _model.onPageRefresh,
         children: <Widget>[
           NavigationBar(
-              alwaysNavigation: false,
-              action: RouteButton(
-                  padding: EdgeInsets.only(top: 5),
-                  iconColor: HexColor.lightElement,
-                  textColor: HexColor.lightElement,
-                  iconWidget: Container(
-                    margin: EdgeInsets.only(left: 10),
-                    child: Icon(BlackDogIcons.about_us,
-                        color: HexColor.lightElement, size: 27),
-                  ),
-                  iconFirst: false,
-                  text: AppLocalizations.of(context).translate('about_us'),
-                  onTap: () => Navigator.of(context).push(CupertinoPageRoute(
-                        builder: (context) => AboutUsPage(),
-                      )))),
+            alwaysNavigation: false,
+            leading: Visibility(
+              visible: Account.instance.state == AccountState.STAFF,
+              child: RouteButton(
+                text: AppLocalizations.of(context).translate('staff_acc'),
+                color: HexColor.lightElement,
+                onTap: Navigator.of(context).pop,
+              ),
+            ),
+            action: RouteButton(
+              padding: EdgeInsets.only(top: 5),
+              iconColor: HexColor.lightElement,
+              textColor: HexColor.lightElement,
+              iconWidget: Container(
+                margin: EdgeInsets.only(left: 10),
+                child: Icon(BlackDogIcons.about_us,
+                    color: HexColor.lightElement, size: 27),
+              ),
+              iconFirst: false,
+              text: AppLocalizations.of(context).translate('about_us'),
+              onTap: () => Navigator.of(context).push(
+                CupertinoPageRoute(
+                  builder: (context) => AboutUsPage(),
+                ),
+              ),
+            ),
+          ),
           UserCard(
             topPadding: 10,
             onPressed: () => Navigator.of(context, rootNavigator: true).push(

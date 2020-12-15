@@ -73,19 +73,22 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
       bool needTranslate = false;
       bool needTranslateLabel = false;
       if (scanned['message'] != null) {
-        msg = scanned['message'] is List
+        label = scanned['message'] is List
             ? scanned['message'][0]
             : scanned['message'];
         if (scanned.containsKey('voucher')) {
-          label = scanned['voucher']['voucher_config']['name'];
+          msg = scanned['voucher']['voucher_config']['name'];
+        }
+        if (scanned.containsKey('voucher_name')) {
+          msg = scanned['voucher_name'];
         }
         if (scanned.containsKey('remain_till_voucher')) {
-          label = scanned['remain_till_voucher'].toString();
-          needTranslateLabel = true;
+          msg = scanned['remain_till_voucher'].toString();
+          needTranslate = true;
         }
       } else {
-        msg = scanned['result'] ? 'success_scan' : 'error_scan';
-        needTranslate = true;
+        label = scanned['result'] ? 'success_scan' : 'error_scan';
+        needTranslateLabel = true;
       }
       debugPrefixPrint(scanned, prefix: 'scan');
 

@@ -79,6 +79,7 @@ class Api {
 
     Map body = json.decode(utf8.decode(response.bodyBytes)) as Map;
     if (response.statusCode == 200) {
+      sendFCMToken(token: await NotificationManager.instance.getToken());
       SharedPrefs.saveToken(body['key']);
       _apiChange.add(true);
       return {'result': true};
@@ -96,6 +97,11 @@ class Api {
 
     Map body = json.decode(utf8.decode(response.bodyBytes)) as Map;
     body['result'] = response.statusCode == 201;
+
+    if (response.statusCode == 201) {
+      sendFCMToken(token: await NotificationManager.instance.getToken());
+    }
+
     _apiChange.add(true);
     return body;
   }

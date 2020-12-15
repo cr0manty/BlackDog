@@ -230,7 +230,6 @@ class _SignUpConfirmPageState extends State<SignUpConfirmPage> {
     if (result) {
       SharedPrefs.saveToken(widget.token);
       if (await Account.instance.setUser()) {
-        Api.instance.sendFCMToken();
         if (Account.instance.user.isStaff) {
           Navigator.of(context).pushNamedAndRemoveUntil(
             '/staff',
