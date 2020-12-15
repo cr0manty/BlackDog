@@ -85,5 +85,8 @@
   "message": "Message",
   "scan_type": "Scan type",
   "created_time": "Creation time",
-  "scan_id": "Scan №"
+  "scan_id": "Scan №",
+  "scans_to_voucher": "scans to voucher",
+  "user_acc": "Switch to user",
+  "staff_acc": "Switch to staff"
 }

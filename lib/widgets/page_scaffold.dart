@@ -20,21 +20,21 @@ class PageScaffold extends StatefulWidget {
   final VoidCallback onRefresh;
   final Widget bottomWidget;
 
-  PageScaffold(
-      {this.scrollController,
-      this.child,
-      this.children,
-      this.action,
-      this.leading,
-      this.title,
-      this.onRefresh,
-      this.bottomWidget,
-      this.padding,
-      this.shrinkWrap = false,
-      this.alwaysNavigation = false,
-      this.inAsyncCall = false,
-      this.titleMargin = 10})
-      : assert(child != null || children != null),
+  PageScaffold({
+    this.scrollController,
+    this.child,
+    this.children,
+    this.action,
+    this.leading,
+    this.title,
+    this.onRefresh,
+    this.bottomWidget,
+    this.padding,
+    this.shrinkWrap = false,
+    this.alwaysNavigation = false,
+    this.inAsyncCall = false,
+    this.titleMargin = 10,
+  })  : assert(child != null || children != null),
         assert(bottomWidget != null && alwaysNavigation == true ||
             bottomWidget == null);
 
@@ -76,7 +76,7 @@ class _PageScaffoldState extends State<PageScaffold>
     return Container(
       padding: widget.padding ?? EdgeInsets.zero,
       child: CustomScrollView(
-        physics: AlwaysScrollableScrollPhysics(),
+          physics: AlwaysScrollableScrollPhysics(),
           controller: widget.scrollController,
           slivers: <Widget>[
             CupertinoSliverRefreshControl(onRefresh: widget.onRefresh),

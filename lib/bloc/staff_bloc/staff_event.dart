@@ -26,11 +26,13 @@ class StaffShowDialogEvent extends StaffEvent {
   final String msg;
   final String label;
   final bool needTranslate;
+  final bool needTranslateLabel;
 
   StaffShowDialogEvent(
     this.msg,
     this.label, {
     this.needTranslate = false,
+    this.needTranslateLabel = false,
   });
 
   @override

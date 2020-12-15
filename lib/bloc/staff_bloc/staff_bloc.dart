@@ -31,6 +31,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
         translate: event.needTranslate,
         text: event.msg,
         label: event.label,
+        translateLabel: event.needTranslateLabel,
       );
     } else if (event is StaffUserUpdatedEvent) {
       yield state.copyWith(updateUser: true);
@@ -70,24 +71,36 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
       String msg;
       String label;
       bool needTranslate = false;
+      bool needTranslateLabel = false;
       if (scanned['message'] != null) {
-        msg = scanned['message'] is List
+        label = scanned['message'] is List
             ? scanned['message'][0]
             : scanned['message'];
         if (scanned.containsKey('voucher')) {
-          label = scanned['voucher']['voucher_config']['name'];
+          msg = scanned['voucher']['voucher_config']['name'];
+        }
+        if (scanned.containsKey('voucher_name')) {
+          msg = scanned['voucher_name'];
+        }
+        if (scanned.containsKey('remain_till_voucher')) {
+          msg = scanned['remain_till_voucher'].toString();
+          needTranslate = true;
         }
       } else {
-        msg = scanned['result'] ? 'success_scan' : 'error_scan';
-        needTranslate = true;
+        label = scanned['result'] ? 'success_scan' : 'error_scan';
+        needTranslateLabel = true;
       }
+      debugPrefixPrint(scanned, prefix: 'scan');
 
       if (scanned['result']) {
         _getLogs();
-      } else {
-        debugPrefixPrint(scanned, prefix: 'scan');
       }
-      this.add(StaffShowDialogEvent(msg, label, needTranslate: needTranslate));
+      this.add(StaffShowDialogEvent(
+        msg,
+        label,
+        needTranslate: needTranslate,
+        needTranslateLabel: needTranslateLabel,
+      ));
     }
   }
 }

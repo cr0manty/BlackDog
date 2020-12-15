@@ -223,8 +223,6 @@ class _SignInPageState extends State<SignInPage> {
         .then((response) async {
       bool result = response.remove('result');
       if (result && await Account.instance.setUser()) {
-        Api.instance.sendFCMToken();
-
         if (Account.instance.user.isStaff) {
           Navigator.of(context).pushNamedAndRemoveUntil(
             '/staff',

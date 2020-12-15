@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:black_dog/instances/account.dart';
 import 'package:black_dog/instances/shared_pref.dart';
@@ -32,14 +33,14 @@ class NotificationManager {
     _fcm = FirebaseMessaging();
     await _fcm.requestNotificationPermissions();
     _fcm.onTokenRefresh.listen((token) async {
-      Api.instance.sendFCMToken(token: token);
       debugPrefixPrint('FCM Token: $token', prefix: 'fcm');
     });
 
     _fcm.configure(
-        onMessage: _messageHandler,
-        onLaunch: _messageHandler,
-        onResume: _messageHandler);
+      onMessage: _messageHandler,
+      onLaunch: _messageHandler,
+      onResume: _messageHandler,
+    );
   }
 
   Future _messageHandler(Map<String, dynamic> message) async {
@@ -48,30 +49,50 @@ class NotificationManager {
     if (SharedPrefs.getInstance() == null) {
       await SharedPrefs.initialize();
     }
+    Map messageData = Platform.isAndroid ? message['data'] : message;
 
-    if (message.containsKey('data')) {
-      debugPrefixPrint("Message date type: ${message['data']['code']}",
-          prefix: 'fcm');
-      if (message['data']['code'] == 'voucher_received') {
-        Voucher voucher =
-            Voucher.fromStringJson(message['data']['voucher'], config: true);
-        await _updateVouchers(voucher: voucher);
-        _updateCounter(int.parse(message['data']['updated_counter'] ?? '0'));
-        _onMessage.add(NotificationMessage(
-            type: NotificationType.VOUCHER_RECEIVED,
-            msg: message['notification']['title']));
-      } else if (message['data']['code'] == 'voucher_scanned') {
-        await _updateVouchers(id: int.parse(message['data']['voucher_id']));
-        _updateCounter(int.parse(message['data']['updated_counter'] ?? '0'));
-        _onMessage.add(NotificationMessage(
-            type: NotificationType.VOUCHER_SCANNED,
-            msg: message['notification']['title']));
-      } else if (message['data']['code'] == 'qr_code_scanned') {
-        _updateCounter(int.parse(message['data']['updated_counter'] ?? '0'));
-        _onMessage.add(NotificationMessage(
-            type: NotificationType.QR_CODE_SCANNED,
-            msg: message['notification']['title']));
-      }
+    if (messageData['code'] == 'voucher_received') {
+      Voucher voucher = Voucher.fromStringJson(
+        messageData['voucher'],
+        config: true,
+      );
+      await _updateVouchers(voucher: voucher);
+      _updateCounter(
+        int.parse(messageData['updated_counter'] ?? '0'),
+      );
+      _onMessage.add(
+        NotificationMessage(
+          type: NotificationType.VOUCHER_RECEIVED,
+          msg: voucher.name,
+        ),
+      );
+    } else if (messageData['code'] == 'voucher_scanned') {
+      await _updateVouchers(
+        id: int.parse(
+          messageData['voucher_id'],
+        ),
+      );
+      _updateCounter(
+        int.parse(messageData['updated_counter'] ?? '0'),
+      );
+      _onMessage.add(
+        NotificationMessage(
+          type: NotificationType.VOUCHER_SCANNED,
+          msg: Platform.isAndroid
+              ? message['notification']['title']
+              : messageData['aps']['alert']['title'],
+        ),
+      );
+    } else if (messageData['code'] == 'qr_code_scanned') {
+      _updateCounter(int.parse(messageData['updated_counter'] ?? '0'));
+      _onMessage.add(
+        NotificationMessage(
+          type: NotificationType.QR_CODE_SCANNED,
+          msg: Platform.isAndroid
+              ? message['notification']['title']
+              : messageData['aps']['alert']['title'],
+        ),
+      );
     }
   }
 

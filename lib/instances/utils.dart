@@ -84,8 +84,11 @@ class Utils {
             )).then((value) => _showPopUp = null);
   }
 
-  void infoDialog(BuildContext context, String content,
-      {String label}) {
+  void infoDialog(
+    BuildContext context,
+    String content, {
+    String label,
+  }) {
     if (_showPopUp != null) {
       return;
     }
@@ -106,6 +109,37 @@ class Utils {
                   : null,
               content: Text(contentText,
                   style: Utils.instance.getTextStyle('subtitle2')),
+              actions: [
+                CupertinoDialogAction(
+                  child: Text('OK',
+                      style: Utils.instance
+                          .getTextStyle('subtitle2')
+                          .copyWith(color: CupertinoColors.activeBlue)),
+                  onPressed: () {
+                    _showPopUp = null;
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            )).then((value) => _showPopUp = null);
+  }
+
+  void showDialogWithWidget(
+    BuildContext context, {
+    String label,
+    Widget content,
+  }) {
+    _showPopUp = showCupertinoDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) => CupertinoAlertDialog(
+              title: label != null
+                  ? Text(
+                      label,
+                      style: Utils.instance.getTextStyle('subtitle1'),
+                    )
+                  : null,
+              content: content,
               actions: [
                 CupertinoDialogAction(
                   child: Text('OK',

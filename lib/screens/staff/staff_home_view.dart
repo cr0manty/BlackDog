@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:black_dog/bloc/log_list/log_list_bloc.dart';
 import 'package:black_dog/bloc/staff_bloc/staff_bloc.dart';
 import 'package:black_dog/instances/connection_check.dart';
+import 'package:black_dog/screens/home_page/home_view.dart';
 import 'package:black_dog/screens/staff/widgets/log_card.dart';
 import 'package:black_dog/screens/staff/widgets/scan_code_button.dart';
 import 'package:black_dog/utils/hex_color.dart';
@@ -47,16 +48,25 @@ class _StaffHomePageState extends State<StaffHomePage> {
       listenWhen: (prev, current) => current.isPopUp,
       listener: (context, state) {
         String msg;
+        String label;
+
+        if (state.needTranslateLabel) {
+          label = AppLocalizations.of(context).translate(state.dialogLabel);
+        } else {
+          label = state.dialogLabel;
+        }
 
         if (state.needTranslate) {
-          AppLocalizations.of(context).translate(state.dialogText);
+          msg = '${state.dialogText} ' +
+              AppLocalizations.of(context).translate('scans_to_voucher');
         } else {
           msg = state.dialogText;
         }
+
         Utils.instance.infoDialog(
           context,
           msg,
-          label: state.dialogLabel,
+          label: label,
         );
       },
       child: PageScaffold(
@@ -78,6 +88,17 @@ class _StaffHomePageState extends State<StaffHomePage> {
                   (route) => false);
             },
           ),
+        ),
+        leading: RouteButton(
+          text: AppLocalizations.of(context).translate('user_acc'),
+          color: HexColor.lightElement,
+          onTap: () {
+            Navigator.of(context).push(
+              CupertinoPageRoute(
+                builder: (_) => HomePage(),
+              ),
+            );
+          },
         ),
         children: <Widget>[
           BlocBuilder<StaffBloc, StaffState>(
